@@ -1,18 +1,57 @@
 import React from 'react'
 import { DocsThemeConfig } from 'nextra-theme-docs'
 
+const docs = [ 
+  {
+    type: "category",
+    label: "Getting Started",
+    items: [
+      {
+        type: "doc",
+        id: "getting-started/introduction",
+        label: "Introduction"
+      },
+      {
+        type: "doc",
+        id: "getting-started/installation",
+        label: "Installation"
+      },
+      {
+        type: "doc",
+        id: "getting-started/usage",
+        label: "Usage"
+      }
+    ]
+  },
+  {
+    type: "category",
+    label: "Advanced",
+    items: [
+      {
+        type: "doc",
+        id: "advanced/webpack-config",
+        label: "Webpack Config"
+      },
+      {
+        type: "doc",
+        id: "advanced/plugin-api",
+        label: "Plugin API"
+      }
+    ]
+  }
+]
+
 const config: DocsThemeConfig = {
-  logo: <span>My Project</span>,
+  logo: <span>Milnus中文站</span>,
+  sidebar: {
+  },
   project: {
-    link: 'https://github.com/shuding/nextra-docs-template',
+    link: 'https://github.com/liteli1987gmail/milnvs_docs',
   },
-  chat: {
-    link: 'https://discord.com',
-  },
-  docsRepositoryBase: 'https://github.com/shuding/nextra-docs-template',
+  docsRepositoryBase: 'https://github.com/liteli1987gmail/milnvs_docs',
   footer: {
-    text: 'Nextra Docs Template',
-  },
+    text: 'MILVUS中文站',
+  }
 }
 
 export default config
