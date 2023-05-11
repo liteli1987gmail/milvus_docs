@@ -1,0 +1,16 @@
+{
+    "manage_connection": {
+        "title": "管理 Milvus 连接 (manage_connection)",
+        "href":"/manage_connection"
+    },
+    
+    "timetravel": {
+        "title": "时间旅行（timetravel）",
+        "href":"/timetravel"
+    },
+    
+    "calculate_distance": {
+        "title": "计算向量距离 (calculate_distance)",
+        "href":"/calculate_distance"
+    }
+}

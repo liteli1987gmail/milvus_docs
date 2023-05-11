@@ -1,0 +1,16 @@
+{
+    "search": {
+        "title": "向量搜索 (search)",
+        "href":"/search"
+    },
+    
+    "hybridsearch": {
+        "title": "混合搜索 (hybridsearch)",
+        "href":"/hybridsearch"
+    },
+    
+    "query": {
+        "title": "自定义查询 (query)",
+        "href":"/query"
+    }
+}

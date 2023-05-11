@@ -1,0 +1,14 @@
+{
+    "what_is_milvus": {
+        "title": "Milvus是什么？",
+        "href": "/overview"
+    },
+    "milvus_adopters": {
+        "title": "Milvus采用者",
+        "href": "/milvus_adopters"
+    },
+    "limitations": {
+        "title": "milvus的限制",
+        "href": "/limitations"
+    }
+}

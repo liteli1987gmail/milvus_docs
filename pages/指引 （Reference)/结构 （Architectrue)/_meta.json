@@ -1,0 +1,21 @@
+{
+    "architecture_overview": {
+        "title": "架构概述 (architecture_overview)",
+        "href": "/architecture_overview"
+        },
+        
+        "four_layers": {
+        "title": "四层架构 (four_layers)",
+        "href": "/four_layers"
+        },
+        
+        "main_components": {
+        "title": "主要组件 (main_components)",
+        "href": "/main_components"
+        },
+        
+        "data_processing": {
+        "title": "数据处理 (data_processing)",
+        "href": "/data_processing"
+        }
+}

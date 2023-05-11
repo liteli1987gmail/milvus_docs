@@ -1,0 +1,10 @@
+{
+    "example_code": {
+        "title":"Hello Milvus（你好Milvus）",
+        "href":"/example_code"
+    },
+    "milvus_lite": {
+        "title":"Lite Milvus（With Milvus Lite）",
+        "href":"/milvus_lite"
+    }
+}

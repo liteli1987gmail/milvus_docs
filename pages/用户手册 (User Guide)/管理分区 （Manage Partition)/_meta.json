@@ -1,0 +1,26 @@
+{
+    "create_partition": {
+        "title": "创建分区 (create_partition)",
+        "href":"/create_partition"
+    },
+    
+    "check_partition": {
+        "title": "检测分区 (check_partition)",
+        "href":"/check_partition"
+    },
+    
+    "drop_partition": {
+        "title": "删除分区 (drop_partition)",
+        "href":"/drop_partition"
+    },
+    
+    "load_partition": {
+        "title": "加载分区 (load_partition)",
+        "href":"/load_partition"
+    },
+    
+    "release_partition": {
+        "title": "释放分区 (release_partition)",
+        "href":"/release_partition"
+    }
+}

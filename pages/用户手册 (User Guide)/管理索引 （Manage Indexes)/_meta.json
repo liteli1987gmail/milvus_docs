@@ -1,0 +1,16 @@
+{
+    "build_index": {
+        "title": "构建索引 (build_index)",
+        "href":"/build_index"
+    },
+    
+    "build_scalar_index": {
+        "title": "构建标量索引 (build_scalar_index)",
+        "href":"/build_scalar_index"
+    },
+    
+    "drop_index": {
+        "title": "删除索引 (drop_index)",
+        "href":"/drop_index"
+    }
+}

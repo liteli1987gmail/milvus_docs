@@ -1,0 +1,16 @@
+{
+    "install_standalone-operator": {
+        "title": "独立操作器安装 (install_standalone-operator)",
+        "href":"/install_standalone-operator"
+    },
+    
+    "install_cluster-milvusoperator": {
+        "title": "Milvus 操作器集群安装 (install_cluster-milvusoperator)",
+        "href":"/install_cluster-milvusoperator"
+    },
+    
+    "install_offline-helm": {
+        "title": "离线环境下的 Helm 安装 (install_offline-helm)",
+        "href":"/install_offline-helm"
+    }
+}

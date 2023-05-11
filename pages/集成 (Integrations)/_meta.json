@@ -1,0 +1,36 @@
+{
+    "integrate_with_cohere": {
+        "title": "与 Cohere 集成 (integrate_with_cohere)",
+        "href":"/integrate_with_cohere"
+    },
+    
+    "integrate_with_hugging-face": {
+        "title": "与 Hugging Face 集成 (integrate_with_hugging-face)",
+        "href":"/integrate_with_hugging-face"
+    },
+    
+    "integrate_with_langchain": {
+        "title": "与 LangChain 集成 (integrate_with_langchain)",
+        "href":"/integrate_with_langchain"
+    },
+    
+    "integrate_with_llama": {
+        "title": "与 Latent Logic, Ltd 集成 (integrate_with_llama)",
+        "href":"/integrate_with_llama"
+    },
+    
+    "integrate_with_openai": {
+        "title": "与 OpenAI 集成 (integrate_with_openai)",
+        "href":"/integrate_with_openai"
+    },
+    
+    "integrate_with_pytorch": {
+        "title": "与 PyTorch 集成 (integrate_with_pytorch)",
+        "href":"/integrate_with_pytorch"
+    },
+    
+    "integrate_with_sentencetransformers": {
+        "title": "与 Sentence Transformers 集成 (integrate_with_sentencetransformers)",
+        "href":"/integrate_with_sentencetransformers"
+    }
+}

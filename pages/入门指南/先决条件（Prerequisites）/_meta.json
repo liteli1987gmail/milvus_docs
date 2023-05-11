@@ -1,0 +1,27 @@
+{
+    
+    "prerequisite-helm": {
+        "title": "Helm 先决条件 (prerequisite-helm)",
+        "href":"/prerequisite-helm"
+    },
+    
+    "prerequisite-docker": {
+        "title": "Docker 先决条件 (prerequisite-docker)",
+        "href":"/prerequisite-docker"
+    },
+    
+    "install_standalone-operator": {
+        "title": "独立操作符的安装 (install_standalone-operator)",
+        "href":"/install_standalone-operator"
+    },
+    
+    "install_cluster-milvusoperator": {
+        "title": "Milvus 操作符集群的安装 (install_cluster-milvusoperator)",
+        "href":"/install_cluster-milvusoperator"
+    },
+    
+    "install_offline-helm": {
+        "title": "离线环境下的 Helm 安装 (install_offline-helm)",
+        "href":"/install_offline-helm"
+    }
+}

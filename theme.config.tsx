@@ -42,7 +42,7 @@ const docs = [
 ]
 
 const config: DocsThemeConfig = {
-  logo: <span>Milnus中文站</span>,
+  logo: <span>Milvus中文文档</span>,
   sidebar: {
   },
   project: {
@@ -50,7 +50,7 @@ const config: DocsThemeConfig = {
   },
   docsRepositoryBase: 'https://github.com/liteli1987gmail/milnvs_docs',
   footer: {
-    text: 'MILVUS中文站',
+    text: 'Milvus中文文档',
   }
 }
 

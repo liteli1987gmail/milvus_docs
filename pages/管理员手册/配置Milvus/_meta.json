@@ -1,0 +1,16 @@
+{
+    "configure-helm": {
+        "title": "配置 Helm (configure-helm)",
+        "href":"/configure-helm"
+    },
+    
+    "configure-docker": {
+        "title": "配置 Docker (configure-docker)",
+        "href":"/configure-docker"
+    },
+    
+    "configure_operator": {
+        "title": "配置 Milvus 操作符 (configure_operator)",
+        "href":"/configure_operator"
+    }
+}

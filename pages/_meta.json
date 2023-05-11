@@ -1,0 +1,510 @@
+{
+    "Milvus介绍": {
+        "title": "Milvus介绍"
+      }, 
+      "入门指南": {
+        "title": "入门指南"
+      }, 
+      "用户手册 (User Guide)": {
+        "title": "用户手册 (User Guide)"
+      }, 
+      "管理员手册": {
+        "title": "管理员手册 (Administration Guide)"
+      }, 
+      "集成 (Integrations)": {
+        "title": "集成 (Integrations)"
+      }, 
+    "benchmark": {
+        "title": "基准测试（benchmark）"
+      }, 
+      "工具 （Tools)": {
+        "title": "工具 （Tools)"
+      }, 
+      "指引 （Reference)": {
+        "title": "指引 （Reference)"
+      },
+      "案例应用": {
+        "title": "案例应用"
+      },
+    "FAQs": {
+        "title": "FAQs（FAQs）"
+    },  
+  "overview": {
+    "title": "概述（overview）",
+    "display": "hidden"
+  },
+  "milvus_adopters": {
+    "title": "Milvus 认证者（milvus_adopters）",
+    "display": "hidden"
+  },
+  "limitations": {
+    "title": "限制（limitations）",
+    "display": "hidden"
+  },
+  "alert": {
+    "title": "警报（alert）",
+    "display": "hidden"
+  },
+  "allocate": {
+    "title": "分配（allocate）",
+    "display": "hidden"
+  },
+  "architecture_overview": {
+    "title": "架构概述（architecture_overview）",
+    "display": "hidden"
+  },
+  "audio_similarity_search": {
+    "title": "音频相似度搜索（audio_similarity_search）",
+    "display": "hidden"
+  },
+  "authenticate": {
+    "title": "认证（authenticate）",
+    "display": "hidden"
+  },
+  "aws": {
+    "title": "亚马逊云服务（aws）",
+    "display": "hidden"
+  },
+  "azure": {
+    "title": "Azure 云服务（azure）",
+    "display": "hidden"
+  },
+  "bitset": {
+    "title": "位集合（bitset）",
+    "display": "hidden"
+  },
+  "boolean": {
+    "title": "布尔（boolean）",
+    "display": "hidden"
+  },
+  "build_index": {
+    "title": "建立索引（build_index）",
+    "display": "hidden"
+  },
+  "build_scalar_index": {
+    "title": "建立标量索引（build_scalar_index）",
+    "display": "hidden"
+  },
+  "bulk_insert": {
+    "title": "批量插入（bulk_insert）",
+    "display": "hidden"
+  },
+  "calculate_distance": {
+    "title": "计算距离（calculate_distance）",
+    "display": "hidden"
+  },
+  "check_collection": {
+    "title": "检查集合（check_collection）",
+    "display": "hidden"
+  },
+  "check_partition": {
+    "title": "检查分区（check_partition）",
+    "display": "hidden"
+  },
+  "cli_commands": {
+    "title": "CLI 命令（cli_commands）",
+    "display": "hidden"
+  },
+  "cli_overview": {
+    "title": "CLI 概述（cli_overview）",
+    "display": "hidden"
+  },
+  "collection_alias": {
+    "title": "集合别名（collection_alias）",
+    "display": "hidden"
+  },
+  "compact_data": {
+    "title": "压缩数据（compact_data）",
+    "display": "hidden"
+  },
+  "configure-docker": {
+    "title": "配置 Docker（configure-docker）",
+    "display": "hidden"
+  },
+  "configure-helm": {
+    "title": "配置 Helm（configure-helm）",
+    "display": "hidden"
+  },
+  "configure_operator": {
+    "title": "配置操作员（configure_operator）",
+    "display": "hidden"
+  },
+  "consistency": {
+    "title": "一致性（consistency）",
+    "display": "hidden"
+  },
+  "coordinator_ha": {
+    "title": "协调器高可用（coordinator_ha）",
+    "display": "hidden"
+  },
+  "create_collection": {
+    "title": "创建集合（create_collection）",
+    "display": "hidden"
+  },
+  "create_partition": {
+    "title": "创建分区（create_partition）",
+    "display": "hidden"
+  },
+  "data_processing": {
+    "title": "数据处理（data_processing）",
+    "display": "hidden"
+  },
+  "delete_data": {
+    "title": "删除数据（delete_data）",
+    "display": "hidden"
+  },
+  "deploy_etcd": {
+    "title": "部署 Etcd（deploy_etcd）",
+    "display": "hidden"
+  },
+  "deploy_pulsar": {
+    "title": "部署 Pulsar（deploy_pulsar）",
+    "display": "hidden"
+  },
+  "deploy_s3": {
+    "title": "部署 S3（deploy_s3）",
+    "display": "hidden"
+  },
+  "disk_index": {
+    "title": "磁盘索引（disk_index）",
+    "display": "hidden"
+  },
+  "dna_sequence_classification": {
+    "title": "DNA 序列分类（dna_sequence_classification）",
+    "display": "hidden"
+  },
+  "drop_collection": {
+    "title": "丢弃集合（drop_collection）",
+    "display": "hidden"
+  },
+  "drop_index": {
+    "title": "丢弃索引（drop_index）",
+    "display": "hidden"
+  },
+  "drop_partition": {
+    "title": "丢弃分区（drop_partition）",
+    "display": "hidden"
+  },
+  "eks": {
+    "title": "亚马逊弹性 Kubernetes 服务（eks）",
+    "display": "hidden"
+  },
+  "example_code": {
+    "title": "示例代码（example_code）",
+    "display": "hidden"
+  },
+  "four_layers": {
+    "title": "四层架构（four_layers）",
+    "display": "hidden"
+  },
+  "gcp": {
+    "title": "Google 云服务（gcp）",
+    "display": "hidden"
+  },
+  "gcp_layer7": {
+    "title": "Google Cloud Layer 7 负载均衡器（gcp_layer7）",
+    "display": "hidden"
+  },
+  "glossary": {
+    "title": "词汇表（glossary）",
+    "display": "hidden"
+  },
+  "hybridsearch": {
+    "title": "混合搜索（hybridsearch）",
+    "display": "hidden"
+  },
+  "image_deduplication_system": {
+    "title": "图像去重系统（image_deduplication_system）",
+    "display": "hidden"
+  },
+  "image_similarity_search": {
+    "title": "图像相似度搜索（image_similarity_search）",
+    "display": "hidden"
+  },
+  "index": {
+    "title": "索引（index）",
+    "display": "hidden"
+  },
+  "insert_data": {
+    "title": "插入数据（insert_data）",
+    "display": "hidden"
+  },
+  "install-go": {
+    "title": "安装 Go（install-go）",
+    "display": "hidden"
+  },
+  "install-java": {
+    "title": "安装 Java（install-java）",
+    "display": "hidden"
+  },
+  "install-node": {
+    "title": "安装 Node（install-node）",
+    "display": "hidden"
+  },
+  "install-pymilvus": {
+    "title": "安装 PyMilvus（install-pymilvus）",
+    "display": "hidden"
+  },
+  "install_cli": {
+    "title": "安装 CLI（install_cli）",
+    "display": "hidden"
+  },
+  "install_cluster-milvusoperator": {
+    "title": "安装 Milvus 集群操作员（install_cluster-milvusoperator）",
+    "display": "hidden"
+  },
+  "install_offline-helm": {
+    "title": "离线安装 Helm（install_offline-helm）",
+    "display": "hidden"
+  },
+  "install_standalone-operator": {
+    "title": "安装 Milvus 独立操作员（install_standalone-operator）",
+    "display": "hidden"
+  },
+  "integrate_with_cohere": {
+    "title": "与 Cohere 集成（integrate_with_cohere）",
+    "display": "hidden"
+  },
+  "integrate_with_hugging-face": {
+    "title": "与 Hugging Face 集成（integrate_with_hugging-face）",
+    "display": "hidden"
+  },
+  "integrate_with_langchain": {
+    "title": "与 LangChain 集成（integrate_with_langchain）",
+    "display": "hidden"
+  },
+  "integrate_with_llama": {
+    "title": "与 Llama 集成（integrate_with_llama）",
+    "display": "hidden"
+  },
+  "integrate_with_openai": {
+    "title": "与 OpenAI 集成（integrate_with_openai）",
+    "display": "hidden"
+  },
+  "integrate_with_pytorch": {
+    "title": "与 PyTorch 集成（integrate_with_pytorch）",
+    "display": "hidden"
+  },
+  "integrate_with_sentencetransformers": {
+    "title": "与 SentenceTransformers 集成（integrate_with_sentencetransformers）",
+    "display": "hidden"
+  },
+  "knowhere": {
+    "title": "Knowhere（knowhere）",
+    "display": "hidden"
+  },
+  "load_collection": {
+    "title": "加载集合（load_collection）",
+    "display": "hidden"
+  },
+  "load_partition": {
+    "title": "加载分区（load_partition）",
+    "display": "hidden"
+  },
+  "main_components": {
+    "title": "主要组件（main_components）",
+    "display": "hidden"
+  },
+  "manage_connection": {
+    "title": "管理连接（manage_connection）",
+    "display": "hidden"
+  },
+  "message_storage_operator": {
+    "title": "消息存储操作员（message_storage_operator）",
+    "display": "hidden"
+  },
+  "meta_storage_operator": {
+    "title": "元数据存储操作员（meta_storage_operator）",
+    "display": "hidden"
+  },
+  "metric": {
+    "title": "指标（metric）",
+    "display": "hidden"
+  },
+  "metrics_dashboard": {
+    "title": "指标仪表盘（metrics_dashboard）",
+    "display": "hidden"
+  },
+  "migrate_overview": {
+    "title": "迁移概述（migrate_overview）",
+    "display": "hidden"
+  },
+  "milvusdm_install": {
+    "title": "MilvusDM 安装（milvusdm_install）",
+    "display": "hidden"
+  },
+  "milvus_backup_api": {
+    "title": "Milvus 备份API（milvus_backup_api）",
+    "display": "hidden"
+  },
+  "milvus_backup_cli": {
+    "title": "Milvus 备份CLI（milvus_backup_cli）",
+    "display": "hidden"
+  },
+  "milvus_backup_overview": {
+    "title": "Milvus 备份概述（milvus_backup_overview）",
+    "display": "hidden"
+  },
+  "milvus_lite": {
+    "title": "Milvus Lite（milvus_lite）",
+    "display": "hidden"
+  },
+  "modify_collection": {
+    "title": "修改集合（modify_collection）",
+    "display": "hidden"
+  },
+  "molecular_similarity_search": {
+    "title": "分子相似度搜索（molecular_similarity_search）",
+    "display": "hidden"
+  },
+  "monitor": {
+    "title": "监控（monitor）",
+    "display": "hidden"
+  },
+  "monitor_overview": {
+    "title": "监控概述（monitor_overview）",
+    "display": "hidden"
+  },
+  "object_storage_operator": {
+    "title": "对象存储操作员（object_storage_operator）",
+    "display": "hidden"
+  },
+  "operational_faq": {
+    "title": "操作 FAQ（operational_faq）",
+    "display": "hidden"
+  },
+  "performance_faq": {
+    "title": "性能 FAQ（performance_faq）",
+    "display": "hidden"
+  },
+  "prerequisite-docker": {
+    "title": "先决条件-Docker（prerequisite-docker）",
+    "display": "hidden"
+  },
+  "prerequisite-helm": {
+    "title": "先决条件-Helm（prerequisite-helm）",
+    "display": "hidden"
+  },
+  "product_faq": {
+    "title": "产品 FAQ（product_faq）",
+    "display": "hidden"
+  },
+  "query": {
+    "title": "查询（query）",
+    "display": "hidden"
+  },
+  "question_answering_system": {
+    "title": "问答系统（question_answering_system）",
+    "display": "hidden"
+  },
+  "rbac": {
+    "title": "角色基于访问控制（rbac）",
+    "display": "hidden"
+  },
+  "recommendation_system": {
+    "title": "推荐系统（recommendation_system）",
+    "display": "hidden"
+  },
+  "release_collection": {
+    "title": "发布集合（release_collection）",
+    "display": "hidden"
+  },
+  "release_partition": {
+    "title": "发布分区（release_partition）",
+    "display": "hidden"
+  },
+  "rename_collection": {
+    "title": "重命名集合（rename_collection）",
+    "display": "hidden"
+  },
+  "replica": { "title": "副本（replica）", "display": "hidden" },
+  "resource_group": {
+    "title": "资源组（resource_group）",
+    "display": "hidden"
+  },
+  "scalar_index": { "title": "标量索引（scalar_index）", "display": "hidden" },
+  "scaleout": { "title": "扩展（scaleout）", "display": "hidden" },
+  "schema": { "title": "模式（schema）", "display": "hidden" },
+  "search": { "title": "搜索（search）", "display": "hidden" },
+  "system_configuration": {
+    "title": "系统配置（system_configuration）",
+    "display": "hidden"
+  },
+  "text_image_search": {
+    "title": "文本与图片搜索（text_image_search）",
+    "display": "hidden"
+  },
+  "text_search_engine": {
+    "title": "文本搜索引擎（text_search_engine）",
+    "display": "hidden"
+  },
+  "timestamp": { "title": "时间戳（timestamp）", "display": "hidden" },
+  "timetravel": { "title": "时光旅行（timetravel）", "display": "hidden" },
+  "timetravel_ref": {
+    "title": "时光旅行参数介绍（timetravel_ref）",
+    "display": "hidden"
+  },
+  "time_sync": { "title": "时间同步（time_sync）", "display": "hidden" },
+  "tls": { "title": "传输层安全协议（tls）", "display": "hidden" },
+  "troubleshooting": {
+    "title": "故障排除（troubleshooting）",
+    "display": "hidden"
+  },
+  "upgrade_milvus_cluster-operator": {
+    "title": "升级 Milvus 集群操作员（upgrade_milvus_cluster-operator）",
+    "display": "hidden"
+  },
+  "upgrade_milvus_standalone-operator": {
+    "title": "升级 Milvus 独立操作员（upgrade_milvus_standalone-operator）",
+    "display": "hidden"
+  },
+  "users_and_roles": {
+    "title": "用户和角色（users_and_roles）",
+    "display": "hidden"
+  },
+  "video_similarity_search": {
+    "title": "视频相似度搜索（video_similarity_search）",
+    "display": "hidden"
+  },
+  "visualize": { "title": "可视化（visualize）", "display": "hidden" },
+  "attu_collection": {
+    "title": "Attu 集合（attu_collection）",
+    "display": "hidden"
+},
+"attu_data": {
+    "title":"Attu 数据（attu_data）",
+    "display": "hidden"
+},
+"attu_faq": {
+    "title":"Attu 常见问题解答（attu_faq）",
+    "display": "hidden"
+},
+"attu_index": {
+    "title":"Attu 索引（attu_index）",
+    "display": "hidden"
+},
+"attu_install-docker": {
+    "title":"Attu Docker 安装（attu_install-docker）",
+    "display": "hidden"
+},
+"attu_partition": {
+    "title":"Attu 分区（attu_partition）",
+    "display": "hidden"
+},
+"attu_query": {
+    "title":"Attu 查询（attu_query）",
+    "display": "hidden"
+},
+"attu_search": {
+    "title": "Attu 搜索（attu_search）",
+    "display": "hidden"
+},
+"attu_system": {
+    "title": "Attu 系统（attu_system）",
+    "display": "hidden"
+},
+"attu": {
+    "title": "Attu（Attu）",
+    "display": "hidden"
+}
+}
