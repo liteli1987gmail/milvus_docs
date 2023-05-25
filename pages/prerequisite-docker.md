@@ -6,39 +6,21 @@ Milvus使用Docker Compose的环境检查清单
 硬件要求
 ----
 
-| Component | Requirement | Recommendation | Note |
+| 组件 | 要求 | 推荐配置 | 备注 |
 | --- | --- | --- | --- |
-| CPU | * Intel 第二代 Core CPU 或更高版本
-* Apple Silicon
- | * 独立部署：8 核或更多
-* 集群部署：16 核或更多
- | Current version of Milvus does not support AMD CPUs. |
-| CPU instruction set | * SSE4.2
-* AVX
-* AVX2
-* AVX-512
- | * SSE4.2
-* AVX
-* AVX2
-* AVX-512
- | Vector similarity search and index building within Milvus require CPU's support of single instruction, multiple data (SIMD) extension sets. Ensure that the CPU supports at least one of the SIMD extensions listed. See [支持 AVX 的 CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#CPUs_with_AVX) for more information. |
-| RAM | * 独立部署：16G
-* 集群部署：64G
- | * 独立部署：32G
-* 集群部署：128G
- | The size of RAM depends on the data volume. |
-| Hard drive | SATA 3.0 SSD or higher | NVMe SSD or higher | The size of hard drive depends on the data volume. |
+| CPU | Intel第二代Core CPU或更高 或 Apple Silicon | 单机部署: 8核或更多 或 集群部署: 16核或更多 | 当前版本的Milvus不支持AMD CPU。 |
+| CPU指令集 | SSE4.2 或 AVX 或 AVX2 或 AVX-512 | SSE4.2 或AVX 或AVX2 或AVX-512 | Milvus中的向量相似性搜索和索引构建需要CPU支持单指令多数据（SIMD）扩展集。请确保CPU支持列出的SIMD扩展集之一。有关更多信息，请参见[支持AVX的CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#CPUs_with_AVX)。|
+| RAM | 集群部署: 64G 或 单机部署: 32G | 单机部署: 16G 或 集群部署: 128G | RAM的大小取决于数据量。 |
+| 硬盘 | SATA 3.0 SSD或更高 | NVMe SSD或更高 | 硬盘大小取决于数据量。 |
 
 软件需求
 ----
 
-| Operating system | Software | Note |
+| 操作系统 | 软件 | 备注 |
 | --- | --- | --- |
-| macOS 10.14 or later | Docker Desktop | Set the Docker virtual machine (VM) to use a minimum of 2 virtual CPUs (vCPUs) and 8 GB of initial memory. Otherwise, installation might fail. See [在Mac上安装Docker桌面版](https://docs.docker.com/desktop/mac/install/) for more information. |
-| Linux platforms | * Docker 19.03或更高版本
-* Docker Compose 1.25.1或更高版本
- | See [安装Docker引擎](https://docs.docker.com/engine/install/) and [安装Docker Compose](https://docs.docker.com/compose/install/) for more information. |
-| Windows with WSL 2 enabled | Docker Desktop | We recommend that you store source code and other data bind-mounted into Linux containers in the Linux file system instead of the Windows file system.See [在Windows上使用WSL 2后端安装Docker桌面版](https://docs.docker.com/desktop/windows/install/#wsl-2-backend) for more information. |
+| macOS 10.14或更高版本 | Docker桌面版 | 将Docker虚拟机（VM）设置为使用至少2个虚拟CPU（vCPUs）和8GB初始内存。否则，安装可能会失败。有关更多信息，请参见[在Mac上安装Docker桌面版](https://docs.docker.com/desktop/mac/install/)。 |
+| Linux平台 |  Docker 19.03或更高版本或Docker Compose 1.25.1或更高版本| 有关更多信息，请参见[安装Docker引擎](https://docs.docker.com/engine/install/)和[安装Docker Compose](https://docs.docker.com/compose/install/)。 |
+| 启用WSL 2的Windows | Docker桌面版 | 我们建议您将绑定到Linux容器中的源代码和其他数据存储在Linux文件系统中，而不是Windows文件系统中。有关更多信息，请参见[在Windows上使用WSL 2后端安装Docker桌面版](https://docs.docker.com/desktop/windows/install/#wsl-2-backend)。 |
 
 | Software | Version | Note |
 | --- | --- | --- |
@@ -52,7 +34,7 @@ Milvus使用Docker Compose的环境检查清单
 
 使用[fio](https://github.com/axboe/fio)测试您的磁盘是否合格。
 
-```
+```python
 mkdir test-data
 fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=2200m --bs=2300 --name=mytest
 

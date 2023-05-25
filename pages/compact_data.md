@@ -6,7 +6,7 @@ Milvus 默认支持自动数据压缩。您可以 [配置](configure-docker.md) 
 
 如果自动压缩被禁用，您仍然可以手动压缩数据。
 
-To ensure accuracy of searches with Time Travel, Milvus retains the data operation log within the span specified in [`common.retentionDuration`](configure_common.md#common.retentionDuration). Therefore, data operated within this period will not be compacted. 
+为了确保使用时间旅行时的搜索准确性，Milvus会在[`common.retentionDuration`](configure_common.md#common.retentionDuration)中指定的时间范围内保留数据操作日志。因此，在此期间操作的数据将不会被压缩。
 
 手动压缩数据
 ------
@@ -20,14 +20,14 @@ To ensure accuracy of searches with Time Travel, Milvus retains the data operati
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.compact()
 
 ```
 
-```
+```python
 const res = await milvusClient.compact({
   collection_name: "book",
 });
@@ -35,12 +35,12 @@ const compactionID = res.compactionID;
 
 ```
 
-```
+```python
 // This function is under active development on the GO client.
 
 ```
 
-```
+```python
 R<ManualCompactionResponse> response = milvusClient.manualCompaction(
   ManualCompactionParam.newBuilder()
     .withCollectionName("book")
@@ -50,16 +50,16 @@ long compactionID = response.getData().getCompactionID();
 
 ```
 
-```
+```python
 compact -c book
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/compaction' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/compaction' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collectionID": 434262071120432449
   }'
@@ -68,22 +68,22 @@ curl -X 'POST' \
 
 Output:
 
-```
+```python
 {"status":{},"compactionID":434262132129005569}
 
 ```
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to compact data. |
+| `collection_name` | 要压缩数据的集合的名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to compact data. |
+| `CollectionName` | 要压缩数据的集合的名称。 |
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | Name of the collection to compact data. |
+| -c | 要压缩数据的集合的名称。 |
 
 检查压缩状态
 ------
@@ -97,24 +97,24 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 collection.get_compaction_state()
 
 ```
 
-```
+```python
 const state = await milvusClient.getCompactionState({
     compactionID
 });
 
 ```
 
-```
+```python
 // This function is under active development on the GO client.
 
 ```
 
-```
+```python
 milvusClient.getCompactionState(GetCompactionStateParam.newBuilder()
   .withCompactionID(compactionID)
   .build()
@@ -122,16 +122,16 @@ milvusClient.getCompactionState(GetCompactionStateParam.newBuilder()
 
 ```
 
-```
+```python
 show compaction_state -c book
 
 ```
 
-```
-curl -X 'GET' \
-  'http://localhost:9091/api/v1/compaction/state' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'GET' 
+  'http://localhost:9091/api/v1/compaction/state' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "compactionID": 434262132129005569
   }'
@@ -140,7 +140,7 @@ curl -X 'GET' \
 
 Output:
 
-```
+```python
 {"status":{},"state":2}
 
 ```

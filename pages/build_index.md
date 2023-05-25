@@ -23,7 +23,7 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 index_params = {
   "metric_type":"L2",
   "index_type":"IVF_FLAT",
@@ -32,7 +32,7 @@ index_params = {
 
 ```
 
-```
+```python
 const index_params = {
   metric_type: "L2",
   index_type: "IVF_FLAT",
@@ -41,7 +41,7 @@ const index_params = {
 
 ```
 
-```
+```python
 idx, err := entity.NewIndexIvfFlat(   // NewIndex func
     entity.L2,                        // metricType
     1024,                             // ConstructParams
@@ -52,13 +52,13 @@ if err != nil {
 
 ```
 
-```
+```python
 final IndexType INDEX_TYPE = IndexType.IVF_FLAT;   // IndexType
-final String INDEX_PARAM = "{\"nlist\":1024}";     // ExtraParam
+final String INDEX_PARAM = "{"nlist":1024}";     // ExtraParam
 
 ```
 
-```
+```python
 create index
 
 Collection name (book): book
@@ -75,211 +75,58 @@ Timeout []:
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/index' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/index' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "field_name": "book_intro",
     "extra_params":[
       {"key": "metric_type", "value": "L2"},
       {"key": "index_type", "value": "IVF_FLAT"},
-      {"key": "params", "value": "{\"nlist\":1024}"}
+      {"key": "params", "value": "{"nlist":1024}"}
     ]
   }'
 
 ```
 
-| Parameter | Description | Options |
+很抱歉，我再次失误了。以下是正确的中文翻译及表格格式：
+
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `metric_type` | Type of metrics used to measure the similarity of vectors. | For floating point vectors:
- * `L2`（欧几里得距离）
+| `metric_type` | 用于衡量向量相似度的度量类型。 | 对于浮点型向量：`L2`（欧几里得距离）、`IP`（内积）；对于二元型向量：`JACCARD`（Jaccard距离）、`TANIMOTO`（Tanimoto距离）、`HAMMING`（Hamming距离）、`SUPERSTRUCTURE`（超结构）、`SUBSTRUCTURE`（子结构）|
+| `index_type` | 用于加速向量搜索的索引类型。 | 对于浮点型向量：`FLAT`（FLAT）、`IVF_FLAT`（IVF_FLAT）、`IVF_SQ8`（IVF_SQ8）、`IVF_PQ`（IVF_PQ）、`HNSW`（HNSW）、`ANNOY`（ANNOY）；对于二元型向量：`BIN_FLAT`（BIN_FLAT）、`BIN_IVF_FLAT`（BIN_IVF_FLAT）|
+| `params` | 指定建立索引的参数。 | 更多信息请参见[内存索引](index.md)和[磁盘索引](disk_index.md)。 * DISKANN 有一些特定要求要满足。详情请参见[磁盘索引](disk_index.md)。|
 
-* `IP`（内积）
+非常感谢您的指导，以下是修改后的表格及翻译：
 
- For binary vectors:
- * `JACCARD`（Jaccard距离）
-
-* `TANIMOTO`（Tanimoto距离）
-
-* `HAMMING`（Hamming距离）
-
-* `SUPERSTRUCTURE`（超结构）
-
-* `SUBSTRUCTURE`（子结构）
- |
-| `index_type` | Type of index used to accelerate the vector search. | For floating point vectors:
- * `FLAT`（FLAT）
-
-* `IVF_FLAT`（IVF_FLAT）
-
-* `IVF_SQ8`（IVF_SQ8）
-
-* `IVF_PQ`（IVF_PQ）
-
-* `HNSW`（HNSW）
-
-* `ANNOY`（ANNOY）
-
-* `DISKANN*`（DISK_ANN）
-
- For binary vectors:
- * `BIN_FLAT`（BIN_FLAT）
-
-* `BIN_IVF_FLAT`（BIN_IVF_FLAT）
- |
-| `params` | Building parameter(s) specific to the index. | See [内存索引](index.md) and [磁盘索引](disk_index.md) for more information. |
-| * DISKANN has certain prerequisites to meet. For details, see [磁盘索引](disk_index.md). |
-
-| Parameter | Description | Option |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `metric_type` | Type of metrics used to measure the similarity of vectors. | For floating point vectors:
- * `L2`（欧几里得距离）
+| `NewIndex func` | 根据不同的索引类型创建实体索引的函数。 | 对于浮点类型向量：`NewIndexFlat`（FLAT）、`NewIndexIvfFlat`（IVF_FLAT）、`NewIndexIvfSQ8`（IVF_SQ8）、`NewIndexIvfPQ`（IVF_PQ）、`NewIndexHNSW`（HNSW）、`NewIndexANNOY`（ANNOY）、`NewIndexDISKANN*`（DISK_ANN）； 对于二元类型向量：`NewIndexBinFlat`（BIN_FLAT）、`NewIndexBinIvfFlat`（BIN_IVF_FLAT）|
+| `metricType` | 用于衡量向量相似度的距离类型。 | 对于浮点类型向量：`L2`（欧几里得距离）、`IP`（内积）； 对于二元类型向量：`JACCARD`（Jaccard距离）、`TANIMOTO`（Tanimoto距离）、`HAMMING`（Hamming距离）、`SUPERSTRUCTURE`（超级结构）、`SUBSTRUCTURE`（子结构）|
+| `ConstructParams` | 创建索引时需要用到的特定参数。 | 更多信息请参见[内存索引](index.md)和[磁盘索引](disk_index.md)。 * DISKANN 有一些特定要求要满足。详情请参见[磁盘索引](disk_index.md)。|
 
-* `IP`（内积）
-
- For binary vectors:
- * `JACCARD`（Jaccard距离）
-
-* `TANIMOTO`（Tanimoto距离）
-
-* `HAMMING`（Hamming距离）
-
-* `SUPERSTRUCTURE`（超结构）
-
-* `SUBSTRUCTURE`（子结构）
- |
-| `index_type` | Type of index used to accelerate the vector search. | For floating point vectors:
- * `FLAT`（FLAT）
-
-* `IVF_FLAT`（IVF_FLAT）
-
-* `IVF_SQ8`（IVF_SQ8）
-
-* `IVF_PQ`（IVF_PQ）
-
-* `HNSW`（HNSW）
-
-* `ANNOY`（ANNOY）
-
- For binary vectors:
- * `BIN_FLAT`（BIN_FLAT）
-
-* `BIN_IVF_FLAT`（BIN_IVF_FLAT）
- |
-| `params` | Building parameter(s) specific to the index. | See [内存索引](index.md) and [磁盘索引](disk_index.md) for more information. |
-
-| Parameter | Description | Options |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `NewIndex func` | Function to create entity. Index according to different index types. | For floating point vectors:
- * `NewIndexFlat`（FLAT）
+| `IndexType` | 用于加速向量搜索的索引类型。 | 对于浮点类型向量：`FLAT`（FLAT）、`IVF_FLAT`（IVF_FLAT）、`IVF_SQ8`（IVF_SQ8）、`IVF_PQ`（IVF_PQ）、`HNSW`（HNSW）、`ANNOY`（ANNOY）、`DISKANN*`（DISK_ANN）； 对于二元类型向量：`BIN_FLAT`（BIN_FLAT）、`BIN_IVF_FLAT`（BIN_IVF_FLAT）|
+| `ExtraParam` | 创建索引时需要用到的特定参数。 | 更多信息请参见[内存索引](index.md)和[磁盘索引](disk_index.md)。* DISKANN 有一些特定要求要满足。详情请参见[磁盘索引](disk_index.md)。|
 
-* `NewIndexIvfFlat`（IVF_FLAT）
-
-* `NewIndexIvfSQ8`（IVF_SQ8）
-
-* `NewIndexIvfPQ`（IVF_PQ）
-
-* `NewIndexHNSW`（HNSW）
-
-* `NewIndexANNOY`（ANNOY）
-
-* `NewIndexDISKANN*`（DISK_ANN）
-
- For binary vectors:
- * `NewIndexBinFlat`（BIN_FLAT）
-
-* `NewIndexBinIvfFlat`（BIN_IVF_FLAT）
- |
-| `metricType` | Type of metrics used to measure the similarity of vectors. | For floating point vectors:
- * `L2`（欧几里得距离）
-
-* `IP`（内积）
-
- For binary vectors:
- * `JACCARD`（Jaccard距离）
-
-* `TANIMOTO`（Tanimoto距离）
-
-* `HAMMING`（Hamming距离）
-
-* `SUPERSTRUCTURE`（超结构）
-
-* `SUBSTRUCTURE`（子结构）
- |
-| `ConstructParams` | Building parameter(s) specific to the index. | See [内存索引](index.md) and [磁盘索引](disk_index.md) for more information. |
-| * DISKANN has certain prerequisites to meet. For details, see [磁盘索引](disk_index.md). |
-
-| Parameter | Description | Options |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `IndexType` | Type of index used to accelerate the vector search. | For floating point vectors:
- * `FLAT`（FLAT）
+| `metricType` | 用于衡量向量相似度的距离类型。 | 对于浮点类型向量：`L2`（欧几里得距离）、`IP`（内积）； 对于二元类型向量：`JACCARD`（Jaccard距离）、`TANIMOTO`（Tanimoto距离）、`HAMMING`（Hamming距离）、`SUPERSTRUCTURE`（超级结构）、`SUBSTRUCTURE`（子结构）|
+| `NewIndex func` | 根据不同的索引类型创建实体索引的函数。 | 对于浮点类型向量：`NewIndexFlat`（FLAT）、`NewIndexIvfFlat`（IVF_FLAT）、`NewIndexIvfSQ8`（IVF_SQ8）、`NewIndexIvfPQ`（IVF_PQ）、`NewIndexHNSW`（HNSW）、`NewIndexANNOY`（ANNOY）、`NewIndexDISKANN*`（DISK_ANN）； 对于二元类型向量：`NewIndexBinFlat`（BIN_FLAT）、`NewIndexBinIvfFlat`（BIN_IVF_FLAT）|
+| `ConstructParams` | 创建索引时需要用到的特定参数。 | 更多信息请参见[内存]|
 
-* `IVF_FLAT`（IVF_FLAT）
-
-* `IVF_SQ8`（IVF_SQ8）
-
-* `IVF_PQ`（IVF_PQ）
-
-* `HNSW`（HNSW）
-
-* `ANNOY`（ANNOY）
-
-* `DISKANN*`（DISK_ANN）
-
- For binary vectors:
- * `BIN_FLAT`（BIN_FLAT）
-
-* `BIN_IVF_FLAT`（BIN_IVF_FLAT）
- |
-| `ExtraParam` | Building parameter(s) specific to the index. | See [内存索引](index.md) and [磁盘索引](disk_index.md) for more information. |
-| * DISKANN has certain prerequisites to meet. For details, see [磁盘索引](disk_index.md). |
-
-| Option | Description |
-| --- | --- |
-| --help | Displays help for using the command. |
-
-| Parameter | Description | Options |
-| --- | --- | --- |
-| `collection_name` | Name of the collection to build the index on. |
-| `field_name` | Name of the vector field to build the index on. |
-| `metric_type` | Type of metrics used to measure the similarity of vectors. | For floating point vectors:
- * `L2`（欧几里德距离）
-
-* `IP`（内积）
-
- For binary vectors:
- * `JACCARD`（Jaccard距离）
-
-* `TANIMOTO`（Tanimoto距离）
-
-* `HAMMING`（汉明距离）
-
-* `SUPERSTRUCTURE`（超级结构）
-
-* `SUBSTRUCTURE`（子结构）
- |
-| `index_type` | Type of index used to accelerate the vector search. | For floating point vectors:
- * `FLAT`（FLAT）
-
-* `IVF_FLAT`（IVF_FLAT）
-
-* `IVF_SQ8`（IVF_SQ8）
-
-* `IVF_PQ`（IVF_PQ）
-
-* `HNSW`（HNSW）
-
-* `ANNOY`（ANNOY）
-
- For binary vectors:
- * `BIN_FLAT`（BIN_FLAT）
-
-* `BIN_IVF_FLAT`（BIN_IVF_FLAT）
- |
-| `params` | Building parameter(s) specific to the index. | See [内存索引](index.md) for more information. |
+|参数|描述|选项|
+|---|---|---|
+| `collection_name` | 构建索引的向量集合名称。 |  |
+| `field_name` | 构建索引的向量字段名称。 |  |
+| `metric_type` | 用于衡量向量相似度的距离类型。 | 对于浮点类型向量：`L2`（欧几里德距离）、`IP`（内积）； 对于二元类型向量：`JACCARD`（Jaccard距离）、`TANIMOTO`（Tanimoto距离）、`HAMMING`（汉明距离）、`SUPERSTRUCTURE`（超级结构）、`SUBSTRUCTURE`（子结构）|
+| `index_type` | 用于加速向量搜索的索引类型。 | 对于浮点类型向量：`FLAT`（FLAT）、`IVF_FLAT`（IVF_FLAT）、`IVF_SQ8`（IVF_SQ8）、`IVF_PQ`（IVF_PQ）、`HNSW`（HNSW）、`ANNOY`（ANNOY）； 对于二元类型向量：`BIN_FLAT`（BIN_FLAT）、`BIN_IVF_FLAT`（BIN_IVF_FLAT）|
+| `params` | 创建索引时需要用到的特定参数。 | 更多信息请参见[内存索引](index.md)。|
+| `--help` | 显示命令使用的帮助信息。| |
 
 建立索引
 ----
@@ -293,7 +140,7 @@ curl -X 'POST' \
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection, utility
 # Get an existing collection.
 collection = Collection("book")      
@@ -307,7 +154,7 @@ utility.index_building_progress("book")
 
 ```
 
-```
+```python
 await milvusClient.createIndex({
   collection_name: "book",
   field_name: "book_intro",
@@ -316,7 +163,7 @@ await milvusClient.createIndex({
 
 ```
 
-```
+```python
 err := milvusClient.CreateIndex(
   context.Background(),        // ctx
   "book",                      // CollectionName
@@ -330,7 +177,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.createIndex(
   CreateIndexParam.newBuilder()
     .withCollectionName("book")
@@ -344,34 +191,34 @@ milvusClient.createIndex(
 
 ```
 
-```
+```python
 # Follow the previous step.
 
 ```
 
-```
+```python
 # Follow the previous step.
 
 ```
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `field_name` | Name of the vector field to build index on. |
-| `index_params` | Parameters of the index to build. |
+| `field_name` | 构建索引的向量字段名称。 |
+| `index_params` | 所要构建的索引的参数。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to build index in. |
-| `field_name` | Name of the vector field to build index on. |
-| `extra_params` | Parameters of the index to build. |
+| `collection_name` | 在其中构建索引的向量集合名称。 |
+| `field_name` | 构建索引的向量字段名称。 |
+| `extra_params` | 所要构建的索引的参数。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to build index on. |
-| `fieldName` | Name of the vector field to build index on. |
-| `entity.Index` | Parameters of the index to build. |
-| `async` | Switch to control sync/async behavior. The deadline of context is not applied in sync building process. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 构建索引的向量集合名称。 |
+| `fieldName` | 构建索引的向量字段名称。 |
+| `entity.Index` | 所要构建的索引的参数。|
+| `async`| 控制同步/异步行为的开关。在同步构建过程中，上下文的截止时间不适用。|
 
 接下来是什么
 ------

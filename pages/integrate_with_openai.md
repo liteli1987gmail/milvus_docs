@@ -12,7 +12,7 @@ OpenAI的嵌入
 
 我们还将准备要用于此示例的数据。您可以在[此处](https://www.kaggle.com/datasets/jealousleopard/goodreadsbooks)获取图书标题。让我们创建一个函数从CSV文件加载书名。
 
-```
+```python
 import csv
 import json
 import random
@@ -22,7 +22,7 @@ from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Colle
 
 ```
 
-```
+```python
 #提取图书标题
 def csv_load(file):
     with open(file, newline='') as f:
@@ -39,7 +39,7 @@ def csv_load(file):
 
 在这里，我们可以找到需要修改以便适合自己账户运行的主要参数。每个参数旁边都有一个它所表示的描述。
 
-```
+```python
 FILE = './content/books.csv'  # Download it from https://www.kaggle.com/datasets/jealousleopard/goodreadsbooks and save it in the folder that holds your script.
 COLLECTION_NAME = 'title_db'  # Collection name
 DIMENSION = 1536  # Embeddings size
@@ -55,7 +55,7 @@ Because the embedding process for a free OpenAI account is relatively time-consu
 
 This segment deals with Milvus and setting up the database for this use case. Within Milvus, we need to set up a collection and index the collection. For more information on how to use Milvus, look [here](https://milvus.io/docs/example_code.md).
 
-```
+```python
 # Connect to Milvus
 connections.connect(host=MILVUS_HOST, port=MILVUS_PORT)
 
@@ -84,7 +84,7 @@ collection.create_index(field_name="embedding", index_params=index_params)
 ```
 一旦我们设置好收集，我们就需要开始插入数据。这需要三个步骤：读取数据、嵌入标题并插入Milvus。
 
-```
+```python
 #使用OpenAI从文本中提取嵌入
 def embed(text):
     return openai.Embedding.create(
@@ -99,7 +99,7 @@ for idx, text in enumerate(random.sample(sorted(csv_load(FILE)), k=COUNT)):  #�
 
 ```
 
-```
+```python
 #将集合加载到内存中进行搜索
 collection.load()
 
@@ -137,7 +137,7 @@ for x in search_terms:
 
 您应该会看到以下输出：
 
-```
+```python
 搜索词: self-improvement
 [46, 0.37948882579803467, 'The Road Less Traveled: A New Psychology of Love  Traditional Values  and Spiritual Growth']
 [24, 0.39301538467407227, 'The Leader In You: How to Win Friends  Influence People and Succeed in a Changing World']

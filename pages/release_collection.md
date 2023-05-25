@@ -10,21 +10,21 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.release()
 
 ```
 
-```
+```python
 await milvusClient.releaseCollection({
   collection_name: "book",
 });
 
 ```
 
-```
+```python
 err := milvusClient.ReleaseCollection(
   context.Background(),                            // ctx
   "book",                                          // CollectionName
@@ -35,7 +35,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.releaseCollection(
   ReleaseCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -44,16 +44,16 @@ milvusClient.releaseCollection(
 
 ```
 
-```
+```python
 release -c book
 
 ```
 
-```
-curl -X 'DELETE' \
-  'http://localhost:9091/api/v1/collection/load' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'DELETE' 
+  'http://localhost:9091/api/v1/collection/load' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book"
   }'
@@ -62,38 +62,40 @@ curl -X 'DELETE' \
 
 Output:
 
-```
+```python
 {}
 
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `partition_name` (optional) | Name of the partition to release. |
 
-| Parameter | Description |
-| --- | --- |
-| `collection_name` | Name of the collection to release. |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to release. |
+| `partition_name` (可选) | 要释放的分区的名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to release. |
+| `collection_name` | 要释放的集合的名称。|
 
-| Option | Description |
+| 参数 | 描述 |
 | --- | --- |
-| -c | Name of the collection to release. |
-| -p (Optional/Multiple) | The name of the partition to release. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 要释放的集合的名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to release. |
+| `CollectionName` | 要释放的集合的名称。|
 
-Constraints
+| 选项 | 描述 |
+| --- | --- |
+| `-c` | 要释放的集合的名称。|
+| `-p` (可选/重复) | 要释放的分区的名称。|
+
+| 参数 | 描述 |
+| --- | --- |
+| `collection_name` | 要释放的集合的名称。|
+
+限制 Constraints
 -----------
 
 * 成功加载的集合可以被释放。

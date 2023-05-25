@@ -1,5 +1,4 @@
-[Milvus Operator](upgrade_milvus_cluster-operator.md)[Helm](upgrade_milvus_cluster-helm.md)
-使用Milvus Operator升级Milvus集群
+使用Milvus Operator升级Milvus集群[Milvus Operator](upgrade_milvus_cluster-operator.md)[Helm](upgrade_milvus_cluster-helm.md)
 ===========================
 
 本指南介绍如何使用Milvus Operator升级Milvus集群。
@@ -9,7 +8,7 @@
 
 运行以下命令将Milvus Operator版本升级至v0.7.12。
 
-```
+```python
 helm repo add milvus-operator https://milvus-io.github.io/milvus-operator/
 helm repo update milvus-operator
 helm -n milvus-operator upgrade milvus-operator milvus-operator/milvus-operator
@@ -33,7 +32,7 @@ helm -n milvus-operator upgrade milvus-operator milvus-operator/milvus-operator
 
 滚动升级功能默认处于禁用状态。您需要通过配置文件明确启用它。
 
-```
+```python
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -50,7 +49,7 @@ spec:
 
 默认情况下，Milvus按有序方式对协调器进行滚动升级，依次替换协调器pod镜像。为了缩短升级时间，考虑将`spec.components.imageUpdateMode`设置为`all`，以便Milvus同时替换所有pod镜像。
 
-```
+```python
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -65,7 +64,7 @@ spec:
 
 您可以将`spec.components.imageUpdateMode`设置为`rollingDowngrade`，以使Milvus用较低的版本替换协调器pod镜像。
 
-```
+```python
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -80,7 +79,7 @@ spec:
 
 然后将您的配置保存为一个YAML文件（例如`milvusupgrade.yml`），并将此配置文件应用于您的Milvus实例，如下所示：
 
-```
+```python
 kubectl apply -f milvusupgrade.yml
 
 ```
@@ -92,7 +91,7 @@ kubectl apply -f milvusupgrade.yml
 
 请按照以下方式编写配置文件，并将其保存为**milvusupgrade.yaml**：
 
-```
+```python
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -108,7 +107,7 @@ spec:
 
 然后运行以下命令执行升级：
 
-```
+```python
 kubectl apply -f milvusupgrade.yaml
 
 ```
@@ -122,7 +121,7 @@ kubectl apply -f milvusupgrade.yaml
 
 创建一个元数据迁移文件。以下是一个例子。你需要在配置文件中指定`name`、`sourceVersion`和`targetVersion`。以下示例将`name`设置为`my-release-upgrade`，`sourceVersion`设置为`v2.1.4`，`targetVersion`设置为`v2.2.8`。这意味着你的Milvus集群将从v2.1.4升级到v2.2.8。
 
-```
+```python
 apiVersion: milvus.io/v1beta1
 kind: MilvusUpgrade
 metadata:
@@ -147,7 +146,7 @@ spec:
 
 运行以下命令以应用新配置。
 
-```
+```python
 $ kubectl apply -f https://github.com/milvus-io/milvus-operator/blob/main/config/samples/beta/milvusupgrade.yaml
 
 ```
@@ -156,7 +155,7 @@ $ kubectl apply -f https://github.com/milvus-io/milvus-operator/blob/main/config
 
 运行以下命令检查元数据迁移的状态。
 
-```
+```python
 kubectl describe milvus release-name
 
 ```

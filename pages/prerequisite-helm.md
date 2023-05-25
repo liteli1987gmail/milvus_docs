@@ -7,28 +7,12 @@
 硬件要求
 ----
 
-| Component | Requirement | Recommendation | Note |
+| 组件 | 要求 | 推荐配置 | 备注 |
 | --- | --- | --- | --- |
-| CPU | * 英特尔第二代酷睿CPU或更高
-* Apple Silicon
- | * 独立部署: 8核或更多
-* 集群部署: 16核或更多
- | Current version of Milvus does not support AMD CPUs. |
-| CPU instruction set | * SSE4.2
-* AVX
-* AVX2
-* AVX-512
- | * SSE4.2
-* AVX
-* AVX2
-* AVX-512
- | Vector similarity search and index building within Milvus require CPU's support of single instruction, multiple data (SIMD) extension sets. Ensure that the CPU supports at least one of the SIMD extensions listed. See [支持AVX的CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#CPUs_with_AVX) for more information. |
-| RAM | * 独立部署: 16G
-* 集群部署: 64G
- | * 独立部署: 32G
-* 集群部署: 128G
- | The size of RAM depends on the data volume. |
-| Hard drive | SATA 3.0 SSD or higher | NVMe SSD or higher | The size of hard drive depends on the data volume. |
+| CPU | Intel第二代Core CPU或更高 或 Apple Silicon |  单机部署: 8核或更多 或  集群部署: 16核或更多 | 当前版本的Milvus不支持AMD CPU。 |
+| CPU指令集 | SSE4.2 或  AVX 或  AVX2 或  AVX-512 |  SSE4.2 或  AVX 或  AVX2 或  AVX-512 | Milvus中的向量相似性搜索和索引构建需要CPU支持单指令多数据（SIMD）扩展集。请确保CPU支持列出的SIMD扩展集之一。有关更多信息，请参见[支持AVX的CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#CPUs_with_AVX)。|
+| RAM | 集群部署: 64G 或  单机部署: 32G | 单机部署: 16G 或  集群部署: 128G | RAM的大小取决于数据量。 |
+| 硬盘 | SATA 3.0 SSD或更高 | NVMe SSD或更高 | 硬盘大小取决于数据量。 |
 
 软件要求
 ----
@@ -60,7 +44,7 @@ kubectl是Kubernetes的命令行工具。使用一个与您的集群相差不超
 
 要测试您的磁盘是否符合要求，请使用[fio](https://github.com/axboe/fio)。
 
-```
+```python
 mkdir test-data
 fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=2200m --bs=2300 --name=mytest
 
@@ -71,8 +55,8 @@ fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=2200m 
 下一步是什么
 ------
 
-* If your hardware and software meet the requirements, you can:
+* 如果您的硬件和软件符合要求，您可以：
 
-	+ [Install Milvus standalone on Kubernetes](install_standalone-helm.md)
-	+ [Install Milvus cluster on Kubernetes](install_cluster-helm.md)
-* See [System Configuration](system_configuration.md) for parameters you can set while installing Milvus.
+	+ [在Kubernetes上安装单机版Milvus](install_standalone-helm.md)
+	+ [在Kubernetes上安装集群版Milvus](install_cluster-helm.md)
+* 有关在安装Milvus时可以设置的参数，请参见[系统配置](system_configuration.md)。

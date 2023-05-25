@@ -23,14 +23,14 @@
 
 在为此Milvus集群设置Layer-7负载均衡器之前，请运行以下命令以删除Layer-4负载均衡器。
 
-```
+```python
 helm upgrade my-release milvus/milvus --set service.type=ClusterIP
 
 ```
 
 作为Layer-7负载均衡器的后端服务，Milvus必须满足[特定的加密要求](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-http2)，以便它能理解来自负载均衡器的HTTP/2请求。因此，您需要按照以下方式在Milvus集群上启用TLS。
 
-```
+```python
 helm upgrade my-release milvus/milvus --set common.security.tlsMode=1
 
 ```
@@ -41,7 +41,7 @@ helm upgrade my-release milvus/milvus --set common.security.tlsMode=1
 
 以下代码段是BackendConfig设置。将其保存为`backendconfig.yaml`以备后用。
 
-```
+```python
 apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
@@ -57,17 +57,17 @@ spec:
 
 然后运行以下命令创建健康检查端点。
 
-```
+```python
 kubectl apply -f backendconfig.yaml
 
 ```
 
 最后，更新Milvus服务的注释，要求稍后创建的Layer-7负载均衡器使用刚刚创建的端点执行健康检查。
 
-```
-kubectl annotate service my-release-milvus \
-    cloud.google.com/app-protocols='{"milvus":"HTTP2"}' \
-    cloud.google.com/backend-config='{"default": "my-release-backendconfig"}' \
+```python
+kubectl annotate service my-release-milvus 
+    cloud.google.com/app-protocols='{"milvus":"HTTP2"}' 
+    cloud.google.com/backend-config='{"default": "my-release-backendconfig"}' 
     cloud.google.com/neg='{"ingress": true}'
 
 ```
@@ -94,22 +94,22 @@ TLS需要证书才能工作。有两种创建证书的方法，即自管理和Go
 
 运行以下命令创建证书。
 
-```
+```python
 # Generates a tls.key.
 openssl genrsa -out tls.key 2048
 
 # Creates a certificate and signs it with the preceding key.
-openssl req -new -key tls.key -out tls.csr \
+openssl req -new -key tls.key -out tls.csr 
     -subj "/CN=my-release.milvus.io"
 
-openssl x509 -req -days 99999 -in tls.csr -signkey tls.key \
+openssl x509 -req -days 99999 -in tls.csr -signkey tls.key 
     -out tls.crt
 
 ```
 
 然后在您的GKE集群中使用这些文件创建一个secret供以后使用。
 
-```
+```python
 kubectl create secret tls my-release-milvus-tls --cert=./tls.crt --key=./tls.key
 
 ```
@@ -118,7 +118,7 @@ kubectl create secret tls my-release-milvus-tls --cert=./tls.crt --key=./tls.key
 
 以下代码片段是ManagedCertificate设置。请将其另存为`managed-crt.yaml`以备后用。
 
-```
+```python
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
@@ -131,21 +131,21 @@ spec:
 
 按照以下步骤将该设置应用于您的GKE集群以创建托管证书：
 
-```
+```python
 kubectl apply -f ./managed-crt.yaml
 
 ```
 
 这可能需要一段时间。您可以通过运行以下命令来检查进度：
 
-```
+```python
 kubectl get -f ./managed-crt.yaml -o yaml -w
 
 ```
 
 输出结果应类似于以下内容：
 
-```
+```python
 status:
   certificateName: mcrt-34446a53-d639-4764-8438-346d7871a76e
   certificateStatus: Provisioning
@@ -163,7 +163,7 @@ status:
 
 * 使用自管理证书
 
-```
+```python
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -189,7 +189,7 @@ rules:
 ```
 * 使用Google管理证书
 
-```
+```python
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -214,21 +214,21 @@ rules:
 
 然后，您可以通过将文件应用到您的GKE集群来创建Ingress。
 
-```
+```python
 kubectl apply -f ingress.yaml
 
 ```
 
 现在，等待Google设置第7层负载均衡器。您可以通过运行以下命令来检查进度
 
-```
+```python
 kubectl  -f ./config/samples/ingress.yaml get -w
 
 ```
 
 输出应类似于以下内容：
 
-```
+```python
 NAME                CLASS    HOSTS                  ADDRESS   PORTS   AGE
 my-release-milvus   <none>   my-release.milvus.io             80      4s
 my-release-milvus   <none>   my-release.milvus.io   34.111.144.65   80, 443   41m
@@ -244,7 +244,7 @@ my-release-milvus   <none>   my-release.milvus.io   34.111.144.65   80, 443   41
 
 请注意，在[准备 TLS 证书](#prepare-tls-certificates)的方式不同的情况下，连接参数也会有所不同。
 
-```
+```python
 from pymilvus import (
     connections,
     utility,

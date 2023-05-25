@@ -10,7 +10,7 @@
 
 [直接下载](https://raw.githubusercontent.com/milvus-io/milvus/v2.2.8/configs/milvus.yaml) `milvus.yaml` 或使用以下命令。
 
-```
+```python
 $ wget https://raw.githubusercontent.com/milvus-io/milvus/v2.2.8/configs/milvus.yaml
 
 ```
@@ -146,7 +146,7 @@ Download the installation file for Milvus [standalone](https://github.com/milvus
 
 You can also simply run the following command.
 
-```
+```python
 # For Milvus standalone
 $ wget https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml -O docker-compose.yml
 
@@ -159,7 +159,7 @@ In `docker-compose.yml`, add a `volumes` section under each Milvus component, i.
 
 Map the local path to your `milvus.yaml` file onto the corresponding docker container paths to the configuration files `/milvus/configs/milvus.yaml` under all `volumes` sections.
 
-```
+```python
 ...
 proxy:
     container_name: milvus-proxy
@@ -184,7 +184,7 @@ Start Milvus
 
 Having finished modifying the configuration file and installation file, you can then start Milvus.
 
-```
+```python
 $ sudo docker-compose up -d
 
 ```

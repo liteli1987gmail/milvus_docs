@@ -15,7 +15,7 @@ MilvusDM。
 
 MilvusDM 托管在 GitHub 上。要安装 MilvusDM，请运行：
 
-```
+```python
 pip3 install pymilvusdm
 
 ```

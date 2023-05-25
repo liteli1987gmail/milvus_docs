@@ -1,4 +1,8 @@
 
+Azure集群服务 Azure Kubernetes Service
+===
+
+
 本主题介绍如何使用[Azure Kubernetes Service](https://azure.microsoft.com/zh-cn/services/kubernetes-service/#overview) (AKS)和[Azure门户](https://portal.azure.com)来进行群集配置和创建。
 
 先决条件
@@ -16,21 +20,23 @@
 
 或者，您可以使用已预安装 Azure CLI、kubectl 和 Helm 的 [Cloud Shell](https://learn.microsoft.com/en-us/azure/cloud-shell/overview)。
 
-After you install the Azure CLI, ensure that you are properly authenticated. 
+安装 Azure CLI 后，请确保您已正确进行身份验证。
+
 设置 Kubernetes 群集
 ----------------
 
-- 登录 Azure 门户。
-2. On the Azure portal menu or from the **Home** page, select **Create a resource**.
-3. Select **Containers** > **Kubernetes Service**.
-4. On the **Basics** page, configure the following options:
+1. 登录 Azure 门户。
+2. 在 Azure 门户菜单或 **主页** 上，选择 **创建资源**。
+3. 选择 **容器** > **Azure Kubernetes 服务**。
+4. 在 **基本信息** 页上，配置以下选项：
 
-* **Project details**:
+* **项目详细信息**：
 
-	+ **Subscription**: Contact your organization's Azure Administrator to determine which subscription you should use.
+	+ **订阅**: 请联系您的组织的 Azure 管理员，确定应使用哪一个订阅。
 
-		- **Resource group**: Contact your organization's Azure Administrator to determine which resource group you should use.
-* **Cluster details**:
+		- **资源组**: 请联系您的组织的 Azure 管理员，确定应使用哪一个资源组。
+		
+* **群集详细信息**：
 
 	+ **Kubernetes集群名称**：输入集群名称。
 
@@ -74,48 +80,49 @@ After you install the Azure CLI, ensure that you are properly authenticated.
 
 [![Azure](https://milvus.io/static/f3392a0d3f1e4a73b30bc4b292c808f5/1263b/azure.png "The Azure overview page.")](https://milvus.io/static/f3392a0d3f1e4a73b30bc4b292c808f5/bbbf7/azure.png)
 
-The Azure overview page.
+Azure 概览页面。
 
 ### 设置订阅和凭据
 
-You can use Azure Cloud Shell to perform the following procedures.
+您可以使用 Azure Cloud Shell 执行以下过程。
+
 - 运行以下命令设置您的订阅。
 
-```
+```python
 az account set --subscription EXAMPLE-SUBSCRIPTION-ID
 
 ```
 
 - 运行以下命令下载凭据并配置Kubernetes CLI以使用它们。
 
-```
+```python
 az aks get-credentials --resource-group YOUR-RESOURCE-GROUP --name YOUR-CLUSTER-NAME
 
 ```
 
-Use the same shell for the following procedures. If you switch to another shell, run the preceding commands again.
+请使用同一 Shell 执行以下程序。如果您切换到另一个 Shell，请重新运行上述命令。
 
 ### 部署Milvus
 
 - 运行以下命令添加Milvus Helm图表存储库。
 
-```
+```python
 helm repo add milvus https://milvus-io.github.io/milvus-helm/
 
 ```
 
 - 运行以下命令更新您的Milvus Helm图表。
 
-```
+```python
 helm repo update
 
 ```
 
 - 运行以下命令安装Milvus。
 
-This topic uses `my-release` as the release name. Replace it with your release name.
+本主题使用 `my-release` 作为发布名称。替换为您的发布名称。
 
-```
+```python
 helm install my-release milvus/milvus --set service.type=LoadBalancer
 
 ```
@@ -124,9 +131,9 @@ helm install my-release milvus/milvus --set service.type=LoadBalancer
 
 [![Results](https://milvus.io/static/a5898fe349ca252817a7658459dc98f4/1263b/azure_results.png "Result screenshot.")](https://milvus.io/static/a5898fe349ca252817a7658459dc98f4/bbbf7/azure_results.png)
 
-Result screenshot.
+结果截图。
 
-`20.81.111.155` in the the `EXTERNAL-IP` column is the IP address of the load balancer. The default Milvus port is `19530`.
+`EXTERNAL-IP` 列中的 `20.81.111.155` 是负载均衡器的 IP 地址。默认的 Milvus 端口是 `19530`。
 
 使用Azure Blob存储
 --------------
@@ -143,24 +150,26 @@ Azure Blob 存储是 Azure 版本的 AWS Simple Storage Service (S3)。
 
 以下表格列出了您可以配置的元数据。
 
-| Option | Description | Default |
-| --- | --- | --- |
-| `minio.azuregateway.enabled` | Set the value to `true` to enable MinIO Azure Gateway. | `false` |
-| `minio.accessKey` | The MinIO access key. | `""` |
-| `minio.secretKey` | The MinIO secret key. | `""` |
-| `externalAzure.bucketName` | The name of the Azure bucket to use. Unlike an S3/MinIO bucket, an Azure bucket must be globally unique. | `""` |
+以下是经过整理后的表格：
 
-以下表格列出了您可能希望保留为默认值的元数据。
-
-| Option | Description | Default |
+| Option | 描述 | 默认值 |
 | --- | --- | --- |
-| `minio.azuregateway.replicas` | The number of replica nodes to use for the gateway. We recommend that you use one because MinIO does not support well for more than one replica. | `1` |
+| `minio.azuregateway.enabled` | 设置为 `true` 以启用 MinIO Azure Gateway。 | `false` |
+| `minio.accessKey` | MinIO访问密钥。 | `""` |
+| `minio.secretKey` | MinIO机密密钥。 | `""` |
+| `externalAzure.bucketName` | 要使用的 Azure 存储桶的名称。与 S3 / MinIO 存储桶不同，Azure 存储桶必须全局唯一。 | `""` |
+
+以下表格列出了您可能希望保留为默认值的选项。
+
+| Option | 描述 | 默认值 |
+| --- | --- | --- |
+| `minio.azuregateway.replicas` | 用于网关的复制节点的数量。我们建议只使用一个，因为 MinIO 不支持超过一个的复制。 | `1` |
 
 继续使用所有预定义的MinIO元数据变量。
 
 以下示例安装名为`my-release`的图表。
 
-```
+```python
 helm install my-release ./milvus --set service.type=LoadBalancer --set minio.persistence.enabled=false --set externalAzure.bucketName=milvusbuckettwo --set minio.azuregateway.enabled=true --set minio.azuregateway.replicas=1 --set minio.accessKey=milvusstorage --set minio.secretKey=your-azure-key
 
 ```

@@ -16,14 +16,14 @@ Milvus 允许您将大量向量数据分成少量分区。然后，搜索和其�
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.create_partition("novel")
 
 ```
 
-```
+```python
 await milvusClient.createPartition({
   collection_name: "book",
   partition_name: "novel",
@@ -31,7 +31,7 @@ await milvusClient.createPartition({
 
 ```
 
-```
+```python
 err := milvusClient.CreatePartition(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -43,7 +43,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.createPartition(
   CreatePartitionParam.newBuilder()
     .withCollectionName("book")
@@ -53,61 +53,60 @@ milvusClient.createPartition(
 
 ```
 
-```
+```python
 create partition -c book -p novel
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/partition' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/partition' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "partition_name": "novel"
   }'
 
 ```
-
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `partition_name` | Name of the partition to create. |
-| `description` (optional) | Description of the partition to create. |
+| `partition_name` | 要创建的分区名称。 |
+| `description`（可选） | 要创建的分区的描述。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to create a partition in. |
-| `partition_name` | Name of the partition to create. |
+| `collection_name` | 要在其中创建分区的集合名称。 |
+| `partition_name` | 要创建的分区名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to create a partition in. |
-| `partitionName` | Name of the partition to create. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 要在其中创建分区的集合名称。 |
+| `partitionName` | 要创建的分区名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to create a partition in. |
-| `PartitionName` | Name of the partition to create. |
+| `CollectionName` | 要在其中创建分区的集合名称。 |
+| `PartitionName` | 要创建的分区名称。 |
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | The name of the collection. |
-| -p | The partition name. |
-| -d (Optional) | The description of the partition. |
+| -c | 集合名称。 |
+| -p | 分区名称。 |
+| -d（可选） | 分区描述。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to create a partition in. |
-| `partition_name` | Name of the partition to create. |
+| `collection_name` | 要在其中创建分区的集合名称。 |
+| `partition_name` | 要创建的分区名称。 |
 
 限制
 --
 
-| Feature | Maximum limit |
+| 功能 | 最大限制 |
 | --- | --- |
-| Number of partitions in a collection | 4,096 |
+| 集合中的分区数 | 4,096 |
 
 下一步
 ---

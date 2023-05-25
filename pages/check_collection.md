@@ -15,20 +15,20 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import utility
 utility.has_collection("book")
 
 ```
 
-```
+```python
 await milvusClient.hasCollection({
   collection_name: "book",
 });
 
 ```
 
-```
+```python
 hasColl, err := milvusClient.HasCollection(
   context.Background(), // ctx
   collectionName,       // CollectionName
@@ -40,7 +40,7 @@ log.Println(hasColl)
 
 ```
 
-```
+```python
 R<Boolean> respHasCollection = milvusClient.hasCollection(
   HasCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -52,16 +52,16 @@ if (respHasCollection.getData() == Boolean.TRUE) {
 
 ```
 
-```
+```python
 describe collection -c book
 
 ```
 
-```
-curl -X 'GET' \
-  'http://localhost:9091/api/v1/collection/existence' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'GET' 
+  'http://localhost:9091/api/v1/collection/existence' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book"
   }'
@@ -70,7 +70,7 @@ curl -X 'GET' \
 
 Output:
 
-```
+```python
 {
   "status":{},
   "value":true
@@ -78,30 +78,32 @@ Output:
 
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `collection_name` | Name of the collection to check. |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to check. |
+| `collection_name` | 要检查的集合的名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to check. |
+| `collection_name` | 要检查的集合的名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to check. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 要检查的集合的名称。|
 
-| Option | Description |
+| 参数 | 描述 |
 | --- | --- |
-| -c | Name of the collection to check. |
+| `CollectionName` | 要检查的集合的名称。|
 
-| Parameter | Description |
+| 选项 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to check. |
+| `-c` | 要检查的集合的名称。|
+
+| 参数 | 描述 |
+| --- | --- |
+| `collection_name` | 要检查的集合的名称。|
+
 
 查看集合详情
 ------
@@ -115,7 +117,7 @@ Output:
 [命令行](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")  # Get an existing collection.
 
@@ -131,7 +133,7 @@ collection.properties		# Return the expiration time of data in the collection.
 
 ```
 
-```
+```python
 await milvusClient.describeCollection({          // Return the name and schema of the collection.
   collection_name: "book",
 });
@@ -142,7 +144,7 @@ await milvusClient.getCollectionStatistics({     // Return the statistics inform
 
 ```
 
-```
+```python
 collDesc, err := milvusClient.DescribeCollection(               // Return the name and schema of the collection.
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -150,7 +152,7 @@ collDesc, err := milvusClient.DescribeCollection(               // Return the na
 if err != nil {
   log.Fatal("failed to check collection schema:", err.Error())
 }
-log.Printf("%v\n", collDesc)
+log.Printf("%v", collDesc)
 
 collStat, err := milvusClient.GetCollectionStatistics(          // Return the statistics information of the collection.
   context.Background(),   // ctx
@@ -162,7 +164,7 @@ if err != nil {
 
 ```
 
-```
+```python
 R<DescribeCollectionResponse> respDescribeCollection = milvusClient.describeCollection(
   // Return the name and schema of the collection.
   DescribeCollectionParam.newBuilder()
@@ -183,16 +185,16 @@ System.out.println("Collection row count: " + wrapperCollectionStatistics.getRow
 
 ```
 
-```
+```python
 describe collection -c book
 
 ```
 
-```
-curl -X 'GET' \
-  'http://localhost:9091/api/v1/collection' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'GET' 
+  'http://localhost:9091/api/v1/collection' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book"
   }'
@@ -201,7 +203,7 @@ curl -X 'GET' \
 
 Output:
 
-```
+```python
 {
   "status": {},
   "schema": {
@@ -246,36 +248,39 @@ Output:
 
 ```
 
-| Parameter | Description |
-| --- | --- |
-| schema | The schema of the collection. |
-| description | The description of the collection. |
-| name | The name of the collection. |
-| is_empty | A boolean value that indicates whether the collection is empty. |
-| num_entities | The number of entities in the collection. |
-| primary_field | The primary field of the collection. |
-| properties | Currently, only the property of `collection.ttl.seconds` is shown. Collection time to live (TTL) is the expiration time of data in a collection. |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to check. |
+| schema | 集合的模式。|
+| description | 集合的描述。|
+| name | 集合的名称。|
+| is_empty | 一个布尔值，表示集合是否为空。|
+| num_entities | 集合中实体的数量。|
+| primary_field | 集合的主字段。|
+| properties | 当前仅显示 `collection.ttl.秒` 属性。集合生存时间（TTL）是指集合中数据的过期时间。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to check. |
+| `collection_name` | 要检查的集合的名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to check. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 要检查的集合的名称。|
 
-| Option | Description |
+| 参数 | 描述 |
 | --- | --- |
-| -c | Name of the collection to check. |
+| `CollectionName` | 要检查的集合的名称。|
 
-| Parameter | Description |
+| 选项 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to check. |
+| `-c` | 要检查的集合的名称。|
+
+| 参数 | 描述 |
+| --- | --- |
+| `collection_name` | 要检查的集合的名称。|
+
+
 
 列出所有集合
 ------
@@ -289,18 +294,18 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import utility
 utility.list_collections()
 
 ```
 
-```
+```python
 await milvusClient.showCollections();
 
 ```
 
-```
+```python
 listColl, err := milvusClient.ListCollections(
   context.Background(),   // ctx
 )
@@ -311,7 +316,7 @@ log.Println(listColl)
 
 ```
 
-```
+```python
 R<ShowCollectionsResponse> respShowCollections = milvusClient.showCollections(
     ShowCollectionsParam.newBuilder().build()
   );
@@ -319,22 +324,22 @@ System.out.println(respShowCollections);
 
 ```
 
-```
+```python
 list collections
 
 ```
 
-```
-curl -X 'GET' \
-  'http://localhost:9091/api/v1/collections' \
-  -H 'accept: application/json' \
+```python
+curl -X 'GET' 
+  'http://localhost:9091/api/v1/collections' 
+  -H 'accept: application/json' 
   -H 'Content-Type: application/json'
 
 ```
 
 Output:
 
-```
+```python
 {
   "status": {},
   "collection_names": [
@@ -353,9 +358,9 @@ Output:
 
 ```
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
+| `ctx` | 控制 API 调用过程的上下文。|
 
 接下来是什么
 ------

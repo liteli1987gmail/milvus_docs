@@ -25,7 +25,7 @@ Milvus支持两个端口，端口`19530`和端口`9091`：
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 # Run `python3` in your terminal to operate in the Python interactive mode.
 from pymilvus import connections
 connections.connect(
@@ -38,7 +38,7 @@ connections.connect(
 
 ```
 
-```
+```python
 import { MilvusClient } from "@zilliz/milvus2-sdk-node";
 const address = "localhost:19530";
 const username = "username";
@@ -48,7 +48,7 @@ const milvusClient = new MilvusClient({address, ssl, username, password});
 
 ```
 
-```
+```python
 milvusClient, err := client.NewGrpcClient(
   context.Background(), // ctx
   "localhost:19530",    // addr
@@ -59,7 +59,7 @@ if err != nil {
 
 ```
 
-```
+```python
 final MilvusServiceClient milvusClient = new MilvusServiceClient(
   ConnectParam.newBuilder()
     .withHost("localhost")
@@ -69,48 +69,48 @@ final MilvusServiceClient milvusClient = new MilvusServiceClient(
 
 ```
 
-```
+```python
 connect -h localhost -p 19530 -a default
 
 ```
 
-```
+```python
 curl localhost:9091/api/v1/health
 {"status":"ok"}
 
 ```
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `alias` | Alias of the Milvus connection to construct. |
-| `user` | Username of the Milvus server. |
-| `password` | Password of the username of the Milvus server. |
-| `host` | IP address of the Milvus server. |
-| `port` | Port of the Milvus server. |
+| `alias` | 要创建的 Milvus 连接的别名。 |
+| `user` | Milvus 服务器的用户名。 |
+| `password` | Milvus 服务器用户名的密码。 |
+| `host` | Milvus 服务器的 IP 地址。 |
+| `port` | Milvus 服务器的端口。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `address` | Address of the Milvus connection to construct. |
-| `username` | The username used to connect to Milvus. |
-| `password` | The password used to connect to Milvus. |
-| `ssl` | SSL connection. It is false by default. |
+| `address` | 要创建的 Milvus 连接的地址。 |
+| `username` | 用于连接 Milvus 的用户名。 |
+| `password` | 用于连接 Milvus 的密码。 |
+| `ssl` | 是否使用 SSL 连接。默认为 false。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `addr` | Address of the Milvus connection to construct. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `addr` | 要创建的 Milvus 连接的地址。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `Host` | IP address of the Milvus server. |
-| `Port` | Port of the Milvus server. |
+| `Host` | Milvus 服务器的 IP 地址。 |
+| `Port` | Milvus 服务器的端口。 |
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -h (Optional) | The host name. The default is "127.0.0.1". |
-| -p (Optional) | The port number. The default is "19530". |
-| -a (Optional) | The alias name of the Milvus link. The default is "default". |
-| -D (Optional) | Flag to disconnect from the Milvus server specified by an alias. The default alias is "default". |
+| `-h`（可选） | 主机名。默认值为 "127.0.0.1"。 |
+| `-p`（可选） | 端口号。默认值为 "19530"。 |
+| `-a`（可选） | Milvus 链接的别名名称。默认值为 "default"。|
+| `-D`（可选） | 断开与由别名指定的 Milvus 服务器的连接的标志。默认别名为 "default"。|
 
 ### 返回
 
@@ -136,39 +136,39 @@ curl localhost:9091/api/v1/health
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 connections.disconnect("default")
 
 ```
 
-```
+```python
 await milvusClient.closeConnection();
 
 ```
 
-```
+```python
 milvusClient.Close()
 
 ```
 
-```
+```python
 milvusClient.close()
 
 ```
 
-```
+```python
 connect -D
 
 ```
 
-```
+```python
 # Close your HTTP client connection.
 
 ```
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `alias` | Alias of the Milvus server to disconnect from. |
+| `alias` | 要断开连接的 Milvus 服务器的别名。 |
 
 限制
 --

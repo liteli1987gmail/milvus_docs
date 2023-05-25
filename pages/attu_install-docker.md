@@ -29,7 +29,7 @@ Milvus与Attu版本映射
 启动Attu实例
 -------------
 
-```
+```python
 docker run -p 8000:3000  -e MILVUS_URL={your machine IP}:19530 zilliz/attu:v2.2.3
 
 ```

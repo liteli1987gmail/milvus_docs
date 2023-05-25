@@ -5,12 +5,12 @@
 
 与向量相似性搜索不同，向量查询通过基于布尔表达式的标量过滤来检索向量。Milvus支持许多标量字段中的数据类型和各种布尔表达式。布尔表达式过滤标量字段或主键字段，并检索与过滤器匹配的所有结果。
 
-The following example shows how to perform a vector query on a 2000-row dataset of book ID (primary key), word count (scalar field), and book introduction (vector field), simulating the situation where you query for certain books based on their IDs.
+以下示例演示如何在一个2000行的数据集上执行向量查询，该数据集包含图书ID(主键)、单词计数(标量字段)和书籍介绍(向量字段)，模拟您基于ID查询某些书籍的情况。
 
-Load collection
+加载集合
 ---------------
 
-All search and query operations within Milvus are executed in memory. Load the collection to memory before conducting a vector query.
+Milvus中的所有搜索和查询操作都在内存中执行。在进行向量查询之前，将集合加载到内存中。
 
 [Python](#python) 
 [Java](#java)
@@ -19,21 +19,21 @@ All search and query operations within Milvus are executed in memory. Load the c
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load()
 
 ```
 
-```
+```python
 await milvusClient.loadCollection({
   collection_name: "book",
 });
 
 ```
 
-```
+```python
 err := milvusClient.LoadCollection(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -45,7 +45,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.loadCollection(
   LoadCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -54,22 +54,27 @@ milvusClient.loadCollection(
 
 ```
 
-```
+```python
 load -c book
 
 ```
 
-```
+```python
 # See the following step.
 
 ```
 
-Conduct a vector query
+进行向量查询
 ----------------------
 
-The following example filters the vectors with certain `book_id` values, and returns the `book_id` field and `book_intro` of the results.
+以下示例根据特定的 `book_id` 值过滤向量，并返回结果的 `book_id` 字段和 `book_intro` 字段。
 
-Milvus supports setting consistency level specifically for a query. The example in this topic sets the consistency level as `Strong`. You can also set the consistency level as `Bounded`, `Session` or `Eventually`. See [Consistency](consistency.md) for more information about the four consistency levels in Milvus.
+Milvus支持对查询设置一致性级别。本主题中的示例将一致性级别设置为“强一致性（Strong）”。
+
+您也可以将一致性级别设置为“有界一致性（Bounded）”、“会话一致性（Session）”或“最终一致性（Eventually）”。
+
+有关Milvus中四个一致性级别的更多信息，请参见[一致性（Consistency）](consistency.md)。 
+
 
 [Python](#python) 
 [Java](#java)
@@ -78,7 +83,7 @@ Milvus supports setting consistency level specifically for a query. The example 
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 res = collection.query(
   expr = "book_id in [2,4,6,8]",
   offset = 0,
@@ -89,7 +94,7 @@ res = collection.query(
 
 ```
 
-```
+```python
 const results = await milvusClient.query({
   collection_name: "book",
   expr: "book_id in [2,4,6,8]",
@@ -98,7 +103,7 @@ const results = await milvusClient.query({
 
 ```
 
-```
+```python
 queryResult, err := milvusClient.Query(
 	context.Background(),                                   // ctx
 	"book",                                                 // CollectionName
@@ -112,7 +117,7 @@ if err != nil {
 
 ```
 
-```
+```python
 List<String> query_output_fields = Arrays.asList("book_id", "word_count");
 QueryParam queryParam = QueryParam.newBuilder()
   .withCollectionName("book")
@@ -126,7 +131,7 @@ R<QueryResults> respQuery = milvusClient.query(queryParam);
 
 ```
 
-```
+```python
 query
 
 collection_name: book
@@ -141,11 +146,11 @@ timeout []:
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/query' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/query' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "output_fields": ["book_id", "book_intro"],
@@ -156,7 +161,7 @@ curl -X 'POST' \
 
 Output:
 
-```
+```python
 {
   "status":{},
   "fields_data":[
@@ -176,47 +181,46 @@ Output:
 }
 
 ```
-
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `expr` | Boolean expression used to filter attribute. Find more expression details in [布尔表达式规则](boolean.md). |
-| `offset` | Number of results to skip in the returned set. The sum of this value and `limit` should be less than 65535. |
-| `limit` | Number of the most similar results to return. The sum of this value and `offset` should be less than 65535. |
-| `output_fields` (optional) | List of names of the field to return. |
-| `partition_names` (optional) | List of names of the partitions to query on. |
-| `consistency_level` (optional) | Consistency level of the query. |
+| `expr` | 用于过滤属性的布尔表达式。查看[布尔表达式规则](boolean.md)以获取更多详细信息。 |
+| `offset` | 返回结果集中要跳过的数量。该值与 `limit` 的和应小于 65535。 |
+| `limit` | 要返回的最相似结果的数量。该值与 `offset` 的和应小于 65535。 |
+| `output_fields`（可选） | 要返回的字段名称列表。 |
+| `partition_names`（可选） | 要查询的分区名称列表。 |
+| `consistency_level`（可选） | 查询的一致性级别。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to query. |
-| `expr` | Boolean expression used to filter attribute. Find more expression details in [布尔表达式规则](boolean.md). |
-| `output_fields` (optional) | List of names of the field to return. |
-| `partition_names` (optional) | List of names of the partitions to query on. |
+| `collection_name` | 要查询的集合名称。 |
+| `expr` | 用于过滤属性的布尔表达式。查看[布尔表达式规则](boolean.md)以获取更多详细信息。 |
+| `output_fields`（可选） | 要返回的字段名称列表。 |
+| `partition_names`（可选） | 要查询的分区名称列表。 |
 
-| Parameter | Description | Options |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `ctx` | Context to control API invocation process. | N/A |
-| `CollectionName` | Name of the collection to query. | N/A |
-| `partitionName` | List of names of the partitions to load. All partitions will be queried if it is left empty. | N/A |
-| `expr` | Boolean expression used to filter attribute. | See [布尔表达式规则](boolean.md) for more information. |
-| `OutputFields` | Name of the field to return. | Vector field is not supported in current release. |
+| `ctx` | 控制 API 调用过程的上下文。 | 无 |
+| `CollectionName` | 要查询的集合名称。 | 无 |
+| `partitionName` | 要加载的分区名称列表。如果留空，则将查询所有分区。 | 无 |
+| `expr` | 用于过滤属性的布尔表达式。 | 更多信息请参见[布尔表达式规则](boolean.md)。 |
+| `OutputFields` | 要返回的字段名。 | 当前版本中不支持矢量字段。 |
 
-| Parameter | Description | Options |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `CollectionName` | Name of the collection to load. | N/A |
-| `OutFields` | Name of the field to return. | Vector field is not supported in current release. |
-| `Expr` | Boolean expression used to filter attribute. | See [布尔表达式规则](boolean.md) for more information. |
-| `ConsistencyLevel` | The consistency level used in the query. | `STRONG`, `BOUNDED`, and`EVENTUALLY`. |
+| `CollectionName` | 要加载的集合的名称。 | 无 |
+| `OutFields` | 要返回的字段名称。 | 当前版本中不支持矢量字段。 |
+| `Expr` | 用于过滤属性的布尔表达式。 | 更多信息请参见[布尔表达式规则](boolean.md)。 |
+| `ConsistencyLevel` | 查询使用的一致性级别。 | `STRONG`、`BOUNDED`和`EVENTUALLY`。 |
 
-| Option | Full name | Description |
+| 选项 | 全名 | 描述 |
 | --- | --- | --- |
-| --help | n/a | Displays help for using the command. |
+| --help | n/a | 显示使用该命令的帮助文档。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `output_fields` (optional) | List of names of the fields to return. |
-| `vectors` | Vectors to query. |
-| `expr` | Boolean expression used to filter attribute. Find more expression details in [布尔表达式规则](boolean.md). |
+| `output_fields`（可选） | 要返回的字段名称列表。 |
+| `vectors` | 要查询的向量。 |
+| `expr` | 用于过滤属性的布尔表达式。查看[布尔表达式规则](boolean.md)以获取更多详细信息。 |
 
 检查返回的结果。
 
@@ -227,38 +231,38 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 sorted_res = sorted(res, key=lambda k: k['book_id'])
 sorted_res
 
 ```
 
-```
+```python
 console.log(results.data)
 
 ```
 
-```
-fmt.Printf("%#v\n", queryResult)
+```python
+fmt.Printf("%#v", queryResult)
 for _, qr := range queryResult {
 	fmt.Println(qr.IDs)
 }
 
 ```
 
-```
+```python
 QueryResultsWrapper wrapperQuery = new QueryResultsWrapper(respQuery.getData());
 System.out.println(wrapperQuery.getFieldWrapper("book_id").getFieldData());
 System.out.println(wrapperQuery.getFieldWrapper("word_count").getFieldData());
 
 ```
 
-```
+```python
 # Milvus CLI automatically returns the entities with the pre-defined output fields.
 
 ```
 
-```
+```python
 # See the output of the previous step.
 
 ```
@@ -266,12 +270,12 @@ System.out.println(wrapperQuery.getFieldWrapper("word_count").getFieldData());
 接下来是什么？
 -------
 
-* Learn more basic operations of Milvus:
+* 学习更多基本操作:
 
 	+ [Conduct a vector search](search.md)
 	+ [Conduct a hybrid search](hybridsearch.md)
 	+ [Search with Time Travel](timetravel.md)
-* Explore API references for Milvus SDKs:
+* 查看 Milvus SDKs:
 
 	+ [PyMilvus API reference](/api-reference/pymilvus/v2.2.8/About.md)
 	+ [Node.js API reference](/api-reference/node/v2.2.x/About.md)

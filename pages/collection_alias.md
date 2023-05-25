@@ -3,7 +3,7 @@
 
 本主题介绍了如何管理集合别名。 Milvus支持为集合指定唯一别名。
 
-A collection alias is globally unique, hence you cannot assign the same alias to different collections. However, you can assign multiple aliases to one collection.
+一个集合别名是全局唯一的，因此不能将相同的别名分配给不同的集合。但是，您可以将多个别名分配给一个集合。
 
 以下示例基于别名`publication`。
 
@@ -19,7 +19,7 @@ A collection alias is globally unique, hence you cannot assign the same alias to
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import utility
 utility.create_alias(
   collection_name = "book",
@@ -28,7 +28,7 @@ utility.create_alias(
 
 ```
 
-```
+```python
 await milvusClient.createAlias({
   collection_name: "book",
   alias: "publication",
@@ -36,12 +36,12 @@ await milvusClient.createAlias({
 
 ```
 
-```
+```python
 // This function is under active development on the GO client.
 
 ```
 
-```
+```python
 milvusClient.createAlias(
   CreateAliasParam.newBuilder()
     .withCollectionName("book")
@@ -51,16 +51,16 @@ milvusClient.createAlias(
 
 ```
 
-```
+```python
 create alias -c book -a publication
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/alias' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/alias' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "alias":"publication"
@@ -68,37 +68,38 @@ curl -X 'POST' \
 
 ```
 
-```
+```python
 # Output:
 {}
 
 ```
+以下是每个表格的中文翻译：
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to create alias on. |
-| `alias` | Collection alias to create. |
+| `collection_name` | 要创建别名的集合的名称。|
+| `alias` | 要创建的集合别名。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to create alias on. |
-| `alias` | Collection alias to create. |
+| `collection_name` | 要创建别名的集合的名称。|
+| `alias` | 要创建的集合别名。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to create alias on. |
-| `Alias` | Collection alias to create. |
+| `CollectionName` | 要创建别名的集合的名称。|
+| `Alias` | 要创建的集合别名。|
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | Name of the collection to create alias on. |
-| -a | Collection alias to create. |
-| -A (Optional) | Flag to transfer the alias to a specified collection. |
+| `-c` | 要创建别名的集合的名称。|
+| `-a` | 要创建的集合别名。|
+| `-A` (可选) | 转移到指定集合别名的标志。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to create alias on. |
-| `alias` | Collection alias to create. |
+| `collection_name` | 要创建别名的集合的名称。|
+| `alias` | 要创建的集合别名。|
 
 删除集合别名
 ------
@@ -112,25 +113,25 @@ curl -X 'POST' \
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import utility
 utility.drop_alias(alias = "publication")
 
 ```
 
-```
+```python
 await milvusClient.dropAlias({
   alias: "publication",
 });
 
 ```
 
-```
+```python
 // This function is under active development on the GO client.
 
 ```
 
-```
+```python
 milvusClient.dropAlias(
   DropAliasParam.newBuilder()
     .withAlias("publication")
@@ -139,47 +140,48 @@ milvusClient.dropAlias(
 
 ```
 
-```
+```python
 delete alias -a publication
 
 ```
 
-```
-curl -X 'DELETE' \
-  'http://localhost:9091/api/v1/alias' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'DELETE' 
+  'http://localhost:9091/api/v1/alias' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "alias":"publication"
   }'
 
 ```
 
-```
+```python
 # Output:
 {}
 
 ```
+以下是每个表格的中文翻译：
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `alias` | Collection alias to drop. |
+| `alias` | 要删除的集合别名。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `alias` | Collection alias to drop. |
+| `alias` | 要删除的集合别名。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `Alias` | Collection alias to drop. |
+| `Alias` | 要删除的集合别名。|
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -a | Collection alias to drop. |
+| `-a` | 要删除的集合别名。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `alias` | Collection alias to drop. |
+| `alias` | 要删除的集合别名。|
 
 修改集合别名
 ------
@@ -193,7 +195,7 @@ curl -X 'DELETE' \
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import utility
 utility.alter_alias(
   collection_name = "book",
@@ -202,7 +204,7 @@ utility.alter_alias(
 
 ```
 
-```
+```python
 await milvusClient.alterAlias({
   collection_name: "book",
   alias: "publication",
@@ -210,12 +212,12 @@ await milvusClient.alterAlias({
 
 ```
 
-```
+```python
 // This function is under active development on the GO client.
 
 ```
 
-```
+```python
 milvusClient.alterAlias(
   AlterAliasParam.newBuilder()
     .withCollectionName("book")
@@ -225,16 +227,16 @@ milvusClient.alterAlias(
 
 ```
 
-```
+```python
 create alias -c book -A -a publication
 
 ```
 
-```
-curl -X 'PATCH' \
-  'http://localhost:9091/api/v1/alias' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'PATCH' 
+  'http://localhost:9091/api/v1/alias' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "alias":"publication"
@@ -244,43 +246,43 @@ curl -X 'PATCH' \
 
 Output:
 
-```
+```python
 {}
 
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `collection_name` | Name of the collection to alter alias to. |
-| `alias` | Collection alias to alter. |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to alter alias to. |
-| `alias` | Collection alias to alter. |
+| `collection_name` | 要更改别名所指向的集合名称。|
+| `alias` | 要更改的集合别名。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to alter alias to. |
-| `Alias` | Collection alias to alter. |
+| `collection_name` | 要更改别名所指向的集合名称。|
+| `alias` | 要更改的集合别名。|
 
-| Option | Description |
+| 参数 | 描述 |
 | --- | --- |
-| -c | Name of the collection to alter alias to. |
-| -a | Collection alias to alter. |
-| -A | Flag to transfer the alias to a specified collection. |
+| `CollectionName` | 要更改别名所指向的集合名称。|
+| `Alias` | 要更改的集合别名。|
 
-| Parameter | Description |
+| 选项 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to alter alias to. |
-| `alias` | Collection alias to alter. |
+| `-c` | 要更改别名所指向的集合名称。|
+| `-a` | 要更改的集合别名。|
+| `-A` | 将别名转移到指定集合的标志。|
 
+| 参数 | 描述 |
+| --- | --- |
+| `collection_name` | 要更改别名所指向的集合名称。|
+| `alias` | 要更改的集合别名。|
 限制
 --
 
-| Feature | Maximum limit |
+| 功能 | 最大限制 |
 | --- | --- |
-| Length of an alias | 255 characters |
+| 别名长度 | 255 个字符 |
 
 接下来做什么
 ------

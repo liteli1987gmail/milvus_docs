@@ -12,7 +12,7 @@ Milvus Backup 提供数据备份和还原功能, 以确保您的 Milvus 数据�
 
 要从源代码进行构建，请执行以下操作：
 
-```
+```python
 git clone git@github.com:zilliztech/milvus-backup.git
 go get
 go build
@@ -28,7 +28,7 @@ go build
 
 你的文件夹结构应该类似于以下内容：
 
-```
+```python
 
 workspace
 ├── milvus-backup
@@ -51,14 +51,14 @@ workspace
 
 然后你可以按以下方式启动API服务器：
 
-```
+```python
 ./milvus-backup server
 
 ```
 
 The API server listens on port 8080 by default. You can change it by running it with the `-p` flag. To start the API server listening on port 443, do as follows:
 
-```
+```python
 ./milvus-backup server -p 443
 
 ```
@@ -72,7 +72,7 @@ Prepare data
 
 获取[脚本](https://raw.githubusercontent.com/zilliztech/milvus-backup/main/example/prepare_data.py)。然后运行脚本生成数据。确保已安装[PyMilvus](https://pypi.org/project/pymilvus/)，官方Milvus Python SDK。
 
-```
+```python
 python example/prepare_data.py
 
 ```
@@ -87,9 +87,9 @@ Note that running Milvus Backup against a Milvus instance will not normally affe
 
 Run the following command to create a backup. Change `collection_names` and `backup_name` if necessary.
 
-```
-curl --location --request POST 'http://localhost:8080/api/v1/create' \
---header 'Content-Type: application/json' \
+```python
+curl --location --request POST 'http://localhost:8080/api/v1/create' 
+--header 'Content-Type: application/json' 
 --data-raw '{
   "async": true,
   "backup_name": "my_backup",
@@ -102,16 +102,16 @@ curl --location --request POST 'http://localhost:8080/api/v1/create' \
 
 Once the command is executed, you can list the backups in the bucket specified in the Minio settings as follows:
 
-```
-curl --location --request GET 'http://localhost:8080/api/v1/list' \
+```python
+curl --location --request GET 'http://localhost:8080/api/v1/list' 
 --header 'Content-Type: application/json'
 
 ```
 
 And download the backup files as follows:
 
-```
-curl --location --request GET 'http://localhost:8080/api/v1/get_backup?backup_id=<test_backup_id>&backup_name=my_backup' \
+```python
+curl --location --request GET 'http://localhost:8080/api/v1/get_backup?backup_id=<test_backup_id>&backup_name=my_backup' 
 --header 'Content-Type: application/json'
 
 ```
@@ -126,9 +126,9 @@ Restore data
 [Install with Docker Compose](attu_install-docker.md)[Install with Helm Chart](attu_install-helm.md)[Install with Package](attu_install-package.md)
 You can call the restore API command with a `collection_suffix` option to create a new collection by restoring the data from the backup. Change `collection_names` and `backup_name` if necessary.
 
-```
-curl --location --request POST 'http://localhost:8080/api/v1/restore' \
---header 'Content-Type: application/json' \
+```python
+curl --location --request POST 'http://localhost:8080/api/v1/restore' 
+--header 'Content-Type: application/json' 
 --data-raw '{
     "async": true,
     "collection_names": [
@@ -144,16 +144,16 @@ The `collection_suffix` option allows you to set a suffix for the new collection
 
 If you prefer to restore the backed-up collection without changing its name, drop the collection before restoring it from the backup. You can now clean the data generated in [Prepare data](#Prepare-data) by running the following command.
 
-```
+```python
 python example/clean_data.py
 
 ```
 
 Then run the following command to restore the data from the backup.
 
-```
-curl --location --request POST 'http://localhost:8080/api/v1/restore' \
---header 'Content-Type: application/json' \
+```python
+curl --location --request POST 'http://localhost:8080/api/v1/restore' 
+--header 'Content-Type: application/json' 
 --data-raw '{
     "async": true,
     "collection_names": [
@@ -167,8 +167,8 @@ curl --location --request POST 'http://localhost:8080/api/v1/restore' \
 
 The restore process can be time-consuming depending on the size of the data to be restored. Therefore, all restore tasks are running asynchronously. You can check the status of a restore task by running:
 
-```
-curl --location --request GET 'http://localhost:8080/api/v1/get_restore?id=<test_restore_id>' \
+```python
+curl --location --request GET 'http://localhost:8080/api/v1/get_restore?id=<test_restore_id>' 
 --header 'Content-Type: application/json'
 
 ```
@@ -180,7 +180,7 @@ Verify restored data
 
 一旦恢复完成，您可以通过以下方式将恢复的集合索引化以验证恢复后的数据：
 
-```
+```python
 python example/verify_data.py
 
 ```

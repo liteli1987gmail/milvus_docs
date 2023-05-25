@@ -5,16 +5,16 @@
 
 目前，TTL特性仅在Python中可用。
 
-```
+```python
 collection.set_properties(properties={"collection.ttl.seconds": 1800})
 
 ```
 
 上面的示例将集合TTL更改为1800秒。
 
-| Parameter | Description | Option |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| Properties: collection.ttl.seconds | Collection time to live (TTL) is the expiration time of data in a collection. Expired data in the collection will be cleaned up and will not be involved in searches or queries. Specify TTL in the unit of seconds. | The value should be 0 or greater. The default value is 0, which means TTL is disabled. |
+| `Properties: collection.ttl.seconds` | 集合生存时间（TTL）是指集合中数据的过期时间。过期的数据将被清除，并不会参与搜索或查询。以秒为单位指定 TTL。 | 值应该为0或更大。默认值为0，表示TTL已禁用。|
 
 接下来是什么
 ------

@@ -12,7 +12,7 @@ You can configure Milvus with a configuration file `values.yaml`.
 
 [下载](https://raw.githubusercontent.com/milvus-io/milvus-helm/master/charts/milvus/values.yaml) `values.yaml` 文件，或者使用以下命令下载。
 
-```
+```python
 $ wget https://raw.githubusercontent.com/milvus-io/milvus-helm/master/charts/milvus/values.yaml
 
 ```
@@ -23,7 +23,7 @@ Configure your Milvus instance to suit your application scenarios by adjusting c
 
 Specifically, search for `extraConfigFiles` in `values.yaml` and put your configurations in this section as follows:
 
-```
+```python
 # Extra configs for milvus.yaml
 # If set, this config will merge into milvus.yaml
 # Please follow the config structure in the milvus.yaml
@@ -135,7 +135,7 @@ Sorted by:
 
 Having finished modifying the configuration file, you can then start Milvus with the file.
 
-```
+```python
 $ helm upgrade my-release milvus/milvus -f values.yaml
 
 ```
@@ -149,7 +149,7 @@ Alternatively, you can upgrade Milvus configurations directly with the Helm comm
 
 Before upgrade, you can check the configurable parameters with Helm charts.
 
-```
+```python
 $ helm show values milvus/milvus
 
 ```
@@ -158,7 +158,7 @@ $ helm show values milvus/milvus
 
 Configure and start Milvus by adding `--values` or `--set` in the command for upgrade.
 
-```
+```python
 # For instance, upgrade the Milvus cluster with compaction disabled
 $ helm upgrade my-release milvus/milvus --set dataCoord.enableCompaction=false
 

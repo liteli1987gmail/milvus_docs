@@ -17,7 +17,7 @@ Milvus 2.1 允许用户将集合加载为多个副本，以利用额外查询节
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection, utility
 
 # Get an existing collection.
@@ -33,14 +33,14 @@ utility.loading_progress("book")
 
 ```
 
-```
+```python
 await milvusClient.loadCollection({
   collection_name: "book",
 });
 
 ```
 
-```
+```python
 err := milvusClient.LoadCollection(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -72,7 +72,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.loadCollection(
   LoadCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -103,16 +103,16 @@ System.out.println(response.getProgress());
 
 ```
 
-```
+```python
 load -c book
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/collection/load' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/collection/load' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book"
   }'
@@ -121,45 +121,47 @@ curl -X 'POST' \
 
 Output:
 
-```
+```python
 {}
 
 ```
+以下是每个表格的中文翻译：
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `partition_name` (optional) | Name of the partition to load. |
-| `replica_number` (optional) | Number of the replica to load. |
+| `partition_name` (可选) | 要加载的分区的名称。|
+| `replica_number` (可选) | 要加载的副本的数量。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to load. |
+| `collection_name` | 要加载的集合的名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to load. |
-| `async` | Switch to control sync/async behavior. The deadline of context is not applied in sync load. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 要加载的集合的名称。|
+| `async` | 控制同步/异步行为的开关。同步加载不适用于上下文。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to load. |
+| `CollectionName` | 要加载的集合的名称。|
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | Name of the collection to load. |
-| -p (Optional/Multiple) | The name of the partition to load. |
+| `-c` | 要加载的集合的名称。|
+| `-p` (可选/重复) | 要加载的分区的名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to load. |
+| `collection_name` | 要加载的集合的名称。|
+
 
 获取副本信息
 ------
 
 您可以检查已加载副本的信息。
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load(replica_number=2)    # Load collection as 2 replicas
@@ -170,7 +172,7 @@ print(result)
 
 以下是输出示例。
 
-```
+```python
 Replica groups:
 - Group: <group_id:435309823872729305>, <group_nodes:(21, 20)>, <shards:[Shard: <channel_name:milvus-zong-rootcoord-dml_27_435367661874184193v0>, <shard_leader:21>, <shard_nodes:[21]>, Shard: <channel_name:milvus-zong-rootcoord-dml_28_435367661874184193v1>, <shard_leader:20>, <shard_nodes:[20, 21]>]>
 - Group: <group_id:435309823872729304>, <group_nodes:(25,)>, <shards:[Shard: <channel_name:milvus-zong-rootcoord-dml_28_435367661874184193v1>, <shard_leader:25>, <shard_nodes:[25]>, Shard: <channel_name:milvus-zong-rootcoord-dml_27_435367661874184193v0>, <shard_leader:25>, <shard_nodes:[25]>]>
@@ -185,14 +187,15 @@ Replica groups:
 * 尝试加载已经加载的集合将返回"成功加载"。
 
 * 当子分区已经加载时，尝试加载集合将返回错误。未来的版本将支持在已经加载一些分区的情况下加载集合。
-* Loading different partitions in a same collection via separate RPCs is not allowed.
 
-What's next
+* 这意味着您不能通过单独的远程过程调用（RPC）将不同分区的数据加载到同一集合中。您应该一次性加载所有分区，或为每个分区使用不同的集合。
+
+下一步
 -----------
 
-* Learn more basic operations of Milvus:
-	+ [Insert data into Milvus](insert_data.md)
-	+ [Create a partition](create_partition.md)
-	+ [Build an index for vectors](build_index.md)
-	+ [Conduct a vector search](search.md)
-	+ [Conduct a hybrid search](hybridsearch.md)
+* 学习更多关于 Milvus 的基本操作：
+    + [将数据插入 Milvus](insert_data.md)
+    + [创建一个分区](create_partition.md)
+    + [为向量构建索引](build_index.md)
+    + [进行向量搜索](search.md)
+    + [进行混合搜索](hybridsearch.md)

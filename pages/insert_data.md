@@ -21,7 +21,7 @@ Milvus 2.1 支持标量字段上的 VARCHAR 数据类型。在为 VARCHAR 类型
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 import random
 data = [
   [i for i in range(2000)],
@@ -32,7 +32,7 @@ data = [
 
 ```
 
-```
+```python
 const data = Array.from({ length: 2000 }, (v,k) => ({
   "book_id": k,
   "word_count": k+10000,
@@ -41,7 +41,7 @@ const data = Array.from({ length: 2000 }, (v,k) => ({
 
 ```
 
-```
+```python
 bookIDs := make([]int64, 0, 2000)
 wordCounts := make([]int64, 0, 2000)
 bookIntros := make([][]float32, 0, 2000)
@@ -60,7 +60,7 @@ introColumn := entity.NewColumnFloatVector("book_intro", 2, bookIntros)
 
 ```
 
-```
+```python
 Random ran = new Random();
 List<Long> book_id_array = new ArrayList<>();
 List<Long> word_count_array = new ArrayList<>();
@@ -77,12 +77,12 @@ for (long i = 0L; i < 2000; ++i) {
 
 ```
 
-```
+```python
 # Prepare your data in a CSV file. Milvus CLI only supports importing data from local or remote files.
 
 ```
 
-```
+```python
 # See the following step.
 
 ```
@@ -101,14 +101,14 @@ for (long i = 0L; i < 2000; ++i) {
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 mr = collection.insert(data)
 
 ```
 
-```
+```python
 const mr = await milvusClient.insert({
   collection_name: "book",
   fields_data: data,
@@ -116,7 +116,7 @@ const mr = await milvusClient.insert({
 
 ```
 
-```
+```python
 _, err = milvusClient.Insert(
 	context.Background(), // ctx
 	"book",               // CollectionName
@@ -131,7 +131,7 @@ if err != nil {
 
 ```
 
-```
+```python
 List<InsertParam.Field> fields = new ArrayList<>();
 fields.add(new InsertParam.Field("book_id", DataType.Int64, book_id_array));
 fields.add(new InsertParam.Field("word_count", DataType.Int64, word_count_array));
@@ -146,16 +146,16 @@ milvusClient.insert(insertParam);
 
 ```
 
-```
+```python
 import -c book 'https://raw.githubusercontent.com/milvus-io/milvus_cli/main/examples/user_guide/search.csv'
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/entities' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/entities' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
   "collection_name": "book",
   "fields_data": [
@@ -188,7 +188,7 @@ curl -X 'POST' \
 
 Output:
 
-```
+```python
 {
   "status":{},
   "IDs":{
@@ -203,64 +203,55 @@ Output:
 }
 
 ```
-
-| Parameter | Description |
-| --- | --- |
-| `data` | Data to insert into Milvus. |
-| `partition_name` (optional) | Name of the partition to insert data into. |
-
-| Parameter | Description |
-| --- | --- |
-| `collection_name` | Name of the collection to insert data into. |
-| `partition_name` (optional) | Name of the partition to insert data into. |
-| `fields_data` | Data to insert into Milvus. |
-
-| Parameter | Description |
-| --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to insert data into. |
-| `partitionName` | Name of the partition to insert data into. Data will be inserted in the default partition if left blank. |
-| `columnarData` | Data to insert into each field. |
-
-| Parameter | Description |
-| --- | --- |
-| `fieldName` | Name of the field to insert data into. |
-| `DataType` | Data type of the field to insert data into. |
-| `data` | Data to insert into each field. |
-| `CollectionName` | Name of the collection to insert data into. |
-| `PartitionName` (optional) | Name of the partition to insert data into. |
-
-| Option | Description |
-| --- | --- |
-| -c | Name of the collection to insert data into. |
-| -p (Optional) | Name of the partition to insert data into. |
-
-| Parameter | Description | Option |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `collection_name` | Name of the collection to insert data into. | N/A |
-| `fields_data` | Data to insert into Milvus. | N/A |
-| `field_name` | Name of the field to insert data into. | N/A |
-| `type` | Data type of the field to insert data into. | 
- Enums:
- 1: "Bool",
- 2: "Int8",
- 3: "Int16",
- 4: "Int32",
- 5: "Int64",
- 10: "Float",
- 11: "Double",
- 20: "String",
- 21: "VarChar",
- 100: "BinaryVector",
- 101: "FloatVector",
-  |
-| `field` | The data of one column to be inserted. | N/A |
-| `num_rows` | Number of rows to be inserted. The number should be the same as the length of each `field` array. | N/A |
+| `data` | 要插入Milvus的数据。| N/A |
+| `partition_name`（可选） | 要插入数据的分区名称。 | N/A |
 
-Flush the Data in Milvus
+| 参数 | 描述 | 选项 |
+| --- | --- | --- |
+| `collection_name` | 要插入数据的集合名称。| N/A |
+| `partition_name`（可选） | 要插入数据的分区名称。 | N/A |
+| `fields_data` | 要插入Milvus的数据。| N/A |
+
+| 参数 | 描述 | 选项 |
+| --- | --- | --- |
+| `ctx` | 控制 API 调用过程的上下文。 | N/A |
+| `CollectionName` | 要插入数据的集合名称。| N/A |
+| `partitionName` | 要插入数据的分区名称。 如果留空，则数据将插入默认分区。| N/A |
+| `columnarData` | 要插入每个字段的数据。| N/A |
+
+| 参数 | 描述 | 选项 |
+| --- | --- | --- |
+| `fieldName` | 要插入数据的字段名称。| N/A |
+| `DataType` | 要插入数据的字段数据类型。| 枚举：1: "Bool", 2: "Int8", 3: "Int16", 4: "Int32", 5: "Int64", 10: "Float", 11: "Double", 20: "String", 21: "VarChar", 100: "BinaryVector", 101: "FloatVector"|
+| `data` | 要插入每个字段的数据。| N/A |
+| `CollectionName` | 要插入数据的集合名称。| N/A |
+| `PartitionName`（可选） | 要插入数据的分区名称。| N/A |
+
+| 选项 | 描述 | 参数 |
+| --- | --- | --- |
+| -c | 要插入数据的集合名称。| N/A |
+| -p（可选） | 要插入数据的分区名称。| N/A |
+
+| 参数 | 描述 | 选项 |
+| --- | --- | --- |
+| `collection_name` | 要插入数据的集合名称。| N/A |
+| `fields_data` | 要插入的 Milvus 数据。| N/A |
+| `field_name` | 要插入数据的字段名称。| N/A |
+| `type` | 要插入数据的字段的数据类型。| 枚举同上 |
+| `field` | 要插入的一列数据。 | N/A |
+| `num_rows` | 要插入的行数。 数量应与每个 `field` 数组的长度相同。| N/A |
+
+
+Milvus的flush调用
 ------------------------
 
-当数据被插入到Milvus中时，会被插入到段中。段必须达到一定大小才能被密封和索引。未密封的段将被暴力搜索。为了避免这种情况，最好调用flush()。flush调用将密封任何剩余段并将它们发送到索引。重要的是只在插入会话结束时调用它，因为过多调用将导致碎片化数据，需要稍后清理。
+当数据被插入到Milvus中时，会被插入到段中。段必须达到一定大小才能被密封和索引。
+
+未密封的段将被暴力搜索。为了避免这种情况，最好调用flush()。flush调用将密封任何剩余段并将它们发送到索引。
+
+重要的是只在插入会话结束时调用它，因为过多调用将导致碎片化数据，需要稍后清理。
 
 限制
 --

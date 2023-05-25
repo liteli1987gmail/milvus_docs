@@ -20,14 +20,14 @@ Configure global resources
 
 When using Milvus Operator to start a Milvus cluster, you need to specify a configuration file. The example here uses the default configuration file.
 
-```
+```python
 kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/main/config/samples/milvus_cluster_default.yaml
 
 ```
 
 The details of the configuration file is as follows:
 
-```
+```python
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -60,7 +60,7 @@ spec:
 
 The following example configures global resource for a Milvus cluster.
 
-```
+```python
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -86,7 +86,7 @@ spec:
 
 Run the following command to apply new configurations:
 
-```
+```python
 kubectl apply -f milvuscluster_resource.yaml
 
 ```
@@ -216,7 +216,7 @@ To configure resources for a specific component, add the component name in the f
 
 The example below configures the replicas and compute resources of proxy and datanode in the `milvuscluster.yaml` file.
 
-```
+```python
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -266,7 +266,7 @@ This example configures not only global resources but also private compute resou
 
 Run the following command to apply new configurations:
 
-```
+```python
 kubectl apply -f milvuscluster.yaml
 
 ```

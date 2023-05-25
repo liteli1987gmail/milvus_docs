@@ -8,14 +8,14 @@ This page illustrates how to build a question-answering system using Milvus as t
 
 本页的代码片段需要安装**pymilvus**、**transformers**和**datasets**。其中**transformers**和**datasets**是Hugging Face的软件包，用于创建pipeline，而**pymilvus**是Milvus的客户端。如果您的系统上没有这些软件包，请运行以下命令进行安装：
 
-```
+```python
 pip install transformers datasets pymilvus torch
 
 ```
 
 然后您需要加载本指南中要使用的模块。
 
-```
+```python
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 from datasets import load_dataset_builder, load_dataset, Dataset
 from transformers import AutoTokenizer, AutoModel
@@ -28,7 +28,7 @@ from torch import clamp, sum
 
 在这里，我们可以找到以下段落中使用的参数。其中一些需要更改以适应您的环境。除每个参数外，还附有其描述。
 
-```
+```python
 DATASET = 'squad'  # Huggingface Dataset to use
 MODEL = 'bert-base-uncased'  # Transformer to use for embeddings
 TOKENIZATION_BATCH_SIZE = 1000  # Batch size for tokenizing operaiton
@@ -49,7 +49,7 @@ To know more about the model and dataset used on this page, refer to [bert-base-
 
 本节介绍Milvus以及为此用例设置数据库。在Milvus中，我们需要设置一个集合并对其进行索引。
 
-```
+```python
 # Connect to Milvus Database
 connections.connect(uri=URI, user=USER, password=PASSWORD, secure=True)
 
@@ -89,7 +89,7 @@ collection.load()
 
 在本示例中，数据包括原始问题、原始问题的嵌入以及原始问题的答案。
 
-```
+```python
 data_dataset = load_dataset(DATASET, split='all')
 # 生成一个固定的子集。为生成随机子集，请删除种子设置。有关详细信息，请参见 <https://huggingface.co/docs/datasets/v2.9.0/en/package_reference/main_classes#datasets.Dataset.train_test_split.seed>
 data_dataset = data_dataset.train_test_split(test_size=INSERT_RATIO, seed=42)['test']
@@ -144,7 +144,7 @@ collection.flush()
 
 一旦所有数据都被插入并在Milvus中进行了索引，我们就可以询问问题并看到最接近的答案是什么。
 
-```
+```python
 questions = {'question':['When was chemistry invented?', 'When was Eisenhower born?']}
 question_dataset = Dataset.from_dict(questions)
 
@@ -190,7 +190,7 @@ for x in question_dataset:
 ```
 如果您在未指定[train_test_split()方法的`seed`参数](#Insert-data)的情况下下载数据子集，则输出将因下载的数据子集而异，并应类似于以下内容：
 
-```
+```python
 Question:
 When was chemistry invented?
 Answer, Distance, Original Question

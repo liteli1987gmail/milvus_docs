@@ -8,7 +8,7 @@ Milvus使用RocksMQ、Pulsar或Kafka来管理最近更改的日志，输出流�
 See [部署Milvus Operator](https://milvus.io/docs/v2.2.x/install_cluster-milvusoperator.md) for more information. 
 您需要为使用Milvus Operator启动Milvus集群指定配置文件。
 
-```
+```python
 kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/main/config/samples/milvuscluster_default.yaml
 
 ```
@@ -46,7 +46,7 @@ Currently, you can only configure RocksMQ as the message storage for Milvus stan
 
 以下示例配置了一个RocksMQ服务。
 
-```
+```python
 apiVersion: milvus.io/v1alpha1
 kind: Milvus
 metadata:
@@ -76,7 +76,7 @@ Pulsar管理最近更改的日志，输出流日志，并提供日志订阅。�
 
 以下示例配置外部 Pulsar 服务。
 
-```
+```python
 apiVersion: milvus.io/v1alpha1
 
 kind: MilvusCluster
@@ -121,7 +121,7 @@ spec:
 
 以下示例配置了一个内部的Pulsar服务。
 
-```
+```python
 apiVersion: milvus.io/v1alpha1
 
 kind: MilvusCluster
@@ -202,7 +202,7 @@ This example specifies the numbers of replicas of each component of Pulsar, the 
 Find the complete configuration items to configure an internal Pulsar service in [values.yaml](https://artifacthub.io/packages/helm/apache/pulsar/2.7.8?modal=values). Add configuration items as needed under `pulsar.inCluster.values` as shown in the preceding example.
 假设配置文件名为`milvuscluster.yaml`，运行以下命令应用配置。
 
-```
+```python
 kubectl apply -f milvuscluster.yaml
 
 ```
@@ -228,7 +228,7 @@ Pulsar是Milvus集群中的默认消息存储。如果您想要使用Kafka，请
 
 The following example configures an external Kafka service.
 
-```
+```python
 apiVersion: milvus.io/v1alpha1
 kind: MilvusCluster
 metadata:
@@ -257,7 +257,7 @@ spec:
 
 以下例子配置了一个内部Kafka服务。
 
-```
+```python
 apiVersion: milvus.io/v1alpha1
 kind: MilvusCluster
 metadata:
@@ -279,7 +279,7 @@ spec:
 
 假设配置文件名为`milvuscluster.yaml`，运行以下命令应用配置。
 
-```
+```python
 kubectl apply -f milvuscluster.yaml
 
 ```

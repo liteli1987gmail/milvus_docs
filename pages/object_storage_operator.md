@@ -6,7 +6,7 @@ Milvus使用MinIO或S3作为对象存储来持久化大规模文件，例如索�
 See [部署Milvus Operator](https://milvus.io/docs/v2.2.x/install_cluster-milvusoperator.md) for more information. 
 You need to specify a configuration file for using Milvus Operator to start a Milvus cluster.
 
-```
+```python
 kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/main/config/samples/milvuscluster_default.yaml
 
 ```
@@ -37,7 +37,7 @@ A Milvus cluster uses MinIO or S3 as object storage to persist large-scale files
 
 The following example configures an external object storage service.
 
-```
+```python
 kind: MilvusCluster
 metadata:
   name: my-release
@@ -68,7 +68,7 @@ A Milvus cluster only supports using MinIO as the internal object storage servic
 
 以下示例配置了一个内部的 MinIO 服务。
 
-```
+```python
 apiVersion: milvus.io/v1alpha1
 kind: MilvusCluster
 metadata:
@@ -104,7 +104,7 @@ In this example, `inCluster.deletionPolicy` defines a deleletion policy for data
 Find the complete configuration items to configure an internal MinIO service in [values.yaml](https://github.com/milvus-io/milvus-helm/blob/master/charts/minio/values.yaml). Add configuration items as needed under `storage.inCluster.values` as shown in the preceding example.
 假设配置文件命名为`milvuscluster.yaml`，运行以下命令应用配置。
 
-```
+```python
 kubectl apply -f milvuscluster.yaml
 
 ```

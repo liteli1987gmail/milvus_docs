@@ -57,7 +57,7 @@ We do not recommend reducing the number of workers nodes dramatically. For examp
 
 运行`kubectl get pods`获取您创建的Milvus集群中组件及其工作状态的列表。
 
-```
+```python
 NAME                                            READY   STATUS       RESTARTS   AGE
 my-release-etcd-0                               1/1     Running      0          1m
 my-release-milvus-datacoord-7b5d84d8c6-rzjml    1/1     Running      0          1m
@@ -88,7 +88,7 @@ Milvus only supports adding the worker nodes and does not support adding the coo
 
 如果成功，将会添加三个正在运行的查询节点Pods，如以下示例所示。
 
-```
+```python
 NAME                                            READY   STATUS    RESTARTS   AGE
 my-release-etcd-0                               1/1     Running   0          2m
 my-release-milvus-datacoord-7b5d84d8c6-rzjml    1/1     Running   0          2m
@@ -112,7 +112,7 @@ my-release-minio-5564fbbddc-9sbgv               1/1     Running   0          2m
 
 如果成功，查询节点上的三个运行中的pod将减少为一个，如下面的示例所示。
 
-```
+```python
 NAME                                            READY   STATUS    RESTARTS   AGE
 my-release-etcd-0                               1/1     Running   0          2m
 my-release-milvus-datacoord-7b5d84d8c6-rzjml    1/1     Running   0          2m

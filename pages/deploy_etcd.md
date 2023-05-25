@@ -7,7 +7,7 @@ Milvus 使用 etcd 存储元数据。本主题介绍如何使用 Docker Compose 
 
 要使用 Docker Compose 配置 etcd，请在 milvus/configs 路径下的 milvus.yaml 文件中提供 `etcd` 部分的值。
 
-```
+```python
 etcd:
   endpoints:
     - localhost:2379
@@ -39,7 +39,7 @@ etcd:
 
 运行以下命令以启动使用 etcd 配置的 Milvus。
 
-```
+```python
 docker-compose up
 
 ```
@@ -62,7 +62,7 @@ docker-compose up
 
 - 在 `values.yaml` 文件中使用你的值配置 `etcd` 部分。
 
-```
+```python
 etcd:
   enabled: false
 
@@ -70,7 +70,7 @@ etcd:
 
 - 在 `values.yaml` 文件中使用你的值配置 `externaletcd` 部分。
 
-```
+```python
 externalEtcd:
   enabled: true
   ## the endpoints of the external etcd
@@ -81,7 +81,7 @@ externalEtcd:
 
 - 在配置上述部分并保存 `values.yaml` 文件后，运行以下命令安装使用 etcd 配置的 Milvus。
 
-```
+```python
 helm install <your_release_name> milvus/milvus -f values.yaml
 
 ```
@@ -89,7 +89,7 @@ helm install <your_release_name> milvus/milvus -f values.yaml
 
 要安装 Milvus 并配置 etcd，请使用您的值运行以下命令。
 
-```
+```python
 helm install <your_release_name> milvus/milvus --set cluster.enabled=true --set etcd.enabled=false --set externaletcd.enabled=true --set externalEtcd.endpoints={<your_etcd_IP>:2379}
 
 ```

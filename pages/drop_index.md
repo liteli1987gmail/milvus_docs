@@ -1,3 +1,7 @@
+删除索引
+===
+
+
 本文介绍如何在 Milvus 中删除索引。
 
 删除索引会不可逆地移除所有对应的索引文件。
@@ -9,21 +13,21 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.drop_index()
 
 ```
 
-```
+```python
 await milvusClient.dropIndex({
   collection_name: "book",
 });
 
 ```
 
-```
+```python
 err = milvusClient.DropIndex(
   context.Background(),     // ctx
   "book",                   // CollectionName
@@ -35,7 +39,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.dropIndex(
   DropIndexParam.newBuilder()
     .withCollectionName("book")
@@ -45,46 +49,45 @@ milvusClient.dropIndex(
 
 ```
 
-```
+```python
 delete index -c book
 
 ```
 
-```
-curl -X 'DELETE' \
-  'http://localhost:9091/api/v1/index' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'DELETE' 
+  'http://localhost:9091/api/v1/index' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "field_name": "book_intro"
   }'
 
 ```
-
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to drop index from. |
+| `collection_name` | 要从其中删除索引的向量集合名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to drop index on. |
-| `fieldName` | Name of the vector field to drop index on. |
+| `ctx` | 控制 API 调用过程的上下文。|
+| `CollectionName` | 要删除索引的向量集合名称。|
+| `fieldName` | 要删除索引的向量字段名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to drop index on. |
-| `FieldName` | Name of the vector field to drop index on. |
+| `CollectionName` | 要删除索引的向量集合名称。|
+| `FieldName` | 要删除索引的向量字段名称。 |
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | Name of the collection to drop index from. |
+| `-c` | 要从其中删除索引的向量集合名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to drop index on. |
-| `field_name` | Name of the vector field to drop index on. |
+| `collection_name` | 要删除索引的向量集合名称。|
+| `field_name` | 要删除索引的向量字段名称。|
 
 下一步怎么做
  ------------

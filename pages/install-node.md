@@ -25,7 +25,7 @@ Node.js v12+
 
 使用npm（Node包管理器）在您的项目中安装Milvus Node.js客户端的推荐方法。
 
-```
+```python
 npm install @zilliz/milvus2-sdk-node
 # or ...
 yarn add @zilliz/milvus2-sdk-node

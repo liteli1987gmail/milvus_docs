@@ -21,68 +21,68 @@ Milvus是一个云原生向量数据库，可以部署在各种云环境中。�
 
 为了确保Milvus的安全性，您需要在GCP项目中创建一个逻辑隔离的虚拟网络。以下命令创建了一个VPC。
 
-```
-gcloud compute networks create milvus-network \
-    --project=milvus-testing-nonprod \
-    --subnet-mode=auto \
-    --mtu=1460 \
+```python
+gcloud compute networks create milvus-network 
+    --project=milvus-testing-nonprod 
+    --subnet-mode=auto 
+    --mtu=1460 
     --bgp-routing-mode=regional
 
 ```
 
 为了方便您的工作，您还需要设置几个防火墙规则，允许ICMP、RDP和SSH的外部流量以及VPC内的流量。
 
-```
-gcloud compute firewall-rules create milvus-network-allow-icmp \
-    --project=milvus-testing-nonprod \
-    --network=projects/milvus-testing-nonprod/global/networks/milvus-network \
-    --description="Allows ICMP connections from any source to any instance on the network." \
-    --direction=INGRESS \
-    --priority=65534 \
-    --source-ranges=0.0.0.0/0 \
-    --action=ALLOW \
+```python
+gcloud compute firewall-rules create milvus-network-allow-icmp 
+    --project=milvus-testing-nonprod 
+    --network=projects/milvus-testing-nonprod/global/networks/milvus-network 
+    --description="Allows ICMP connections from any source to any instance on the network." 
+    --direction=INGRESS 
+    --priority=65534 
+    --source-ranges=0.0.0.0/0 
+    --action=ALLOW 
     --rules=icmp
 
-gcloud compute firewall-rules create milvus-network-allow-internal \
-    --project=milvus-testing-nonprod \
-    --network=projects/milvus-testing-nonprod/global/networks/milvus-network \
-    --description="Allows connections from any source in the network IP range to any instance on the network using all protocols." \
-    --direction=INGRESS \
-    --priority=65534 \
-    --source-ranges=10.128.0.0/9 \
+gcloud compute firewall-rules create milvus-network-allow-internal 
+    --project=milvus-testing-nonprod 
+    --network=projects/milvus-testing-nonprod/global/networks/milvus-network 
+    --description="Allows connections from any source in the network IP range to any instance on the network using all protocols." 
+    --direction=INGRESS 
+    --priority=65534 
+    --source-ranges=10.128.0.0/9 
     --action=ALLOW --rules=all
 
-gcloud compute firewall-rules create milvus-network-allow-rdp \
-    --project=milvus-testing-nonprod \
-    --network=projects/milvus-testing-nonprod/global/networks/milvus-network \
-    --description="Allows RDP connections from any source to any instance on the network using port 3389." \ --direction=INGRESS \
-    --priority=65534 \
-    --source-ranges=0.0.0.0/0 \
-    --action=ALLOW \
+gcloud compute firewall-rules create milvus-network-allow-rdp 
+    --project=milvus-testing-nonprod 
+    --network=projects/milvus-testing-nonprod/global/networks/milvus-network 
+    --description="Allows RDP connections from any source to any instance on the network using port 3389."  --direction=INGRESS 
+    --priority=65534 
+    --source-ranges=0.0.0.0/0 
+    --action=ALLOW 
     --rules=tcp:3389
 
-gcloud compute firewall-rules create milvus-network-allow-ssh \
-    --project=milvus-testing-nonprod \
-    --network=projects/milvus-testing-nonprod/global/networks/milvus-network \
-    --description="Allows TCP connections from any source to any instance on the network using port 22." \ --direction=INGRESS \
-    --priority=65534 \
-    --source-ranges=0.0.0.0/0 \
-    --action=ALLOW \
+gcloud compute firewall-rules create milvus-network-allow-ssh 
+    --project=milvus-testing-nonprod 
+    --network=projects/milvus-testing-nonprod/global/networks/milvus-network 
+    --description="Allows TCP connections from any source to any instance on the network using port 22."  --direction=INGRESS 
+    --priority=65534 
+    --source-ranges=0.0.0.0/0 
+    --action=ALLOW 
     --rules=tcp:22
 
 ```
 
 最后，您需要允许端口**19530**的Milvus实例的入站流量。
 
-```
-gcloud compute firewall-rules create allow-milvus-in \
-    --project=milvus-testing-nonprod  \
-    --description="Allow ingress traffic for Milvus on port 19530" \
-    --direction=INGRESS \
-    --priority=1000 \
-    --network=projects/milvus-testing-nonprod/global/networks/milvus-network \
-    --action=ALLOW \
-    --rules=tcp:19530 \
+```python
+gcloud compute firewall-rules create allow-milvus-in 
+    --project=milvus-testing-nonprod  
+    --description="Allow ingress traffic for Milvus on port 19530" 
+    --direction=INGRESS 
+    --priority=1000 
+    --network=projects/milvus-testing-nonprod/global/networks/milvus-network 
+    --action=ALLOW 
+    --rules=tcp:19530 
     --source-ranges=0.0.0.0/0
 
 ```
@@ -93,29 +93,29 @@ gcloud compute firewall-rules create allow-milvus-in \
 
 建议您使用提供至少16 GB内存的机器类型，以确保服务的稳定性。
 
-```
-gcloud beta container clusters create "milvus-cluster-1" \
-    --project "milvus-testing-nonprod" \
-    --zone "us-west1-a" \
-    --no-enable-basic-auth \
-    --cluster-version "1.20.8-gke.900" \
-    --release-channel "regular" \
-    --machine-type "e2-standard-4" \
-    --image-type "COS_CONTAINERD" \
-    --disk-type "pd-standard" \
-    --disk-size "100" \
-    --max-pods-per-node "110" \
-    --num-nodes "2" \
-    --enable-stackdriver-kubernetes \
-    --enable-ip-alias \
-    --network "projects/milvus-testing-nonprod/global/networks/milvus-network" \
+```python
+gcloud beta container clusters create "milvus-cluster-1" 
+    --project "milvus-testing-nonprod" 
+    --zone "us-west1-a" 
+    --no-enable-basic-auth 
+    --cluster-version "1.20.8-gke.900" 
+    --release-channel "regular" 
+    --machine-type "e2-standard-4" 
+    --image-type "COS_CONTAINERD" 
+    --disk-type "pd-standard" 
+    --disk-size "100" 
+    --max-pods-per-node "110" 
+    --num-nodes "2" 
+    --enable-stackdriver-kubernetes 
+    --enable-ip-alias 
+    --network "projects/milvus-testing-nonprod/global/networks/milvus-network" 
     --subnetwork "projects/milvus-testing-nonprod/regions/us-west1/subnetworks/milvus-network"
 
 ```
 
 等待几分钟，Kubernetes集群就会启动。一旦集群准备就绪，请使用以下命令来获取其凭据，以便您可以在终端中运行`kubectl`命令以远程与集群通信。
 
-```
+```python
 gcloud container clusters get-credentials milvus-cluster-1
 
 ```
@@ -124,7 +124,7 @@ gcloud container clusters get-credentials milvus-cluster-1
 
 现在 Kubernetes 集群已经准备好了，让我们立即部署 Milvus。
 
-```
+```python
 helm repo add milvus https://milvus-io.github.io/milvus-helm/
 helm repo update
 helm install my-release milvus/milvus --set service.type=LoadBalancer
@@ -141,7 +141,7 @@ helm install my-release milvus/milvus --set service.type=LoadBalancer
 
 所有的Pod都在运行后，运行以下命令以查看用于访问Milvus实例的外部IP地址和端口。
 
-```
+```python
 kubectl get services
 
 ```

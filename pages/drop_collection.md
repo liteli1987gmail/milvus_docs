@@ -3,7 +3,7 @@
 
 本主题介绍如何删除集合及其中的数据。
 
-Dropping a collection irreversibly deletes all data within it.
+删除一个集合将不可逆地删除其中的所有数据。
 
 [Python](#python) 
 [Java](#java)
@@ -12,18 +12,18 @@ Dropping a collection irreversibly deletes all data within it.
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import utility
 utility.drop_collection("book")
 
 ```
 
-```
+```python
 await milvusClient.dropCollection({ collection_name: "book" });
 
 ```
 
-```
+```python
 err = milvusClient.DropCollection(
   context.Background(), // ctx
   "book",               // CollectionName
@@ -34,7 +34,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.dropCollection(
   DropCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -43,16 +43,16 @@ milvusClient.dropCollection(
 
 ```
 
-```
+```python
 delete collection -c book
 
 ```
 
-```
-curl -X 'DELETE' \
-  'http://localhost:9091/api/v1/collection' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'DELETE' 
+  'http://localhost:9091/api/v1/collection' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book"
   }'
@@ -61,37 +61,38 @@ curl -X 'DELETE' \
 
 Output:
 
-```
+```python
 {}
 
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `collection_name` | Name of the collection to drop. |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to drop. |
+| `collection_name` | 要清除的集合的名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to drop. |
+| `collection_name` | 要清除的集合的名称。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to drop. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 要清除的集合的名称。|
 
-| Option | Description |
+| 参数 | 描述 |
 | --- | --- |
-| -c | Name of the collection to drop. |
+| `CollectionName` | 要清除的集合的名称。|
 
-| Parameter | Description |
+| 选项 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to drop. |
+| `-c` | 要清除的集合的名称。|
 
-What's next
+| 参数 | 描述 |
+| --- | --- |
+| `collection_name` | 要清除的集合的名称。|
+
+下一步
 -----------
 
 * 学习更多Milvus的基本操作：

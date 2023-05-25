@@ -1,3 +1,7 @@
+
+Milvus搜索实体
+===
+
 本主题介绍如何使用Milvus搜索实体。
 
 在Milvus中进行向量相似度搜索时，会计算查询向量和集合中具有指定相似性度量的向量之间的距离，并返回最相似的结果。通过指定一个[布尔表达式](boolean.md)来过滤标量字段或主键字段，您可以执行[混合搜索](hybridsearch.md)甚至[时光旅行搜索](timetravel.md)。
@@ -16,21 +20,21 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load()
 
 ```
 
-```
+```python
 await milvusClient.loadCollection({
   collection_name: "book",
 });
 
 ```
 
-```
+```python
 err := milvusClient.LoadCollection(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -42,7 +46,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.loadCollection(
   LoadCollectionParam.newBuilder()
           .withCollectionName("book")
@@ -51,16 +55,16 @@ milvusClient.loadCollection(
 
 ```
 
-```
+```python
 load -c book
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/collection/load' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/collection/load' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book"
   }'
@@ -70,7 +74,7 @@ curl -X 'POST' \
 准备搜索参数
 ------
 
-Prepare the parameters that suit your search scenario. The following example defines that the search will calculate the distance with Euclidean distance, and retrieve vectors from ten closest clusters built by the IVF_FLAT index.
+准备适合你的搜索场景的参数。以下示例定义搜索将使用欧几里得距离计算距离，并从由IVF_FLAT索引构建的最近的10个聚类中检索向量。
 
 [Python](#python) 
 [Java](#java)
@@ -79,12 +83,12 @@ Prepare the parameters that suit your search scenario. The following example def
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 search_params = {"metric_type": "L2", "params": {"nprobe": 10}, "offset": 5}
 
 ```
 
-```
+```python
 const searchParams = {
   anns_field: "book_intro",
   topk: "2",
@@ -94,20 +98,20 @@ const searchParams = {
 
 ```
 
-```
+```python
 sp, _ := entity.NewIndexFlatSearchParam( // NewIndex*SearchParam func
 	10,                                  // searchParam
 )
 
 ```
 
-```
+```python
 final Integer SEARCH_K = 2;                       // TopK
-final String SEARCH_PARAM = "{\"nprobe\":10, \”offset\”:5}";    // Params
+final String SEARCH_PARAM = "{"nprobe":10, ”offset”:5}";    // Params
 
 ```
 
-```
+```python
 search
 
 Collection name (book): book
@@ -134,18 +138,18 @@ Travel Timestamp(Specify a timestamp in a search to get results based on a data 
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/search' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/search' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "output_fields": ["book_id"],
     "search_params": [
       {"key": "anns_field", "value": "book_intro"},
       {"key": "topk", "value": "2"},
-      {"key": "params", "value": "{\"nprobe\": 10}"},
+      {"key": "params", "value": "{"nprobe": 10}"},
       {"key": "metric_type", "value": "L2"},
       {"key": "round_decimal", "value": "-1"}
     ],
@@ -157,7 +161,7 @@ curl -X 'POST' \
 
 Output:
 
-```
+```python
 {
   "status":{},
   "results":{
@@ -178,70 +182,51 @@ Output:
 }
 
 ```
-
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `metric_type` | Metrics used to measure the similarity of vectors. See [Simlarity Metrics](metric.md) for more information. |
-| `params` | Search parameter(s) specific to the index. See [Vector Index](index.md) for more information. |
-| `offset` | An offset in this dictionary. The sum of the offset value and the value in `limit` should be less than 65535.  |
-| `ignore_growing` | Whether to ignore growing segments during similarity searches. The value defaults to `False`, indicating that searches involve growing segments. |
+| `metric_type` | 用于衡量向量相似度的指标类型。有关更多信息，请参见[相似度指标](metric.md)。 |
+| `params` | 指标特定的搜索参数，详见[向量索引](index.md)。 |
+| `offset` | 此词典中的偏移量。`offset`和`limit`值之和应小于65535。 |
+| `ignore_growing` | 是否忽略相似性搜索中的新片段。默认值为`False`，表示搜索包括新片段。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `anns_field` | Name of the field to search on. |
-| `topk` | Number of the most similar results to return. |
-| `metric_type` | Metrics used to measure similarity of vectors. See [Simlarity Metrics](metric.md) for more information. |
-| `params` | Search parameter(s) specific to the index. See [Vector Index](index.md) for more information. |
+| `anns_field` | 要搜索的字段名称。 |
+| `topk` | 返回的最相似结果的数量。 |
+| `metric_type` | 用于衡量向量相似度的指标类型。有关更多信息，请参见[相似度指标](metric.md)。 |
+| `params` | 指标特定的搜索参数，详见[向量索引](index.md)。 |
 
-| Parameter | Description | Options |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `NewIndex*SearchParam func` | Function to create entity.SearchParam according to different index types. | For floating point vectors:
- * `NewIndexFlatSearchParam` (FLAT)
-* `NewIndexIvfFlatSearchParam` (IVF_FLAT)
-* `NewIndexIvfSQ8SearchParam` (IVF_SQ8)
-* `NewIndexIvfPQSearchParam` (RNSG)
-* `NewIndexRNSGSearchParam` (HNSW)
-* `NewIndexHNSWSearchParam` (HNSW)
-* `NewIndexANNOYSearchParam` (ANNOY)
-* `NewIndexRHNSWFlatSearchParam` (RHNSW_FLAT)
-* `NewIndexRHNSW_PQSearchParam` (RHNSW_PQ)
-* `NewIndexRHNSW_SQSearchParam` (RHNSW_SQ)
+| `NewIndex*SearchParam func` | 根据不同的索引类型创建`entity.SearchParam`的函数。 | 对于浮点向量：`NewIndexFlatSearchParam` (FLAT)   或  `NewIndexIvfFlatSearchParam` (IVF_FLAT)   或 `NewIndexIvfSQ8SearchParam` (IVF_SQ8) 或 `NewIndexIvfPQSearchParam` (RNSG) 或 `NewIndexRNSGSearchParam` (HNSW) 或  `NewIndexHNSWSearchParam` (HNSW) 或  `NewIndexANNOYSearchParam` (ANNOY) 或  `NewIndexRHNSWFlatSearchParam` (RHNSW_FLAT) 或  `NewIndexRHNSW_PQSearchParam` (RHNSW_PQ) 或  `NewIndexRHNSW_SQSearchParam` (RHNSW_SQ)        对于二进制向量：`NewIndexBinFlatSearchParam` (BIN_FLAT) 或  `NewIndexBinIvfFlatSearchParam` (BIN_IVF_FLAT) |
+| `searchParam` | 指标特定的搜索参数。 | 详见[向量索引](index.md)。 |
 
- For binary vectors:
- * `NewIndexBinFlatSearchParam` (BIN_FLAT)
-* `NewIndexBinIvfFlatSearchParam` (BIN_IVF_FLAT)
- |
-| `searchParam` | Search parameter(s) specific to the index. | See [Vector Index](index.md) for more information. |
-
-| Parameter | Description | Options |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `TopK` | Number of the most similar results to return. | N/A |
-| `Params` | Search parameter(s) specific to the index. | See [Vector Index](index.md) for more information. |
+| `TopK` | 返回的最相似结果的数量。 | N/A |
+| `Params` | 指标特定的搜索参数。 | 详见[向量索引](index.md)。 |
 
-| Option | Full name | Description |
+| 选项 | 完整名称 | 描述 |
 | --- | --- | --- |
-| --help | n/a | Displays help for using the command. |
+| --help | n/a | 显示如何使用命令的帮助信息。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `output_fields`(optional) | Name of the field to return. Vector field is not supported in current release. |
-| `anns_field` | Name of the field to search on. |
-| `topk` | Number of the most similar results to return. |
-| `params` | Search parameter(s) specific to the index. See [Vector Index](index.md) for more information. |
-| `metric_type` | Metrics used to measure similarity of vectors. See [Simlarity Metrics](metric.md) for more information. |
-| `round_decimal` (optional) | Number of decimal places of returned distance. |
-| `Vectors` | Vectors to search with. |
-| `dsl_type` | Type of `dsl` (Data Search Language) field:
- 0: "Dsl"
- 1: "BoolExprV1"
-  |
+| `output_fields`(可选) | 要返回的字段名称。当前版本不支持向量字段。 |
+| `anns_field` | 要搜索的字段名称。 |
+| `topk` | 返回的最相似结果的数量。 |
+| `params` | 指标特定的搜索参数。详见[向量索引](index.md)。 |
+| `metric_type` | 用于衡量向量相似度的指标类型。详见[相似度指标](metric.md)。 |
+| `round_decimal` (可选) | 返回的距离的小数位数。 |
+| `Vectors` | 要搜索的向量。 |
+| `dsl_type` | `dsl`（数据搜索语言）字段的类型：0：“Dsl” 1：“BoolExprV1” |
 
-Conduct a vector search
------------------------
+# 进行向量搜索
 
-Search vectors with Milvus. To search in a specific [partition](glossary.md#Partition), specify the list of partition names.
+使用Milvus执行向量搜索。若要在特定的[分区（partition）](glossary.md#Partition)中进行搜索，请指定分区名称列表。
 
-Milvus supports setting consistency level specifically for a search. The example in this topic sets the consistency level as `Strong`. You can also set the consistency level as `Bounded`, `Session` or `Eventually`. See [一致性](consistency.md) for more information about the four consistency levels in Milvus.
+Milvus支持为搜索设置一致性级别。此主题中的示例将一致性级别设置为“Strong”。您也可以将一致性级别设置为“Bounded”、“Session”或“Eventually”。有关Milvus中四个一致性级别的更多信息，请参见[一致性](consistency.md)。
+
 
 [Python](#python) 
 [Java](#java)
@@ -250,7 +235,7 @@ Milvus supports setting consistency level specifically for a search. The example
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 results = collection.search(
 	data=[[0.1, 0.2]], 
 	anns_field="book_intro", 
@@ -274,7 +259,7 @@ hit.entity.get('title')
 
 ```
 
-```
+```python
 const results = await milvusClient.search({
   collection_name: "book",
   expr: "",
@@ -285,7 +270,7 @@ const results = await milvusClient.search({
 
 ```
 
-```
+```python
 searchResult, err := milvusClient.Search(
 	context.Background(),                    // ctx
 	"book",                                  // CollectionName
@@ -304,7 +289,7 @@ if err != nil {
 
 ```
 
-```
+```python
 List<String> search_output_fields = Arrays.asList("book_id");
 List<List<Float>> search_vectors = Arrays.asList(Arrays.asList(0.1f, 0.2f));
 
@@ -322,62 +307,61 @@ R<SearchResults> respSearch = milvusClient.search(searchParam);
 
 ```
 
-```
+```python
 # Follow the previous step.
 
 ```
 
-```
+```python
 # Follow the previous step.
 
 ```
-
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `data` | Vectors to search with. |
-| `anns_field` | Name of the field to search on. |
-| `param` | Search parameter(s) specific to the index. See [向量索引](index.md) for more information. |
-| `offset` | Number of results to skip in the returned set. The sum of this value and `limit` should be less than 16384. |
-| `limit` | Number of the most similar results to return. The sum of this value and `offset` should be less than 16384. |
-| `expr` | Boolean expression used to filter attribute. See [布尔表达式规则](boolean.md) for more information. |
-| `partition_names` (optional) | List of names of the partition to search in. |
-| `output_fields` (optional) | Name of the field to return. Vector field is not supported in current release. |
-| `timeout` (optional) | A duration of time in seconds to allow for RPC. Clients wait until server responds or error occurs when it is set to None. |
-| `round_decimal` (optional) | Number of decimal places of returned distance. |
-| `consistency_level` (optional) | Consistency level of the search. |
+| `data` | 要搜索的向量。 |
+| `anns_field` | 要搜索的字段名称。 |
+| `param` | 指标特定的搜索参数。详见[向量索引](index.md)。 |
+| `offset` | 返回集合中结果的偏移量。此值与`limit`之和应小于16384。 |
+| `limit` | 要返回的最相似结果的数量。此值与偏移值之和应小于16384。 |
+| `expr` | 用于过滤属性的布尔表达式。详见[布尔表达式规则](boolean.md)。 |
+| `partition_names` (可选) | 要搜索的分区名称列表。 |
+| `output_fields` (可选) | 要返回的字段名称。当前版本不支持向量字段。 |
+| `timeout` (可选) | 允许等待RPC执行的持续时间（以秒为单位）。当其设置为 None 时，客户端会等待服务器响应或发生错误。 |
+| `round_decimal` (可选) | 返回的距离的小数位数。 |
+| `consistency_level` (可选) | 要搜索的一致性级别。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to search in. |
-| `search_params` | Parameters (as an object) used for search. |
-| `vectors` | Vectors to search with. |
-| `vector_type` | Pre-check of binary or float vectors. `100` for binary vectors and `101` for float vectors. |
-| `partition_names` (optional) | List of names of the partition to search in. |
-| `expr` (optional) | Boolean expression used to filter attribute. See [布尔表达式规则](boolean.md) for more information. |
-| `output_fields` (optional) | Name of the field to return. Vector field is not supported in current release. |
+| `collection_name` | 要搜索的数据集名称。 |
+| `search_params` | 用于搜索的参数（作为一个对象）。 |
+| `vectors` | 要搜索的向量。 |
+| `vector_type` | 二进制或浮点向量的预检测。`100`表示二进制向量，`101`表示浮点向量。 |
+| `partition_names` (可选) | 要搜索的分区名称列表。 |
+| `expr` (可选) | 用于过滤属性的布尔表达式。详见[布尔表达式规则](boolean.md)。 |
+| `output_fields` (可选) | 要返回的字段名称。当前版本不支持向量字段。 |
 
-| Parameter | Description | Options |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `ctx` | Context to control API invocation process. | N/A |
-| `CollectionName` | Name of the collection to load. | N/A |
-| `partitionNames` | List of names of the partitions to load. All partitions will be searched if it is left empty. | N/A |
-| `expr` | Boolean expression used to filter attribute. | See [布尔表达式规则](boolean.md) for more information. |
-| `output_fields` | Name of the field to return. | Vector field is not supported in current release. |
-| `vectors` | Vectors to search with. | N/A |
-| `vectorField` | Name of the field to search on. | N/A |
-| `metricType` | Metric type used for search. | This parameter must be set identical to the metric type used for index building. |
-| `topK` | Number of the most similar results to return. | N/A |
-| `sp` | entity.SearchParam specific to the index. | N/A |
+| `ctx` | 控制API调用过程的上下文。 | N/A |
+| `CollectionName` | 要加载的集合名称。 | N/A |
+| `partitionNames` | 要加载的分区名称列表。如果为空，则将搜索所有分区。 | N/A |
+| `expr` | 用于过滤属性的布尔表达式。 | 详见[布尔表达式规则](boolean.md)。 |
+| `output_fields` | 要返回的字段名称。 | 当前版本不支持向量字段。 |
+| `vectors` | 要搜索的向量。 | N/A |
+| `vectorField` | 要搜索的字段名称。 | N/A |
+| `metricType` | 用于搜索的指标类型。 | 此参数必须与用于索引构建的指标类型相同。 |
+| `topK` | 要返回的最相似结果的数量。 | N/A |
+| `sp` | 指标特定的entity.SearchParam。 | N/A |
 
-| Parameter | Description | Options |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `CollectionName` | Name of the collection to load. | N/A |
-| `MetricType` | Metric type used for search. | This parameter must be set identical to the metric type used for index building. |
-| `OutFields` | Name of the field to return. | Vector field is not supported in current release. |
-| `Vectors` | Vectors to search with. | N/A |
-| `VectorFieldName` | Name of the field to search on. | N/A |
-| `Expr` | Boolean expression used to filter attribute. | See [布尔表达式规则](boolean.md) for more information. |
-| `ConsistencyLevel` | The consistency level used in the query. | `STRONG`, `BOUNDED`, and`EVENTUALLY`. |
+| `CollectionName` | 要加载的集合名称。 | N/A |
+| `MetricType` | 用于搜索的指标类型。 | 此参数必须与用于索引构建的指标类型相同。 |
+| `OutFields` | 要返回的字段名称。 | 当前版本不支持向量字段。 |
+| `Vectors` | 要搜索的向量。 | N/A |
+| `VectorFieldName` | 要搜索的字段名称。 | N/A |
+| `Expr` | 用于过滤属性的布尔表达式。 | 详见[布尔表达式规则](boolean.md)。 |
+| `ConsistencyLevel` | 查询中使用的一致性级别。 | `STRONG`，`BOUNDED`和`EVENTUALLY`。 |
 
 检查最相似向量的主键值和它们之间的距离。
 
@@ -388,19 +372,19 @@ R<SearchResults> respSearch = milvusClient.search(searchParam);
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 results[0].ids
 results[0].distances
 
 ```
 
-```
+```python
 console.log(results.results)
 
 ```
 
-```
-fmt.Printf("%#v\n", searchResult)
+```python
+fmt.Printf("%#v", searchResult)
 for _, sr := range searchResult {
 	fmt.Println(sr.IDs)
 	fmt.Println(sr.Scores)
@@ -408,14 +392,14 @@ for _, sr := range searchResult {
 
 ```
 
-```
+```python
 SearchResultsWrapper wrapperSearch = new SearchResultsWrapper(respSearch.getData().getResults());
 System.out.println(wrapperSearch.getIDScore(0));
 System.out.println(wrapperSearch.getFieldData("book_id", 0));
 
 ```
 
-```
+```python
 # Milvus CLI automatically returns the primary key values of the most similar vectors and their distances.
 
 ```
@@ -429,17 +413,17 @@ System.out.println(wrapperSearch.getFieldData("book_id", 0));
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 collection.release()
 
 ```
 
-```
+```python
 await milvusClient.releaseCollection({  collection_name: "book",});
 
 ```
 
-```
+```python
 err := milvusClient.ReleaseCollection(
     context.Background(),                            // ctx
     "book",                                          // CollectionName
@@ -450,7 +434,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.releaseCollection(
 		ReleaseCollectionParam.newBuilder()
                 .withCollectionName("book")
@@ -458,16 +442,16 @@ milvusClient.releaseCollection(
 
 ```
 
-```
+```python
 release -c book
 
 ```
 
-```
-curl -X 'DELETE' \
-  'http://localhost:9091/api/v1/collection/load' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'DELETE' 
+  'http://localhost:9091/api/v1/collection/load' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book"
   }'
@@ -476,28 +460,24 @@ curl -X 'DELETE' \
 
 限制
 --
-
-| Feature | Maximum limit |
+| 功能 | 最大限制 |
 | --- | --- |
-| Length of a collection name | 255 characters |
-| Number of partitions in a collection | 4,096 |
-| Number of fields in a collection | 256 |
-| Number of shards in a collection | 256 |
-| Dimensions of a vector | 32,768 |
-| Top K | 16,384 |
-| Target input vectors | 16,384 |
+| 集合名称长度 | 255个字符 |
+| 集合中的分区数量 | 4,096 |
+| 集合中的字段数量 | 256 |
+| 集合中的分片数量 | 256 |
+| 向量的维度 | 32,768 |
+| Top K值 | 16,384 |
+| 目标输入向量数量 | 16,384 |
 
-What's next
------------
+下一步
 
-* Learn more basic operations of Milvus:
-
-	+ [Query vectors](query.md)
-	+ [Conduct a hybrid search](hybridsearch.md)
-	+ [Search with Time Travel](timetravel.md)
-* Explore API references for Milvus SDKs:
-
-	+ [PyMilvus API reference](/api-reference/pymilvus/v2.2.8/About.md)
-	+ [Node.js API reference](/api-reference/node/v2.2.x/About.md)
-	+ [Go API reference](/api-reference/go/v2.2.2/About.md)
-	+ [Java API reference](/api-reference/java/v2.2.5/About.md)
+* 学习更多关于Milvus的基本操作：
+  	+ [查询向量](query.md)
+	+ [进行混合搜索](hybridsearch.md)
+	+ [使用时间旅行搜索](timetravel.md)
+* 探索Milvus SDK的API参考：
+	+ [PyMilvus API参考](/api-reference/pymilvus/v2.2.8/About.md)
+	+ [Node.js API参考](/api-reference/node/v2.2.x/About.md)
+	+ [Go API参考](/api-reference/go/v2.2.2/About.md)
+	+ [Java API参考](/api-reference/java/v2.2.5/About.md)

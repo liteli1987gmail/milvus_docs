@@ -29,12 +29,12 @@ Using Helm to upgrade resources will cause the running pods to perform rolling u
 
 [Milvus独立版](#standalone) [Milvus集群](#cluster)
 
-```
+```python
 helm upgrade my-release milvus/milvus --reuse-values --set standalone.resources.limits.cpu=2 --set standalone.resources.limits.memory=4Gi --set standalone.resources.requests.cpu=0.1 --set standalone.resources.requests.memory=128Mi
 
 ```
 
-```
+```python
 helm upgrade my-release milvus/milvus --reuse-values --set dataNode.resources.limits.cpu=2 --set dataNode.resources.limits.memory=4Gi --set dataNode.resources.requests.cpu=0.1 --set dataNode.resources.requests.memory=128Mi
 
 ```
@@ -43,7 +43,7 @@ helm upgrade my-release milvus/milvus --reuse-values --set dataNode.resources.li
 
 您还可以通过在`resources.yaml`文件中指定`resources.requests`和`resources.limits`参数来分配CPU和内存资源。
 
-```
+```python
 dataNode:
   resources:
     limits:
@@ -68,7 +68,7 @@ queryNode:
 
 运行以下命令将新配置应用到您的Milvus集群中。
 
-```
+```python
 helm upgrade my-release milvus/milvus --reuse-values -f resources.yaml
 
 ```

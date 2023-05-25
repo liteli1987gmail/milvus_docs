@@ -6,7 +6,7 @@
 
 中国大陆用户可以在 **/etc.docker/daemon.json** 中注册镜像中添加URL "<https://registry.docker-cn.com>"。
 
-```
+```python
 {
   "registry-mirrors": ["https://registry.docker-cn.com"]
 }
@@ -56,7 +56,7 @@ Milvus的计算操作取决于CPU对SIMD（Single Instruction，Multiple Data）
 
 运行lscpu命令检查您的CPU是否支持上述SIMD指令集：
 
-```
+```python
 $ lscpu | grep -e sse4_2 -e avx -e avx2 -e avx512
 
 ```

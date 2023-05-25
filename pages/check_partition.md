@@ -15,14 +15,14 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.has_partition("novel")
 
 ```
 
-```
+```python
 await milvusClient.hasPartition({
   collection_name: "book",
   partition_name: "novel",
@@ -30,7 +30,7 @@ await milvusClient.hasPartition({
 
 ```
 
-```
+```python
 hasPar, err := milvusClient.HasPartition(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -43,7 +43,7 @@ log.Println(hasPar)
 
 ```
 
-```
+```python
 R<Boolean> respHasPartition = milvusClient.hasPartition(
   HasPartitionParam.newBuilder()
     .withCollectionName("book")
@@ -56,16 +56,16 @@ if (respHasPartition.getData() == Boolean.TRUE) {
 
 ```
 
-```
+```python
 describe partition -c book -p novel
 
 ```
 
-```
-curl -X 'GET' \
-  'http://localhost:9091/api/v1/partition/existence' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'GET' 
+  'http://localhost:9091/api/v1/partition/existence' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "partition_name": "novel"
@@ -75,35 +75,34 @@ curl -X 'GET' \
 
 Output:
 
-```
+```python
 {"status":{},"value":true}
 
 ```
-
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `partition_name` | Name of the partition to check. |
+| `partition_name` | 要检查的分区名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to check. |
-| `partition_name` | Name of the partition to check. |
+| `collection_name` | 要检查的集合名称。 |
+| `partition_name` | 要检查的分区名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to check. |
-| `partitionName` | Name of the partition to check. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 要检查的集合名称。 |
+| `partitionName` | 要检查的分区名称。 |
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | Name of the collection to check. |
-| -p | Name of the partition to check. |
+| -c | 要检查的集合名称。 |
+| -p | 要检查的分区名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to check. |
-| `partition_name` | Name of the partition to check. |
+| `collection_name` | 要检查的集合名称。 |
+| `partition_name` | 要检查的分区名称。 |
 
 列出所有分区
 ------
@@ -115,21 +114,21 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.partitions
 
 ```
 
-```
+```python
 await milvusClient.showPartitions({
   collection_name: "book",
 });
 
 ```
 
-```
+```python
 listPar, err := milvusClient.ShowPartitions(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -141,7 +140,7 @@ log.Println(listPar)
 
 ```
 
-```
+```python
 R<ShowPartitionsResponse> respShowPartitions = milvusClient.showPartitions(
   ShowPartitionsParam.newBuilder()
           .withCollectionName("book")
@@ -151,16 +150,16 @@ System.out.println(respShowPartitions);
 
 ```
 
-```
+```python
 list partitions -c book
 
 ```
 
-```
-curl -X 'GET' \
-  'http://localhost:9091/api/v1/partitions' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'GET' 
+  'http://localhost:9091/api/v1/partitions' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book"
   }'
@@ -169,7 +168,7 @@ curl -X 'GET' \
 
 Output:
 
-```
+```python
 {
   "status": {},
   "partition_names": [
@@ -191,27 +190,27 @@ Output:
 }
 
 ```
-
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to check. |
+| `collection_name` | 要检查的集合名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to check. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 要检查的集合名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to check. |
+| `CollectionName` | 要检查的集合名称。 |
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | Name of the collection to check. |
+| -c | 要检查的集合名称。 |
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | Name of the collection to check. |
+| -c | 要检查的集合名称。 |
+
 
 接下来是什么
 ------

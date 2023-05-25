@@ -16,7 +16,7 @@ Milvus 2.1 允许用户将分区加载为多个副本，以利用额外查询节
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load(["novel"], replica_number=2)
@@ -28,7 +28,7 @@ partition.load(replica_number=2)
 
 ```
 
-```
+```python
 await milvusClient.loadPartitions({
   collection_name: "book",
   partition_names: ["novel"],
@@ -36,7 +36,7 @@ await milvusClient.loadPartitions({
 
 ```
 
-```
+```python
 err := milvusClient.LoadPartitions(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -49,7 +49,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.loadPartitions(
   LoadPartitionsParam.newBuilder()
           .withCollectionName("book")
@@ -59,16 +59,16 @@ milvusClient.loadPartitions(
 
 ```
 
-```
+```python
 load -c book -p novel
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/partitions/load' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/partitions/load' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "partition_names": ["novel"],
@@ -76,46 +76,45 @@ curl -X 'POST' \
   }'
 
 ```
-
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `partition_name` | Name of the partition. |
-| `replica_number` (optional) | Number of the replica to load. |
+| `partition_name` | 分区名称。 |
+| `replica_number`（可选） | 要加载的副本数。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to load partitions from. |
-| `partition_names` | List of names of the partitions to load. |
+| `collection_name` | 要从中加载分区的集合名称。 |
+| `partition_names` | 要加载的分区名称列表。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to load partitions from. |
-| `partitionNames` | List of names of the partitions to load. |
-| `async` | Switch to control sync/async behavior. The deadline of context is not applied in sync load. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 要从中加载分区的集合名称。 |
+| `partitionNames` | 要加载的分区名称列表。 |
+| `async` | 用于控制同步/异步行为的开关。在同步加载中，上下文的截止时间不适用。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to load partitions from. |
-| `PartitionNames` | List of names of the partitions to load. |
+| `CollectionName` | 要从中加载分区的集合名称。 |
+| `PartitionNames` | 要加载的分区名称列表。 |
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | Name of the collection to load partitions from. |
-| -p (Multiple) | The name of the partition to load. |
+| -c | 要从中加载分区的集合名称。 |
+| -p（多个） | 要加载的分区名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to load partitions from. |
-| `partition_names` | List of names of the partitions to load. |
-| `replica_number` (optional) | Number of the replica to load. |
+| `collection_name` | 要从中加载分区的集合名称。 |
+| `partition_names` | 要加载的分区名称列表。 |
+| `replica_number`（可选） | 要加载的副本数。 |
 
 获取副本信息
 ------
 
 您可以查看已加载副本的信息。
 
-```
+```python
 from pymilvus import Partition
 partition = Partition("novel")       # Get an existing partition.
 partition.load(replica_number=2)     # Load partition as 2 replicas

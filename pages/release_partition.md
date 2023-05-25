@@ -10,14 +10,14 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Partition
 partition = Partition("novel")       # Get an existing partition.
 partition.release()
 
 ```
 
-```
+```python
 await milvusClient.releasePartitions({
     collection_name: "book",
     partition_names: ["novel"],
@@ -25,7 +25,7 @@ await milvusClient.releasePartitions({
 
 ```
 
-```
+```python
 err := milvusClient.ReleasePartitions(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -37,7 +37,7 @@ if err != nil {
 
 ```
 
-```
+```python
 List<String> partitionNames = new ArrayList<>();
 partitionNames.add("novel");
 milvusClient.releasePartitions(
@@ -49,16 +49,16 @@ milvusClient.releasePartitions(
 
 ```
 
-```
+```python
 release -c book -p novel
 
 ```
 
-```
-curl -X 'DELETE' \
-  'http://localhost:9091/api/v1/partitions/load' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'DELETE' 
+  'http://localhost:9091/api/v1/partitions/load' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "partition_names": ["novel"],
@@ -66,36 +66,35 @@ curl -X 'DELETE' \
   }'
 
 ```
-
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `partition_name` | Name of the partition. |
+| `partition_name` | 分区名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to release partitions. |
-| `partition_names` | List of names of the partitions to release. |
+| `collection_name` | 要释放分区的集合名称。 |
+| `partition_names` | 要释放的分区名称列表。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `ctx` | Context to control API invocation process. |
-| `CollectionName` | Name of the collection to release partitions. |
-| `partitionNames` | List of names of the partitions to release. |
+| `ctx` | 控制 API 调用过程的上下文。 |
+| `CollectionName` | 要释放分区的集合名称。 |
+| `partitionNames` | 要释放的分区名称列表。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to release partition. |
-| `PartitionNames` | List of names of the partitions to release. |
+| `CollectionName` | 要释放分区的集合名称。 |
+| `PartitionNames` | 要释放的分区名称列表。 |
 
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | Name of the collection to release partition. |
-| -p (Multiple) | The name of the partition to release. |
+| -c | 要释放分区的集合名称。 |
+| -p（多个） | 要释放的分区名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to release partitions. |
-| `partition_names` | List of names of the partitions to release. |
+| `collection_name` | 要释放分区的集合名称。 |
+| `partition_names` | 要释放的分区名称列表。 |
 
 约束
 --

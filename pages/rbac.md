@@ -1,3 +1,7 @@
+
+启用RBAC权限
+===
+
 启用RBAC，您可以基于用户角色和权限控制对特定Milvus资源（例如集合或分区）或权限的访问。目前，此功能仅在Python和Java中可用。
 
 本主题介绍了如何启用RBAC并管理用户和角色。
@@ -5,7 +9,7 @@
 1. 创建用户
 ----------------
 
-```
+```python
 utility.create_user(user, password, using="default")
 
 ```
@@ -14,28 +18,28 @@ utility.create_user(user, password, using="default")
 
 * 更新用户密码。您需要提供原始密码和新密码。
 
-```
+```python
 utility.update_password(user, old_password, new_password, using="default")
 
 ```
 
 * 列出所有用户。
 
-```
+```python
 utility.list_usernames(using="default")
 
 ```
 
 * 检查特定用户的角色。
 
-```
+```python
 utility.list_user(username, include_role_info, using="default")
 
 ```
 
 * 检查所有用户的角色。
 
-```
+```python
 utility.list_users(include_role_info, using="default")
 
 ```
@@ -45,7 +49,7 @@ utility.list_users(include_role_info, using="default")
 
 以下示例创建名为`roleA`的角色。
 
-```
+```python
 role_name = "roleA"
 role = Role(role_name, using=_CONNECTION)
 role.create()
@@ -56,14 +60,14 @@ role.create()
 
 * 检查角色是否存在。
 
-```
+```python
 role.is_exist("roleA")
 
 ```
 
 * 列出所有角色。
 
-```
+```python
 utility.list_roles(include_user_info, using="default")
 
 ```
@@ -73,7 +77,7 @@ utility.list_roles(include_user_info, using="default")
 
 以下示例演示如何向名为`roleA`的角色授予搜索所有集合的权限。请参见[用户和角色](users_and_roles.md)以获取其他类型的权限。
 
-```
+```python
 role.grant("Collection", "*", "Search")
 
 ```
@@ -82,14 +86,14 @@ role.grant("Collection", "*", "Search")
 
 * 列出分配给角色的对象的特定权限。
 
-```
+```python
 role.list_grant("Collection","CollectionA")
 
 ```
 
 * 列出分配给角色的所有权限。
 
-```
+```python
 role.list_grants()
 
 ```
@@ -99,7 +103,7 @@ role.list_grants()
 
 将角色绑定到用户，以便该用户可以继承角色的所有权限。
 
-```
+```python
 role.add_user("roleA", username)
 
 ```
@@ -108,7 +112,7 @@ role.add_user("roleA", username)
 
 * 列出绑定到角色的所有用户。
 
-```
+```python
 role.get_users("roleA")
 
 ```
@@ -120,28 +124,28 @@ role.get_users("roleA")
 
 * 从角色中删除一个权限。
 
-```
+```python
 role.revoke("Collection","*","Search")
 
 ```
 
 * 从角色中删除用户
 
-```
+```python
 role.remove_user(username)
 
 ```
 
 * 删除一个角色
 
-```
+```python
 role.drop("roleA"):
 
 ```
 
 * 删除一个用户
 
-```
+```python
 utility.delete_user(user, using="default")
 
 ```

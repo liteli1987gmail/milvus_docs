@@ -10,7 +10,7 @@
 准备模式
 ----
 
-The collection to create must contain a primary key field and a vector field. INT64 and String are supported data type on primary key field.
+需要创建的集合必须包含一个主键字段和一个向量字段。INT64和String是主键字段支持的数据类型。
 
 首先，准备必要的参数，包括字段模式、集合模式和集合名称。
 
@@ -21,7 +21,7 @@ The collection to create must contain a primary key field and a vector field. IN
 [命令行界面](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import CollectionSchema, FieldSchema, DataType
 book_id = FieldSchema(
   name="book_id",
@@ -50,7 +50,7 @@ collection_name = "book"
 
 ```
 
-```
+```python
 import { DataType } from "@zilliz/milvus2-sdk-node";
 const params = {
   collection_name: "book",
@@ -84,7 +84,7 @@ const params = {
 
 ```
 
-```
+```python
 var (
     collectionName = "book"
     )
@@ -116,7 +116,7 @@ schema := &entity.Schema{
 
 ```
 
-```
+```python
 FieldType fieldType1 = FieldType.newBuilder()
         .withName("book_id")
         .withDataType(DataType.Int64)
@@ -143,16 +143,16 @@ CreateCollectionParam createCollectionReq = CreateCollectionParam.newBuilder()
 
 ```
 
-```
+```python
 create collection -c book -f book_id:INT64:book_id -f word_count:INT64:word_count -f book_intro:FLOAT_VECTOR:2 -p book_id
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/collection' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/collection' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "schema": {
@@ -193,192 +193,94 @@ curl -X 'POST' \
 
 Output:
 
-```
+```python
 {}
 
 ```
+非常感谢您的纠正和耐心指导，我很抱歉之前没有整理出正确的表格。以下是根据您的指导进行修正的表格：
 
-| Parameter | Description | Option |
+
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `FieldSchema` | Schema of the fields within the collection to create. Refer to [模式](schema.md) for more information. | N/A |
-| `name` | Name of the field to create. | N/A |
-| `dtype` | Data type of the field to create. | For primary key field:
- * `DataType.INT64` (numpy.int64)
+| `FieldSchema` | 要创建的集合中字段的模式。有关更多信息，请参见[模式](schema.md)。| N/A |
+| `name` | 要创建的字段的名称。 | N/A |
+| `dtype` | 要创建的字段的数据类型。 | 对于主键字段：`DataType.INT64` (numpy.int64) 或 `DataType.VARCHAR` (VARCHAR)；对于标量字段：`DataType.BOOL` (布尔值)、`DataType.INT8` (numpy.int8)、`DataType.INT16` (numpy.int16)、`DataType.INT32` (numpy.int32)、`DataType.INT64` (numpy.int64)、`DataType.FLOAT` (numpy.float32)、`DataType.DOUBLE` (numpy.double) 或 `DataType.VARCHAR` (VARCHAR)；对于向量字段：`DataType.BINARY_VECTOR` (二进制向量) 或 `DataType.FLOAT_VECTOR` (浮点向量)。 |
+| `is_primary`（主键字段必需） | 用于控制字段是否为主键字段的开关。 | `True` 或 `False` |
+| `auto_id`（主键字段必需） | 用于启用或禁用自动ID（主键）分配的开关。 | `True` 或 `False` |
+| `max_length`（VARCHAR字段必需） | 允许插入的字符串的最大长度。 | [1, 65,535] |
+| `dim`（向量字段必需） | 向量的维度。 | [1, 32,768] |
+| `description`（可选） | 字段的描述信息。 | N/A |
 
-* `DataType.VARCHAR` (VARCHAR)
-
- For scalar field:
- * `DataType.BOOL` (布尔值)
-
-* `DataType.INT8` (numpy.int8)
-
-* `DataType.INT16` (numpy.int16)
-
-* `DataType.INT32` (numpy.int32)
-
-* `DataType.INT64` (numpy.int64)
-
-* `DataType.FLOAT` (numpy.float32)
-
-* `DataType.DOUBLE` (numpy.double)
-
-* `DataType.VARCHAR` (VARCHAR)
-
- For vector field:
- * `BINARY_VECTOR` (二进制向量)
-
-* `FLOAT_VECTOR` (浮点向量)
- |
-| `is_primary` (Mandatory for primary key field) | Switch to control if the field is primary key field. | `True` or `False` |
-| `auto_id` (Mandatory for primary key field) | Switch to enable or disable automatic ID (primary key) allocation. | `True` or `False` |
-| `max_length` (Mandatory for VARCHAR field) | Maximum length of strings allowed to be inserted. | [1, 65,535] |
-| `dim` (Mandatory for vector field) | Dimension of the vector. | [1, 32,768] |
-| `description` (Optional) | Description of the field. | N/A |
-| `CollectionSchema` | Schema of the collection to create. Refer to [模式](schema.md) for more information. | N/A |
-| `fields` | Fields of the collection to create. | N/A |
-| `description` (Optional) | Description of the collection to create. | N/A |
-| `collection_name` | Name of the collection to create. | N/A |
-
-| Parameter | Description | Option |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `collectionName` | Name of the collection to create. | N/A |
-| `description` | Description of the collection to create. | N/A |
-| `Fields` | Schema of the fields within the collection to create. Refer to [模式](schema.md) for more information. | N/A |
-| `Name` | Name of the field to create. | N/A |
-| `DataType` | Data type of the field to create. | For primary key field:
- * `entity.FieldTypeInt64 (numpy.int64)`
+| `CollectionSchema` | 要创建的集合的模式。有关更多信息，请参见[模式](schema.md)。| N/A |
+| `fields` | 要创建的集合的字段。 | N/A |
+| `description`（可选） | 要创建的集合的描述信息。 | N/A |
+| `collection_name` | 要创建的集合的名称。 | N/A |
 
-* `entity.FieldTypeVarChar (VARCHAR)`
-
- For scalar field:
- * `entity.FieldTypeBool (布尔值)`
-
-* `entity.FieldTypeInt8 (numpy.int8)`
-
-* `entity.FieldTypeInt16 (numpy.int16)`
-
-* `entity.FieldTypeInt32 (numpy.int32)`
-
-* `entity.FieldTypeInt64 (numpy.int64)`
-
-* `entity.FieldTypeFloat (numpy.float32)`
-
-* `entity.FieldTypeDouble (numpy.double)`
-
-* `entity.FieldTypeVarChar (VARCHAR)`
-
- For vector field:
- * `entity.FieldTypeBinaryVector` (二进制向量)
-
-* `entity.FieldTypeFloatVector` (浮点向量)
- |
-| `PrimaryKey` (Mandatory for primary key field) | Switch to control if the field is primary key field. | `True` or `False` |
-| `AutoID` (Mandatory for primary key field) | Switch to enable or disable Automatic ID (primary key) allocation. | `True` or `False` |
-| `dim` (Mandatory for vector field) | Dimension of the vector. | [1, 32768] |
-
-| Parameter | Description | Option |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `collection_name` | Name of the collection to create. | N/A |
-| `description` | Description of the collection to create. | N/A |
-| `fields` | Schema of the field and the collection to create. | Refer to [模式](schema.md) for more information. |
-| `data_type` | Data type of the filed to create. | Refer to [数据类型参考编号](https://github.com/milvus-io/milvus-sdk-node/blob/main/milvus/const/Milvus.ts#L287) for more information. |
-| `is_primary_key` (Mandatory for primary key field) | Switch to control if the field is primary key field. | `true` or `false` |
-| `autoID` | Switch to enable or disable Automatic ID (primary key) allocation. | `true` or `false` |
-| `dim` (Mandatory for vector field) | Dimension of the vector. | [1, 32768] |
-| `max_length` (Mandatory for VarChar field) | Dimension of the vector. | [1, 32768] |
-| `description` (Optional) | Description of the field. | N/A |
+| `collectionName` | 要创建的集合的名称。 | N/A |
+| `description` | 要创建的集合的描述信息。 | N/A |
+| `Fields` | 要创建的集合中字段的模式。有关更多信息，请参见[模式](schema.md)。| N/A |
+| `Name` | 要创建的字段的名称。 | N/A |
+| `DataType` | 要创建的字段的数据类型。 | 对于主键字段：`entity.FieldTypeInt64 (numpy.int64)` 或 `entity.FieldTypeVarChar (VARCHAR)`；对于标量字段：`entity.FieldTypeBool (布尔值)`、`entity.FieldTypeInt8 (numpy.int8)`、`entity.FieldTypeInt16 (numpy.int16)`、`entity.FieldTypeInt32 (numpy.int32)`、`entity.FieldTypeInt64 (numpy.int64)`、`entity.FieldTypeFloat (numpy.float32)`、`entity.FieldTypeDouble (numpy.double)` 或 `entity.FieldTypeVarChar (VARCHAR)`；对于向量字段：`entity.FieldTypeBinaryVector` (二进制向量) 或 `entity.FieldTypeFloatVector` (浮点向量)。 |
+| `PrimaryKey`（主键字段必需） | 用于控制字段是否为主键字段的开关。 | `True` 或 `False` |
+| `AutoID`（主键字段必需） | 用于启用或禁用自动ID（主键）分配的开关。 | `True` 或 `False` |
+| `dim`（向量字段必需） | 向量的维度。 | [1, 32768] |
 
-| Parameter | Description | Option |
+
+
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `Name` | Name of the field to create. | N/A |
-| `Description` | Description of the field to create. | N/A |
-| `DataType` | Data type of the field to create. | For primary key field:
- * `entity.FieldTypeInt64` (numpy.int64)
+| `collection_name` | 要创建的集合的名称。| 无 |
+| `description` | 要创建的集合的描述。| 无 |
+| `fields` | 要创建的字段和集合的模式。有关更多信息，请参阅[模式](schema.md)。| 无 |
+| `data_type` | 要创建的字段的数据类型。| 有关更多信息，请参阅[数据类型参考编号](https://github.com/milvus-io/milvus-sdk-node/blob/main/milvus/const/Milvus.ts#L287)。 |
+| `is_primary_key`（主键字段必填） | 用于控制字段是否为主键字段的开关。| `true` 或 `false` |
+| `autoID` | 用于启用或禁用自动生成的 ID（主键）分配的开关。| `true` 或 `false` |
+| `dim`（向量字段必填） | 向量的维度。|  `[1, 32,768]` |
+| `max_length` （VarChar 字段必填）| 字符串字段最大长度。| `[1, 32,768]` |
+| `description` (可选) | 字段的描述。| 无 |
 
-* `entity.FieldTypeVarChar` (VARCHAR)
 
- For scalar field:
- * `entity.FieldTypeBool` (Boolean)
 
-* `entity.FieldTypeInt8` (numpy.int8)
+| 参数 | 描述 | 选项 |
+| --- | --- | --- |
+| `Name` | 要创建的字段的名称。| 无 |
+| `Description` | 要创建的字段的描述。| 无 |
+| `DataType`（数据类型）| 要创建的字段的数据类型。| 对于主键字段，数据类型可以是 `entity.FieldTypeInt64` （numpy.int64）或 `entity.FieldTypeVarChar` （VARCHAR）。对于标量字段，数据类型可以是 `entity.FieldTypeBool` （布尔）、`entity.FieldTypeInt8` （numpy.int8）、`entity.FieldTypeInt16` （numpy.int16）、`entity.FieldTypeInt32` （numpy.int32）、`entity.FieldTypeInt64` （numpy.int64）、`entity.FieldTypeFloat` （numpy.float32）、`entity.FieldTypeDouble` （numpy.double）、`entity.FieldTypeVarChar` （VARCHAR）。对于向量字段，数据类型可以是 `entity.FieldTypeBinaryVector` （二进制向量）或 `entity.FieldTypeFloatVector` （浮点向量）。 |
+| `PrimaryKey`（主键字段必填） | 用于控制字段是否为主键字段的开关。| `True` 或 `False` |
+| `AutoID`（自动生成的 ID）| 用于启用或禁用自动生成的 ID（主键）分配的开关。| `True` 或 `False` |
+| `Dimension`（向量字段必填） | 向量的维度。| `[1, 32,768]` |
+| `CollectionName` | 要创建的集合的名称。| 无 |
+| `Description` (可选) | 要创建的集合的描述。| 无 |
+| `ShardsNum` | 要创建的集合的分片数。| `[1, 64]` |
 
-* `entity.FieldTypeInt16` (numpy.int16)
 
-* `entity.FieldTypeInt32` (numpy.int32)
 
-* `entity.FieldTypeInt64` (numpy.int64)
-
-* `entity.FieldTypeFloat` (numpy.float32)
-
-* `entity.FieldTypeDouble` (numpy.double)
-
-* `entity.FieldTypeVarChar` (VARCHAR)
-
- For vector field:
- * `entity.FieldTypeBinaryVector` (Binary vector)
-
-* `entity.FieldTypeFloatVector` (Float vector)
- |
-| `PrimaryKey` (Mandatory for primary key field) | Switch to control if the field is primary key field. | `True` or `False` |
-| `AutoID` | Switch to enable or disable Automatic ID (primary key) allocation. | `True` or `False` |
-| `Dimension` (Mandatory for vector field) | Dimension of the vector. | [1, 32768] |
-| `CollectionName` | Name of the collection to create. | N/A |
-| `Description` (Optional) | Description of the collection to create. | N/A |
-| `ShardsNum` | Number of the shards for the collection to create. | [1,64] |
-
-| Option | Description |
+| 选项 | 描述 |
 | --- | --- |
-| -c | The name of the collection. |
-| -f (Multiple) | The field schema in the `<fieldName>:<dataType>:<dimOfVector/desc>` format. |
-| -p | The name of the primary key field. |
-| -a (Optional) | Flag to generate IDs automatically. |
-| -d (Optional) | The description of the collection. |
+| `-c` | 集合的名称。|
+| `-f`（多个） | 字段模式的字符串，格式为`<字段名称>:<数据类型>:<向量分量数/描述>`。 |
+| `-p` | 主键字段的名称。|
+| `-a`（可选） | 用于启用或禁用自动生成的 ID。 |
+| `-d`（可选） | 集合的描述。|
 
-| Parameter | Description | Option |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `collection_name` | Name of the collection to create. | N/A |
-| `name` (schema) | Must be the same as `collection_name`, this duplicated field is kept for historical reasons. | Same as `collection_name` |
-| `autoID` (schema) | Switch to enable or disable Automatic ID (primary key) allocation. | `True` or `False` |
-| `description` (schema) | Description of the collection to create. | N/A |
-| `fields` | Schema of the fields within the collection to create. Refer to [Schema](schema.md) for more information. | N/A |
-| `name`(field) | Name of the field to create. | N/A |
-| `description` (field) | Description of the collection to create. | N/A |
-| `is_primary_key`(Mandatory for primary key field) | Switch to control if the field is primary key field. | `True` or `False` |
-| `autoID` (field)(Mandatory for primary key field) | Switch to enable or disable Automatic ID (primary key) allocation. | `True` or `False` |
-| `data_type` | Data type of the field to create. | 
- Enums:
- 1: "Bool",
- 2: "Int8",
- 3: "Int16",
- 4: "Int32",
- 5: "Int64",
- 10: "Float",
- 11: "Double",
- 20: "String",
- 21: "VarChar",
- 100: "BinaryVector",
- 101: "FloatVector",
+| `collection_name` | 要创建的集合的名称。| 无 |
+| `name` (schema) | 必须与 `collection_name` 相同，这个重复的字段是为了历史原因而保留的。| 与 `collection_name` 相同 |
+| `autoID` (schema) | 用于启用或禁用自动生成的 ID（主键）分配。| `True` 或 `False` |
+| `description` (schema) | 要创建的集合的描述。| 无 |
+| `fields` | 要创建的集合中字段的结构。有关更多信息，请参阅[模式](schema.md)。| 无 |
+| `name`(field) | 要创建的字段的名称。| 无 |
+| `description` (field) | 要创建的字段的描述。| 无 |
+| `is_primary_key`（主键字段必填）| 用于控制字段是否为主键字段的开关。| `true` 或 `false` |
+| `autoID` (field)(主键字段必填) | 用于启用或禁用自动生成的 ID（主键）分配的开关。| `true` 或 `false` |
+| `data_type` | 要创建的字段的数据类型。| 枚举项：`1：“Bool”`、`2：“Int8”`、`3：“Int16”`、`4：“Int32”`、`5：“Int64”`、`10：“Float”`、`11：“Double”`、`20：“String”`、`21：“VarChar”`、`100：“BinaryVector”`、`101：“FloatVector”`。对于主键字段，数据类型可以是 `DataType.INT64` （numpy.int64）或 `DataType.VARCHAR` （VARCHAR）。对于标量字段，数据类型可以是 `DataType.BOOL` （布尔）、`DataType.INT64` （numpy.int64）、`DataType.FLOAT` （numpy.float32）、`DataType.DOUBLE` （numpy.double）。对于向量字段，数据类型可以是 `BINARY_VECTOR` （二进制向量）或 `FLOAT_VECTOR` （浮点向量）。 |
+| `dim` (向量字段必填) | 向量的维度。| `[1, 32,768]` |
 
-For primary key field:
- * `DataType.INT64` (numpy.int64)
-
-* `DataType.VARCHAR` (VARCHAR)
-
- For scalar field:
- * `DataType.BOOL` (Boolean)
-
-* `DataType.INT64` (numpy.int64)
-
-* `DataType.FLOAT` (numpy.float32)
-
-* `DataType.DOUBLE` (numpy.double)
-
- For vector field:
- * `BINARY_VECTOR` (Binary vector)
-
-* `FLOAT_VECTOR` (Float vector)
- |
-| `dim` (Mandatory for vector field) | Dimension of the vector. | [1, 32,768] |
 
 创建带有上述指定模式的集合
 -------------
@@ -392,7 +294,7 @@ For primary key field:
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection(
     name=collection_name,
@@ -403,12 +305,12 @@ collection = Collection(
 
 ```
 
-```
+```python
 await milvusClient.createCollection(params);
 
 ```
 
-```
+```python
 err = milvusClient.CreateCollection(
     context.Background(), // ctx
     schema,
@@ -420,41 +322,45 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.createCollection(createCollectionReq);
 
 ```
 
-```
+```python
 # Follow the previous step.
 
 ```
 
-```
+```python
 # Follow the previous step.
 
 ```
 
-| Parameter | Description | Option |
-| --- | --- | --- |
-| `using` (optional) | By specifying the server alias here, you can choose in which Milvus server you create a collection. | N/A |
-| `shards_num` (optional) | Number of the shards for the collection to create. | [1,256] |
-| `properties: collection.ttl.seconds` (optional) | Collection time to live (TTL) is the expiration time of a collection. Data in an expired collection will be cleaned up and will not be involved in searches or queries. Specify TTL in the unit of seconds. | The value should be 0 or greater. 0 means TTL is disabled. |
+以下是第一个表格的中文翻译：
 
-| Parameter | Description | Option |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `ctx` | Context to control API invocation process. | N/A |
-| `shardNum` | Number of the shards for the collection to create. | [1,256] |
+| `using` (可选) | 通过在此处指定服务器别名，可以选择在哪个 Milvus 服务器上创建集合。| 无 |
+| `shards_num` (可选) | 要创建的集合的分片数。| `[1, 256]` |
+| `properties: collection.ttl.seconds` (可选) | 集合生存时间（TTL）是集合的到期时间。过期的数据将被清理，并不会参与搜索或查询。以秒为单位指定 TTL。| 值应为0或更大。 0表示TTL已禁用。|
+
+以下是第二个表格的中文翻译：
+
+| 参数 | 描述 | 选项 |
+| --- | --- | --- |
+| `ctx` | 控制 API 调用过程的上下文。| 无 |
+| `shardNum` |要创建的集合的分片数。| `[1, 256]` |
 
 限制
 --
 
-| Feature | Maximum limit |
+| 功能 | 最大限制 |
 | --- | --- |
-| Length of a collection name | 255 characters |
-| Number of partitions in a collection | 4,096 |
-| Number of fields in a collection | 64 |
-| Number of shards in a collection | 256 |
+| 集合名称的长度 | 255 个字符 |
+| 集合中的分区数量 | 4,096 |
+| 集合中的字段数量 | 64 |
+| 集合中的分片数量 | 256 |
 
 接下来要做什么
 -------

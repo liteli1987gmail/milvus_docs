@@ -16,21 +16,21 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load()
 
 ```
 
-```
+```python
 await milvusClient.loadCollection({
   collection_name: "book",
 });
 
 ```
 
-```
+```python
 err := milvusClient.LoadCollection(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -42,7 +42,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.loadCollection(
   LoadCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -51,12 +51,12 @@ milvusClient.loadCollection(
 
 ```
 
-```
+```python
 load -c book
 
 ```
 
-```
+```python
 # See the following step.
 
 ```
@@ -73,7 +73,7 @@ load -c book
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 search_param = {
   "data": [[0.1, 0.2]],
   "anns_field": "book_intro",
@@ -86,7 +86,7 @@ res = collection.search(**search_param)
 
 ```
 
-```
+```python
 const results = await milvusClient.search({
   collection_name: "book",
   expr: "word_count <= 11000",
@@ -102,7 +102,7 @@ const results = await milvusClient.search({
 
 ```
 
-```
+```python
 sp, _ := entity.NewIndexFlatSearchParam(   // NewIndex*SearchParam func
   10,                                      // searchParam
 )
@@ -124,9 +124,9 @@ if err != nil {
 
 ```
 
-```
+```python
 final Integer SEARCH_K = 2;
-final String SEARCH_PARAM = "{\"nprobe\":10, \”offset\”:5}";
+final String SEARCH_PARAM = "{"nprobe":10, ”offset”:5}";
 List<String> search_output_fields = Arrays.asList("book_id");
 List<List<Float>> search_vectors = Arrays.asList(Arrays.asList(0.1f, 0.2f));
 
@@ -144,7 +144,7 @@ R<SearchResults> respSearch = milvusClient.search(searchParam);
 
 ```
 
-```
+```python
 search
 
 Collection name (book): book
@@ -171,18 +171,18 @@ Travel Timestamp(Specify a timestamp in a search to get results based on a data 
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/search' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/search' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "output_fields": ["book_id"],
     "search_params": [
       {"key": "anns_field", "value": "book_intro"},
       {"key": "topk", "value": "2"},
-      {"key": "params", "value": "{\"nprobe\": 10}"},
+      {"key": "params", "value": "{"nprobe": 10}"},
       {"key": "metric_type", "value": "L2"},
       {"key": "round_decimal", "value": "-1"}
     ],
@@ -195,7 +195,7 @@ curl -X 'POST' \
 
 Output:
 
-```
+```python
 {
   "status":{},
   "results":{
@@ -217,90 +217,72 @@ Output:
 
 ```
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `data` | Vectors to search with. |
-| `anns_field` | Name of the field to search on. |
-| `params` | Search parameter(s) specific to the index. See [Vector Index](index.md) for more information. |
-| `offset` | Number of results to skip in the returned set. The sum of this value and `limit` should be less than 65535. |
-| `limit` | Number of the most similar results to return. |
-| `expr` | Boolean expression used to filter attribute. See [Boolean Expression Rules](boolean.md) for more information. |
-| `partition_names` (optional) | List of names of the partition to search in. The sum of this value and `offset` should be less than 65535. |
-| `output_fields` (optional) | Name of the field to return. Vector field is not supported in current release. |
-| `timeout` (optional) | A duration of time in seconds to allow for RPC. Clients wait until server responds or error occurs when it is set to None. |
-| `round_decimal` (optional) | Number of decimal places of returned distance. |
+| `data` | 用于搜索的向量 |
+| `anns_field` | 要搜索的字段名称 |
+| `params` | 用于索引构建的指标类型特定的搜索参数。详情请见[向量索引(Vector Index)](index.md) |
+| `offset` | 返回结果中要跳过的结果数。此值与 `limit` 的和应小于65535。 |
+| `limit` | 要返回的最相似结果的数量。 |
+| `expr` | 用于过滤属性的布尔表达式。详见[布尔表达式规则](boolean.md) |
+| `partition_names` （可选) | 要搜索的分区名称列表。此值与 `offset` 的和应小于65535。 |
+| `output_fields` (可选) | 要返回的字段名称。当前版本不支持向量字段 |
+| `timeout` (可选) | 允许RPC的持续时间，单位为秒。当设置为None时，客户端等待服务器响应或错误发生。|
+| `round_decimal` (可选) | 返回的距离的小数位数。|
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to search in. |
-| `search_params` | Parameters (as an object) used for search. |
-| `vectors` | Vectors to search with. |
-| `vector_type` | Pre-check of binary or float vectors. `100` for binary vectors and `101` for float vectors. |
-| `partition_names` (optional) | List of names of the partition to search in. |
-| `expr` (optional) | Boolean expression used to filter attribute. See [Boolean Expression Rules](boolean.md) for more information. |
-| `output_fields` (optional) | Name of the field to return. Vector field not support in current release. |
+| `collection_name` | 要搜索的集合名称 |
+| `search_params` | 用于搜索的参数（作为对象）。|
+| `vectors` | 用于搜索的向量。 |
+| `vector_type` | 预先检查二进制或浮点向量。`100`表示二进制向量，`101`表示浮点向量。 |
+| `partition_names` (可选) | 要搜索的分区名称列表。 |
+| `expr` (可选) | 用于过滤属性的布尔表达式。详见[布尔表达式规则](boolean.md)。|
+| `output_fields` (可选) | 要返回的字段名称。当前版本不支持向量字段。|
 
-| Parameter | Description | Options |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `NewIndex*SearchParam func` | Function to create entity.SearchParam according to different index types. | For floating point vectors:
- * `NewIndexFlatSearchParam` (FLAT)
-* `NewIndexIvfFlatSearchParam` (IVF_FLAT)
-* `NewIndexIvfSQ8SearchParam` (IVF_SQ8)
-* `NewIndexIvfPQSearchParam` (RNSG)
-* `NewIndexRNSGSearchParam` (HNSW)
-* `NewIndexHNSWSearchParam` (HNSW)
-* `NewIndexANNOYSearchParam` (ANNOY)
-* `NewIndexRHNSWFlatSearchParam` (RHNSW_FLAT)
-* `NewIndexRHNSW_PQSearchParam` (RHNSW_PQ)
-* `NewIndexRHNSW_SQSearchParam` (RHNSW_SQ)
+| `NewIndex*SearchParam func` | 根据不同的索引类型创建entity.SearchParam的功能 | 对于浮点向量:  * `NewIndexFlatSearchParam` (FLAT)  * `NewIndexIvfFlatSearchParam` (IVF_FLAT) * `NewIndexIvfSQ8SearchParam` (IVF_SQ8)  * `NewIndexIvfPQSearchParam` (RNSG) * `NewIndexRNSGSearchParam` (HNSW) * `NewIndexHNSWSearchParam` (HNSW)  * `NewIndexANNOYSearchParam` (ANNOY)  * `NewIndexRHNSWFlatSearchParam` (RHNSW_FLAT)  * `NewIndexRHNSW_PQSearchParam` (RHNSW_PQ)  * `NewIndexRHNSW_SQSearchParam` (RHNSW_SQ)   对于二进制向量:  `NewIndexBinFlatSearchParam` (BIN_FLAT)  `NewIndexBinIvfFlatSearchParam` (BIN_IVF_FLAT)|
+| `searchParam` | 用于索引构建的指标类型特定的搜索参数。 | 详见[向量索引(Vector Index)](index.md) |
+| `ctx` | 控制API调用过程的上下文。 | N/A |
+| `CollectionName` | 要加载的集合名称。 | N/A |
+| `partitionNames` | 要加载的分区名称列表。如果为空，则将搜索所有分区。 | N/A |
+| `expr` | 用于过滤属性的布尔表达式。 | 详见[布尔表达式规则](boolean.md)|
+| `output_fields` | 要返回的字段名称。 | 当前版本不支持向量字段 |
+| `vectors` | 用于搜索的向量。 | N/A |
+| `VectorFieldName` | 要搜索的字段名称。 | N/A |
+| `metricType` | 用于搜索的指标类型。 | 此参数必须与用于索引构建的指标类型相同。 |
+| `topK` | 要返回的最相似结果的数量。 | N/A |
+| `sp` | 特定于索引的entity.SearchParam。 | N/A |
 
- For binary vectors:
- * `NewIndexBinFlatSearchParam` (BIN_FLAT)
-* `NewIndexBinIvfFlatSearchParam` (BIN_IVF_FLAT)
- |
-| `searchParam` | Search parameter(s) specific to the index. | See [Vector Index](index.md) for more information. |
-| `ctx` | Context to control API invocation process. | N/A |
-| `CollectionName` | Name of the collection to load. | N/A |
-| `partitionNames` | List of names of the partitions to load. All partitions will be searched if it is left empty. | N/A |
-| `expr` | Boolean expression used to filter attribute. | See [Boolean Expression Rules](boolean.md) for more information. |
-| `output_fields` | Name of the field to return. | Vector field is not supported in current release. |
-| `vectors` | Vectors to search with. | N/A |
-| `vectorField` | Name of the field to search on. | N/A |
-| `metricType` | Metric type used for search. | This parameter must be set identical to the metric type used for index building. |
-| `topK` | Number of the most similar results to return. | N/A |
-| `sp` | entity.SearchParam specific to the index. | N/A |
-
-| Parameter | Description | Options |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `CollectionName` | Name of the collection to load. | N/A |
-| `MetricType` | Metric type used for search. | This parameter must be set identical to the metric type used for index building. |
-| `OutFields` | Name of the field to return. | Vector field is not supported in current release. |
-| `TopK` | Number of the most similar results to return. | N/A |
-| `Vectors` | Vectors to search with. | N/A |
-| `VectorFieldName` | Name of the field to search on. | N/A |
-| `Expr` | Boolean expression used to filter attribute. | See [Boolean Expression Rules](boolean.md) for more information. |
-| `Params` | Search parameter(s) specific to the index. | See [Vector Index](index.md) for more information. |
+| `CollectionName` | 要加载的集合名称。 | N/A |
+| `MetricType` | 用于搜索的指标类型 | 此参数必须与用于索引构建的指标类型相同。 |
+| `OutFields` | 要返回的字段名称。 | 当前版本不支持向量字段。 |
+| `TopK` | 要返回的最相似结果的数量。| N/A |
+| `Vectors` | 用于搜索的向量。 | N/A |
+| `VectorFieldName` | 要搜索的字段名称。 | N/A |
+| `Expr` | 用于过滤属性的布尔表达式。 | 详见[布尔表达式规则](boolean.md) |
+| `Params` | 用于索引构建的特定于指标类型的搜索参数。 | 详见[向量索引(Vector Index)](index.md) |
 
-| Option | Full name | Description |
+| 选项 | 全称 | 描述 |
 | --- | --- | --- |
-| --help | n/a | Displays help for using the command. |
+| --help | n/a | 显示命令使用帮助。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `output_fields`(optional) | Name of the field to return. Vector field is not supported in current release. |
-| `anns_field` | Name of the field to search on. |
-| `topk` | Number of the most similar results to return. |
-| `params` | Search parameter(s) specific to the index. See [Vector Index](index.md) for more information. |
-| `metric_type` | Metric type used for search. This parameter must be set identical to the metric type used for index building. |
-| `round_decimal` (optional) | Number of decimal places of returned distance. |
-| `Vectors` | Vectors to search with. |
-| `dsl` | Boolean expression used to filter attribute. Find more expression details in [Boolean Expression Rules](boolean.md). |
-| `dsl_type` | Type of `dsl` (Data Search Language) field:
- 0: "Dsl"
- 1: "BoolExprV1"
-  |
+| `output_fields`(可选) | 要返回的字段名。当前版本不支持向量字段。 |
+| `anns_field` | 要搜索的字段名称 |
+| `topk` | 要返回的最相似结果的数量。 |
+| `params` | 用于索引构建的特定于指标类型的搜索参数。详见[向量索引(Vector Index)](index.md) |
+| `metric_type` | 用于搜索的指标类型。此参数必须与用于索引构建的指标类型相同。 |
+| `round_decimal` (可选) | 返回的距离的小数位数。 |
+| `Vectors` | 要搜索的向量。 |
+| `dsl` | 用于过滤属性的布尔表达式。详见[布尔表达式规则](boolean.md)。 |
+| `dsl_type` | `dsl`(数据搜索语言)的类型。0: "Dsl"，1: "BoolExprV1"|
 
-Check the returned results.
+检查返回结果。
 
 [Python](#python) 
 [Java](#java)
@@ -309,7 +291,7 @@ Check the returned results.
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 assert len(res) == 1
 hits = res[0]
 assert len(hits) == 2
@@ -318,13 +300,13 @@ print(f"- Top1 hit id: {hits[0].id}, distance: {hits[0].distance}, score: {hits[
 
 ```
 
-```
+```python
 console.log(results.results)
 
 ```
 
-```
-fmt.Printf("%#v\n", searchResult)
+```python
+fmt.Printf("%#v", searchResult)
 for _, sr := range searchResult {
   fmt.Println(sr.IDs)
   fmt.Println(sr.Scores)
@@ -332,19 +314,19 @@ for _, sr := range searchResult {
 
 ```
 
-```
+```python
 SearchResultsWrapper wrapperSearch = new SearchResultsWrapper(respSearch.getData().getResults());
 System.out.println(wrapperSearch.getIDScore(0));
 System.out.println(wrapperSearch.getFieldData("book_id", 0));
 
 ```
 
-```
+```python
 # Milvus CLI automatically returns the primary key values of the most similar vectors and their distances.
 
 ```
 
-```
+```python
 # See the output of the previous step.
 
 ```

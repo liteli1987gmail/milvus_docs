@@ -47,14 +47,14 @@ Milvus Lite适用于以下场景：
 
 Milvus Lite可以在PyPI上找到，你可以通过`pip`来安装它。
 
-```
+```python
 $ python3 -m pip install milvus
 
 ```
 
 或者，你可以使用PyMilvus来安装它，方法如下：
 
-```
+```python
 $ python3 -m pip install milvus[client]
 
 ```
@@ -73,7 +73,7 @@ $ python3 -m pip install milvus[client]
 
 * 要将Milvus Lite作为Python模块启动，请按以下方式操作：
 
-```
+```python
 from milvus import default_server
 from pymilvus import connections, utility
 
@@ -103,7 +103,7 @@ default_server.stop()
 
 您还可以使用`with`语句，当您不需要它时，Milvus Lite会自动停止。
 
-```
+```python
 from milvus import default_server
 
 with default_server:
@@ -113,7 +113,7 @@ with default_server:
 ```
 * 要将Milvus Lite作为基于CLI的独立服务器启动，请运行
 
-```
+```python
 $ milvus-server
 
 ```
@@ -124,7 +124,7 @@ $ milvus-server
 
 * 要以 Python 模块的形式启动 Milvus Lite 调试模式，请按照以下步骤操作：
 
-```
+```python
 from milvus import debug_server, MilvusServer
 
 debug_server.run()
@@ -135,7 +135,7 @@ debug_server.run()
 ```
 * 要以独立服务器的形式启动调试模式，请按照以下步骤操作：
 
-```
+```python
 $ milvus-server --debug
 
 ```
@@ -144,7 +144,7 @@ $ milvus-server --debug
 
 * 要将本地目录设置为Milvus Lite存储所有相关数据和日志的本地目录，请执行以下操作：
 
-```
+```python
 from milvus import default_server
 
 with default_server:
@@ -153,7 +153,7 @@ with default_server:
 ```
 * 要在本地驱动器上持久化独立服务器生成的所有数据和日志，请运行
 
-```
+```python
 $ milvus-server --data milvus_data
 
 ```
@@ -165,7 +165,7 @@ $ milvus-server --data milvus_data
 
 * 使用Python API配置Milvus Lite，你可以像下面这样使用`MilvusServer`实例的`config.set` API来配置基本和额外的配置项：
 
-```
+```python
 from milvus import default_server
 
 with default_server:
@@ -176,7 +176,7 @@ with default_server:
 ```
 * 使用CLI配置Milvus Lite，运行以下命令来进行基本配置。
 
-```
+```python
 $ milvus-server --system-log-level info
 $ milvus-server --proxy-port 19531
 
@@ -184,7 +184,7 @@ $ milvus-server --proxy-port 19531
 
 或者运行以下命令进行额外配置。
 
-```
+```python
 $ milvus-server --extra-config dataCoord.segment.maxSize=1024
 
 ```

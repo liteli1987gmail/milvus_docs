@@ -21,7 +21,7 @@ Milvus仅支持集合中的一个主键字段。
 
 ### 创建字段模式
 
-```
+```python
 from pymilvus import FieldSchema
 id_field = FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, description="主键ID")
 age_field = FieldSchema(name="age", dtype=DataType.INT64, description="年龄")
@@ -74,7 +74,7 @@ embedding_field = FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim
 
 在定义集合模式之前，先定义字段模式。
 
-```
+```python
 from pymilvus import FieldSchema, CollectionSchema
 id_field = FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, description="主键ID")
 age_field = FieldSchema(name="age", dtype=DataType.INT64, description="年龄")
@@ -85,7 +85,7 @@ schema = CollectionSchema(fields=[id_field, age_field, embedding_field], auto_id
 
 使用指定的架构创建集合：
 
-```
+```python
 from pymilvus import Collection
 collection_name1 = "tutorial_1"
 collection1 = Collection(name=collection_name1, schema=schema, using='default', shards_num=2)
@@ -96,7 +96,7 @@ collection1 = Collection(name=collection_name1, schema=schema, using='default', 
 
 您还可以使用`Collection.construct_from_dataframe`创建集合，该方法可以从DataFrame自动生成集合模式并创建集合。
 
-```
+```python
 import pandas as pd
 df = pd.DataFrame({
         "id": [i for i in range(nb)],

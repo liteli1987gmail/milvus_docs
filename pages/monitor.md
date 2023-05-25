@@ -29,7 +29,7 @@ Kube-prometheus收集Kubernetes清单，[Grafana](http://grafana.com/)仪表板�
 
 在部署监视服务之前，您需要使用kube-prometheus清单目录中的配置创建监视堆栈。
 
-```
+```python
 $ git clone https://github.com/prometheus-operator/kube-prometheus.git
 $ cd # to the local path of the repo
 $ kubectl create -f manifests/setup
@@ -47,7 +47,7 @@ $ kubectl create -f manifests/
 
 你可以通过`http://localhost:9090`访问Prometheus，通过`http://localhost:3000`访问Grafana。
 
-```
+```python
 $ kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
 $ kubectl --namespace monitoring port-forward svc/grafana 3000
 
@@ -57,19 +57,19 @@ $ kubectl --namespace monitoring port-forward svc/grafana 3000
 
 ServiceMonitor在Milvus Helm中不是默认启用的。在Kubernetes集群中安装Prometheus Operator后，可以通过添加参数`metrics.serviceMontior.enabled=true`来启用它。
 
-```
+```python
 $ helm install my-release milvus/milvus --set metrics.serviceMonitor.enabled=true
 
 ```
 
 安装完成后，使用`kubectl`检查ServiceMonitor资源。
 
-```
+```python
 $ kubectl get servicemonitor
 
 ```
 
-```
+```python
 NAME                           AGE
 my-release-milvus              54s
 

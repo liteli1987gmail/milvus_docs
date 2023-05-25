@@ -12,7 +12,7 @@ Milvus 基于向量的距离计算搜索最相似的向量。反之，您也可�
 
 准备用于计算的向量。
 
-Vectors to be calculated must agree in vector type and dimension.
+需计算的向量在向量类型和维度上必须一致。
 
 [Python](#python) 
 [Java](#java)
@@ -21,7 +21,7 @@ Vectors to be calculated must agree in vector type and dimension.
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 vectors_left = {
     "ids": [0, 1], 
     "collection": "book", 
@@ -34,27 +34,27 @@ vectors_right = {"float_vectors": external_vectors}
 
 ```
 
-```
+```python
 // Node User Guide will be ready soon.
 
 ```
 
-```
+```python
 // GO User Guide will be ready soon.
 
 ```
 
-```
+```python
 // Java User Guide will be ready soon.
 
 ```
 
-```
+```python
 // CLI User Guide will be ready soon.
 
 ```
 
-```
+```python
 vectors_left='{
   "dim": 2,
   "ids": {
@@ -71,23 +71,25 @@ vectors_right='{
 
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `vectors_left` and `vectors_right` | Vectors on the left and right side of the operator. Dict type that can be represented as `{"ids": [primary_key_1, primary_key_2, ... primary_key_n], "collection": "collection_name", "partition": "partition_name", "field": "vector_field_name"}`, `{"float_vectors": [[1.0, 2.0], [3.0, 4.0], ... [9.0, 10.0]]}`, or `{"bin_vectors": [b'', b'N', ... b'Ê']}`. |
-| `ids` | List of primary key of entities that in the collection. |
-| `collection` | Name of the collection that holds the entities. |
-| `partition` | Name of the partition that holds the entities. |
-| `field` | Name of the vector field in the collection. |
-| `float_vectors` or `bin_vectors` | Type of the vectors. |
+以下是经过整理后的表格：
 
-| Parameter | Description | Option |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `dim` | Dimension of the vector. | N/A |
-| `id_array` | List of the primary keys of entities in the collection. | N/A |
-| `collection_name` | Name of the collection that holds the entities. | N/A |
-| `partition_names` | Names of the partitions that hold the entities. | N/A |
-| `field_name` | Name of the vector field in the collection. | N/A |
-| `vectors` | Temporarily only floating-point vectors are supported. | N/A |
+| `vectors_left` 和 `vectors_right` | 运算符左边和右边的向量。字典格式，可表示为 `{"ids": [主键1，主键2，...主键n]，"collection": "collection_name"，"partition":"partition_name"，"field": "vector_field_name"}`，`{"float_vectors": [[1.0，2.0]，[3.0，4.0]，... [9.0，10.0]]}`，或 `{"bin_vectors": [b''，b'N'，... b'Ê']}`。 | N/A |
+| `ids` | 集合中实体的主键列表。 | N/A |
+| `collection` | 包含实体的集合名称。 | N/A |
+| `partition` | 包含实体的分区名称。 | N/A |
+| `field` | 集合中所需矢量字段的名称。 | N/A |
+| `float_vectors` 或 `bin_vectors` | 矢量的类型。 | N/A |
+
+| 参数 | 描述 | 选项 |
+| --- | --- | --- |
+| `dim` | 向量的维度。 | N/A |
+| `id_array` | 集合中实体的主键列表。 | N/A |
+| `collection_name` | 包含实体的集合的名称。 | N/A |
+| `partition_names` | 包含实体的分区的名称。 | N/A |
+| `field_name` | 集合中所需矢量字段的名称。 | N/A |
+| `vectors` | 目前仅支持浮点向量。 | N/A |
 
 准备计算参数
 ------
@@ -101,7 +103,7 @@ vectors_right='{
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 params = {
     "metric": "IP", 
     "dim": 2
@@ -109,63 +111,47 @@ params = {
 
 ```
 
-```
+```python
 // Node User Guide will be ready soon.
 
 ```
 
-```
+```python
 // GO User Guide will be ready soon.
 
 ```
 
-```
+```python
 // Java User Guide will be ready soon.
 
 ```
 
-```
+```python
 // CLI User Guide will be ready soon.
 
 ```
 
-```
+```python
 params='[
   {"key": "metric", "value": "IP"}
 ]'
 
 ```
 
-| Parameter | Description | Option |
+
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `params` | Calculation parameters. | N/A |
-| `metric` | Metric types used for calculation. | For floating-point vectors:
- * `L2` (欧几里得距离)
+| `params` | 计算参数。 | N/A |
+| `metric` | 用于计算的度量类型。 |对于浮点向量：`L2`（欧几里得距离）和`IP`（内积）。 对于二进制向量：`JACCARD`（Jaccard距离）、`TANIMOTO`（Tanimoto距离）、`HAMMING`（Hamming距离）、`SUPERSTRUCTURE`（超级结构）和`SUBSTRUCTURE`（子结构）。 |
+| `dim` | 向量的维度。 | N/A |
 
-* `IP` (内积)
+以下是经过整理后的表格：
 
- For binary vectors:
- * `JACCARD` (Jaccard 距离)
-
-* `TANIMOTO` (Tanimoto 距离)
-
-* `HAMMING` (Hamming 距离)
-
-* `SUPERSTRUCTURE` (Superstructure)
-
-* `SUBSTRUCTURE` (Substructure)
- |
-| `dim` | Dimension of the vector. | N/A |
-
-| Parameter | Description | Option |
+| 参数 | 描述 | 选项 |
 | --- | --- | --- |
-| `metric` | Metric types used for calculation. | For floating-point vectors:
- * `L2` (Euclidean distance)
+| `metric` | 用于计算的度量类型。对于浮点向量：`L2`（欧几里得距离）和`IP`（内积）。| 对于浮点向量：     - `L2`（欧几里得距离）     - `IP`（内积）|
 
-* `IP` (Inner product)
- |
-
-(Optional) Load collection
+加载集合 (Optional) Load collection
 --------------------------
 
 如果在Milvus中计算集合中的向量，必须先将集合加载到内存中。
@@ -177,21 +163,21 @@ params='[
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load()
 
 ```
 
-```
+```python
 await milvusClient.loadCollection({
   collection_name: "book",
 });
 
 ```
 
-```
+```python
 err := milvusClient.LoadCollection(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -203,7 +189,7 @@ if err != nil {
 
 ```
 
-```
+```python
 milvusClient.loadCollection(
   LoadCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -212,16 +198,16 @@ milvusClient.loadCollection(
 
 ```
 
-```
+```python
 load -c book
 
 ```
 
-```
-curl -X 'POST' \
-  'http://localhost:9091/api/v1/collection/load' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'POST' 
+  'http://localhost:9091/api/v1/collection/load' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book"
   }'
@@ -233,7 +219,7 @@ curl -X 'POST' \
 
 根据提供的向量和参数计算向量之间的距离。
 
-```
+```python
 from pymilvus import utility
 results = utility.calc_distance(
     vectors_left=vectors_left, 
@@ -244,42 +230,42 @@ print(results)
 
 ```
 
-```
+```python
 // Node User Guide will be ready soon.
 
 ```
 
-```
+```python
 // GO User Guide will be ready soon.
 
 ```
 
-```
+```python
 // Java User Guide will be ready soon.
 
 ```
 
-```
+```python
 // CLI User Guide will be ready soon.
 
 ```
 
-```
-curl -X 'GET' \
-  'http://localhost:9091/api/v1/distance' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'GET' 
+  'http://localhost:9091/api/v1/distance' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d "{
-    \"op_left\": $vectors_left,
-    \"op_right\": $vectors_right,
-    \"params\": $params
+    "op_left": $vectors_left,
+    "op_right": $vectors_right,
+    "params": $params
   }"
 
 ```
 
 Output:
 
-```
+```python
 {"status":{},"Array":{"FloatDist":{"data":[3,7,11,15,4,10,16,22]}}}
 
 ```

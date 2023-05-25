@@ -42,7 +42,7 @@ All tests are performed under the following environments.
 | Hardware | Specification |
 | --- | --- |
 | CPU | Intel(R) Xeon(R) Gold 6226R CPU @ 2.90GHz |
-| Memory | 16*\32 GB RDIMM, 3200 MT/s |
+| Memory | 16*32 GB RDIMM, 3200 MT/s |
 | SSD | SATA 6 Gbps |
 
 ### Software environment
@@ -85,7 +85,7 @@ Test results
 
 **Server configurations (cluster)**
 
-```
+```python
 queryNode:
   replicas: 1
   resources:
@@ -111,7 +111,7 @@ queryNode:
 
 **Server configurations (standalone)**
 
-```
+```python
 standalone:
   replicas: 1
   resources:
@@ -139,7 +139,7 @@ standalone:
 
 **Server configurations (cluster)**
 
-```
+```python
 queryNode:
  replicas: 1
  resources:
@@ -171,7 +171,7 @@ Note: the number of Querynodes equals the `replica_number` when loading the coll
 
 **Server configurations (cluster)**
 
-```
+```python
 queryNode:
   replicas: 1 / 2 / 4 / 8      
   resources:

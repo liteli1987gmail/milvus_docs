@@ -12,7 +12,7 @@ You can configure S3 with [Docker Compose](https://docs.docker.com/get-started/o
 ### 1. 配置S3
 [MinIO](https://min.io/product/overview) 兼容 S3。要使用 Docker Compose 配置 S3，请在 milvus/configs 路径下的 `milvus.yaml` 文件中提供 `minio` 部分的值。
 
-```
+```python
 minio:
   address: <your_s3_endpoint>
   port: <your_s3_port>
@@ -29,7 +29,7 @@ minio:
 
 运行以下命令以启动使用S3配置的Milvus。
 
-```
+```python
 docker-compose up
 
 ```
@@ -56,7 +56,7 @@ docker-compose up
 
 1. 在 `values.yaml` 文件中配置 `minio` 部分。
 
-```
+```python
 minio:
   enabled: false
 
@@ -64,7 +64,7 @@ minio:
 
 2. 在 `values.yaml` 文件中使用您的值配置 `externalS3` 部分。
 
-```
+```python
 externalS3:
   enabled: true
   host: "<your_s3_endpoint>"
@@ -78,7 +78,7 @@ externalS3:
 
 3. 在配置完上述部分并保存 `values.yaml` 文件后，运行以下命令以安装使用 S3 配置的 Milvus。
 
-```
+```python
 helm install <your_release_name> milvus/milvus -f values.yaml
 
 ```
@@ -87,7 +87,7 @@ helm install <your_release_name> milvus/milvus -f values.yaml
 
 要安装Milvus并配置S3，请使用您的值运行以下命令。
 
-```
+```python
 helm install <your_release_name> milvus/milvus --set cluster.enabled=true  --set minio.enabled=false --set externalS3.enabled=true --set externalS3.host=<your_s3_endpoint> --set externalS3.port=<your_s3_port> --set externalS3.accessKey=<your_s3_access_key_id> --set externalS3.secretKey=<your_s3_secret_key> --set externalS3.bucketName=<your_bucket_name>
 
 ```

@@ -12,7 +12,7 @@
 
 - 在本地添加和更新Milvus Helm存储库。
 
-```
+```python
 helm repo add milvus https://milvus-io.github.io/milvus-helm/
 helm repo update
 
@@ -22,21 +22,21 @@ helm repo update
 
 * 对于Milvus独立部署：
 
-```
+```python
 helm template my-release --set cluster.enabled=false --set etcd.replicaCount=1 --set minio.mode=standalone --set pulsar.enabled=false milvus/milvus > milvus_manifest.yaml
 
 ```
 
 * 对于Milvus集群部署：
 
-```
+```python
 helm template my-release milvus/milvus > milvus_manifest.yaml
 
 ```
 
 如果您想更改多个配置，可以下载[`value.yaml`](https://github.com/milvus-io/milvus-helm/blob/master/charts/milvus/values.yaml)文件，在其中指定配置，并基于其生成清单。
 
-```
+```python
 wget https://raw.githubusercontent.com/milvus-io/milvus-helm/master/charts/milvus/values.yaml
 helm template -f values.yaml my-release milvus/milvus > milvus_manifest.yaml
 
@@ -44,7 +44,7 @@ helm template -f values.yaml my-release milvus/milvus > milvus_manifest.yaml
 
 - 下载需求和脚本文件。
 
-```
+```python
 $ wget https://raw.githubusercontent.com/milvus-io/milvus/master/deployments/offline/requirements.txt
 $ wget https://raw.githubusercontent.com/milvus-io/milvus/master/deployments/offline/save_image.py
 
@@ -52,7 +52,7 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus/master/deployments/off
 
 - 拉取并保存镜像。
 
-```
+```python
 pip3 install -r requirements.txt
 python3 save_image.py --manifest milvus_manifest.yaml
 
@@ -62,7 +62,7 @@ The images are stored in the `/images` folder.
 
 - 加载镜像。
 
-```
+```python
 cd images/for image in $(find . -type f -name "*.tar.gz") ; do gunzip -c $image | docker load; done
 
 ```
@@ -72,7 +72,7 @@ cd images/for image in $(find . -type f -name "*.tar.gz") ; do gunzip -c $image 
 
 将图像传输到目标主机后，运行以下命令以离线安装Milvus。
 
-```
+```python
 kubectl apply -f milvus_manifest.yaml
 
 ```
@@ -82,7 +82,7 @@ kubectl apply -f milvus_manifest.yaml
 
 要卸载Milvus，请运行以下命令。
 
-```
+```python
 kubectl delete -f milvus_manifest.yaml
 
 ```

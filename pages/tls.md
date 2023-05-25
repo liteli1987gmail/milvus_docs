@@ -1,4 +1,4 @@
-TLS
+TLS 单向验证和双向验证
 ===
 
 TLS（传输层安全）是一种加密协议，用于确保通信安全。Milvus代理使用TLS 单向验证和双向验证。
@@ -12,33 +12,72 @@ TLS（传输层安全）是一种加密协议，用于确保通信安全。Milvu
 
 确保安装了OpenSSL。如果您没有安装它，请先[构建和安装](https://github.com/openssl/openssl/blob/master/INSTALL.md) OpenSSL。
 
-```
+```python
 openssl version
 
 ```
 
 如果未安装OpenSSL，则可以使用以下命令在Ubuntu上安装。
 
-```
+```python
 sudo apt install openssl
 
 ```
 
-### Create files
+以下是您要创建的 `openssl.cnf` 文件的代码：
 
-1. Create the `openssl.cnf` and `gen.sh` files.
+```bash
+# OpenSSL configuration file
 
+# Establish working directory.
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+
+[req_distinguished_name]
+countryName = Country Name (2 letter code)
+countryName_default = XX
+stateOrProvinceName = State or Province Name (full name)
+stateOrProvinceName_default = Example-State
+localityName = Locality Name (eg, city)
+localityName_default = Example-Locality
+organizationalUnitName  = Organizational Unit Name (eg, section)
+organizationalUnitName_default  = Example-Organizational-Unit
+commonName = Common Name (e.g. server FQDN or YOUR name)
+commonName_max  = 64
+
+# Establish common name. Specify the same CommonName as the one used when creating the server key pair.
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = common_name
 ```
-mkdir cert && cd cert
-touch openssl.cnf gen.sh
 
+3. `gen.sh`
+
+```bash
+#!/bin/bash
+
+rm *.crt
+rm *.key
+rm *.csr
+
+openssl req -config openssl.cnf -new -newkey rsa:2048 -nodes -out client.csr -keyout client.key
+
+openssl x509 -req -days 365 -in client.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out client.crt
+
+rm *.csr
+
+chmod 777 *
 ```
 
-2. Copy the following configurations into the files. Configuration of `CommonName` is required. `CommonName` refers to the server name that the client needs to specify when connecting.
+请确保将 `gen.sh` 文件设置为可执行 (`chmod 777 gen.sh`)。
 
-`openssl.cnf`
 
-```
+```python
 #
 # OpenSSL example configuration file.
 # This is mostly being used for generation of certificate requests.
@@ -397,11 +436,11 @@ ess_cert_id_chain	= no	# Must the ESS cert id chain be included?
 
 ```
 
-The `openssl.cnf` file is a default OpenSSL configuration file. See [manual page](https://www.openssl.org/docs/manmaster/man5/config） for more information. The `gen.sh` file generates relevant certificate files. You can modify the `gen.sh` file for different purposes such as changing the validity period of the certificate file, the length of the certificate key or the certificate file names.
+`openssl.cnf` 文件是 OpenSSL 的默认配置文件。有关更多信息，请参见[手册页面](https://www.openssl.org/docs/manmaster/man5/config)。`gen.sh` 文件生成相关的证书文件。您可以修改 `gen.sh` 文件以用于不同的目的，例如更改证书文件的有效期、证书密钥的长度或证书文件名称。
 
 `gen.sh`
 
-```
+```python
 #!/usr/bin/env sh
 # your variables
 Country="CN"
@@ -429,81 +468,117 @@ openssl x509 -req -days 3650 -in client.csr -out client.pem -CA ca.pem -CAkey ca
 
 ```
 
-The variables in the `gen.sh` file are crucial to the process of creating a certificate signing request file. The first five variables are the basic signing information, including country, state, location, organization, organization unit. Caution is needed when configuring `CommonName` as it will be verified during client-server communication.
+`gen.sh` 文件中的变量对于创建证书签名请求文件的过程至关重要。前五个变量是基本的签名信息，包括国家、州、位置、组织和组织单位。在配置 `CommonName` 时需要小心，因为它将在客户端与服务器之间的通信期间进行验证。
 
-### Run `gen.sh` to generate certificate
+### 运行 `gen.sh` 以生成证书
 
-Run the `gen.sh` file to create certificate.
+运行 `gen.sh` 文件以创建证书。
 
-```
+```bash
 chmod +x gen.sh
 ./gen.sh
-
 ```
 
-The following nine files will be created: `ca.key`, `ca.pem`, `ca.srl`, `server.key`, `server.pem`, `server.csr`, `client.key`, `client.pem`, `client.csr`.
+以下九个文件将被创建：`ca.key`、`ca.pem`、`ca.srl`、`server.key`、`server.pem`、`server.csr`、`client.key`、`client.pem` 和 `client.csr`。
 
-### Modify the detail of certificate files (optional)
+### 修改证书文件的详细信息（可选）
 
-After generating the certificate, you can modify the detail of the certificate files according to your own need.
+生成证书后，您可以根据自己的需要修改证书文件的详细信息。
 
-The implementation of SSL or TSL mutual authentication involves a client, a server, and a certificate authority (CA). A CA is used to ensure that the certificate between a client and a server is legal.
+SSL 或 TSL 互相验证的实现涉及客户端、服务器和证书授权机构 (CA)。CA 用于确保客户端和服务器之间的证书是合法的。
 
-Run `man openssl` or see [the openssl manual page](https://www.openssl.org/docs/) for more information about using the OpenSSL command.
+运行 `man openssl` 或参见 [OpenSSL 手册页面](https://www.openssl.org/docs/) 以获取有关使用 OpenSSL 命令的更多信息。
 
-1. Generate an RSA private key for the ca.
+1. 为 CA 生成 RSA 私钥。
 
-```
+```bash
 openssl genpkey -algorithm RSA -out ca.key
-
 ```
 
-2. Request CA certificate generation.
+2. 请求生成 CA 证书。
 
-You need to provide the basic information about the CA in this step. Choose the `x509` option to skip the request and directly generate a self-signing certificate.
+您需要在此步骤中提供有关 CA 的基本信息。选择 `x509` 选项以跳过请求并直接生成自签名证书。
 
-```
+```bash
 openssl req -new -x509 -key ca.key -out ca.pem -days 3650 -subj "/C=$Country/ST=$State/L=$Location/O=$Organization/OU=$Organizational/CN=$CommonName"
-
 ```
 
-You will get a `ca.pem` file , a CA certificate that can be used to generate client-server certificates after this step.
+在此步骤之后，您将获得一个 `ca.pem` 文件，这是一个 CA 证书，可用于生成客户端-服务器证书。`gen.sh` 文件中的变量对于创建证书签名请求文件的过程至关重要。前五个变量是基本的签名信息，包括国家、州、位置、组织和组织单位。在配置 `CommonName` 时需要小心，因为它将在客户端与服务器之间的通信期间进行验证。
 
-3. Generate a server private key.
+### 运行 `gen.sh` 以生成证书
 
-```
-openssl genpkey -algorithm RSA -out server.key
+运行 `gen.sh` 文件以创建证书。
 
-```
-
-You will get a `server.key` file after this step.
-
-4. Generate a certificate signing request file.
-
-You need to provide the required information about the server to generate a certificate signing request file.
-
-```
-openssl req -new -nodes -key server.key -out server.csr -days 3650 -subj "/C=$Country/O=$Organization/OU=$Organizational/CN=$CommonName" -config ./openssl.cnf -extensions v3_req
-
+```bash
+chmod +x gen.sh
+./gen.sh
 ```
 
-You will get a `server.csr` file after this step.
+以下九个文件将被创建：`ca.key`、`ca.pem`、`ca.srl`、`server.key`、`server.pem`、`server.csr`、`client.key`、`client.pem` 和 `client.csr`。
 
-5. Sign the certificate.
+### 修改证书文件的详细信息（可选）
 
-Open the `server.csr`, the `ca.key` and the `ca.pem` files to sign the certificate. The `CAcreateserial` command option is used to create a CA serial number file if it does not exist. You will get an `aca.srl` file after choosing this command option.
+生成证书后，您可以根据自己的需要修改证书文件的详细信息。
 
+SSL 或 TSL 互相验证的实现涉及客户端、服务器和证书授权机构 (CA)。CA 用于确保客户端和服务器之间的证书是合法的。
+
+运行 `man openssl` 或参见 [OpenSSL 手册页面](https://www.openssl.org/docs/) 以获取有关使用 OpenSSL 命令的更多信息。
+
+1. 为 CA 生成 RSA 私钥。
+
+```bash
+openssl genpkey -algorithm RSA -out ca.key
 ```
-openssl x509 -req -days 3650 -in server.csr -out server.pem -CA ca.pem -CAkey ca.key -CAcreateserial -extfile ./openssl.cnf -extensions v3_req
 
+2. 请求生成 CA 证书。
+
+您需要在此步骤中提供有关 CA 的基本信息。选择 `x509` 选项以跳过请求并直接生成自签名证书。
+
+```bash
+openssl req -new -x509 -key ca.key -out ca.pem -days 3650 -subj "/C=$Country/ST=$State/L=$Location/O=$Organization/OU=$Organizational/CN=$CommonName"
 ```
 
-Modify Milvus server configurations
------------------------------------
+在此步骤之后，您将获得一个 `ca.pem` 文件，这是一个 CA 证书，可用于生成客户端-服务器证书。
 
-Set `tlsEnabled` to `true` and configure the file paths of `server.pem`, `server.key`, and `ca.pem` for the server in `config/milvus.yaml`.
+`gen.sh` 文件中的变量对于创建证书签名请求文件的过程至关重要。前五个变量是基本的签名信息，包括国家、州、位置、组织和组织单位。在配置 `CommonName` 时需要小心，因为它将在客户端与服务器之间的通信期间进行验证。
 
+### 运行 `gen.sh` 以生成证书
+
+运行 `gen.sh` 文件以创建证书。
+
+```bash
+chmod +x gen.sh
+./gen.sh
 ```
+
+以下九个文件将被创建：`ca.key`、`ca.pem`、`ca.srl`、`server.key`、`server.pem`、`server.csr`、`client.key`、`client.pem` 和 `client.csr`。
+
+### 修改证书文件的详细信息（可选）
+
+生成证书后，您可以根据自己的需要修改证书文件的详细信息。
+
+SSL 或 TSL 互相验证的实现涉及客户端、服务器和证书授权机构 (CA)。CA 用于确保客户端和服务器之间的证书是合法的。
+
+运行 `man openssl` 或参见 [OpenSSL 手册页面](https://www.openssl.org/docs/) 以获取有关使用 OpenSSL 命令的更多信息。
+
+1. 为 CA 生成 RSA 私钥。
+
+```bash
+openssl genpkey -algorithm RSA -out ca.key
+```
+
+2. 请求生成 CA 证书。
+
+您需要在此步骤中提供有关 CA 的基本信息。选择 `x509` 选项以跳过请求并直接生成自签名证书。
+
+```bash
+openssl req -new -x509 -key ca.key -out ca.pem -days 3650 -subj "/C=$Country/ST=$State/L=$Location/O=$Organization/OU=$Organizational/CN=$CommonName"
+```
+
+在此步骤之后，您将获得一个 `ca.pem` 文件，这是一个 CA 证书，可用于生成客户端-服务器证书。
+
+
+```python
 tls:
   serverPemPath: configs/cert/server.pem
   serverKeyPath: configs/cert/server.key
@@ -515,35 +590,35 @@ common:
 
 ```
 
-### One-way authentication
+### 单向验证
 
-Server need server.pem and server.key. Client-side need server.pem.
+服务器需要 server.pem 和 server.key。客户端需要 server.pem。
 
-### Two-way authentication
+### 双向验证
 
-Server-side need server.pem, server.key and ca.pem. Client-side need client.pem, client.key, ca.pem.
+服务器需要 server.pem、server.key 和 ca.pem。客户端需要 client.pem、client.key 和 ca.pem。
 
-Connect to the Milvus server with TLS
--------------------------------------
+使用 TLS 连接 Milvus 服务器
+----------------------------
 
-Configure the file paths of `client.pem`, `client.key`, and `ca.pem` for the client when using the Milvus SDK.
+使用 Milvus SDK 时，请为客户端配置 `client.pem`、`client.key` 和 `ca.pem` 文件路径。
 
-The following example uses the Milvus Python SDK.
+以下示例使用 Milvus Python SDK。
 
-```
+```python
 from pymilvus import connections
 
 _HOST = '127.0.0.1'
 _PORT = '19530'
 
-print(f"\nCreate connection...")
+print(f"Create connection...")
 connections.connect(host=_HOST, port=_PORT, secure=True, client_pem_path="cert/client.pem",
                         client_key_path="cert/client.key",
                         ca_pem_path="cert/ca.pem", server_name="localhost")
-print(f"\nList connections:")
+print(f"List connections:")
 print(connections.list_connections())
 
 ```
 
-See [example_tls1.py](https://github.com/milvus-io/pymilvus/blob/master/examples/example_tls1.py) and [example_tls2.py](https://github.com/milvus-io/pymilvus/blob/master/examples/example_tls2.py) for more information.
+请参见 [example_tls1.py](https://github.com/milvus-io/pymilvus/blob/master/examples/example_tls1.py) 和 [example_tls2.py](https://github.com/milvus-io/pymilvus/blob/master/examples/example_tls2.py) 获取更多信息。
 

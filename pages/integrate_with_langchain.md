@@ -8,7 +8,7 @@ Before you begin
 
 Code snippets on this page require **pymilvus** and **langchain** installed. OpenAI's embedding API has also been used to embed docs into the vector store, and therefore **openai** and **tiktoken** are also required. If they are not present on your system, run the following commands to install them.
 
-```
+```python
 ! python -m pip install --upgrade pymilvus langchain openai tiktoken
 
 ```
@@ -18,7 +18,7 @@ Code snippets on this page require **pymilvus** and **langchain** installed. Ope
 
 在本节中，您需要设置所有参数以在以下代码片段中使用。
 
-```
+```python
 from os import environ
 
 MILVUS_HOST = "localhost"
@@ -41,7 +41,7 @@ environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 * 设置用于保存向量嵌入的向量存储。
 
-```
+```python
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Milvus
 from langchain.document_loaders import WebBaseLoader
@@ -62,7 +62,7 @@ docs = text_splitter.split_documents(docs)
 
 文本拆分器的输出将类似于以下内容：
 
-```
+```python
 Created a chunk of size 1745, which is longer than the specified 1024
 Created a chunk of size 1278, which is longer than the specified 1024
 
@@ -70,7 +70,7 @@ Created a chunk of size 1278, which is longer than the specified 1024
 
 一旦准备好文档，我们需要将它们转换为向量嵌入并保存到向量存储中。
 
-```
+```python
 # Set up an embedding model to covert document chunks into vector embeddings.
 embeddings = OpenAIEmbeddings(model="ada")
 
@@ -85,7 +85,7 @@ vector_store = Milvus.from_documents(
 
 您可以尝试使用以下代码片段进行文本相似度搜索。返回的结果将是文档中与查询最相关的文本。
 
-```
+```python
 query = "What is milvus?"
 docs = vector_store.similarity_search(query)
 
@@ -95,8 +95,8 @@ print(docs)
 
 输出应类似于以下内容：
 
-```
-[Document(page_content='Milvus workflow.', metadata={'source': 'https://milvus.io/docs/overview.md', 'title': 'Introduction Milvus documentation', 'description': 'Milvus is an open-source vector database designed specifically for AI application development, embeddings similarity search, and MLOps v2.2.x.', 'language': 'en'}), Document(page_content="Installat...rved.", metadata={'source': 'https://milvus.io/docs/overview.md', 'title': 'Introduction Milvus documentation', 'description': 'Milvus is an open-source vector database designed specifically for AI application development, embeddings similarity search, and MLOps v2.2.x.', 'language': 'en'}), Document(page_content='Introduction ... Milvus is able to analyze the correlation between two vectors by calculating their similarity distance. If the two embedding vectors are very similar, it means that the original data sources are similar as well.', metadata={'source': 'https://milvus.io/docs/overview.md', 'title': 'Introduction Milvus documentation', 'description': 'Milvus is an open-source vector database designed specifically for AI application development, embeddings similarity search, and MLOps v2.2.x.', 'language': 'en'}), Document(page_content="Key concepts\n...search algorithms are used to accelerate the searching process. If the two embedding vectors are very similar, it means that the original data sources are similar as well.\nWhy Milvus?", metadata={'source': 'https://milvus.io/docs/overview.md', 'title': 'Introduction Milvus documentation', 'description': 'Milvus is an open-source vector database designed specifically for AI application development, embeddings similarity search, and MLOps v2.2.x.', 'language': 'en'})]
+```python
+[Document(page_content='Milvus workflow.', metadata={'source': 'https://milvus.io/docs/overview.md', 'title': 'Introduction Milvus documentation', 'description': 'Milvus is an open-source vector database designed specifically for AI application development, embeddings similarity search, and MLOps v2.2.x.', 'language': 'en'}), Document(page_content="Installat...rved.", metadata={'source': 'https://milvus.io/docs/overview.md', 'title': 'Introduction Milvus documentation', 'description': 'Milvus is an open-source vector database designed specifically for AI application development, embeddings similarity search, and MLOps v2.2.x.', 'language': 'en'}), Document(page_content='Introduction ... Milvus is able to analyze the correlation between two vectors by calculating their similarity distance. If the two embedding vectors are very similar, it means that the original data sources are similar as well.', metadata={'source': 'https://milvus.io/docs/overview.md', 'title': 'Introduction Milvus documentation', 'description': 'Milvus is an open-source vector database designed specifically for AI application development, embeddings similarity search, and MLOps v2.2.x.', 'language': 'en'}), Document(page_content="Key concepts...search algorithms are used to accelerate the searching process. If the two embedding vectors are very similar, it means that the original data sources are similar as well.Why Milvus?", metadata={'source': 'https://milvus.io/docs/overview.md', 'title': 'Introduction Milvus documentation', 'description': 'Milvus is an open-source vector database designed specifically for AI application development, embeddings similarity search, and MLOps v2.2.x.', 'language': 'en'})]
 
 ```
 
@@ -109,7 +109,7 @@ print(docs)
 
 以下代码片段设置了一个使用OpenAI作为LLM和**map-reduce**链式类型的链式。
 
-```
+```python
 from langchain.chains.qa_with_sources import load_qa_with_sources_chain
 from langchain.llms import OpenAI
 
@@ -121,11 +121,11 @@ chain({"input_documents": docs, "question": query}, return_only_outputs=True)
 
 返回的结果包括**intermediate_steps**和**output_text**。前者指示搜索期间引用的文档，后者是问题的最终答案。
 
-```
+```python
 {'intermediate_steps': [' No relevant text.',
   ' What is Milvus vector database?',
-  '\nWhat is Milvus? Milvus was created in 2019 with a singular goal: store, index, and manage massive embedding vectors generated by deep neural networks and other machine learning (ML) models. As a database specifically designed to handle queries over input vectors, it is capable of indexing vectors on a trillion scale. Unlike existing relational databases which mainly deal with structured data following a pre-defined pattern, Milvus is designed from the bottom-up to handle embedding vectors converted from unstructured data.',
+  'What is Milvus? Milvus was created in 2019 with a singular goal: store, index, and manage massive embedding vectors generated by deep neural networks and other machine learning (ML) models. As a database specifically designed to handle queries over input vectors, it is capable of indexing vectors on a trillion scale. Unlike existing relational databases which mainly deal with structured data following a pre-defined pattern, Milvus is designed from the bottom-up to handle embedding vectors converted from unstructured data.',
   ' Milvus is a vector database and similarity search platform that enables users to quickly and accurately search for semantically similar vectors in an unstructured data repository. It uses modern embedding techniques to convert unstructured data to embedding vectors, and approximate nearest neighbor (ANN) search algorithms to accelerate the searching process.'],
- 'output_text': ' Milvus is a vector database and similarity search platform that enables users to quickly and accurately search for semantically similar vectors in an unstructured data repository. It uses modern embedding techniques to convert unstructured data to embedding vectors, and approximate nearest neighbor (ANN) search algorithms to accelerate the searching process.\nSOURCES: https://milvus.io/docs/overview.md'}
+ 'output_text': ' Milvus is a vector database and similarity search platform that enables users to quickly and accurately search for semantically similar vectors in an unstructured data repository. It uses modern embedding techniques to convert unstructured data to embedding vectors, and approximate nearest neighbor (ANN) search algorithms to accelerate the searching process.SOURCES: https://milvus.io/docs/overview.md'}
 
 ```

@@ -12,14 +12,15 @@ Milvus支持通过布尔表达式筛选主键删除实体。
 
 * 频繁的删除操作将影响系统性能。
 
-Prepare boolean expression
---------------------------
+准备布尔表达式
+------------------
 
-Prepare the boolean expression that filters the entities to delete.
+准备筛选要删除的实体的布尔表达式。
 
-Milvus only supports deleting entities with clearly specified primary keys, which can be achieved merely with the term expression `in`. Other operators can be used only in query or scalar filtering in vector search. See [Boolean Expression Rules](boolean.md) for more information.
+Milvus仅支持删除具有明确定义主键的实体，这只需要在术语表达式中使用`in`就能实现。其他操作符只能用于向量搜索中的查询或标量过滤。有关更多信息，请参见[布尔表达式规则](boolean.md)。
 
-The following example filters data with primary key values of `0` and `1`.
+以下示例筛选主键值为`0`和`1`的数据。
+
 
 [Python](#python) 
 [Java](#java)
@@ -28,28 +29,28 @@ The following example filters data with primary key values of `0` and `1`.
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 expr = "book_id in [0,1]"
 
 ```
 
-```
+```python
 const expr = "book_id in [0,1]";
 
 ```
 
-```
+```python
 private static final String DELETE_EXPR = "book_id in [0,1]";
 
 ```
 
-```
+```python
 delete entities -c book
 The expression to specify entities to be deleted： book_id in [0,1]
 
 ```
 
-```
+```python
 "expr" = "book_id in [0,1]"
 
 ```
@@ -59,7 +60,7 @@ The expression to specify entities to be deleted： book_id in [0,1]
 | -c | The name of the collection. |
 | -p (Optional) | The name of the partition that the entities belong to. |
 
-Delete entities
+删除实体 Delete entities
 ---------------
 
 删除使用您创建的布尔表达式的实体。 Milvus返回已删除实体的ID列表。
@@ -71,14 +72,14 @@ Delete entities
 [CLI](#shell)
 [Curl](#curl)
 
-```
+```python
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.delete(expr)
 
 ```
 
-```
+```python
 await milvusClient.deleteEntities({
   collection_name: "book",
   expr: expr,
@@ -86,12 +87,12 @@ await milvusClient.deleteEntities({
 
 ```
 
-```
+```python
 // This function is under active development on the GO client.
 
 ```
 
-```
+```python
 milvusClient.delete(
   DeleteParam.newBuilder()
     .withCollectionName("book")
@@ -101,17 +102,17 @@ milvusClient.delete(
 
 ```
 
-```
+```python
 You are trying to delete the entities of collection. This action cannot be undone!
 Do you want to continue? [y/N]: y
 
 ```
 
-```
-curl -X 'DELETE' \
-  'http://localhost:9091/api/v1/entities' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
+```python
+curl -X 'DELETE' 
+  'http://localhost:9091/api/v1/entities' 
+  -H 'accept: application/json' 
+  -H 'Content-Type: application/json' 
   -d '{
     "collection_name": "book",
     "expr": "book_id in [0,1]"
@@ -121,7 +122,7 @@ curl -X 'DELETE' \
 
 Output:
 
-```
+```python
 {
   "status":{},
   "IDs":{"IdField":{"IntId":{"data":[0,1]}}},
@@ -130,33 +131,32 @@ Output:
 }
 
 ```
-
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `expr` | Boolean expression that specifies the entities to delete. |
-| `partition_name` (optional) | Name of the partition to delete entities from. |
+| `expr` | 用于指定要删除的实体的布尔表达式。 |
+| `partition_name`（可选） | 要从中删除实体的分区的名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to delete entities from. |
-| `expr` | Boolean expression that specifies the entities to delete. |
-| `partition_name` (optional) | Name of the partition to delete entities from. |
+| `collection_name` | 要从其中删除实体的集合名称。 |
+| `expr` | 用于指定要删除的实体的布尔表达式。 |
+| `partition_name`（可选） | 要从中删除实体的分区的名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `CollectionName` | Name of the collection to delete entities from. |
-| `expr` | Boolean expression that specifies the entities to delete. |
-| `PartitionName` (optional) | Name of the partition to delete entities from. |
+| `CollectionName` | 要从其中删除实体的集合名称。 |
+| `expr` | 用于指定要删除的实体的布尔表达式。 |
+| `PartitionName`（可选） | 要从中删除实体的分区的名称。 |
 
-| Parameter | Description |
+| 参数 | 描述 |
 | --- | --- |
-| `collection_name` | Name of the collection to delete entities from. |
-| `expr` | Boolean expression that specifies the entities to delete. |
+| `collection_name` | 要从其中删除实体的集合名称。 |
+| `expr` | 用于指定要删除的实体的布尔表达式。 |
 
-What's next
------------
+下一步是什么
+---------------
 
-* Learn more basic operations of Milvus:
+* 了解更多关于Milvus的基本操作：
 	+ [Build an index for vectors](build_index.md)
 	+ [Conduct a vector search](search.md)
 	+ [Conduct a hybrid search](hybridsearch.md)
