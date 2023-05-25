@@ -50,7 +50,11 @@ const config: DocsThemeConfig = {
   },
   docsRepositoryBase: 'https://github.com/liteli1987gmail/milnvs_docs',
   footer: {
-    text: 'Milvus中文文档',
+    text: <div><span>MIT {new Date().getFullYear()} © <a href="https://www.milvus-io.com/overview" target="_blank">Milvus-io中文文档</a>.  </span>
+      <span><a href="https://www.Langchain.com.cn" target="_blank">Langchain中文网</a>  </span>
+    <span><a href="http://www.r-p-a.com/llm-gpt-kaifa/" target="_blank">LLM/GPT应用外包开发    </a></span>
+    <span><a href="https://www.openaidoc.com.cn" target="_blank">Openai中文文档    </a></span>
+    </div>
   }
 }
 

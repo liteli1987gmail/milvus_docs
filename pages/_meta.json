@@ -1,34 +1,34 @@
 {
-    "Milvus介绍": {
-        "title": "Milvus介绍"
-      }, 
-      "入门指南": {
-        "title": "入门指南"
-      }, 
-      "用户手册 (User Guide)": {
-        "title": "用户手册 (User Guide)"
-      }, 
-      "管理员手册": {
-        "title": "管理员手册 (Administration Guide)"
-      }, 
-      "集成 (Integrations)": {
-        "title": "集成 (Integrations)"
-      }, 
-    "benchmark": {
-        "title": "基准测试（benchmark）"
-      }, 
-      "工具 （Tools)": {
-        "title": "工具 （Tools)"
-      }, 
-      "指引 （Reference)": {
-        "title": "指引 （Reference)"
-      },
-      "案例应用": {
-        "title": "案例应用"
-      },
-    "FAQs": {
-        "title": "FAQs（FAQs）"
-    },  
+  "Milvus介绍": {
+    "title": "Milvus介绍"
+  },
+  "入门指南": {
+    "title": "入门指南"
+  },
+  "用户手册 (User Guide)": {
+    "title": "用户手册 (User Guide)"
+  },
+  "管理员手册": {
+    "title": "管理员手册 (Administration Guide)"
+  },
+  "集成 (Integrations)": {
+    "title": "集成 (Integrations)"
+  },
+  "benchmark": {
+    "title": "基准测试（benchmark）"
+  },
+  "工具 （Tools)": {
+    "title": "工具 （Tools)"
+  },
+  "指引 （Reference)": {
+    "title": "指引 （Reference)"
+  },
+  "案例应用": {
+    "title": "案例应用"
+  },
+  "FAQs": {
+    "title": "FAQs（FAQs）"
+  },
   "overview": {
     "title": "概述（overview）",
     "display": "hidden"
@@ -221,9 +221,14 @@
     "title": "图像相似度搜索（image_similarity_search）",
     "display": "hidden"
   },
-  "index": {
+  "index_suoyin": {
     "title": "索引（index）",
     "display": "hidden"
+  },
+  "index": {
+    "title": "Milvus的概述",
+    "display": "hidden",
+    "href":"/overview"
   },
   "insert_data": {
     "title": "插入数据（insert_data）",
@@ -470,41 +475,59 @@
   "attu_collection": {
     "title": "Attu 集合（attu_collection）",
     "display": "hidden"
-},
-"attu_data": {
-    "title":"Attu 数据（attu_data）",
+  },
+  "attu_data": {
+    "title": "Attu 数据（attu_data）",
     "display": "hidden"
-},
-"attu_faq": {
-    "title":"Attu 常见问题解答（attu_faq）",
+  },
+  "attu_faq": {
+    "title": "Attu 常见问题解答（attu_faq）",
     "display": "hidden"
-},
-"attu_index": {
-    "title":"Attu 索引（attu_index）",
+  },
+  "attu_index": {
+    "title": "Attu 索引（attu_index）",
     "display": "hidden"
-},
-"attu_install-docker": {
-    "title":"Attu Docker 安装（attu_install-docker）",
+  },
+  "attu_install-docker": {
+    "title": "Attu Docker 安装（attu_install-docker）",
     "display": "hidden"
-},
-"attu_partition": {
-    "title":"Attu 分区（attu_partition）",
+  },
+  "attu_partition": {
+    "title": "Attu 分区（attu_partition）",
     "display": "hidden"
-},
-"attu_query": {
-    "title":"Attu 查询（attu_query）",
+  },
+  "attu_query": {
+    "title": "Attu 查询（attu_query）",
     "display": "hidden"
-},
-"attu_search": {
+  },
+  "attu_search": {
     "title": "Attu 搜索（attu_search）",
     "display": "hidden"
-},
-"attu_system": {
+  },
+  "attu_system": {
     "title": "Attu 系统（attu_system）",
     "display": "hidden"
-},
-"attu": {
+  },
+  "attu": {
     "title": "Attu（Attu）",
     "display": "hidden"
-}
+  },
+  "openaidoc": {
+    "title": "Openai中文文档",
+    "type": "page",
+    "href": "https://www.openaidoc.com.cn/",
+    "newWindow": true
+  },
+  "milvus-io": {
+    "title": "Milvus-io 中文文档",
+    "type": "page",
+    "href": "https://www.milvus-io.com/overview",
+    "newWindow": true
+  },
+  "langchain": {
+    "title": "Langchain 中文文档",
+    "type": "page",
+    "href": "https://www.langchain.com.cn/",
+    "newWindow": true
+  }
 }

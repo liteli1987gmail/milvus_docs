@@ -21,3 +21,28 @@ Then, run `pnpm dev` to start the development server and visit localhost:3000.
 ## License
 
 This project is licensed under the MIT License.
+
+## links
+
+```
+
+"openaidoc": {
+  "title": "Openai中文文档",
+  "type": "page",
+  "href": "https://www.openaidoc.com.cn/",
+  "newWindow": true
+},
+"milvus-io": {
+  "title": "Milvus-io 中文文档",
+  "type": "page",
+  "href": "https://www.milvus-io.com/overview",
+  "newWindow": true
+},
+"langchain":{
+  "title": "Langchain 中文文档",
+  "type": "page",
+  "href": "https://www.langchain.com.cn/",
+  "newWindow": true
+}
+
+```
