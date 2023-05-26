@@ -24,7 +24,7 @@ Ensure you meet the requirements for operating system and software before instal
 
 - 将以下两行添加到**~/.bashrc**文件中：
 
-```python
+```bash
 export MILVUSDM_PATH='/home/$user/milvusdm'
 export LOGS_NUM=0
 
@@ -36,14 +36,14 @@ export LOGS_NUM=0
 
 - 配置环境变量：
 
-```python
+```bash
 $ source ~/.bashrc
 
 ```
 
 - 使用 `pip` 安装 MilvusDM：
 
-```python
+```bash
 $ pip3 install pymilvusdm==2.0
 
 ```

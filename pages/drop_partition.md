@@ -15,13 +15,13 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection.drop_partition("novel")
 
 ```
 
-```python
+```bash
 await milvusClient.dropPartition({
   collection_name: "book",
   partition_name: "novel",
@@ -29,7 +29,7 @@ await milvusClient.dropPartition({
 
 ```
 
-```python
+```bash
 err := milvusClient.DropPartition(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -41,7 +41,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.dropPartition(
   DropPartitionParam.newBuilder()
     .withCollectionName("book")
@@ -51,12 +51,12 @@ milvusClient.dropPartition(
 
 ```
 
-```python
+```bash
 delete partition -c book -p novel
 
 ```
 
-```python
+```bash
 curl -X 'DELETE' 
   'http://localhost:9091/api/v1/partition' 
   -H 'accept: application/json' 

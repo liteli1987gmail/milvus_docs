@@ -20,21 +20,21 @@ Milvus搜索实体
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load()
 
 ```
 
-```python
+```bash
 await milvusClient.loadCollection({
   collection_name: "book",
 });
 
 ```
 
-```python
+```bash
 err := milvusClient.LoadCollection(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -46,7 +46,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.loadCollection(
   LoadCollectionParam.newBuilder()
           .withCollectionName("book")
@@ -55,12 +55,12 @@ milvusClient.loadCollection(
 
 ```
 
-```python
+```bash
 load -c book
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/collection/load' 
   -H 'accept: application/json' 
@@ -83,12 +83,12 @@ curl -X 'POST'
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 search_params = {"metric_type": "L2", "params": {"nprobe": 10}, "offset": 5}
 
 ```
 
-```python
+```bash
 const searchParams = {
   anns_field: "book_intro",
   topk: "2",
@@ -98,20 +98,20 @@ const searchParams = {
 
 ```
 
-```python
+```bash
 sp, _ := entity.NewIndexFlatSearchParam( // NewIndex*SearchParam func
 	10,                                  // searchParam
 )
 
 ```
 
-```python
+```bash
 final Integer SEARCH_K = 2;                       // TopK
 final String SEARCH_PARAM = "{"nprobe":10, ”offset”:5}";    // Params
 
 ```
 
-```python
+```bash
 search
 
 Collection name (book): book
@@ -138,7 +138,7 @@ Travel Timestamp(Specify a timestamp in a search to get results based on a data 
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/search' 
   -H 'accept: application/json' 
@@ -161,7 +161,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "results":{
@@ -235,7 +235,7 @@ Milvus支持为搜索设置一致性级别。此主题中的示例将一致性�
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 results = collection.search(
 	data=[[0.1, 0.2]], 
 	anns_field="book_intro", 
@@ -259,7 +259,7 @@ hit.entity.get('title')
 
 ```
 
-```python
+```bash
 const results = await milvusClient.search({
   collection_name: "book",
   expr: "",
@@ -270,7 +270,7 @@ const results = await milvusClient.search({
 
 ```
 
-```python
+```bash
 searchResult, err := milvusClient.Search(
 	context.Background(),                    // ctx
 	"book",                                  // CollectionName
@@ -289,7 +289,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 List<String> search_output_fields = Arrays.asList("book_id");
 List<List<Float>> search_vectors = Arrays.asList(Arrays.asList(0.1f, 0.2f));
 
@@ -307,12 +307,12 @@ R<SearchResults> respSearch = milvusClient.search(searchParam);
 
 ```
 
-```python
+```bash
 # Follow the previous step.
 
 ```
 
-```python
+```bash
 # Follow the previous step.
 
 ```
@@ -372,18 +372,18 @@ R<SearchResults> respSearch = milvusClient.search(searchParam);
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 results[0].ids
 results[0].distances
 
 ```
 
-```python
+```bash
 console.log(results.results)
 
 ```
 
-```python
+```bash
 fmt.Printf("%#v", searchResult)
 for _, sr := range searchResult {
 	fmt.Println(sr.IDs)
@@ -392,14 +392,14 @@ for _, sr := range searchResult {
 
 ```
 
-```python
+```bash
 SearchResultsWrapper wrapperSearch = new SearchResultsWrapper(respSearch.getData().getResults());
 System.out.println(wrapperSearch.getIDScore(0));
 System.out.println(wrapperSearch.getFieldData("book_id", 0));
 
 ```
 
-```python
+```bash
 # Milvus CLI automatically returns the primary key values of the most similar vectors and their distances.
 
 ```
@@ -413,17 +413,17 @@ System.out.println(wrapperSearch.getFieldData("book_id", 0));
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 collection.release()
 
 ```
 
-```python
+```bash
 await milvusClient.releaseCollection({  collection_name: "book",});
 
 ```
 
-```python
+```bash
 err := milvusClient.ReleaseCollection(
     context.Background(),                            // ctx
     "book",                                          // CollectionName
@@ -434,7 +434,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.releaseCollection(
 		ReleaseCollectionParam.newBuilder()
                 .withCollectionName("book")
@@ -442,12 +442,12 @@ milvusClient.releaseCollection(
 
 ```
 
-```python
+```bash
 release -c book
 
 ```
 
-```python
+```bash
 curl -X 'DELETE' 
   'http://localhost:9091/api/v1/collection/load' 
   -H 'accept: application/json' 

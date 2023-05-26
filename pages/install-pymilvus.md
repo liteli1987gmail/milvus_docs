@@ -21,7 +21,7 @@ PyMilvus可以在[Python包索引](https://pypi.org/project/pymilvus/)中获取�
 
 建议安装与你所安装的Milvus服务器版本相匹配的PyMilvus版本。更多信息请参见[发布说明](release_notes.md)。
 
-```python
+```bash
 $ python3 -m pip install pymilvus==2.2.8
 
 ```
@@ -31,7 +31,7 @@ $ python3 -m pip install pymilvus==2.2.8
 
 如果PyMilvus正确安装，则运行以下命令时不会引发任何异常。
 
-```python
+```bash
 $ python3 -c "from pymilvus import Collection"
 
 ```

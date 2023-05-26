@@ -21,7 +21,7 @@ Milvus是一个云原生向量数据库，可以部署在各种云环境中。�
 
 为了确保Milvus的安全性，您需要在GCP项目中创建一个逻辑隔离的虚拟网络。以下命令创建了一个VPC。
 
-```python
+```bash
 gcloud compute networks create milvus-network 
     --project=milvus-testing-nonprod 
     --subnet-mode=auto 
@@ -32,7 +32,7 @@ gcloud compute networks create milvus-network
 
 为了方便您的工作，您还需要设置几个防火墙规则，允许ICMP、RDP和SSH的外部流量以及VPC内的流量。
 
-```python
+```bash
 gcloud compute firewall-rules create milvus-network-allow-icmp 
     --project=milvus-testing-nonprod 
     --network=projects/milvus-testing-nonprod/global/networks/milvus-network 
@@ -74,7 +74,7 @@ gcloud compute firewall-rules create milvus-network-allow-ssh
 
 最后，您需要允许端口**19530**的Milvus实例的入站流量。
 
-```python
+```bash
 gcloud compute firewall-rules create allow-milvus-in 
     --project=milvus-testing-nonprod  
     --description="Allow ingress traffic for Milvus on port 19530" 
@@ -93,7 +93,7 @@ gcloud compute firewall-rules create allow-milvus-in
 
 建议您使用提供至少16 GB内存的机器类型，以确保服务的稳定性。
 
-```python
+```bash
 gcloud beta container clusters create "milvus-cluster-1" 
     --project "milvus-testing-nonprod" 
     --zone "us-west1-a" 
@@ -115,7 +115,7 @@ gcloud beta container clusters create "milvus-cluster-1"
 
 等待几分钟，Kubernetes集群就会启动。一旦集群准备就绪，请使用以下命令来获取其凭据，以便您可以在终端中运行`kubectl`命令以远程与集群通信。
 
-```python
+```bash
 gcloud container clusters get-credentials milvus-cluster-1
 
 ```
@@ -124,7 +124,7 @@ gcloud container clusters get-credentials milvus-cluster-1
 
 现在 Kubernetes 集群已经准备好了，让我们立即部署 Milvus。
 
-```python
+```bash
 helm repo add milvus https://milvus-io.github.io/milvus-helm/
 helm repo update
 helm install my-release milvus/milvus --set service.type=LoadBalancer
@@ -141,7 +141,7 @@ helm install my-release milvus/milvus --set service.type=LoadBalancer
 
 所有的Pod都在运行后，运行以下命令以查看用于访问Milvus实例的外部IP地址和端口。
 
-```python
+```bash
 kubectl get services
 
 ```

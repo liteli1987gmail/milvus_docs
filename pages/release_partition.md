@@ -10,14 +10,14 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Partition
 partition = Partition("novel")       # Get an existing partition.
 partition.release()
 
 ```
 
-```python
+```bash
 await milvusClient.releasePartitions({
     collection_name: "book",
     partition_names: ["novel"],
@@ -25,7 +25,7 @@ await milvusClient.releasePartitions({
 
 ```
 
-```python
+```bash
 err := milvusClient.ReleasePartitions(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -37,7 +37,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 List<String> partitionNames = new ArrayList<>();
 partitionNames.add("novel");
 milvusClient.releasePartitions(
@@ -49,12 +49,12 @@ milvusClient.releasePartitions(
 
 ```
 
-```python
+```bash
 release -c book -p novel
 
 ```
 
-```python
+```bash
 curl -X 'DELETE' 
   'http://localhost:9091/api/v1/partitions/load' 
   -H 'accept: application/json' 

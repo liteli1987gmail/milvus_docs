@@ -18,7 +18,7 @@ You can install Milvus_CLI from [PyPI](https://pypi.org/project/milvus-cli/).
 
 运行以下命令以安装 Milvus_CLI。
 
-```python
+```bash
 pip install milvus-cli
 
 ```
@@ -34,7 +34,7 @@ You can instal Milvus_CLI with docker.
 
 ### Install based on Docker image
 
-```python
+```bash
 $ docker run -it zilliz/milvus_cli:latest
 
 ```
@@ -44,21 +44,21 @@ Install from source code
 
 1. Run the following command to download a `milvus_cli` repository.
 
-```python
+```bash
 git clone https://github.com/zilliztech/milvus_cli.git
 
 ```
 
 2. Run the following command to enter the `milvus_cli` folder.
 
-```python
+```bash
 cd milvus_cli
 
 ```
 
 3. Run the following command to install Milvus_CLI.
 
-```python
+```bash
 python -m pip install --editable .
 
 ```

@@ -1,5 +1,14 @@
 
-在这个示例中，我们将使用Milvus和SentenceTransformers库来进行维基百科文章的搜索。我们要搜索的数据集是在[Kaggle](https://www.kaggle.com/datasets/jrobischon/wikipedia-movie-plots)上找到的维基百科电影情节数据集。在此示例中，我们在公共google drive上重新托管了数据。
+
+Milvus和SentenceTransformers库
+===
+
+在这个示例中，我们将使用Milvus和SentenceTransformers库来进行维基百科文章的搜索。
+
+
+我们要搜索的数据集是在[Kaggle](https://www.kaggle.com/datasets/jrobischon/wikipedia-movie-plots)上找到的维基百科电影情节数据集。
+
+在此示例中，我们在公共google drive上重新托管了数据。
 
 让我们开始吧。
 
@@ -8,7 +17,7 @@
 
 对于这个示例，我们将使用`pymilvus` 来连接和使用Milvus，`sentencetransformers`来生成向量嵌入，`gdown` 用于下载示例数据集。
 
-```python
+```bash
 pip install pymilvus sentence-transformers gdown
 
 ```
@@ -18,7 +27,7 @@ pip install pymilvus sentence-transformers gdown
 
 我们将使用`gdown`从Google Drive获取zip文件，然后使用内置的`zipfile`库进行解压缩。
 
-```python
+```bash
 import gdown
 url = 'https://drive.google.com/uc?id=11ISS45aO2ubNCGaC3Lvd3D7NT8Y7MeO8'
 output = './movies.zip'
@@ -36,7 +45,7 @@ with zipfile.ZipFile("./movies.zip","r") as zip_ref:
 
 在这里，我们可以找到需要修改以运行您自己的账户的主要参数。每个参数旁边都有一个描述。
 
-```python
+```bash
 # Milvus Setup Arguments
 COLLECTION_NAME = 'movies_db'  # Collection name
 DIMENSION = 384  # Embeddings size
@@ -59,7 +68,7 @@ TOP_K = 3
 
 1. 使用提供的 URI 连接到 Milvus 实例。
 
-```python
+```bash
 from pymilvus import connections
 
 # 连接到 Milvus 数据库
@@ -68,7 +77,7 @@ connections.connect(host=MILVUS_HOST, port=MILVUS_PORT)
 ```
 2. 如果集合已经存在，则删除它。
 
-```python
+```bash
 from pymilvus import utility
 
 # 删除具有相同名称的以前集合
@@ -78,7 +87,7 @@ if utility.has_collection(COLLECTION_NAME):
 ```
 3. 创建包含 ID、电影标题和情节文本嵌入的集合。
 
-```python
+```bash
 from pymilvus import FieldSchema, CollectionSchema, DataType, Collection
 
 # 创建包含 ID、标题和情节文本嵌入的集合
@@ -93,7 +102,7 @@ collection = Collection(name=COLLECTION_NAME, schema=schema)
 ```
 4. 为新创建的集合创建索引并将其加载到内存中。
 
-```python
+```bash
 #为集合创建IVF_FLAT索引
 index_params = {
     'metric_type':'L2',
@@ -117,7 +126,7 @@ collection.load()
 - 加载数据。
 - 使用SentenceTransformers来嵌入情节文本数据。
 - 将数据插入Milvus。
-```python
+```bash
 import csv
 from sentence_transformers import SentenceTransformer
 
@@ -173,7 +182,7 @@ collection.flush()
 
 所有数据都插入到Milvus中后，我们可以开始执行搜索。在此示例中，我们将根据情节搜索电影。因为我们正在进行批量搜索，所以搜索时间在所有电影搜索之间共享。
 
-```python
+```bash
 # Search for titles that closest match these phrases.
 search_terms = ['A movie about cars', 'A movie about monsters']
 
@@ -206,7 +215,7 @@ for hits_i, hits in enumerate(res):
 
 输出应与以下内容类似：
 
-```python
+```bash
 Title: A movie about cars
 Search Time: 0.08636689186096191
 Results:

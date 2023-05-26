@@ -12,18 +12,18 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import utility
 utility.drop_collection("book")
 
 ```
 
-```python
+```bash
 await milvusClient.dropCollection({ collection_name: "book" });
 
 ```
 
-```python
+```bash
 err = milvusClient.DropCollection(
   context.Background(), // ctx
   "book",               // CollectionName
@@ -34,7 +34,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.dropCollection(
   DropCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -43,12 +43,12 @@ milvusClient.dropCollection(
 
 ```
 
-```python
+```bash
 delete collection -c book
 
 ```
 
-```python
+```bash
 curl -X 'DELETE' 
   'http://localhost:9091/api/v1/collection' 
   -H 'accept: application/json' 
@@ -61,7 +61,7 @@ curl -X 'DELETE'
 
 Output:
 
-```python
+```bash
 {}
 
 ```

@@ -13,21 +13,21 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.drop_index()
 
 ```
 
-```python
+```bash
 await milvusClient.dropIndex({
   collection_name: "book",
 });
 
 ```
 
-```python
+```bash
 err = milvusClient.DropIndex(
   context.Background(),     // ctx
   "book",                   // CollectionName
@@ -39,7 +39,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.dropIndex(
   DropIndexParam.newBuilder()
     .withCollectionName("book")
@@ -49,12 +49,12 @@ milvusClient.dropIndex(
 
 ```
 
-```python
+```bash
 delete index -c book
 
 ```
 
-```python
+```bash
 curl -X 'DELETE' 
   'http://localhost:9091/api/v1/index' 
   -H 'accept: application/json' 

@@ -34,7 +34,7 @@ Milvus使用Docker Compose的环境检查清单
 
 使用[fio](https://github.com/axboe/fio)测试您的磁盘是否合格。
 
-```python
+```bash
 mkdir test-data
 fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=2200m --bs=2300 --name=mytest
 

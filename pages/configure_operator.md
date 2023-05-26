@@ -8,26 +8,25 @@
 
 本主题假定您已部署 Milvus Operator。有关更多信息，请参见[部署 Milvus Operator](install_cluster-milvusoperator.md)。
 
-Configuring a Milvus cluster with Milvus Operator includes:
+使用Milvus Operator配置Milvus集群包括：
 
-* Global resource configurations
-* Private resource configurations
+* 全局资源配置
+* 私有资源配置
 
-Private resource configurations will overwrite global resource configurations. If you configure the resources globally and specify the private resource of a certain component at the same time, the component will prioritize and respond to the private configurations first.
+私有资源配置将覆盖全局资源配置。如果同时配置全局资源并指定某个组件的私有资源，该组件将优先并首先响应私有配置。
 
-Configure global resources
+配置全局资源
 --------------------------
 
-When using Milvus Operator to start a Milvus cluster, you need to specify a configuration file. The example here uses the default configuration file.
+使用Milvus Operator启动Milvus集群时，需要指定一个配置文件。此处的示例使用默认的配置文件。
 
-```python
+```bash
 kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/main/config/samples/milvus_cluster_default.yaml
 
 ```
 
-The details of the configuration file is as follows:
-
-```python
+配置文件的详细信息如下：
+```bash
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -56,11 +55,11 @@ spec:
 
 要为Milvus集群配置全局资源，请创建`milvuscluster_resource.yaml`文件。
 
-### Example
+### 示例
 
-The following example configures global resource for a Milvus cluster.
+以下示例为Milvus集群配置全局资源。
 
-```python
+```bash
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -84,139 +83,56 @@ spec:
 
 ```
 
-Run the following command to apply new configurations:
+运行以下命令以应用新配置：
 
-```python
+```bash
 kubectl apply -f milvuscluster_resource.yaml
 
 ```
 
-Cluster resources will be updated according to the configuration file if there is a Milvus cluster named `my-release` in the K8s cluster. Otherwise, a new Milvus cluster will be created.
+如果在K8s集群中存在名为`my-release`的Milvus集群，则集群资源将根据配置文件进行更新。否则，将创建一个新的Milvus集群。
 
-Configure private resources
+配置私有资源
 ---------------------------
 
-Originally in Milvus 2.0, a Milvus cluster includes eight components: proxy, root coord, index coord, data coord, query coord, index node, data node, and query node. However, a new component, mix coord, is released along with Milvus 2.1.0. Mix coord includes all coordinator components. Therefore, starting a mix coord means that you do not need to install and start other coordinators including root coord, index coord, data coord, and query coord.
+在Milvus 2.0中，Milvus集群原本包括8个组件：proxy、root coord、index coord、data coord、query coord、index node、data node和query node。然而，在Milvus 2.1.0发布时，新的组件mix coord也随之发布。Mix coord包括所有的协调器组件。因此，启动mix coord意味着不需要安装和启动其他的协调器，包括root coord、index coord、data coord和query coord。
 
-Common fields used to configure each component include:
+用于配置每个组件的常见字段包括：
 
-* `replica`: The number of replicas of each component.
-* `port`: The listen port number of each component.
-* The four commonly used fields in global resource configuration: `image`, `env`, `nodeSelector`, `tolerations`, `resources` (see above). For more configurable fields, click on each component in [this documentation](https://pkg.go.dev/github.com/milvus-io/milvus-operator/apis/milvus.io/v1beta1#MilvusComponents).
+* `replica`：每个组件的副本数量。
+* `port`：每个组件的监听端口号。
+* 全局资源配置中使用的4个常用字段：`image`、`env`、`nodeSelector`、`tolerations`、`resources`（见上文）。有关更多可配置的字段，请单击[此文档](https://pkg.go.dev/github.com/milvus-io/milvus-operator/apis/milvus.io/v1beta1#MilvusComponents)中的每个组件。
 
-In addition, when configuring proxy, there is an extra field called `serviceType`. This field defines the type of service Milvus provides in the K8s cluster.
+此外，在配置proxy时，还有一个额外的字段叫做`serviceType`。该字段定义了Milvus在K8s集群中提供的服务类型。
 
-To configure resources for a specific component, add the component name in the field under `spec.componets` first and then configure its private resources.
+要为特定组件配置资源，请先在`spec.componets`下的字段中添加组件名称，然后配置其私有资源。
 
 [Components or dependencies](#component) [Configuration purposes](#purpose)
 
-| Dependencies | Components |
+以下为Milvus的参数表格和相关说明：
+
+| 依赖项 | 组件 |
 | --- | --- |
-| * [etcd](configure_etcd.md)
-* [MinIO or S3](configure_minio.md)
-* [Pulsar](configure_pulsar.md)
-* [RocksMQ](configure_rocksmq.md)
- | * [Root coord](configure_rootcoord.md)
-* [Proxy](configure_proxy.md)
-* [Query coord](configure_querycoord.md)
-* [Query node](configure_querynode.md)
-* [Index coord](configure_indexcoord.md)
-* [Index node](configure_indexnode.md)
-* [Data coord](configure_datacoord.md)
-* [Data node](configure_datanode.md)
-* [Local storage](configure_localstorage.md)
-* [Log](configure_log.md)
-* [Message channel](configure_messagechannel.md)
-* [Common](configure_common.md)
-* [Knowhere](configure_knowhere.md)
-* [Quota and Limits](configure_quota_limits.md)
- |
+| * [etcd](configure_etcd.md) <br> * [MinIO或S3](configure_minio.md) <br> * [Pulsar](configure_pulsar.md) <br> * [RocksMQ](configure_rocksmq.md) | * [Root coord](configure_rootcoord.md) <br> * [Proxy](configure_proxy.md) <br> * [Query coord](configure_querycoord.md) <br> * [Query node](configure_querynode.md) <br> * [Index coord](configure_indexcoord.md) <br> * [Index node](configure_indexnode.md) <br> * [Data coord](configure_datacoord.md) <br> * [Data node](configure_datanode.md) <br> * [本地存储](configure_localstorage.md) <br> * [日志](configure_log.md) <br> * [消息通道](configure_messagechannel.md) <br> * [通用](configure_common.md) <br> * [Knowhere](configure_knowhere.md) <br> * [配额和限制](configure_quota_limits.md) | 
 
-| Purpose | Parameters |
+
+
+| 目的 | 参数 |
 | --- | --- |
-| Performance tuning | * [`queryNode.gracefulTime`](configure_querynode.md#queryNodegracefulTime)
-* [`rootCoord.minSegmentSizeToEnableIndex`](configure_rootcoord.md#rootCoordminSegmentSizeToEnableIndex)
-* [`dataCoord.segment.maxSize`](configure_datacoord.md#dataCoordsegmentmaxSize)
-* [`dataCoord.segment.sealProportion`](configure_datacoord.md#dataCoordsegmentsealProportion)
-* [`dataNode.flush.insertBufSize`](configure_datanode.md#dataNodeflushinsertBufSize)
-* [`queryCoord.autoHandoff`](configure_querycoord.md#queryCoordautoHandoff)
-* [`queryCoord.autoBalance`](configure_querycoord.md#queryCoordautoBalance)
-* [`localStorage.enabled`](configure_localstorage.md#localStorageenabled)
- |
-| Data and meta | * [`common.retentionDuration`](configure_common.md#commonretentionDuration)
-* [`rocksmq.retentionTimeInMinutes`](configure_rocksmq.md#rocksmqretentionTimeInMinutes)
-* [`dataCoord.enableCompaction`](configure_datacoord.md#dataCoordenableCompaction)
-* [`dataCoord.enableGarbageCollection`](configure_datacoord.md#dataCoordenableGarbageCollection)
-* [`dataCoord.gc.dropTolerance`](configure_datacoord.md#dataCoordgcdropTolerance)
- |
-| Administration | * [`log.level`](configure_log.md#loglevel)
-* [`log.file.rootPath`](configure_log.md#logfilerootPath)
-* [`log.file.maxAge`](configure_log.md#logfilemaxAge)
-* [`minio.accessKeyID`](configure_minio.md#minioaccessKeyID)
-* [`minio.secretAccessKey`](configure_minio.md#miniosecretAccessKey)
- |
-| Quota and Limits | * [`quotaAndLimits.ddl.enabled`](configure_quota_limits.md#quotaAndLimitsddlenabled)
-* [`quotaAndLimits.ddl.collectionRate`](configure_quota_limits.md#quotaAndLimitsddlcollectionRate)
-* [`quotaAndLimits.ddl.partitionRate`](configure_quota_limits.md#quotaAndLimitsddlpartitionRate)
+| 性能调优 Performance tuning| * [`queryNode.gracefulTime`](configure_querynode.md#queryNodegracefulTime) <br> * [`rootCoord.minSegmentSizeToEnableIndex`](configure_rootcoord.md#rootCoordminSegmentSizeToEnableIndex) <br> * [`dataCoord.segment.maxSize`](configure_datacoord.md#dataCoordsegmentmaxSize) <br> * [`dataCoord.segment.sealProportion`](configure_datacoord.md#dataCoordsegmentsealProportion) <br> * [`dataNode.flush.insertBufSize`](configure_datanode.md#dataNodeflushinsertBufSize) <br> * [`queryCoord.autoHandoff`](configure_querycoord.md#queryCoordautoHandoff) <br> * [`queryCoord.autoBalance`](configure_querycoord.md#queryCoordautoBalance) <br> * [`localStorage.enabled`](configure_localstorage.md#localStorageenabled) | 
+| 数据和元数据 Data and meta| * [`common.retentionDuration`](configure_common.md#commonretentionDuration) <br> * [`rocksmq.retentionTimeInMinutes`](configure_rocksmq.md#rocksmqretentionTimeInMinutes) <br> * [`dataCoord.enableCompaction`](configure_datacoord.md#dataCoordenableCompaction) <br> * [`dataCoord.enableGarbageCollection`](configure_datacoord.md#dataCoordenableGarbageCollection) <br> * [`dataCoord.gc.dropTolerance`](configure_datacoord.md#dataCoordgcdropTolerance) | 
+| 管理 Administration| * [`log.level`](configure_log.md#loglevel) <br> * [`log.file.rootPath`](configure_log.md#logfilerootPath) <br> * [`log.file.maxAge`](configure_log.md#logfilemaxAge) <br> * [`minio.accessKeyID`](configure_minio.md#minioaccessKeyID) <br> * [`minio.secretAccessKey`](configure_minio.md#miniosecretAccessKey) | 
+| 配额和限制 Quota and Limits| * [`quotaAndLimits.ddl.enabled`](configure_quota_limits.md#quotaAndLimitsddlenabled) <br> * [`quotaAndLimits.ddl.collectionRate`](configure_quota_limits.md#quotaAndLimitsddlcollectionRate) <br> * [`quotaAndLimits.ddl.partitionRate`](configure_quota_limits.md#quotaAndLimitsddlpartitionRate) <br> * [`quotaAndLimits.indexRate.enabled`](configure_quota_limits.md#quotaAndLimitsindexRateenabled) <br> * [`quotaAndLimits.indexRate.max`](configure_quota_limits.md#quotaAndLimitsindexRatemax) <br> * [`quotaAndLimits.flushRate.enabled`](configure_quota_limits.md#quotaAndLimitsflushRateenabled) <br> * [`quotaAndLimits.flush.max`](configure_quota_limits.md#quotaAndLimitsflushmax) <br> * [`quotaAndLimits.compation.enabled`](configure_quota_limits.md#quotaAndLimitscompationenabled) <br> * [`quotaAndLimits.compaction.max`](configure_quota_limits.md#quotaAndLimitscompactionmax) <br> * [`quotaAndLimits.dml.enabled`](configure_quota_limits.md#quotaAndLimitsdmlenabled) <br> * [`quotaAndLimits.dml.insertRate.max`](configure_quota_limits.md#quotaAndLimitsdmlinsertRatemax) <br> * [`quotaAndLimits.dml.deleteRate.max`](configure_quota_limits.md#quotaAndLimitsdmldeleteRatemax) <br> * [`quotaAndLimits.dql.enabled`](configure_quota_limits.md#quotaAndLimitsdqlenabled) <br> * [`quotaAndLimits.dql.searchRate.max`](configure_quota_limits.md#quotaAndLimitsdqlsearchRatemax) <br> * [`quotaAndLimits.dql.queryRate.max`](configure_quota_limits.md#quotaAndLimitsdqlqueryRatemax) <br> * [`quotaAndLimits.limitWriting.ttProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitWritingttProtectionenabled) <br> * [`quotaAndLimits.limitWriting.ttProtection.maxTimeTickDelay`](configure_quota_limits.md#quotaAndLimitslimitWritingttProtectionmaxTimeTickDelay) <br> * [`quotaAndLimits.limitWriting.memProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectionenabled) <br> * [`quotaAndLimits.limitWriting.memProtection.dataNodeMemoryLowWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectiondataNodeMemoryLowWaterLevel) <br> * [`quotaAndLimits.limitWriting.memProtection.queryNodeMemoryLowWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectionqueryNodeMemoryLowWaterLevel) <br> * [`quotaAndLimits.limitWriting.memProtection.dataNodeMemoryHighWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectiondataNodeMemoryHighWaterLevel) <br> * [`quotaAndLimits.limitWriting.memProtection.queryNodeMemoryHighWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectionqueryNodeMemoryHighWaterLevel) <br> * [`quotaAndLimits.limitWriting.diskProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitWritingdiskProtectionenabled) <br> * [`quotaAndLimits.limitWriting.diskProtection.diskQuota`](configure_quota_limits.md#quotaAndLimitslimitWritingdiskProtectiondiskQuota) <br> * [`quotaAndLimits.limitWriting.forceDeny`](configure_quota_limits.md#quotaAndLimitslimitWritingforceDeny) <br> * [`quotaAndLimits.limitReading.queueProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitReadingqueueProtectionenabled) <br> * [`quotaAndLimits.limitReading.queueProtection.nqInQueueThreshold`](configure_quota_limits.md#quotaAndLimitslimitReadingqueueProtectionnqInQueueThreshold) <br> * [`quotaAndLimits.limitReading.queueProtection.queueLatencyThreshold`](configure_quota_limits.md#quotaAndLimitslimitReadingqueueProtectionqueueLatencyThreshold) <br> * [`quotaAndLimits.limitReading.resultProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitReadingresultProtectionenabled) <br> * [`quotaAndLimits.limitReading.resultProtection.maxReadResultRate`](configure_quota_limits.md#quotaAndLimitslimitReadingresultProtectionmaxReadResultRate) |
 
-* [`quotaAndLimits.indexRate.enabled`](configure_quota_limits.md#quotaAndLimitsindexRateenabled)
 
-* [`quotaAndLimits.indexRate.max`](configure_quota_limits.md#quotaAndLimitsindexRatemax)
 
-* [`quotaAndLimits.flushRate.enabled`](configure_quota_limits.md#quotaAndLimitsflushRateenabled)
 
-* [`quotaAndLimits.flush.max`](configure_quota_limits.md#quotaAndLimitsflushmax)
 
-* [`quotaAndLimits.compation.enabled`](configure_quota_limits.md#quotaAndLimitscompationenabled)
+### 示例
 
-* [`quotaAndLimits.compaction.max`](configure_quota_limits.md#quotaAndLimitscompactionmax)
+以下示例在`milvuscluster.yaml`文件中配置了代理和数据节点的副本和计算资源。
 
-* [`quotaAndLimits.dml.enabled`](configure_quota_limits.md#quotaAndLimitsdmlenabled)
-
-* [`quotaAndLimits.dml.insertRate.max`](configure_quota_limits.md#quotaAndLimitsdmlinsertRatemax)
-
-* [`quotaAndLimits.dml.deleteRate.max`](configure_quota_limits.md#quotaAndLimitsdmldeleteRatemax)
-
-* [`quotaAndLimits.dql.enabled`](configure_quota_limits.md#quotaAndLimitsdqlenabled)
-
-* [`quotaAndLimits.dql.searchRate.max`](configure_quota_limits.md#quotaAndLimitsdqlsearchRatemax)
-
-* [`quotaAndLimits.dql.queryRate.max`](configure_quota_limits.md#quotaAndLimitsdqlqueryRatemax)
-
-* [`quotaAndLimits.limitWriting.ttProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitWritingttProtectionenabled)
-
-* [`quotaAndLimits.limitWriting.ttProtection.maxTimeTickDelay`](configure_quota_limits.md#quotaAndLimitslimitWritingttProtectionmaxTimeTickDelay)
-
-* [`quotaAndLimits.limitWriting.memProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectionenabled)
-
-* [`quotaAndLimits.limitWriting.memProtection.dataNodeMemoryLowWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectiondataNodeMemoryLowWaterLevel)
-
-* [`quotaAndLimits.limitWriting.memProtection.queryNodeMemoryLowWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectionqueryNodeMemoryLowWaterLevel)
-
-* [`quotaAndLimits.limitWriting.memProtection.dataNodeMemoryHighWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectiondataNodeMemoryHighWaterLevel)
-
-* [`quotaAndLimits.limitWriting.memProtection.queryNodeMemoryHighWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectionqueryNodeMemoryHighWaterLevel)
-
-* [`quotaAndLimits.limitWriting.diskProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitWritingdiskProtectionenabled)
-
-* [`quotaAndLimits.limitWriting.diskProtection.diskQuota`](configure_quota_limits.md#quotaAndLimitslimitWritingdiskProtectiondiskQuota)
-
-* [`quotaAndLimits.limitWriting.forceDeny`](configure_quota_limits.md#quotaAndLimitslimitWritingforceDeny)
-
-* [`quotaAndLimits.limitReading.queueProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitReadingqueueProtectionenabled)
-
-* [`quotaAndLimits.limitReading.queueProtection.nqInQueueThreshold`](configure_quota_limits.md#quotaAndLimitslimitReadingqueueProtectionnqInQueueThreshold)
-* [`quotaAndLimits.limitReading.queueProtection.queueLatencyThreshold`](configure_quota_limits.md#quotaAndLimitslimitReadingqueueProtectionqueueLatencyThreshold)
-* [`quotaAndLimits.limitReading.resultProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitReadingresultProtectionenabled)
-* [`quotaAndLimits.limitReading.resultProtection.maxReadResultRate`](configure_quota_limits.md#quotaAndLimitslimitReadingresultProtectionmaxReadResultRate)
-* [`quotaAndLimits.limitReading.forceDeny`](configure_quota_limits.md#quotaAndLimitslimitReadingforceDeny)
- |
-
-### Example
-
-The example below configures the replicas and compute resources of proxy and datanode in the `milvuscluster.yaml` file.
-
-```python
+```bash
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -262,11 +178,11 @@ spec:
 
 ```
 
-This example configures not only global resources but also private compute resources for root coord and proxy. When using this configuration file to start a Milvus cluster, the private resources configurations will be applied to root coord and proxy, while the rest of the components will follow the global resource configuration.
+该示例不仅配置了全局资源，还为root coord和proxy配置了私有计算资源。使用此配置文件启动Milvus集群时，将应用私有资源配置到root coord和proxy上，而其他组件将遵循全局资源配置。
 
-Run the following command to apply new configurations:
+运行以下命令以应用新配置：
 
-```python
+```bash
 kubectl apply -f milvuscluster.yaml
 
 ```

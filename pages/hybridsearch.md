@@ -16,21 +16,21 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load()
 
 ```
 
-```python
+```bash
 await milvusClient.loadCollection({
   collection_name: "book",
 });
 
 ```
 
-```python
+```bash
 err := milvusClient.LoadCollection(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -42,7 +42,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.loadCollection(
   LoadCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -51,12 +51,12 @@ milvusClient.loadCollection(
 
 ```
 
-```python
+```bash
 load -c book
 
 ```
 
-```python
+```bash
 # See the following step.
 
 ```
@@ -73,7 +73,7 @@ load -c book
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 search_param = {
   "data": [[0.1, 0.2]],
   "anns_field": "book_intro",
@@ -86,7 +86,7 @@ res = collection.search(**search_param)
 
 ```
 
-```python
+```bash
 const results = await milvusClient.search({
   collection_name: "book",
   expr: "word_count <= 11000",
@@ -102,7 +102,7 @@ const results = await milvusClient.search({
 
 ```
 
-```python
+```bash
 sp, _ := entity.NewIndexFlatSearchParam(   // NewIndex*SearchParam func
   10,                                      // searchParam
 )
@@ -124,7 +124,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 final Integer SEARCH_K = 2;
 final String SEARCH_PARAM = "{"nprobe":10, ”offset”:5}";
 List<String> search_output_fields = Arrays.asList("book_id");
@@ -144,7 +144,7 @@ R<SearchResults> respSearch = milvusClient.search(searchParam);
 
 ```
 
-```python
+```bash
 search
 
 Collection name (book): book
@@ -171,7 +171,7 @@ Travel Timestamp(Specify a timestamp in a search to get results based on a data 
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/search' 
   -H 'accept: application/json' 
@@ -195,7 +195,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "results":{
@@ -291,7 +291,7 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 assert len(res) == 1
 hits = res[0]
 assert len(hits) == 2
@@ -300,12 +300,12 @@ print(f"- Top1 hit id: {hits[0].id}, distance: {hits[0].distance}, score: {hits[
 
 ```
 
-```python
+```bash
 console.log(results.results)
 
 ```
 
-```python
+```bash
 fmt.Printf("%#v", searchResult)
 for _, sr := range searchResult {
   fmt.Println(sr.IDs)
@@ -314,19 +314,19 @@ for _, sr := range searchResult {
 
 ```
 
-```python
+```bash
 SearchResultsWrapper wrapperSearch = new SearchResultsWrapper(respSearch.getData().getResults());
 System.out.println(wrapperSearch.getIDScore(0));
 System.out.println(wrapperSearch.getFieldData("book_id", 0));
 
 ```
 
-```python
+```bash
 # Milvus CLI automatically returns the primary key values of the most similar vectors and their distances.
 
 ```
 
-```python
+```bash
 # See the output of the previous step.
 
 ```

@@ -1,3 +1,5 @@
+Milvus 服务的警报机制
+===
 
 本主题介绍了 Milvus 服务的警报机制，并解释了何时以及如何创建 Milvus 警报。
 
@@ -18,13 +20,14 @@
 
 以下指标可用于警报配置：
 
-| Metric | Description | Unit of measure |
+| 指标 | 描述 | 计量单位 |
 | --- | --- | --- |
-| CPU Usage | CPU usage by Milvus components that is indicated by the running time of CPU. | Second |
-| Memory | Memory resources consumed by Milvus components. | MB |
-| Goroutines | Concurrent executing activities in GO language. | / |
-| OS Threads | Threads, or lightweight processes in an operating system. | / |
-| Process Opened Fds | The current number of used file descriptors. | / |
+| CPU 使用率 | Milvus 组件使用 CPU 运行时间指示的 CPU 使用率。 | 秒 |
+| 内存 | Milvus 组件消耗的内存资源。 | MB |
+| Goroutines | GO 语言中正在并发执行的活动。 | / |
+| 操作系统线程数 | 操作系统中的线程或轻量级进程。 | / |
+| 进程已打开文件描述符数 | 当前使用的文件描述符数量。 | / |
+
 
 设置警报
 ----
@@ -37,53 +40,55 @@
 
 ### 1. 添加新的查询
 
-To add an alert for the memory usage of Milvus components, edit the Memory panel. Then, add a new query with the metric: `process_resident_memory_bytes{app_kubernetes_io_name="milvus", app_kubernetes_io_instance=~"my-release", namespace="default"}`
+添加内存使用率的报警，请编辑 Memory 面板，并添加一个新的查询指标，如下所示：`process_resident_memory_bytes {app_kubernetes_io_name="milvus", app_kubernetes_io_instance = ~"my-release", namespace="default"}`
 
-[![Alert_metric](https://milvus.io/static/18103d1a30b5181fc6ee91800ea939f5/1263b/alert_metric.png "Add an alert.")](https://milvus.io/static/18103d1a30b5181fc6ee91800ea939f5/bbbf7/alert_metric.png)
+[![Alert_metric](https://milvus.io/static/18103d1a30b5181fc6ee91800ea939f5/1263b/alert_metric.png "添加警报")](https://milvus.io/static/18103d1a30b5181fc6ee91800ea939f5/bbbf7/alert_metric.png)
 
-Add an alert.
+添加警报。
 
-### 2. Save the dashboard
+### 2. 保存仪表板
 
 保存仪表板，并等待几分钟查看警报。
 
 [![Alert_dashboard](https://milvus.io/static/fd5f1694aed3b5b5f29b639ad301a071/1263b/alert_dashboard.png "Save the dashboard.")](https://milvus.io/static/fd5f1694aed3b5b5f29b639ad301a071/bbbf7/alert_dashboard.png)
 
-Save the dashboard.
+保存仪表板。
 
 Grafana警报查询不支持模板变量。因此，您应添加一个没有任何模板变量的标签的第二个查询。第二个查询默认名为“A”。您可以通过点击下拉菜单进行重命名。
 
-[![Alert_query](https://milvus.io/static/6ff9d7104bae4f442d79066d22dc7993/1263b/alert_query.png "The newly added query.")](https://milvus.io/static/6ff9d7104bae4f442d79066d22dc7993/bbbf7/alert_query.png)
+[![Alert_query](https://milvus.io/static/6ff9d7104bae4f442d79066d22dc7993/1263b/alert_query.png "新添加的查询")](https://milvus.io/static/6ff9d7104bae4f442d79066d22dc7993/bbbf7/alert_query.png)
 
-The newly added query.
+新添加的查询。
 
 ### 3. 添加警报通知
 
-To receive alert notifications, add a "notification channel". Then, specify the channel in the field "Send to".
+为接收警报通知，请添加一个“通知渠道”。然后，在“发送到”字段中指定该通道。
 
-[![Alert_notification](https://milvus.io/static/02677efc0008e03977429c0abd4838b0/1263b/alert_notification.png "Specify the notification channel.")](https://milvus.io/static/02677efc0008e03977429c0abd4838b0/1263b/alert_notification.png)
+[![Alert_notification](https://milvus.io/static/02677efc0008e03977429c0abd4838b0/1263b/alert_notification.png "指定通知渠道")](https://milvus.io/static/02677efc0008e03977429c0abd4838b0/1263b/alert_notification.png)
 
-Specify the notification channel.
+指定通知渠道。
 
-If the alert is successfully created and triggered, you will receive the notification as shown in the screenshot below.
+如果警报成功创建并触发，则将收到下图所示的通知。
 
-[![Notification_message](https://milvus.io/static/cab0cbc6f6979e44d8a2c77c66e9cd9a/1263b/notification_message.png "The alert is created and triggered.")](https://milvus.io/static/cab0cbc6f6979e44d8a2c77c66e9cd9a/bbbf7/notification_message.png)
+[![Notification_message](https://milvus.io/static/cab0cbc6f6979e44d8a2c77c66e9cd9a/1263b/notification_message.png "警报已创建并触发")](https://milvus.io/static/cab0cbc6f6979e44d8a2c77c66e9cd9a/bbbf7/notification_message.png)
 
-The alert is created and triggered.
+警报已创建并触发。
 
-To delete an alert, go to the "Alert" panel and click the delete button.
+要删除警报，请转到“警报”面板并单击删除按钮。
 
-[![Delete_alert](https://milvus.io/static/1a45b6cde7981603fc5b983d3d88c3ef/1263b/delete_alert.png "Delete an alert.")](https://milvus.io/static/1a45b6cde7981603fc5b983d3d88c3ef/bbbf7/delete_alert.png)
+[![Delete_alert](https://milvus.io/static/1a45b6cde7981603fc5b983d3d88c3ef/1263b/delete_alert.png "删除警报")](https://milvus.io/static/1a45b6cde7981603fc5b983d3d88c3ef/bbbf7/delete_alert.png)
 
-Delete an alert.
+删除警报。
 
-What's next
+下一步是什么
 -----------
 
-* If you need to start monitoring services for Milvus:
-	+ Read the [monitoring guide](monitor.md)
-	+ Learn how to [visualize monitoring metrics](visualize.md)
-* If you have created alerts for memory usage by Milvus components:
-	+ Learn how to [allocate resources](allocate.md#standalone)
-* If you are looking for information about how to scale a Milvus cluster:
-	+ Learn [scale a Milvus cluster](scaleout.md)
+* 如果您需要开始监控Milvus服务：
+    + 阅读[监控指南](monitor.md)
+    + 学习如何[可视化监控指标](visualize.md)
+ 
+* 如果您已创建了用于监视 Milvus 组件内存使用情况的警报：
+   + 学习如何[分配资源](allocate.md#standalone)
+ 
+* 如果您想获取有关如何扩展Milvus集群的信息：
+   + 学习如何[扩展Milvus集群](scaleout.md)

@@ -21,7 +21,7 @@
 
 下面的代码片段以 RootCoord 为例。您可以对其他类型的协调器执行相同的操作。
 
-```python
+```bash
 rootCoordinator:
   enabled: true
   # You can set the number of replicas greater than 1 only if you also need to set activeStandby.enabled to true.
@@ -46,7 +46,7 @@ rootCoordinator:
 
 以下代码片段以RootCoord为例。您可以对其他类型的协调者执行相同的操作。
 
-```python
+```bash
   rootcoord:
     container_name: milvus-rootcoord
     image: milvusdb/milvus:v2.2.3
@@ -88,7 +88,7 @@ To start multiple coordinators and have them work in active-standby mode, you ca
 
 1. Download the Milvus source code to your local drive, and [start up a Milvus cluster from the source code](https://github.com/milvus-io/milvus/blob/master/DEVELOPMENT.md) as follows:
 
-```python
+```bash
 sudo ./scripts/start_cluster.sh
 
 ```
@@ -96,7 +96,7 @@ sudo ./scripts/start_cluster.sh
 Milvus runs with only one coordinator of each type at the end of this step.
 2. 更新`milvus.yaml`以更改每种类型的协调器的端口号。以下示例使用**rootCoord**。
 
-```python
+```bash
 rootCoord:
   address: localhost
   port: 53100 # change to 53001
@@ -104,21 +104,21 @@ rootCoord:
 ```
 3. 启动备用协调器。
 
-```python
+```bash
 sudo nohup ./bin/milvus run rootcoord > /tmp/rootcoord2.log 2>&1 &
 
 ```
 
 在此步骤结束时，运行以下命令验证存在两个协调器进程。
 
-```python
+```bash
 ps aux|grep milvus
 
 ```
 
 输出应类似于
 
-```python
+```bash
 > ps aux|grep milvus
 root        12813   0.7 0.2 410709648   82432   ??  S   5:18PM  0:33.28 ./bin/milvus run rootcoord
 root        12816   0.5 0.2 409487968   62352   ??  S   5:18PM  0:22.69 ./bin/milvus run proxy
@@ -129,7 +129,7 @@ root        17739   0.1 0.3 410289872   91792 s003  SN  6:01PM  0:00.30 ./bin/mi
 
 备用协调器每十秒输出一个日志条目，如下所示：
 
-```python
+```bash
 [INFO] [sessionutil/session_util.go:649] ["serverName: rootcoord is in STANDBY ..."]
 
 ```
@@ -137,7 +137,7 @@ root        17739   0.1 0.3 410289872   91792 s003  SN  6:01PM  0:00.30 ./bin/mi
 
 您会发现备用协调器需要60秒才能接管活动角色。
 
-```python
+```bash
 [2022/09/21 11:58:33.855 +08:00] [DEBUG] [sessionutil/session_util.go:677] ["watch the ACTIVE key"] [DELETE="key:"by-dev/meta/session/rootcoord" mod_revision:167 "]
 [2022/09/21 11:58:33.856 +08:00] [DEBUG] [sessionutil/session_util.go:677] ["watch the ACTIVE key"] [DELETE="key:"by-dev/meta/session/rootcoord-15" mod_revision:167 "]
 [2022/09/21 11:58:33.856 +08:00] [INFO] [sessionutil/session_util.go:683] ["stop watching ACTIVE key"]

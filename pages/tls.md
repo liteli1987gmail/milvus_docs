@@ -12,14 +12,14 @@ TLS（传输层安全）是一种加密协议，用于确保通信安全。Milvu
 
 确保安装了OpenSSL。如果您没有安装它，请先[构建和安装](https://github.com/openssl/openssl/blob/master/INSTALL.md) OpenSSL。
 
-```python
+```bash
 openssl version
 
 ```
 
 如果未安装OpenSSL，则可以使用以下命令在Ubuntu上安装。
 
-```python
+```bash
 sudo apt install openssl
 
 ```
@@ -77,7 +77,7 @@ chmod 777 *
 请确保将 `gen.sh` 文件设置为可执行 (`chmod 777 gen.sh`)。
 
 
-```python
+```bash
 #
 # OpenSSL example configuration file.
 # This is mostly being used for generation of certificate requests.
@@ -440,7 +440,7 @@ ess_cert_id_chain	= no	# Must the ESS cert id chain be included?
 
 `gen.sh`
 
-```python
+```bash
 #!/usr/bin/env sh
 # your variables
 Country="CN"
@@ -578,7 +578,7 @@ openssl req -new -x509 -key ca.key -out ca.pem -days 3650 -subj "/C=$Country/ST=
 在此步骤之后，您将获得一个 `ca.pem` 文件，这是一个 CA 证书，可用于生成客户端-服务器证书。
 
 
-```python
+```bash
 tls:
   serverPemPath: configs/cert/server.pem
   serverKeyPath: configs/cert/server.key
@@ -605,7 +605,7 @@ common:
 
 以下示例使用 Milvus Python SDK。
 
-```python
+```bash
 from pymilvus import connections
 
 _HOST = '127.0.0.1'

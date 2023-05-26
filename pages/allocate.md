@@ -15,7 +15,7 @@
 
 使用Helm为Milvus组件分配CPU和内存资源。
 
-Using Helm to upgrade resources will cause the running pods to perform rolling update.
+使用Helm升级资源将导致正在运行的Pod执行全面更新。
 
 有两种分配资源的方式：
 
@@ -29,12 +29,12 @@ Using Helm to upgrade resources will cause the running pods to perform rolling u
 
 [Milvus独立版](#standalone) [Milvus集群](#cluster)
 
-```python
+```bash
 helm upgrade my-release milvus/milvus --reuse-values --set standalone.resources.limits.cpu=2 --set standalone.resources.limits.memory=4Gi --set standalone.resources.requests.cpu=0.1 --set standalone.resources.requests.memory=128Mi
 
 ```
 
-```python
+```bash
 helm upgrade my-release milvus/milvus --reuse-values --set dataNode.resources.limits.cpu=2 --set dataNode.resources.limits.memory=4Gi --set dataNode.resources.requests.cpu=0.1 --set dataNode.resources.requests.memory=128Mi
 
 ```
@@ -43,7 +43,7 @@ helm upgrade my-release milvus/milvus --reuse-values --set dataNode.resources.li
 
 您还可以通过在`resources.yaml`文件中指定`resources.requests`和`resources.limits`参数来分配CPU和内存资源。
 
-```python
+```bash
 dataNode:
   resources:
     limits:
@@ -68,12 +68,12 @@ queryNode:
 
 运行以下命令将新配置应用到您的Milvus集群中。
 
-```python
+```bash
 helm upgrade my-release milvus/milvus --reuse-values -f resources.yaml
 
 ```
 
-If `resources.limits` is not specified, the pods will consume all the CPU and memory resources available. Therefore, ensure to specify `resources.requests` and `resources.limits` to avoid overallocation of resources when other running tasks on the same instance require more memory consumption.
+如果未指定`resources.limits`，则Pod将消耗所有可用的CPU和内存资源。因此，请确保指定`resources.requests`和`resources.limits`，以避免在同一实例上运行其他任务需要更多内存消耗的情况下分配过度的资源。
 
 有关管理资源的更多信息，请参阅[Kubernetes文档](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/)。
 

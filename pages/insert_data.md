@@ -21,7 +21,7 @@ Milvus 2.1 支持标量字段上的 VARCHAR 数据类型。在为 VARCHAR 类型
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 import random
 data = [
   [i for i in range(2000)],
@@ -32,7 +32,7 @@ data = [
 
 ```
 
-```python
+```bash
 const data = Array.from({ length: 2000 }, (v,k) => ({
   "book_id": k,
   "word_count": k+10000,
@@ -41,7 +41,7 @@ const data = Array.from({ length: 2000 }, (v,k) => ({
 
 ```
 
-```python
+```bash
 bookIDs := make([]int64, 0, 2000)
 wordCounts := make([]int64, 0, 2000)
 bookIntros := make([][]float32, 0, 2000)
@@ -60,7 +60,7 @@ introColumn := entity.NewColumnFloatVector("book_intro", 2, bookIntros)
 
 ```
 
-```python
+```bash
 Random ran = new Random();
 List<Long> book_id_array = new ArrayList<>();
 List<Long> word_count_array = new ArrayList<>();
@@ -77,12 +77,12 @@ for (long i = 0L; i < 2000; ++i) {
 
 ```
 
-```python
+```bash
 # Prepare your data in a CSV file. Milvus CLI only supports importing data from local or remote files.
 
 ```
 
-```python
+```bash
 # See the following step.
 
 ```
@@ -101,14 +101,14 @@ for (long i = 0L; i < 2000; ++i) {
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 mr = collection.insert(data)
 
 ```
 
-```python
+```bash
 const mr = await milvusClient.insert({
   collection_name: "book",
   fields_data: data,
@@ -116,7 +116,7 @@ const mr = await milvusClient.insert({
 
 ```
 
-```python
+```bash
 _, err = milvusClient.Insert(
 	context.Background(), // ctx
 	"book",               // CollectionName
@@ -131,7 +131,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 List<InsertParam.Field> fields = new ArrayList<>();
 fields.add(new InsertParam.Field("book_id", DataType.Int64, book_id_array));
 fields.add(new InsertParam.Field("word_count", DataType.Int64, word_count_array));
@@ -146,12 +146,12 @@ milvusClient.insert(insertParam);
 
 ```
 
-```python
+```bash
 import -c book 'https://raw.githubusercontent.com/milvus-io/milvus_cli/main/examples/user_guide/search.csv'
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/entities' 
   -H 'accept: application/json' 
@@ -188,7 +188,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "IDs":{

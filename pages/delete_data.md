@@ -29,28 +29,28 @@ Milvus仅支持删除具有明确定义主键的实体，这只需要在术语�
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 expr = "book_id in [0,1]"
 
 ```
 
-```python
+```bash
 const expr = "book_id in [0,1]";
 
 ```
 
-```python
+```bash
 private static final String DELETE_EXPR = "book_id in [0,1]";
 
 ```
 
-```python
+```bash
 delete entities -c book
 The expression to specify entities to be deleted： book_id in [0,1]
 
 ```
 
-```python
+```bash
 "expr" = "book_id in [0,1]"
 
 ```
@@ -72,14 +72,14 @@ The expression to specify entities to be deleted： book_id in [0,1]
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.delete(expr)
 
 ```
 
-```python
+```bash
 await milvusClient.deleteEntities({
   collection_name: "book",
   expr: expr,
@@ -87,12 +87,12 @@ await milvusClient.deleteEntities({
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 milvusClient.delete(
   DeleteParam.newBuilder()
     .withCollectionName("book")
@@ -102,13 +102,13 @@ milvusClient.delete(
 
 ```
 
-```python
+```bash
 You are trying to delete the entities of collection. This action cannot be undone!
 Do you want to continue? [y/N]: y
 
 ```
 
-```python
+```bash
 curl -X 'DELETE' 
   'http://localhost:9091/api/v1/entities' 
   -H 'accept: application/json' 
@@ -122,7 +122,7 @@ curl -X 'DELETE'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "IDs":{"IdField":{"IntId":{"data":[0,1]}}},

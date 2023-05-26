@@ -23,7 +23,7 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 index_params = {
   "metric_type":"L2",
   "index_type":"IVF_FLAT",
@@ -32,7 +32,7 @@ index_params = {
 
 ```
 
-```python
+```bash
 const index_params = {
   metric_type: "L2",
   index_type: "IVF_FLAT",
@@ -41,7 +41,7 @@ const index_params = {
 
 ```
 
-```python
+```bash
 idx, err := entity.NewIndexIvfFlat(   // NewIndex func
     entity.L2,                        // metricType
     1024,                             // ConstructParams
@@ -52,13 +52,13 @@ if err != nil {
 
 ```
 
-```python
+```bash
 final IndexType INDEX_TYPE = IndexType.IVF_FLAT;   // IndexType
 final String INDEX_PARAM = "{"nlist":1024}";     // ExtraParam
 
 ```
 
-```python
+```bash
 create index
 
 Collection name (book): book
@@ -75,7 +75,7 @@ Timeout []:
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/index' 
   -H 'accept: application/json' 
@@ -140,7 +140,7 @@ curl -X 'POST'
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection, utility
 # Get an existing collection.
 collection = Collection("book")      
@@ -154,7 +154,7 @@ utility.index_building_progress("book")
 
 ```
 
-```python
+```bash
 await milvusClient.createIndex({
   collection_name: "book",
   field_name: "book_intro",
@@ -163,7 +163,7 @@ await milvusClient.createIndex({
 
 ```
 
-```python
+```bash
 err := milvusClient.CreateIndex(
   context.Background(),        // ctx
   "book",                      // CollectionName
@@ -177,7 +177,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.createIndex(
   CreateIndexParam.newBuilder()
     .withCollectionName("book")
@@ -191,12 +191,12 @@ milvusClient.createIndex(
 
 ```
 
-```python
+```bash
 # Follow the previous step.
 
 ```
 
-```python
+```bash
 # Follow the previous step.
 
 ```

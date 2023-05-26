@@ -40,7 +40,7 @@ DiskANN 相关的 Milvus 配置
 
 DiskANN 是可调的。您可以在 `${MILVUS_ROOT_PATH}/configs/milvus.yaml` 中修改 DiskANN 相关参数来提高其性能。
 
-```python
+```bash
 ...
 DiskIndex:
   MaxDegree: 56

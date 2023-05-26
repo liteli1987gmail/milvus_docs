@@ -1,4 +1,5 @@
 使用 Milvus和Cohere
+===
 
 
 本页面说明如何使用Milvus作为向量数据库和Cohere作为嵌入系统，基于SQuAD数据集创建问答系统。
@@ -8,14 +9,14 @@
 
 本页面的代码片段需要安装**pymilvus**、**cohere**、**pandas**、**numpy**和**tqdm**。其中，**pymilvus**是Milvus的客户端。如果您的系统上没有这些软件包，请运行以下命令进行安装：
 
-```python
+```bash
 pip install pymilvus cohere pandas numpy tqdm
 
 ```
 
 然后，您需要加载本指南中要使用的模块。
 
-```python
+```bash
 import cohere
 import pandas
 import numpy as np
@@ -29,7 +30,7 @@ from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Colle
 
 在这里，我们可以找到以下段落中使用的参数。其中一些需要更改以适应您的环境。除每个参数外，还附有其描述。
 
-```python
+```bash
 FILE = 'https://rajpurkar.github.io/SQuAD-explorer/dataset/train-v2.0.json'  ＃SQuAD数据集的URL
 COLLECTION_NAME = 'question_answering_db' ＃集合名称
 DIMENSION = 768  ＃嵌入维数，cohere嵌入默认为4096（采用大模型）
@@ -48,7 +49,7 @@ COHERE_API_KEY = 'replace-this-with-the-cohere-api-key' ＃从Cohere获得的API
 
 在本示例中，我们将使用斯坦福问答数据集（SQuAD）作为我们回答问题的基础。此数据集采用JSON文件格式，我们将使用**pandas**进行加载。
 
-```python
+```bash
 # Download the dataset
 dataset = pandas.read_json(FILE)
 
@@ -69,9 +70,9 @@ print(len(simplified_records))
 
 ```
 
-The output should be the number of records in the dataset
+输出结果应为数据集中记录的数量。
 
-```python
+```bash
 5000
 
 ```
@@ -81,7 +82,7 @@ The output should be the number of records in the dataset
 
 本部分处理Milvus并为此用例设置数据库。在Milvus中，我们需要设置一个集合并为其建立索引。
 
-```python
+```bash
 # 连接至Milvus数据库
 connections.connect(host=MILVUS_HOST, port=MILVUS_PORT)
 
@@ -121,7 +122,7 @@ collection.load()
 
 在本示例中，数据包括原始问题、原始问题的嵌入以及原始问题的答案。
 
-```python
+```bash
 # 设置co:here客户端。
 cohere_client = cohere.Client(COHERE_API_KEY)
 
@@ -155,7 +156,7 @@ collection.flush()
 
 在插入数据后执行的搜索可能会比较慢，因为未索引数据的搜索是通过暴力方式完成的。一旦新数据被自动索引，搜索速度就会加快。
 
-```python
+```bash
 # Search the database for an answer to a question text
 def search(text, top_k = 5):
 
@@ -193,9 +194,9 @@ for question in search_questions:
 
 ```
 
-The output should be similar to the following:
+输出结果应与以下类似：
 
-```python
+```bash
 Question: What kills bacteria?
 
 Answer, Distance, Original Question

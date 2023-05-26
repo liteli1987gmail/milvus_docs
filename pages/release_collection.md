@@ -10,21 +10,21 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.release()
 
 ```
 
-```python
+```bash
 await milvusClient.releaseCollection({
   collection_name: "book",
 });
 
 ```
 
-```python
+```bash
 err := milvusClient.ReleaseCollection(
   context.Background(),                            // ctx
   "book",                                          // CollectionName
@@ -35,7 +35,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.releaseCollection(
   ReleaseCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -44,12 +44,12 @@ milvusClient.releaseCollection(
 
 ```
 
-```python
+```bash
 release -c book
 
 ```
 
-```python
+```bash
 curl -X 'DELETE' 
   'http://localhost:9091/api/v1/collection/load' 
   -H 'accept: application/json' 
@@ -62,7 +62,7 @@ curl -X 'DELETE'
 
 Output:
 
-```python
+```bash
 {}
 
 ```

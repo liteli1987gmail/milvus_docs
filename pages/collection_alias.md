@@ -19,7 +19,7 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import utility
 utility.create_alias(
   collection_name = "book",
@@ -28,7 +28,7 @@ utility.create_alias(
 
 ```
 
-```python
+```bash
 await milvusClient.createAlias({
   collection_name: "book",
   alias: "publication",
@@ -36,12 +36,12 @@ await milvusClient.createAlias({
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 milvusClient.createAlias(
   CreateAliasParam.newBuilder()
     .withCollectionName("book")
@@ -51,12 +51,12 @@ milvusClient.createAlias(
 
 ```
 
-```python
+```bash
 create alias -c book -a publication
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/alias' 
   -H 'accept: application/json' 
@@ -68,7 +68,7 @@ curl -X 'POST'
 
 ```
 
-```python
+```bash
 # Output:
 {}
 
@@ -113,25 +113,25 @@ curl -X 'POST'
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import utility
 utility.drop_alias(alias = "publication")
 
 ```
 
-```python
+```bash
 await milvusClient.dropAlias({
   alias: "publication",
 });
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 milvusClient.dropAlias(
   DropAliasParam.newBuilder()
     .withAlias("publication")
@@ -140,12 +140,12 @@ milvusClient.dropAlias(
 
 ```
 
-```python
+```bash
 delete alias -a publication
 
 ```
 
-```python
+```bash
 curl -X 'DELETE' 
   'http://localhost:9091/api/v1/alias' 
   -H 'accept: application/json' 
@@ -156,7 +156,7 @@ curl -X 'DELETE'
 
 ```
 
-```python
+```bash
 # Output:
 {}
 
@@ -195,7 +195,7 @@ curl -X 'DELETE'
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import utility
 utility.alter_alias(
   collection_name = "book",
@@ -204,7 +204,7 @@ utility.alter_alias(
 
 ```
 
-```python
+```bash
 await milvusClient.alterAlias({
   collection_name: "book",
   alias: "publication",
@@ -212,12 +212,12 @@ await milvusClient.alterAlias({
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 milvusClient.alterAlias(
   AlterAliasParam.newBuilder()
     .withCollectionName("book")
@@ -227,12 +227,12 @@ milvusClient.alterAlias(
 
 ```
 
-```python
+```bash
 create alias -c book -A -a publication
 
 ```
 
-```python
+```bash
 curl -X 'PATCH' 
   'http://localhost:9091/api/v1/alias' 
   -H 'accept: application/json' 
@@ -246,7 +246,7 @@ curl -X 'PATCH'
 
 Output:
 
-```python
+```bash
 {}
 
 ```

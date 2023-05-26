@@ -17,7 +17,7 @@ Milvus 2.1 允许用户将集合加载为多个副本，以利用额外查询节
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection, utility
 
 # Get an existing collection.
@@ -33,14 +33,14 @@ utility.loading_progress("book")
 
 ```
 
-```python
+```bash
 await milvusClient.loadCollection({
   collection_name: "book",
 });
 
 ```
 
-```python
+```bash
 err := milvusClient.LoadCollection(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -72,7 +72,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.loadCollection(
   LoadCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -103,12 +103,12 @@ System.out.println(response.getProgress());
 
 ```
 
-```python
+```bash
 load -c book
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/collection/load' 
   -H 'accept: application/json' 
@@ -121,7 +121,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {}
 
 ```
@@ -161,7 +161,7 @@ Output:
 
 您可以检查已加载副本的信息。
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load(replica_number=2)    # Load collection as 2 replicas
@@ -172,7 +172,7 @@ print(result)
 
 以下是输出示例。
 
-```python
+```bash
 Replica groups:
 - Group: <group_id:435309823872729305>, <group_nodes:(21, 20)>, <shards:[Shard: <channel_name:milvus-zong-rootcoord-dml_27_435367661874184193v0>, <shard_leader:21>, <shard_nodes:[21]>, Shard: <channel_name:milvus-zong-rootcoord-dml_28_435367661874184193v1>, <shard_leader:20>, <shard_nodes:[20, 21]>]>
 - Group: <group_id:435309823872729304>, <group_nodes:(25,)>, <shards:[Shard: <channel_name:milvus-zong-rootcoord-dml_28_435367661874184193v1>, <shard_leader:25>, <shard_nodes:[25]>, Shard: <channel_name:milvus-zong-rootcoord-dml_27_435367661874184193v0>, <shard_leader:25>, <shard_nodes:[25]>]>

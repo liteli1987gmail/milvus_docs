@@ -19,7 +19,7 @@
 
 以下代码片段假设已经存在一个名为“book”的 collection，并且在字符串字段“book_name”上创建了一个索引。
 
-```python
+```bash
 from pymilvus import Collection
 
 collection = Collection("book")   
@@ -33,7 +33,7 @@ collection.load()
 
 索引创建完成后，可以在向量相似度搜索中包含此字符串字段的布尔表达式，如下所示：
 
-```python
+```bash
 search_param = {
   "data": [[0.1, 0.2]],
   "anns_field": "book_intro",

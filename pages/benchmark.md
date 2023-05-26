@@ -1,3 +1,7 @@
+Milvus 2.2.0的基准测试
+===
+
+
 本报告展示了Milvus 2.2.0的主要测试结果。旨在提供Milvus 2.2.0的搜索性能图片，特别是在可扩展性方面。 
 
 ![](https://zilliz.com/images/whitepaper/performance.png)
@@ -22,20 +26,26 @@
 术语
 --
 
-Click to see the details of the terms used in the test
 
-| Term | Description |
+| 参数 | 描述 | 选项 |
+| --- | --- | --- |
+| `metric` | 用于计算的度量类型。 | 对于浮点向量：* `L2` (欧几里得距离)  * `IP` (内积) |
+
+ 
+点此查看测试所使用术语的详细信息
+
+| 术语 | 描述 |
 | --- | --- |
-| nq | Number of vectors to be searched in one search request |
-| topk | Number of the nearest vectors to be retrieved for each vector (in nq) in a search request |
-| ef | A search parameter specific to [HNSW索引](https://milvus.io/docs/v2.2.x/index.md) |
-| RT | Response time from sending the request to receiving the response |
-| QPS | Number of search requests that are successfully processed per second |
+| nq | 在一个搜索请求中要搜索的向量的数量 |
+| topk | 在一个搜索请求中为每个向量（在nq内）检索的最近向量的数量 |
+| ef | 一个特定于[HNSW索引](https://milvus.io/docs/v2.2.x/index.md)的搜索参数 |
+| RT | 从发送请求到接收响应所需的响应时间 |
+| QPS | 每秒成功处理的搜索请求数 |
 
-Test environment
+测试环境
 ----------------
 
-All tests are performed under the following environments.
+所有测试都是在以下环境下进行的。
 
 ### 硬件环境
 
@@ -52,10 +62,10 @@ All tests are performed under the following environments.
 | Milvus | v2.2.0 |
 | Milvus GO SDK | v2.2.0 |
 
-### Deployment scheme
+### 部署方案
 
-* Milvus instances (standalone or cluster) are deployed via [Helm](https://milvus.io/docs/install_standalone-helm.md) on a Kubernetes cluster based on physical or virtual machines.
-* Different tests merely vary in the number of CPU cores, the size of memory, and the number of replicas (worker nodes), which only applies to Milvus clusters.
+* Milvus实例（独立或集群）通过[Helm](https://milvus.io/docs/install_standalone-helm.md)在支持物理或虚拟机的Kubernetes集群上部署。
+* 不同的测试仅在CPU核心数、内存大小和副本数（Worker节点数）方面有所变化，仅适用于Milvus集群。
 * 未指定的配置与[默认配置](https://github.com/milvus-io/milvus-helm/blob/master/charts/milvus/values.yaml)相同。
 
 * Milvus 依赖项（MinIO、Pulsar 和 Etcd）在每个节点的本地 SSD 上存储数据。
@@ -64,28 +74,28 @@ All tests are performed under the following environments.
 
 ### 数据集
 
-The test uses the open-source dataset SIFT (128 dimensions) from [ANN-Benchmarks](https://github.com/erikbern/ann-benchmarks/#data-sets).
+测试使用[ANN-Benchmarks](https://github.com/erikbern/ann-benchmarks/#data-sets)开源数据集SIFT（128维度）。
 
-Test pipeline
+测试流程
 -------------
 
-1. Start a Milvus instance by Helm with respective server configurations as listed in each test.
-2. Connect to the Milvus instance via Milvus GO SDK and get the corresponding test results.
-3. Create a collection.
-4. Insert 1 million SIFT vectors. Build an HNSW index and configure the index parameters by setting `M` to `8` and `efConstruction` to `200`.
-5. Load the collection.
-6. Search with different concurrent numbers with search parameters `nq=1, topk=1, ef=64`, the duration of each concurrency is at least 1 hour.
+1. 使用相应的服务器配置通过Helm启动Milvus实例。
+2. 通过Milvus GO SDK连接至Milvus实例并获取相应的测试结果。
+3. 创建一个集合。
+4. 插入100万个SIFT向量。使用HNSW索引并将索引参数配置为将 `M` 设为 `8`，将 `efConstruction` 设为 `200`。
+5. 加载该集合。
+6. 以不同的并发数和搜索参数 `nq=1, topk=1, ef=64` 进行搜索，每次并发的持续时间至少为1小时。
 
-Test results
+测试结果
 ------------
 
 ### Milvus 2.2.0 与 Milvus 2.1.0
 
 #### 聚类
 
-**Server configurations (cluster)**
+**服务器配置（集群）**
 
-```python
+```bash
 queryNode:
   replicas: 1
   resources:
@@ -107,11 +117,11 @@ queryNode:
 
 ![Cluster search performance](https://milvus.io/static/552ccaa600781ffb7dd07c163c606417/1263b/cluster_search_performance_210_vs_220.png "Cluster search performance")
 
-#### Standalone
+#### 单机版
 
-**Server configurations (standalone)**
+**服务器配置（独立版本）**
 
-```python
+```bash
 standalone:
   replicas: 1
   resources:
@@ -139,7 +149,7 @@ standalone:
 
 **Server configurations (cluster)**
 
-```python
+```bash
 queryNode:
  replicas: 1
  resources:
@@ -163,15 +173,14 @@ queryNode:
 
 ![Search performance by Querynode CPU cores](https://milvus.io/static/7bbd3012494497881b242c2d59af3708/1263b/search_performance_by_querynode_cpu_cores.png "Search performance by Querynode CPU cores")
 
-### Milvus 2.2.0 Scale-out
+### Milvus 2.2.0 横向扩展
 
-Expand more replicas with more Querynodes to check the capability to scale out.
+增加更多查询节点的副本以检查水平扩展的能力。
 
-Note: the number of Querynodes equals the `replica_number` when loading the collection.
+注意：加载集合时，查询节点的数量等于`replica_number`。
 
-**Server configurations (cluster)**
-
-```python
+**服务器配置（集群）**
+```bash
 queryNode:
   replicas: 1 / 2 / 4 / 8      
   resources:
@@ -193,7 +202,7 @@ queryNode:
 
 ![Search performance by Querynode replicas](https://milvus.io/static/4ead6114239567f61cee372e67f9976c/1263b/search_performance_by_querynode_replicas.png "Search performance by Querynode replicas")
 
-What's next
+接下来的步骤
 -----------
 
-* Try performing Milvus 2.2.0 benchmark tests on your own by referring to [this guide](https://milvus.io/blog/2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md), except that you should instead use Milvus 2.2 and Pymilvus 2.2 in this guide.
+* 参考[本指南](https://milvus.io/blog/2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md)，尝试使用Milvus 2.2和Pymilvus 2.2进行性能基准测试。

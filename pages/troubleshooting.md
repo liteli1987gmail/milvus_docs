@@ -11,7 +11,7 @@
 
 启动错误通常是致命错误。运行以下命令以查看错误详情：
 
-```python
+```bash
 $ docker logs <your milvus container id>
 
 ```
@@ -38,7 +38,7 @@ etcd集群默认使用pvc。Kubernetes集群需要预先配置StorageClass。
 
 如果多个pod在`etcd-0`仍在运行时不断崩溃，可以运行以下代码。
 
-```python
+```bash
 kubectl scale sts <etcd-sts> --replicas=1
 # 删除etcd-1和etcd-2的pvc
 kubectl scale sts <etcd-sts> --replicas=3
@@ -51,7 +51,7 @@ kubectl scale sts <etcd-sts> --replicas=3
 
 Milvus元数据保存在`key`存储桶中。备份此存储桶中的数据并运行以下命令。请注意，`by-dev/meta/session`文件中的前缀数据不需要备份。
 
-```python
+```bash
 kubectl kubectl scale sts <etcd-sts> --replicas=0
 # 删除etcd-0、etcd-1和etcd-2的pvc
 kubectl kubectl scale sts <etcd-sts> --replicas=1

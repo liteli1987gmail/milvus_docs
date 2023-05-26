@@ -1,3 +1,6 @@
+Milvus 使用 Pulsar
+==
+
 Milvus 使用 Pulsar 或 Kafka 来管理最近更改的日志、输出流日志并提供日志订阅。Pulsar 是默认的消息存储系统。本主题介绍如何使用 Docker Compose 或 Helm 配置消息存储。
 
 您可以使用 [Docker Compose](https://docs.docker.com/get-started/overview/) 或在 K8s 上配置 Pulsar 并在 K8s 上配置 Kafka。
@@ -9,7 +12,7 @@ Milvus 使用 Pulsar 或 Kafka 来管理最近更改的日志、输出流日志�
 
 要使用 Docker Compose 配置 Pulsar，请在 milvus/configs 路径下的 milvus.yaml 文件中提供 `pulsar` 部分的值。
 
-```python
+```bash
 pulsar:
   address: localhost # Pulsar 的地址
   port: 6650 # Pulsar 的端口
@@ -23,7 +26,7 @@ pulsar:
 
 运行以下命令以启动使用 Pulsar 配置的 Milvus。
 
-```python
+```bash
 docker-compose up
 
 ```
@@ -52,7 +55,7 @@ docker-compose up
 
 1. 在 `values.yaml` 文件中配置 `pulsar` 部分。
 
-```python
+```bash
 pulsar:
   enabled: false
 
@@ -60,7 +63,7 @@ pulsar:
 
 2. 在 `values.yaml` 文件中使用您的值配置 `externalPulsar` 部分。
 
-```python
+```bash
 externalPulsar:
   enabled: true
   host: <your_pulsar_IP>
@@ -70,7 +73,7 @@ externalPulsar:
 
 3. 在配置完上述部分并保存 `values.yaml` 文件后，运行以下命令以安装使用 Pulsar 配置的 Milvus。
 
-```python
+```bash
 helm install <your_release_name> milvus/milvus -f values.yaml
 
 ```
@@ -79,7 +82,7 @@ helm install <your_release_name> milvus/milvus -f values.yaml
 
 运行以下命令，使用您的值安装 Milvus 并配置 Pulsar。
 
-```python
+```bash
 helm install <your_release_name> milvus/milvus --set cluster.enabled=true --set pulsar.enabled=false --set externalPulsar.enabled=true --set externalPulsar.host=<your_pulsar_IP> --set externalPulsar.port=<your_pulsar_port>
 
 ```
@@ -109,7 +112,7 @@ The following table lists the mandatory configurations for external Kafka. Set t
 
 1. 如果要使用 Kafka 作为消息存储系统，请在 `values.yaml` 文件中配置 `kafka` 部分。
 
-```python
+```bash
 kafka:
   enabled: true
   name: kafka
@@ -122,7 +125,7 @@ kafka:
 
 2. 如果要使用外部 Kafka 作为消息存储系统，请在 `values.yaml` 文件中使用您的值配置 `externalKafka` 部分。
 
-```python
+```bash
 externalKafka:
   enabled: true
   brokerList: <your_kafka_IP>:<your_kafka_port>
@@ -131,7 +134,7 @@ externalKafka:
 
 3. 在配置完上述部分并保存 `values.yaml` 文件后，运行以下命令以安装使用 Kafka 配置的 Milvus。
 
-```python
+```bash
 helm install <your_release_name> milvus/milvus -f values.yaml
 
 ```
@@ -140,14 +143,14 @@ helm install <your_release_name> milvus/milvus -f values.yaml
 
 要安装 Milvus 并配置 Kafka，请使用您的值运行以下命令。
 
-```python
+```bash
 helm install <your_release_name> milvus/milvus --set cluster.enabled=true --set pulsar.enabled=false --set kafka.enabled=true
 
 ```
 
 要安装 Milvus 并配置外部 Kafka，请使用您的值运行以下命令。
 
-```python
+```bash
 helm install <your_release_name> milvus/milvus --set cluster.enabled=true --set pulsar.enabled=false --set externalKafka.enabled=true --set externalKafka.brokerlist=<your_kafka_IP>:<your_kafka_port>
 
 ```

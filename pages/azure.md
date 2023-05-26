@@ -88,14 +88,14 @@ Azure 概览页面。
 
 - 运行以下命令设置您的订阅。
 
-```python
+```bash
 az account set --subscription EXAMPLE-SUBSCRIPTION-ID
 
 ```
 
 - 运行以下命令下载凭据并配置Kubernetes CLI以使用它们。
 
-```python
+```bash
 az aks get-credentials --resource-group YOUR-RESOURCE-GROUP --name YOUR-CLUSTER-NAME
 
 ```
@@ -106,14 +106,14 @@ az aks get-credentials --resource-group YOUR-RESOURCE-GROUP --name YOUR-CLUSTER-
 
 - 运行以下命令添加Milvus Helm图表存储库。
 
-```python
+```bash
 helm repo add milvus https://milvus-io.github.io/milvus-helm/
 
 ```
 
 - 运行以下命令更新您的Milvus Helm图表。
 
-```python
+```bash
 helm repo update
 
 ```
@@ -122,7 +122,7 @@ helm repo update
 
 本主题使用 `my-release` 作为发布名称。替换为您的发布名称。
 
-```python
+```bash
 helm install my-release milvus/milvus --set service.type=LoadBalancer
 
 ```
@@ -169,7 +169,7 @@ Azure Blob 存储是 Azure 版本的 AWS Simple Storage Service (S3)。
 
 以下示例安装名为`my-release`的图表。
 
-```python
+```bash
 helm install my-release ./milvus --set service.type=LoadBalancer --set minio.persistence.enabled=false --set externalAzure.bucketName=milvusbuckettwo --set minio.azuregateway.enabled=true --set minio.azuregateway.replicas=1 --set minio.accessKey=milvusstorage --set minio.secretKey=your-azure-key
 
 ```

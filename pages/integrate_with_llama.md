@@ -11,7 +11,7 @@ LlamaIndex和Milvus共同用于摄取和检索相关信息。LlamaIndex首先通
 
 在本示例中，我们将使用`pymilvus`连接到Milvus和`llama-index`处理数据操作和处理流水线。本示例还需要OpenAI API密钥进行嵌入生成。
 
-```python
+```bash
 pip install pymilvus llama-index
 
 ```
@@ -21,7 +21,7 @@ pip install pymilvus llama-index
 
 我们将使用`git`拉取Milvus网站数据。大多数文档以markdown文件的形式存在。
 
-```python
+```bash
 git clone https://github.com/milvus-io/milvus-docs
 
 ```
@@ -31,7 +31,7 @@ git clone https://github.com/milvus-io/milvus-docs
 
 在这里，我们可以找到需要修改以适合自己账户运行的主要参数。每个参数旁边都有一个它所表示的描述。
 
-```python
+```bash
 from os import environ
 
 HOST = "localhost"
@@ -46,7 +46,7 @@ environ["OPENAI_API_KEY"] = "sk-******" # OpenAI API Key
 
 一旦我们把数据放在系统中，我们就可以使用LlamaIndex将其消费，并将其上传到Milvus。这需要2个步骤。我们首先从[Llama Hub](https://llamahub.ai)加载一个markdown阅读器，并将所有的markdown转换为文档。
 
-```python
+```bash
 from llama_index import download_loader
 from glob import glob
 
@@ -64,7 +64,7 @@ print(len(docs))
 
 一旦我们确定了文档，我们就可以将其推送到Milvus中。这一步需要Milvus和OpenAI的配置。
 
-```python
+```bash
 from llama_index import GPTMilvusIndex
 
 # Push all markdown files into Zilliz Cloud
@@ -77,7 +77,7 @@ index = GPTMilvusIndex.from_documents(docs, host=HOST, port=PORT, overwrite=True
 
 将我们的文档加载到Zilliz Cloud中后，我们可以开始提问。问题将会被搜索到知识库中，任何相关的文档都会被用来生成答案。
 
-```python
+```bash
 s = index.query("What is a collection?")
 print(s)
 
@@ -88,7 +88,7 @@ print(s)
 
 我们也能够保存我们的连接信息，并使用`save_to_dict()`和`load_from_dict()`重新加载。
 
-```python
+```bash
 saved = index.save_to_dict()
 del index
 

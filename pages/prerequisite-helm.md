@@ -44,7 +44,7 @@ kubectl是Kubernetes的命令行工具。使用一个与您的集群相差不超
 
 要测试您的磁盘是否符合要求，请使用[fio](https://github.com/axboe/fio)。
 
-```python
+```bash
 mkdir test-data
 fio --rw=write --ioengine=sync --fdatasync=1 --directory=test-data --size=2200m --bs=2300 --name=mytest
 

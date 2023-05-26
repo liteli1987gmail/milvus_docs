@@ -15,7 +15,7 @@
 
 通过`go get`安装Milvus GO SDK及其依赖项。
 
-```python
+```bash
 $ go get -u github.com/milvus-io/milvus-sdk-go/v2
 
 ```

@@ -10,7 +10,7 @@ Milvus 命令行界面（CLI）是一个命令行工具，支持数据库连接�
 
 ### 语法
 
-```python
+```bash
 calc distance
 
 ```
@@ -25,7 +25,7 @@ calc distance
 
 计算两个向量数组之间的距离并提示所需输入：
 
-```python
+```bash
 milvus_cli > calc distance
 
 Import left operator vectors from existing collection? [y/N]: n
@@ -75,7 +75,7 @@ Result:
 
 ### 语法
 
-```python
+```bash
 calc mkts_from_hybridts -h (int) -m (float)
 
 ```
@@ -95,7 +95,7 @@ Generates a hybrid timestamp based on the Unix Epoch time, timedelta, and increm
 
 ### Syntax
 
-```python
+```bash
 calc mkts_from_unixtime -e (float) -m (float)
 
 ```
@@ -115,7 +115,7 @@ calc mkts_from_unixtime -e (float) -m (float)
 
 ### 语法
 
-```python
+```bash
 calc hybridts_to_unixtime -h (int)
 
 ```
@@ -134,7 +134,7 @@ Clears the screen.
 
 ### Syntax
 
-```python
+```bash
 clear
 
 ```
@@ -152,7 +152,7 @@ clear
 
 ### 语法
 
-```python
+```bash
 connect [-h (text)] [-p (int)] [-a (text)] [-s (text)] [-u (text)] [-pwd (text)] [-D]
 
 ```
@@ -172,7 +172,7 @@ connect [-h (text)] [-p (int)] [-a (text)] [-s (text)] [-u (text)] [-pwd (text)]
 
 ### 示例
 
-```python
+```bash
 milvus_cli > connect -h 127.0.0.1 -p 19530 -a default
 
 ```
@@ -184,7 +184,7 @@ Create user in Milvus
 
 ### Syntax
 
-```python
+```bash
 create user -u (text) -p (text)
 
 ```
@@ -203,7 +203,7 @@ create user -u (text) -p (text)
 
 以下示例在Milvus中创建用户`zilliz`和密码`zilliz`。
 
-```python
+```bash
 milvus_cli > create user -u zilliz -p zilliz
 
 ```
@@ -216,7 +216,7 @@ milvus_cli > create user -u zilliz -p zilliz
 A collection can have multiple aliases. However, an alias corresponds to a maximum of one collection.
 ### 语法
 
-```python
+```bash
 create alias -c (text) -a (text) [-A] [-t (float)]
 
 ```
@@ -237,7 +237,7 @@ create alias -c (text) -a (text) [-A] [-t (float)]
 
 以下示例为`car`集合创建`carAlias1`和`carAlias2`别名。
 
-```python
+```bash
 milvus_cli > create alias -c car -a carAlias1 -a carAlias2
 
 ```
@@ -247,7 +247,7 @@ milvus_cli > create alias -c car -a carAlias1 -a carAlias2
 Example 2 is based on Example 1.
 以下示例将`carAlias1`和`carAlias2`的别名从`car`集合传输到`car2`集合。
 
-```python
+```bash
 milvus_cli > create alias -c car2 -A -a carAlias -a carAlias2
 
 ```
@@ -259,7 +259,7 @@ milvus_cli > create alias -c car2 -A -a carAlias -a carAlias2
 
 ### 语法
 
-```python
+```bash
 create collection -c (text) -f (text) -p (text) [-a] [-d (text)]
 
 ```
@@ -277,7 +277,7 @@ create collection -c (text) -f (text) -p (text) [-a] [-d (text)]
 
 ### 示例
 
-```python
+```bash
 milvus_cli > create collection -c car -f id:INT64:primary_field -f vector:FLOAT_VECTOR:128 -f color:INT64:color -f brand:INT64:brand -p id -a -d 'car_collection'
 
 ```
@@ -289,7 +289,7 @@ milvus_cli > create collection -c car -f id:INT64:primary_field -f vector:FLOAT_
 
 ### 语法
 
-```python
+```bash
 create partition -c (text) -p (text) [-d (text)]
 
 ```
@@ -305,7 +305,7 @@ create partition -c (text) -p (text) [-d (text)]
 
 ### 示例
 
-```python
+```bash
 milvus_cli > create partition -c car -p new_partition -d test_add_partition
 
 ```
@@ -318,7 +318,7 @@ Creates an index for a field.
  Currently, a collection supports a maximum of one index.
 ### Syntax
 
-```python
+```bash
 create index
 
 ```
@@ -333,7 +333,7 @@ create index
 
 To create an index for a field and be prompted for the required input:
 
-```python
+```bash
 milvus_cli > create index
 
 Collection name (car, car2): car2
@@ -359,7 +359,7 @@ Timeout []:
 
 ### 语法
 
-```python
+```bash
 delete alias -p (text)
 
 ```
@@ -373,7 +373,7 @@ delete alias -p (text)
 
 ### 示例
 
-```python
+```bash
 milvus_cli > delete user -p zilliz
 
 ```
@@ -385,7 +385,7 @@ milvus_cli > delete user -p zilliz
 
 ### 语法
 
-```python
+```bash
 delete alias -a (text) [-t (float)]
 
 ```
@@ -406,7 +406,7 @@ delete alias -a (text) [-t (float)]
 
 ### 语法
 
-```python
+```bash
 delete collection -c (text) [-t (float)]
 
 ```
@@ -421,7 +421,7 @@ delete collection -c (text) [-t (float)]
 
 ### 示例
 
-```python
+```bash
 milvus_cli > delete collection -c car
 
 ```
@@ -433,7 +433,7 @@ Deletes entities.
 
 ### Syntax
 
-```python
+```bash
 delete entities -c (text) -p (text) [-t (float)]
 
 ```
@@ -449,7 +449,7 @@ delete entities -c (text) -p (text) [-t (float)]
 
 ### Example
 
-```python
+```bash
 milvus_cli > delete entities -c car
 
 The expression to specify entities to be deleted, such as "film_id in [ 0, 1 ]": film_id in [ 0, 1 ]
@@ -467,7 +467,7 @@ Deletes a partition.
 
 ### Syntax
 
-```python
+```bash
 delete partition -c (text) -p (text) [-t (float)]
 
 ```
@@ -483,7 +483,7 @@ delete partition -c (text) -p (text) [-t (float)]
 
 ### Example
 
-```python
+```bash
 milvus_cli > delete partition -c car -p new_partition
 
 ```
@@ -496,7 +496,7 @@ delete index
  Currently, a collection supports a maximum of one index.
 ### 语法
 
-```python
+```bash
 delete index -c (text) -in (text) [-t (float)]
 
 ```
@@ -512,7 +512,7 @@ delete index -c (text) -in (text) [-t (float)]
 
 ### 示例
 
-```python
+```bash
 milvus_cli > delete index -c car -in indexName
 
 ```
@@ -524,7 +524,7 @@ Shows the detailed information of a collection.
 
 ### Syntax
 
-```python
+```bash
 describe collection -c (text)
 
 ```
@@ -538,7 +538,7 @@ describe collection -c (text)
 
 ### Example
 
-```python
+```bash
 milvus_cli > describe collection -c test_collection_insert
 
 ```
@@ -550,7 +550,7 @@ describe partition
 
 ### 语法
 
-```python
+```bash
 describe partition -c (text) -p (text)
 
 ```
@@ -565,7 +565,7 @@ describe partition -c (text) -p (text)
 
 ### 示例
 
-```python
+```bash
 milvus_cli > describe partition -c test_collection_insert -p _default
 
 ```
@@ -577,7 +577,7 @@ Shows the detailed information of an index.
 
 ### Syntax
 
-```python
+```bash
 describe index -c (text) -in (text)
 
 ```
@@ -598,7 +598,7 @@ exit
 
 ### 语法
 
-```python
+```bash
 exit
 
 ```
@@ -616,7 +616,7 @@ exit
 
 ### 语法
 
-```python
+```bash
 help <command>
 
 ```
@@ -650,7 +650,7 @@ help <command>
 
 ### 语法
 
-```python
+```bash
 import -c (text)[-p (text)][-t (float)] <file_path>
 
 ```
@@ -668,7 +668,7 @@ import -c (text)[-p (text)][-t (float)] <file_path>
 
 The following example imports a local CSV file.
 
-```python
+```bash
 milvus_cli > import -c car 'examples/import_csv/vectors.csv'
 
 Reading csv file...  [####################################]  100%
@@ -692,7 +692,7 @@ Milvus timestamp:           428849214449254403
 
 The following example imports a remote CSV file.
 
-```python
+```bash
 milvus_cli > import -c car 'https://raw.githubusercontent.com/milvus-
 io/milvus_cli/main/examples/import_csv/vectors.csv'
 
@@ -723,7 +723,7 @@ Milvus timestamp:           428849214449254403
 
 ### 语法
 
-```python
+```bash
 list users
 
 ```
@@ -740,7 +740,7 @@ list users
 
 ### Syntax
 
-```python
+```bash
 list collections [-t (float)][-l (boolean)]
 
 ```
@@ -758,7 +758,7 @@ Options
  Currently, a collection supports a maximum of one index. 
 语法
 
-```python
+```bash
 list indexes -c (text)
 
 ```
@@ -774,7 +774,7 @@ list indexes -c (text)
 列出集合的所有分区。
 语法
 
-```python
+```bash
 list partitions -c (text)
 
 ```
@@ -790,7 +790,7 @@ list partitions -c (text)
 将集合或分区从硬盘空间加载到RAM中。
 语法
 
-```python
+```bash
 load -c (text) [-p (text)]
 
 ```
@@ -807,7 +807,7 @@ load -c (text) [-p (text)]
 通过将段从源查询节点转移到目标节点来执行负载均衡。
 语法
 
-```python
+```bash
 load_balance -s (int) -d (int) -ss (int) [-t (int)]
 
 ```
@@ -826,7 +826,7 @@ query
 Shows query results that match all the criteria that you enter.
 Syntax
 
-```python
+```bash
 query
 
 ```
@@ -841,7 +841,7 @@ Example
 Example 1
 To perform a query and be prompted for the required input:
 
-```python
+```bash
 milvus_cli > query
 
 Collection name: car
@@ -865,7 +865,7 @@ Travel timestamp. Users can specify a timestamp in a search to get results based
 Example 2
 To perform a query and be prompted for the required input:
 
-```python
+```bash
 milvus_cli > query
 
 Collection name: car
@@ -890,7 +890,7 @@ Travel timestamp. Users can specify a timestamp in a search to get results based
 释放 RAM 中的一个集合或分区。
 语法
 
-```python
+```bash
 release -c (text) [-p (text)]
 
 ```
@@ -907,7 +907,7 @@ search
 Performs a vector similarity search or hybrid search.
 Syntax
 
-```python
+```bash
 search
 
 ```
@@ -922,7 +922,7 @@ Examples
 Example 1
 To perform a search on a csv file and be prompted for the required input:
 
-```python
+```bash
 milvus_cli > search
 
 Collection name (car, test_collection): car
@@ -953,7 +953,7 @@ Travel Timestamp(Specify a timestamp in a search to get results based on a data 
 Example 2
 To perform a search on an indexed collection and be prompted for the required input:
 
-```python
+```bash
 milvus_cli > search
 
 Collection name (car, test_collection): car
@@ -986,7 +986,7 @@ Travel Timestamp(Specify a timestamp in a search to get results based on a data 
 Example 3
 To perform a search on a non-indexed collection and be prompted for the required input:
 
-```python
+```bash
 milvus_cli > search
 
 Collection name (car, car2): car
@@ -1015,7 +1015,7 @@ show connection
 Shows the current connection.
 Syntax
 
-```python
+```bash
 show connection [-a]
 
 ```
@@ -1031,7 +1031,7 @@ Options
 显示实体索引的进度。
 语法
 
-```python
+```bash
 show index_progress -c (text) [-i (text)]
 
 ```
@@ -1048,7 +1048,7 @@ show loading_progress
 Shows the progress of entity loading.
 Syntax
 
-```python
+```bash
 show loading_progress -c (text) [-p (text)]
 
 ```
@@ -1065,7 +1065,7 @@ show query_segment
 Shows the segment information of a collection.
 Syntax
 
-```python
+```bash
 show query_segment -c (text) [-t (float)]
 
 ```
@@ -1082,7 +1082,7 @@ Options
 显示Milvus_CLI的版本。
 语法
 
-```python
+```bash
 version
 
 ```
@@ -1096,7 +1096,7 @@ version
  You can also check the version of Milvus_CLI in a shell as shown in the following example. In this case, `milvus_cli --version` acts as a command.
 示例
 
-```python
+```bash
 $ milvus_cli --version
 Milvus_CLI v0.1.7
 

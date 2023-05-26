@@ -31,7 +31,7 @@
 
 - 从下面的代码块中复制代码，并将其保存为yaml格式的文件，将文件命名为milvus_cluster.yaml。
 
-```python
+```bash
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 metadata:
@@ -59,14 +59,14 @@ addons:
 
 您可以将它们替换为您自己的值。有关更多信息，请参见[开始使用Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl)。
 
-```python
+```bash
 eksctl create cluster -f milvus_cluster.yaml
 
 ```
 
 如果EKS集群创建成功，您将看到以下输出。
 
-```python
+```bash
 ...
 [✓]  EKS cluster "my-cluster" in "region-code" region is ready
 
@@ -74,27 +74,27 @@ eksctl create cluster -f milvus_cluster.yaml
 
 2. 在Milvus集群被配置后，使用区域和集群名称运行以下命令。
 
-```python
+```bash
 aws eks --region ${aws-region} update-kubeconfig --name ${cluster-name}
 
 ```
 3. 创建kubeconfig文件并运行`kubectl get svc`。如果成功，输出中会出现一个集群。
 
-```python
+```bash
 NAME          TYPE      CLUSTER-IP    EXTERNAL-IP                                PORT(S)             AGE
 kubernetes       ClusterIP   10.100.0.1    <none>                                  443/TCP             106m
 
 ```
 - 添加Milvus Helm存储库。
 
-```python
+```bash
 helm repo add milvus https://milvus-io.github.io/milvus-helm/
 
 ```
 
 - 运行以下命令启动已配置的Milvus集群。使用S3作为存储需要访问密钥和S3存储桶。
 
-```python
+```bash
 helm upgrade --install --set cluster.enabled=true --set externalS3.enabled=true --set externalS3.host='s3.us-east-2.amazonaws.com' --set externalS3.port=80 --set externalS3.accessKey=${access-key} --set externalS3.secretKey=${secret-key} --set externalS3.bucketName=${bucket-name} --set minio.enabled=False --set service.type=LoadBalancer milvus milvus/milvus
 
 ```
@@ -112,7 +112,7 @@ helm upgrade --install --set cluster.enabled=true --set externalS3.enabled=true 
 
 有关数据节点、索引节点、查询节点和代理的更多信息，请参见[存储/计算分离](https://milvus.io/docs/v2.0.x/four_layers.md#StorageComputing-Disaggregation)。
 
-```python
+```bash
 helm upgrade --install --set cluster.enabled=true --set dataNode.replicas=1 --set indexNode.replicas=1 --set queryNode.replicas=1 --set proxy.replicas=1 --set externalS3.enabled=true --set externalS3.host='s3.us-east-2.amazonaws.com' --set externalS3.port=80 --set externalS3.accessKey=${access-key} --set externalS3.secretKey=${secret-key} --set externalS3.bucketName=${bucket-name} --set minio.enabled=False --set service.type=LoadBalancer milvus milvus/milvus
 
 ```

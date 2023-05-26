@@ -5,7 +5,7 @@
 
 在以下代码片段中，我们创建一个名为`old_collection`的集合，然后将其重命名为`new_collection`。
 
-```python
+```bash
 from pymilvus import Collection, FieldSchema, CollectionSchema, DataType, connections, utility
 connections.connect(alias="default")
 schema = CollectionSchema(fields=[

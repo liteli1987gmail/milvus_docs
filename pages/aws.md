@@ -42,7 +42,7 @@
 
 The value of `index_count` must be greater than or equal to one.
 
-```python
+```bash
 variable "index_count" {
   description = "Amount of index instances to run"
   type        = number
@@ -54,7 +54,7 @@ variable "index_count" {
 
 以下模板声明了一个名为 `index_ec2_type` 的变量，用于设置索引节点的 [实例类型](https://aws.amazon.com/ec2/instance-types/)。
 
-```python
+```bash
 variable "index_ec2_type" {
   description = "Which server type"
   type        = string
@@ -66,7 +66,7 @@ variable "index_ec2_type" {
 
 下面的模板声明了一个 `key_name` 变量和一个 `my_ip` 变量。`key_name` 变量表示AWS访问密钥。`my_ip` 变量表示安全组的IP地址范围。
 
-```python
+```bash
 variable "key_name" {
   description = "Which aws key to use for access into instances, needs to be uploaded already"
   type        = string
@@ -89,7 +89,7 @@ variable "my_ip" {
 
 以下模板使用`us-east-2`区域。有关更多信息，请参见[可用区域](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones#concepts-available-regions)。
 
-```python
+```bash
 provider "aws" {
   profile = "default"
   region  = "us-east-2"
@@ -100,7 +100,7 @@ provider "aws" {
 
 以下模板声明一个安全组，允许来自`variables.tf`中声明的`my_ip`所代表的CIDR地址范围的传入流量。
 
-```python
+```bash
 resource "aws_security_group" "cluster_sg" {
   name        = "cluster_sg"
   description = "Allows only me to access"
@@ -140,7 +140,7 @@ resource "aws_security_group" "cluster_sg" {
 
 以下模板指定了一个具有10.0.0.0/24 CIDR块的Milvus集群VPC。
 
-```python
+```bash
 resource "aws_vpc" "cluster_vpc" {
   cidr_block = "10.0.0.0/24"
   tags = {
@@ -161,7 +161,7 @@ resource "aws_internet_gateway" "cluster_gateway" {
 
 以下模板声明一个子网，其流量路由到互联网网关。在这种情况下，子网的CIDR块大小与VPC的CIDR块大小相同。
 
-```python
+```bash
 resource "aws_subnet" "cluster_subnet" {
   vpc_id                  = aws_vpc.cluster_vpc.id
   cidr_block              = "10.0.0.0/24"
@@ -199,7 +199,7 @@ resource "aws_route_table_association" "cluster_subnet_add_gateway" {
 
 有关更多信息，请参见[EBS，Ephemeral和Root块设备](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#ebs-ephemeral-and-root-block-devices)。
 
-```python
+```bash
 resource "aws_instance" "minio_node" {
   count         = var.minio_count
   ami           = "ami-0d8d212151031f51c"
@@ -245,7 +245,7 @@ resource "aws_instance" "minio_node" {
 
 从 GitHub 克隆 Milvus 存储库以下载 Ansible Milvus 节点部署 Playbook。
 
-```python
+```bash
 git clone https://github.com/milvus-io/milvus.git
 
 ```
@@ -256,7 +256,7 @@ git clone https://github.com/milvus-io/milvus.git
 
 输入Playbook的本地路径并配置安装文件。
 
-```python
+```bash
 $ cd ./milvus/deployments/docker/cluster-distributed-deployment
 
 ```
@@ -267,7 +267,7 @@ $ cd ./milvus/deployments/docker/cluster-distributed-deployment
 
 添加主机名，并定义 `docker` 组和 `vars`。
 
-```python
+```bash
 [dockernodes] #Add docker host names.
 dockernode01
 dockernode02
@@ -328,7 +328,7 @@ INDEX_COORD_ADDRESS= {{coords_ip}}:31000
 
 `ansible.cfg` 控制playbook的行为，例如SSH key等。不要在docker主机上通过SSH key设置密码。否则，Ansible SSH连接将失败。我们建议在三个主机上设置相同的用户名和SSH key，并设置新用户帐户以执行sudo而不需要密码。否则，在运行Ansible playbook时，您将收到用户名与密码不匹配或未获得提升的权限的错误信息。
 
-```python
+```bash
 [defaults]
 host_key_checking = False
 inventory = inventory.ini # Specify the Inventory file
@@ -340,7 +340,7 @@ private_key_file=~/.my_ssh_keys/gpc_sshkey # Specify the SSH key that Ansible us
 
 `deploy-docker.yml` 定义了 Docker 的安装任务。请参阅文件中的代码注释以获取详细信息。
 
-```python
+```bash
 ---
 - name: setup pre-requisites # Install prerequisite
   hosts: all
@@ -363,7 +363,7 @@ private_key_file=~/.my_ssh_keys/gpc_sshkey # Specify the SSH key that Ansible us
 
 测试连接到Ansible。
 
-```python
+```bash
 $ ansible all -m ping
 
 ```
@@ -372,7 +372,7 @@ $ ansible all -m ping
 
 终端返回如下：
 
-```python
+```bash
 dockernode01 | SUCCESS => {
 "changed": false,
 "ping": "pong"
@@ -399,14 +399,14 @@ dockernode02 | SUCCESS => {
 
 检查Playbook的语法。
 
-```python
+```bash
 $ ansible-playbook deploy-docker.yml --syntax-check
 
 ```
 
 通常，终端返回如下：
 
-```python
+```bash
 playbook: deploy-docker.yml
 
 ```
@@ -415,14 +415,14 @@ playbook: deploy-docker.yml
 
 使用Playbook安装Docker。
 
-```python
+```bash
 $ ansible-playbook deploy-docker.yml
 
 ```
 
 如果Docker成功安装在这三个主机上，终端将返回如下信息：
 
-```python
+```bash
 TASK [docker-installation : Install Docker-CE] *******************************************************************
 ok: [dockernode01]
 ok: [dockernode03]
@@ -452,28 +452,28 @@ dockernode03               : ok=10   changed=1    unreachable=0    failed=0    s
 
 * 对于根主机：
 
-```python
+```bash
 $ docker -v
 
 ```
 
 * 对于非根主机：
 
-```python
+```bash
 $ sudo docker -v
 
 ```
 
 通常，终端返回如下结果：
 
-```python
+```bash
 Docker version 20.10.14, build a224086
 
 ```
 
 检查容器的运行状态。
 
-```python
+```bash
 $ docker ps
 
 ```
@@ -482,14 +482,14 @@ $ docker ps
 
 检查 `deploy-milvus.yml` 的语法。
 
-```python
+```bash
 $ ansible-playbook deploy-milvus.yml --syntax-check
 
 ```
 
 通常情况下，终端返回如下：
 
-```python
+```bash
 playbook: deploy-milvus.yml
 
 ```
@@ -498,14 +498,14 @@ playbook: deploy-milvus.yml
 
 创建 Milvus 容器的任务在 `deploy-milvus.yml` 中定义。
 
-```python
+```bash
 $ ansible-playbook deploy-milvus.yml
 
 ```
 
 终端返回：
 
-```python
+```bash
 PLAY [Create milvus-etcd, minio, pulsar] *****************************************************************
 
 TASK [Gathering Facts] ********************************************************************************************

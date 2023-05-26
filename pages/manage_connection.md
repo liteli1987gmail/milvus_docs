@@ -25,7 +25,7 @@ Milvus支持两个端口，端口`19530`和端口`9091`：
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 # Run `python3` in your terminal to operate in the Python interactive mode.
 from pymilvus import connections
 connections.connect(
@@ -38,7 +38,7 @@ connections.connect(
 
 ```
 
-```python
+```bash
 import { MilvusClient } from "@zilliz/milvus2-sdk-node";
 const address = "localhost:19530";
 const username = "username";
@@ -48,7 +48,7 @@ const milvusClient = new MilvusClient({address, ssl, username, password});
 
 ```
 
-```python
+```bash
 milvusClient, err := client.NewGrpcClient(
   context.Background(), // ctx
   "localhost:19530",    // addr
@@ -59,7 +59,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 final MilvusServiceClient milvusClient = new MilvusServiceClient(
   ConnectParam.newBuilder()
     .withHost("localhost")
@@ -69,12 +69,12 @@ final MilvusServiceClient milvusClient = new MilvusServiceClient(
 
 ```
 
-```python
+```bash
 connect -h localhost -p 19530 -a default
 
 ```
 
-```python
+```bash
 curl localhost:9091/api/v1/health
 {"status":"ok"}
 
@@ -136,32 +136,32 @@ curl localhost:9091/api/v1/health
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 connections.disconnect("default")
 
 ```
 
-```python
+```bash
 await milvusClient.closeConnection();
 
 ```
 
-```python
+```bash
 milvusClient.Close()
 
 ```
 
-```python
+```bash
 milvusClient.close()
 
 ```
 
-```python
+```bash
 connect -D
 
 ```
 
-```python
+```bash
 # Close your HTTP client connection.
 
 ```

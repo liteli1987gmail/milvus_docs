@@ -19,7 +19,7 @@
 
 * Apache Maven
 
-```python
+```bash
 <dependency>
     <groupId>io.milvus</groupId>
     <artifactId>milvus-sdk-java</artifactId>
@@ -30,7 +30,7 @@
 
 * Gradle/Grails
 
-```python
+```bash
 compile 'io.milvus:milvus-sdk-java:2.2.5'
 
 ```

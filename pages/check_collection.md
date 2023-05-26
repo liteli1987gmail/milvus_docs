@@ -15,20 +15,20 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import utility
 utility.has_collection("book")
 
 ```
 
-```python
+```bash
 await milvusClient.hasCollection({
   collection_name: "book",
 });
 
 ```
 
-```python
+```bash
 hasColl, err := milvusClient.HasCollection(
   context.Background(), // ctx
   collectionName,       // CollectionName
@@ -40,7 +40,7 @@ log.Println(hasColl)
 
 ```
 
-```python
+```bash
 R<Boolean> respHasCollection = milvusClient.hasCollection(
   HasCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -52,12 +52,12 @@ if (respHasCollection.getData() == Boolean.TRUE) {
 
 ```
 
-```python
+```bash
 describe collection -c book
 
 ```
 
-```python
+```bash
 curl -X 'GET' 
   'http://localhost:9091/api/v1/collection/existence' 
   -H 'accept: application/json' 
@@ -70,7 +70,7 @@ curl -X 'GET'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "value":true
@@ -117,7 +117,7 @@ Output:
 [命令行](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")  # Get an existing collection.
 
@@ -133,7 +133,7 @@ collection.properties		# Return the expiration time of data in the collection.
 
 ```
 
-```python
+```bash
 await milvusClient.describeCollection({          // Return the name and schema of the collection.
   collection_name: "book",
 });
@@ -144,7 +144,7 @@ await milvusClient.getCollectionStatistics({     // Return the statistics inform
 
 ```
 
-```python
+```bash
 collDesc, err := milvusClient.DescribeCollection(               // Return the name and schema of the collection.
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -164,7 +164,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 R<DescribeCollectionResponse> respDescribeCollection = milvusClient.describeCollection(
   // Return the name and schema of the collection.
   DescribeCollectionParam.newBuilder()
@@ -185,12 +185,12 @@ System.out.println("Collection row count: " + wrapperCollectionStatistics.getRow
 
 ```
 
-```python
+```bash
 describe collection -c book
 
 ```
 
-```python
+```bash
 curl -X 'GET' 
   'http://localhost:9091/api/v1/collection' 
   -H 'accept: application/json' 
@@ -203,7 +203,7 @@ curl -X 'GET'
 
 Output:
 
-```python
+```bash
 {
   "status": {},
   "schema": {
@@ -294,18 +294,18 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import utility
 utility.list_collections()
 
 ```
 
-```python
+```bash
 await milvusClient.showCollections();
 
 ```
 
-```python
+```bash
 listColl, err := milvusClient.ListCollections(
   context.Background(),   // ctx
 )
@@ -316,7 +316,7 @@ log.Println(listColl)
 
 ```
 
-```python
+```bash
 R<ShowCollectionsResponse> respShowCollections = milvusClient.showCollections(
     ShowCollectionsParam.newBuilder().build()
   );
@@ -324,12 +324,12 @@ System.out.println(respShowCollections);
 
 ```
 
-```python
+```bash
 list collections
 
 ```
 
-```python
+```bash
 curl -X 'GET' 
   'http://localhost:9091/api/v1/collections' 
   -H 'accept: application/json' 
@@ -339,7 +339,7 @@ curl -X 'GET'
 
 Output:
 
-```python
+```bash
 {
   "status": {},
   "collection_names": [

@@ -16,14 +16,14 @@ Milvus 允许您将大量向量数据分成少量分区。然后，搜索和其�
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.create_partition("novel")
 
 ```
 
-```python
+```bash
 await milvusClient.createPartition({
   collection_name: "book",
   partition_name: "novel",
@@ -31,7 +31,7 @@ await milvusClient.createPartition({
 
 ```
 
-```python
+```bash
 err := milvusClient.CreatePartition(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -43,7 +43,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.createPartition(
   CreatePartitionParam.newBuilder()
     .withCollectionName("book")
@@ -53,12 +53,12 @@ milvusClient.createPartition(
 
 ```
 
-```python
+```bash
 create partition -c book -p novel
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/partition' 
   -H 'accept: application/json' 

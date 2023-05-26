@@ -21,7 +21,7 @@ Milvus为所有数据插入和删除操作维护一个时间线。这使用户�
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType
 connections.connect("default", host='localhost', port='19530')
 collection_name = "test_time_travel"
@@ -33,7 +33,7 @@ collection = Collection(collection_name, schema)
 
 ```
 
-```python
+```bash
 const { MilvusClient } =require("@zilliz/milvus2-sdk-node");
 const milvusClient = new MilvusClient("localhost:19530");
 const params = {
@@ -59,7 +59,7 @@ const params = {
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 data = [
   [i for i in range(10, 20)],
   [[random.random() for _ in range(2)] for _ in range(9)],
@@ -69,7 +69,7 @@ batch2 = collection.insert(data)
 
 ```
 
-```python
+```bash
 const entities2 = Array.from({
   length: 9
 }, (v, k) => ({
@@ -89,19 +89,19 @@ const batch2 = await milvusClient.insert({
 
 ```
 
-```python
+```bash
 
 
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 import -c test_time_travel https://raw.githubusercontent.com/zilliztech/milvus_cli/main/examples/user_guide/search_with_timetravel_2.csv
 Reading file from remote URL.
 Reading csv rows...  [####################################]  100%
@@ -118,7 +118,7 @@ Milvus timestamp:           430390435713122310
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/entities' 
   -H 'accept: application/json' 
@@ -148,7 +148,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "IDs":{"IdField":{"IntId":{"data":[10,11,12,13,14,15,16,17,18,19]}}},
@@ -171,7 +171,7 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 collection.load()
 search_param = {
   "data": [[1.0, 1.0]],
@@ -185,7 +185,7 @@ res[0].ids
 
 ```
 
-```python
+```bash
 await milvusClient.loadCollection({
   collection_name: "test_time_travel",
 });
@@ -209,17 +209,17 @@ console.log(res1.results)
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 search
 Collection name (test_collection_query, test_time_travel): test_time_travel
 The vectors of search data (the length of data is number of query (nq), the dim of every vector in data must be equal to vector field’s of collection. You can also import a CSV file without headers): [[1.0, 1.0]]
@@ -234,7 +234,7 @@ Travel Timestamp(Specify a timestamp in a search to get results based on a data 
 
 ```
 
-```python
+```bash
 # Load the collection:
 curl -X 'POST' 
   'http://localhost:9091/api/v1/collection/load' 
@@ -267,27 +267,27 @@ curl -X 'POST'
 
 如下所示，目标数据本身和稍后插入的其他数据都不会作为结果返回。
 
-```python
+```bash
 [8, 7, 4, 2, 5, 6, 9, 3, 0, 1]
 
 ```
 
-```python
+```bash
 [8, 7, 4, 2, 5, 6, 9, 3, 0, 1]
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 Search results:
 
 No.1:
@@ -319,7 +319,7 @@ No.1:
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "results":{
@@ -351,7 +351,7 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 batch2.timestamp
 428828283406123011
 search_param = {
@@ -367,7 +367,7 @@ res[0].ids
 
 ```
 
-```python
+```bash
 batch2.timestamp
 428828283406123011
 const res2 = await milvusClient.search({
@@ -390,17 +390,17 @@ console.log(res2.results)
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 search 
 Collection name (test_collection_query, test_time_travel): test_time_travel
 The vectors of search data (the length of data is number of query (nq), the dim of every vector in data must be equal to vector field’s of collection. You can also import a CSV file without headers): [[1.0, 1.0]]
@@ -441,7 +441,7 @@ No.1:
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/search' 
   -H 'accept: application/json' 
@@ -463,7 +463,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "results":{
@@ -495,7 +495,7 @@ Output:
 
 在删除之前基于日期时间或Unix Epoch时间生成时间戳。
 
-```python
+```bash
 import datetime
 datetime = datetime.datetime.now()
 from pymilvus import utility
@@ -503,43 +503,43 @@ pre_del_timestamp = utility.mkts_from_datetime(datetime)
 
 ```
 
-```python
+```bash
 const {  datetimeToHybrids } = require("@zilliz/milvus2-sdk-node/milvus/utils/Format");
 const datetime = new Date().getTime()
 const pre_del_timestamp = datetimeToHybrids(datetime)
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 calc mkts_from_unixtime -e 1641809375
 430390476800000000
 
 ```
 
-```python
+```bash
 # This function is not supported. It is suggested to use Milvus_CLI.
 
 ```
 
 删除部分数据以模拟意外删除操作。
 
-```python
+```bash
 expr = "pk in [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
 collection.delete(expr)
 
 ```
 
-```python
+```bash
 const expr = "pk in [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]"
 await milvusClient.deleteEntities({
   collection_name: "test_time_travel",
@@ -548,17 +548,17 @@ await milvusClient.deleteEntities({
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 delete entities -c test_time_travel
 The expression to specify entities to be deleted, such as "film_id in [ 0, 1 ]": pk in [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
 You are trying to delete the entities of collection. This action cannot be undone!
@@ -568,7 +568,7 @@ Do you want to continue? [y/N]: y
 
 ```
 
-```python
+```bash
 curl -X 'DELETE' 
   'http://localhost:9091/api/v1/entities' 
   -H 'accept: application/json' 
@@ -582,7 +582,7 @@ curl -X 'DELETE'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "IDs":{"IdField":{"IntId":{"data":[0,2,4,6,8,10,12,14,16,18]}}},
@@ -594,7 +594,7 @@ Output:
 
 如下所示，如果您在不指定时间戳的情况下搜索，则不会返回已删除的实体。
 
-```python
+```bash
 search_param = {
     "data": [[1.0, 1.0]],
     "anns_field": "example_field",
@@ -606,7 +606,7 @@ res[0].ids
 
 ```
 
-```python
+```bash
 const res3 = await milvusClient.search({
   collection_name: "test_time_travel",
   vectors: [
@@ -626,17 +626,17 @@ console.log(res3.results)
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 search 
 Collection name (test_collection_query, test_time_travel): test_time_travel
 The vectors of search data (the length of data is number of query (nq), the dim of every vector in data must be equal to vector field’s of collection. You can also import a CSV file without headers): [[1.0, 1.0]]
@@ -677,7 +677,7 @@ No.1:
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/search' 
   -H 'accept: application/json' 
@@ -699,7 +699,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "results":{
@@ -724,7 +724,7 @@ Output:
 
 使用删除之前的时间戳进行搜索。Milvus从删除之前的数据中检索实体。
 
-```python
+```bash
 search_param = {
     "data": [[1.0, 1.0]],
     "anns_field": "example_field",
@@ -737,7 +737,7 @@ res[0].ids
 
 ```
 
-```python
+```bash
 const res4 = await milvusClient.search({
   collection_name: "test_time_travel",
   vectors: [
@@ -758,17 +758,17 @@ console.log(res4.results)
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 search 
 Collection name (test_collection_query, test_time_travel): test_time_travel
 The vectors of search data (the length of data is number of query (nq), the dim of every vector in data must be equal to vector field’s of collection. You can also import a CSV file without headers): [[1.0, 1.0]]
@@ -809,7 +809,7 @@ No.1:
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/search' 
   -H 'accept: application/json' 
@@ -832,7 +832,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "results":{

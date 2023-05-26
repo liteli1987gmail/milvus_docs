@@ -16,7 +16,7 @@ Milvus 2.1 允许用户将分区加载为多个副本，以利用额外查询节
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load(["novel"], replica_number=2)
@@ -28,7 +28,7 @@ partition.load(replica_number=2)
 
 ```
 
-```python
+```bash
 await milvusClient.loadPartitions({
   collection_name: "book",
   partition_names: ["novel"],
@@ -36,7 +36,7 @@ await milvusClient.loadPartitions({
 
 ```
 
-```python
+```bash
 err := milvusClient.LoadPartitions(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -49,7 +49,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.loadPartitions(
   LoadPartitionsParam.newBuilder()
           .withCollectionName("book")
@@ -59,12 +59,12 @@ milvusClient.loadPartitions(
 
 ```
 
-```python
+```bash
 load -c book -p novel
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/partitions/load' 
   -H 'accept: application/json' 
@@ -114,7 +114,7 @@ curl -X 'POST'
 
 您可以查看已加载副本的信息。
 
-```python
+```bash
 from pymilvus import Partition
 partition = Partition("novel")       # Get an existing partition.
 partition.load(replica_number=2)     # Load partition as 2 replicas

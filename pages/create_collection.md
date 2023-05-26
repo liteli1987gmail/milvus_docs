@@ -21,7 +21,7 @@
 [命令行界面](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import CollectionSchema, FieldSchema, DataType
 book_id = FieldSchema(
   name="book_id",
@@ -50,7 +50,7 @@ collection_name = "book"
 
 ```
 
-```python
+```bash
 import { DataType } from "@zilliz/milvus2-sdk-node";
 const params = {
   collection_name: "book",
@@ -84,7 +84,7 @@ const params = {
 
 ```
 
-```python
+```bash
 var (
     collectionName = "book"
     )
@@ -116,7 +116,7 @@ schema := &entity.Schema{
 
 ```
 
-```python
+```bash
 FieldType fieldType1 = FieldType.newBuilder()
         .withName("book_id")
         .withDataType(DataType.Int64)
@@ -143,12 +143,12 @@ CreateCollectionParam createCollectionReq = CreateCollectionParam.newBuilder()
 
 ```
 
-```python
+```bash
 create collection -c book -f book_id:INT64:book_id -f word_count:INT64:word_count -f book_intro:FLOAT_VECTOR:2 -p book_id
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/collection' 
   -H 'accept: application/json' 
@@ -193,7 +193,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {}
 
 ```
@@ -294,7 +294,7 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection(
     name=collection_name,
@@ -305,12 +305,12 @@ collection = Collection(
 
 ```
 
-```python
+```bash
 await milvusClient.createCollection(params);
 
 ```
 
-```python
+```bash
 err = milvusClient.CreateCollection(
     context.Background(), // ctx
     schema,
@@ -322,17 +322,17 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.createCollection(createCollectionReq);
 
 ```
 
-```python
+```bash
 # Follow the previous step.
 
 ```
 
-```python
+```bash
 # Follow the previous step.
 
 ```

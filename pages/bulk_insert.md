@@ -15,7 +15,7 @@ Milvus 2.2现在支持从文件中批量插入实体。与`insert()`方法相比
 
 以下是基于行的JSON文件的示例。
 
-```python
+```bash
 {
   "rows":[
     {"book_id": 101, "word_count": 13, "book_intro": [1.1, 1.2]},
@@ -40,7 +40,7 @@ Milvus 2.2现在支持从文件中批量插入实体。与`insert()`方法相比
 
 除了上面提到的基于行的JSON文件之外，您还可以使用NumPy数组将数据集的每个列组织到单独的文件中。在这种情况下，使用每个列的字段名称来命名NumPy文件。
 
-```python
+```bash
 import numpy
 numpy.save('book_id.npy', numpy.array([101, 102, 103, 104, 105]))
 numpy.save('word_count.npy', numpy.array([13, 25, 7, 12, 34]))
@@ -81,7 +81,7 @@ Using the local hard disk for storage is only available in Milvus Standalone.
 [Python](#python) 
 [Java](#java)
 
-```python
+```bash
 from pymilvus import utility
 task_id = utility.do_bulk_insert(
     collection_name="book",
@@ -91,7 +91,7 @@ task_id = utility.do_bulk_insert(
 
 ```
 
-```python
+```bash
 import io.milvus.param.bulkinsert.BulkInsertParam;
 import io.milvus.response.BulkInsertResponseWrapper;
 import io.milvus.grpc.ImportResponse;
@@ -112,7 +112,7 @@ task_id = wrapper.getTaskID();
 [Python](#python) 
 [Java](#java)
 
-```python
+```bash
 from pymilvus import utility
 task_id = utility.do_bulk_insert(
     collection_name="book",
@@ -122,7 +122,7 @@ task_id = utility.do_bulk_insert(
 
 ```
 
-```python
+```bash
 import io.milvus.param.bulkinsert.BulkInsertParam;
 import io.milvus.response.BulkInsertResponseWrapper;
 import io.milvus.grpc.ImportResponse;
@@ -162,7 +162,7 @@ task_id = wrapper.getTaskID();
 [Python](#python) 
 [Java](#java)
 
-```python
+```bash
 task = utility.get_bulk_insert_state(task_id=task_id)
 print("Task state:", task.state_name)
 print("Imported files:", task.files)
@@ -177,7 +177,7 @@ if task.state == BulkInsertState.ImportFailed:
 
 ```
 
-```python
+```bash
 import io.milvus.param.bulkinsert.GetBulkInsertStateParam;
 import io.milvus.response.GetBulkInsertStateWrapper;
 import io.milvus.grpc.GetImportStateResponse;
@@ -216,14 +216,14 @@ Milvus还提供了list-bulk-insert-tasks API，允许您列出所有数据导入
 [Python](#python) 
 [Java](#java)
 
-```python
+```bash
 tasks = utility.list_bulk_insert_tasks(collection_name="book", limit=10)
 for task in tasks:
     print(task)
 
 ```
 
-```python
+```bash
 import io.milvus.param.bulkinsert.ListBulkInsertTasksParam;
 import io.milvus.grpc. ListImportTasksResponse;
 import io.milvus.grpc.GetImportStateResponse;
@@ -268,7 +268,7 @@ for (GetImportStateResponse task : tasks) {
 
 为了让Milvus自动删除失败或旧的数据导入任务，您可以在Milvus配置文件中指定数据导入任务的超时持续时间和保留期。
 
-```python
+```bash
 rootCoord:
   # (in seconds) Duration after which an import task will expire (be killed). Default 900 seconds (15 minutes).
   # Note: If default value is to be changed, change also the default in: internal/util/paramtable/component_param.go
@@ -286,7 +286,7 @@ rootCoord:
 
 * 从布尔数组创建Numpy文件
 
-```python
+```bash
 import numpy as np
 data = [True, False, True, False]
 dt = np.dtype('bool', (len(data)))
@@ -296,7 +296,7 @@ np.save(file_path, arr)
 ```
 * 从int8数组创建NumPy文件
 
-```python
+```bash
 import numpy as np
 data = [1, 2, 3, 4]
 dt = np.dtype('int8', (len(data)))
@@ -306,7 +306,7 @@ np.save(file_path, arr)
 ```
 * 从int16数组创建NumPy文件
 
-```python
+```bash
 import numpy as np
 data = [1, 2, 3, 4]
 dt = np.dtype('int16', (len(data)))
@@ -316,7 +316,7 @@ np.save(file_path, arr)
 ```
 * 从int32数组创建NumPy文件
 
-```python
+```bash
 import numpy as np
 data = [1, 2, 3, 4]
 dt = np.dtype('int32', (len(data)))
@@ -326,7 +326,7 @@ np.save(file_path, arr)
 ```
 * 从int64数组创建NumPy文件
 
-```python
+```bash
 import numpy as np
 data = [1, 2, 3, 4]
 dt = np.dtype('int64', (len(data)))
@@ -336,7 +336,7 @@ np.save(file_path, arr)
 ```
 * 从浮点数数组创建NumPy文件
 
-```python
+```bash
 import numpy as np
 data = [0.1, 0.2, 0.3, 0.4]
 dt = np.dtype('float32', (len(data)))
@@ -346,7 +346,7 @@ np.save(file_path, arr)
 ```
 * 从双精度浮点数数组创建NumPy文件
 
-```python
+```bash
 import numpy as np
 data = [0.1, 0.2, 0.3, 0.4]
 dt = np.dtype('float64', (len(data)))
@@ -356,7 +356,7 @@ np.save(file_path, arr)
 ```
 * 从VARCHAR数组创建NumPy文件
 
-```python
+```bash
 data = ["a", "b", "c", "d"]
 arr = np.array(data)
 np.save(file_path, arr)
@@ -366,7 +366,7 @@ np.save(file_path, arr)
 
 对于二进制向量，使用uint8作为NumPy数据类型。每个uint8值表示8个维度。对于32维二进制向量，使用四个uint8值。
 
-```python
+```bash
 data = [
     [43, 35, 124, 90],
     [65, 212, 12, 57],
@@ -383,7 +383,7 @@ np.save(file_path, arr)
 在Milvus中，您可以使用float32或float64值来构成浮点向量。
 
 下面的代码片段创建了一个NumPy文件，其中包含使用float32值形成的8维向量数组。
-```python
+```bash
 data = [
     [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8],
     [2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8],
@@ -402,7 +402,7 @@ np.save(file_path, arr)
 
 假设数据结构如下：
 
-```python
+```bash
 
 ├── task_1
 │    └── book_id.npy
@@ -417,7 +417,7 @@ np.save(file_path, arr)
 
 您可以按如下方式创建多个数据导入任务
 
-```python
+```bash
 task_1 = utility.do_bulk_insert(
     collection_name="book",
     files=["task_1/book_id.npy", "task_1/word_count.npy", "task_1/book_intro.npy"]
@@ -437,14 +437,14 @@ task_2 = utility.do_bulk_insert(
 
 PyMilvus提供了一种实用方法，等待索引构建过程完成。
 
-```python
+```bash
 utility.wait_for_index_building_complete(collection_name)
 
 ```
 
 在其他SDK中，您可以使用describe-index API检查索引构建进度。
 
-```python
+```bash
 while (true) {
     R<DescribeIndexResponse> response = milvusClient.describeIndex(
         DescribeIndexParam.newBuilder()
@@ -466,12 +466,12 @@ while (true) {
 [Python](#python) 
 [Java](#java)
 
-```python
+```bash
 collection.load(_refresh = True)
 
 ```
 
-```python
+```bash
 R<RpcStatus> response = milvusClient.loadCollection(
     LoadCollectionParam.newBuilder()
         .withCollectionName(collection_name)

@@ -11,7 +11,7 @@ Milvus Backup 提供数据备份和还原功能, 以确保您的 Milvus 数据�
 
 要从源代码编译，请执行以下操作：
 
-```python
+```bash
 git clone git@github.com:zilliztech/milvus-backup.git
 go get
 go build
@@ -27,7 +27,7 @@ go build
 
 您的文件夹结构应该与以下相似：
 
-```python
+```bash
 
 workspace
 ├── milvus-backup
@@ -52,7 +52,7 @@ workspace
 
 获取[脚本](https://raw.githubusercontent.com/zilliztech/milvus-backup/main/example/prepare_data.py)。运行脚本生成数据。确保已安装[PyMilvus](https://pypi.org/project/pymilvus/)，官方Milvus Python SDK。
 
-```python
+```bash
 python example/prepare_data.py
 
 ```
@@ -67,7 +67,7 @@ Note that running Milvus Backup against a Milvus instance will not normally affe
 [Install with Docker Compose](attu_install-docker.md)[Install with Helm Chart](attu_install-helm.md)[Install with Package](attu_install-package.md)
 Run the following command to create a backup.
 
-```python
+```bash
 ./milvus-backup create -n <backup_name>
 
 ```
@@ -78,7 +78,7 @@ To download from [Minio Console](https://min.io/docs/minio/kubernetes/upstream/a
 
 If you prefer [the mc client](https://min.io/docs/minio/linux/reference/minio-mc#mc-install), do as follows:
 
-```python
+```bash
 # configure a Minio host
 mc alias set my_minio https://<minio_endpoint> <accessKey> <secretKey>
 
@@ -98,7 +98,7 @@ Restore data
 [Install with Docker Compose](attu_install-docker.md)[Install with Helm Chart](attu_install-helm.md)[Install with Package](attu_install-package.md)
 You can run the `restore` command with the `-s` flag to create a new collection by restoring the data from the backup:
 
-```python
+```bash
 ./milvus-backup restore -n my_backup -s _recover
 
 ```
@@ -107,14 +107,14 @@ The `-s` flag allows you to set a suffix for the new collection to be created. T
 
 If you prefer to restore the backed-up collection without changing its name, drop the collection before restoring it from the backup. You can now clean the data generated in [Prepare data](#Prepare-data) by running the following command.
 
-```python
+```bash
 python example/clean_data.py
 
 ```
 
 Then run the following command to restore the data from the backup.
 
-```python
+```bash
 ./milvus-backup restore -n my_backup
 
 ```
@@ -124,7 +124,7 @@ Then run the following command to restore the data from the backup.
 
 恢复完成后，您可以按以下方式将恢复的集合索引以验证恢复的数据：
 
-```python
+```bash
 python example/verify_data.py
 
 ```

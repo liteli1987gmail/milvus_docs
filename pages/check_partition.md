@@ -15,14 +15,14 @@
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.has_partition("novel")
 
 ```
 
-```python
+```bash
 await milvusClient.hasPartition({
   collection_name: "book",
   partition_name: "novel",
@@ -30,7 +30,7 @@ await milvusClient.hasPartition({
 
 ```
 
-```python
+```bash
 hasPar, err := milvusClient.HasPartition(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -43,7 +43,7 @@ log.Println(hasPar)
 
 ```
 
-```python
+```bash
 R<Boolean> respHasPartition = milvusClient.hasPartition(
   HasPartitionParam.newBuilder()
     .withCollectionName("book")
@@ -56,12 +56,12 @@ if (respHasPartition.getData() == Boolean.TRUE) {
 
 ```
 
-```python
+```bash
 describe partition -c book -p novel
 
 ```
 
-```python
+```bash
 curl -X 'GET' 
   'http://localhost:9091/api/v1/partition/existence' 
   -H 'accept: application/json' 
@@ -75,7 +75,7 @@ curl -X 'GET'
 
 Output:
 
-```python
+```bash
 {"status":{},"value":true}
 
 ```
@@ -114,21 +114,21 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.partitions
 
 ```
 
-```python
+```bash
 await milvusClient.showPartitions({
   collection_name: "book",
 });
 
 ```
 
-```python
+```bash
 listPar, err := milvusClient.ShowPartitions(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -140,7 +140,7 @@ log.Println(listPar)
 
 ```
 
-```python
+```bash
 R<ShowPartitionsResponse> respShowPartitions = milvusClient.showPartitions(
   ShowPartitionsParam.newBuilder()
           .withCollectionName("book")
@@ -150,12 +150,12 @@ System.out.println(respShowPartitions);
 
 ```
 
-```python
+```bash
 list partitions -c book
 
 ```
 
-```python
+```bash
 curl -X 'GET' 
   'http://localhost:9091/api/v1/partitions' 
   -H 'accept: application/json' 
@@ -168,7 +168,7 @@ curl -X 'GET'
 
 Output:
 
-```python
+```bash
 {
   "status": {},
   "partition_names": [

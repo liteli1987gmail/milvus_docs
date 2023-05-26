@@ -4,7 +4,7 @@
 
 [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form) 语法规则描述了布尔表达式的方法：
 
-```python
+```bash
 Expr = LogicalExpr | NIL
 LogicalExpr = LogicalExpr BinaryLogicalOp LogicalExpr 
               | UnaryLogicalOp LogicalExpr
@@ -141,29 +141,29 @@ Milvus中所有可用布尔表达式用法的示例如下(`int64`表示包含INT
 
 - CmpOp
 
-```python
+```bash
 "int64 > 0"
 
 ```
 
-```python
+```bash
 "0 < int64 < 400"
 
 ```
 
-```python
+```bash
 "500 <= int64 < 1000"
 
 ```
 
-```python
+```bash
 VARCHAR > "str1"
 
 ```
 
 - BinaryLogicalOp和括号
 
-```python
+```bash
 "(int64 > 0 && int64 < 400) or (int64 > 500 && int64 < 1000)"
 
 ```
@@ -172,40 +172,40 @@ VARCHAR > "str1"
 
 Milvus only supports deleting entities with clearly specified primary keys, which can be achieved merely with the term expression `in`.
 
-```python
+```bash
 "int64 not in [1, 2, 3]"
 
 ```
 
-```python
+```bash
 VARCHAR not in ["str1", "str2"]
 
 ```
 
 - TermExpr、BinaryLogicalOp 和 CmpOp（在不同的字段上）
 
-```python
+```bash
 "int64 in [1, 2, 3] and float != 2"
 
 ```
 
 - BinaryLogicalOp 和 CmpOp
 
-```python
+```bash
 "int64 == 0 || int64 == 1 || int64 == 2"
 
 ```
 
 - CmpOp 和 UnaryArithOp 或 BinaryArithOp
 
-```python
+```bash
 "200+300 < int64 <= 500+500"
 
 ```
 
 - MatchOp（前缀匹配）
 
-```python
+```bash
 VARCHAR like "prefix"
 
 ```

@@ -1,22 +1,24 @@
 
+Milvus Operator
+===
+
+
 Milvus使用MinIO或S3作为对象存储来持久化大规模文件，例如索引文件和二进制日志。本主题介绍如何在使用Milvus Operator安装Milvus时配置对象存储依赖项。
 
 本主题假定您已经部署了Milvus Operator。
+更多信息请参见[部署Milvus Operator](https://milvus.io/docs/v2.2.x/install_cluster-milvusoperator.md)。 您需要指定一个配置文件，使用Milvus Operator启动Milvus集群。
 
-See [部署Milvus Operator](https://milvus.io/docs/v2.2.x/install_cluster-milvusoperator.md) for more information. 
-You need to specify a configuration file for using Milvus Operator to start a Milvus cluster.
-
-```python
+```bash
 kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/main/config/samples/milvuscluster_default.yaml
 
 ```
 
-You only need to edit the code template in `milvuscluster_default.yaml` to configure third-party dependencies. The following sections introduce how to configure object storage, etcd, and Pulsar respectively.
+您只需编辑 `milvuscluster_default.yaml` 中的代码模板以配置第三方依赖项。以下章节分别介绍如何配置对象存储、etcd和Pulsar。
 
-Configure object storage
+配置对象存储
 ------------------------
 
-A Milvus cluster uses MinIO or S3 as object storage to persist large-scale files, such as index files and binary logs. Add required fields under `spec.dependencies.storage` to configure object storage.
+Milvus 集群使用 MinIO 或 S3 作为对象存储来持久化大型文件，例如索引文件和二进制日志。在 `spec.dependencies.storage` 下添加必要的字段以配置对象存储。
 
 `storage` 支持 `external` 和 `inCluster`。
 
@@ -31,13 +33,13 @@ A Milvus cluster uses MinIO or S3 as object storage to persist large-scale files
 * `type`：指定 Milvus 使用 S3 还是 MinIO 作为对象存储。
 
 * `secretRef`：对象存储服务使用的密钥引用。
-* `endpoint`: The endpoint of the object storage service.
+* `endpoint`：对象存储服务的终端节点。
 
-#### Example
+#### 示例
 
-The following example configures an external object storage service.
+以下示例配置了一个外部对象存储服务。
 
-```python
+```bash
 kind: MilvusCluster
 metadata:
   name: my-release
@@ -59,16 +61,18 @@ spec:
 
 ```
 
-### Internal object storage
+### 内部对象存储
 
-`inCluster` indicates when a Milvus cluster starts, a MinIO service starts automatically in the cluster.
+`inCluster` 表示在 Milvus 集群启动时，MinIO 服务会自动在集群中启动。
 
-A Milvus cluster only supports using MinIO as the internal object storage service.
+Milvus 集群仅支持将 MinIO 用作内部对象存储服务。
+
+
 #### 示例
 
 以下示例配置了一个内部的 MinIO 服务。
 
-```python
+```bash
 apiVersion: milvus.io/v1alpha1
 kind: MilvusCluster
 metadata:
@@ -100,16 +104,25 @@ spec:
 
 ```
 
-In this example, `inCluster.deletionPolicy` defines a deleletion policy for data. `inCluster.values.resources` defines the compute resources that MinIO uses. `inCluster.values.statefulset.replicaCount` defines the number of replicas of MinIO on each drive.
-Find the complete configuration items to configure an internal MinIO service in [values.yaml](https://github.com/milvus-io/milvus-helm/blob/master/charts/minio/values.yaml). Add configuration items as needed under `storage.inCluster.values` as shown in the preceding example.
+在此示例中，`inCluster.deletionPolicy` 定义了数据的删除策略。
+
+`inCluster.values.resources` 定义了 MinIO 使用的计算资源。
+
+`inCluster.values.statefulset.replicaCount` 定义了每个驱动器上 MinIO 副本的数量。
+
+在[values.yaml](https://github.com/milvus-io/milvus-helm/blob/master/charts/minio/values.yaml)中找到完整的配置项，以配置内部 MinIO 服务。
+
+根据上述示例，在 `storage.inCluster.values` 下添加所需的配置项。
 假设配置文件命名为`milvuscluster.yaml`，运行以下命令应用配置。
 
-```python
+```bash
 kubectl apply -f milvuscluster.yaml
 
 ```
 
-If `my-release` is an existing Milvus cluster, `milvuscluster.yaml` overwrites its configuration. Otherwise, a new Milvus cluster is created.
+如果 `my-release` 是一个现有的Milvus集群，则 `milvuscluster.yaml` 将覆盖其配置。否则，将创建一个新的Milvus集群。
+
+
 下一步
 ---
 

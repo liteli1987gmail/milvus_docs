@@ -5,12 +5,12 @@ Milvus支持水平扩展其组件。这意味着您可以根据自己的需求�
 
 本主题介绍如何扩展和缩小Milvus集群。我们假设您在扩展之前已经[安装了Milvus集群](install_cluster-helm.md)。此外，在开始之前，我们建议熟悉[Milvus架构](architecture_overview.md)。
 
-This tutorial takes scaling out three query nodes as an example. To scale out other types of nodes, replace `queryNode` with the corresponding node type in the command line.
+本教程以增加三个查询节点为例进行水平扩展。如需对其他类型的节点进行扩展，请在命令行中将“queryNode”替换为相应的节点类型。
 
-What is horizontal scaling?
+什么是水平扩展？
 ---------------------------
 
-Horizontal scaling includes scaling out and scaling in.
+水平扩展包括扩展和收缩。
 
 ### 扩展
 
@@ -50,14 +50,14 @@ Scaleup illustration.
 
 * 要处理的数据集较小。
 
-We do not recommend reducing the number of workers nodes dramatically. For example, if there are five data nodes in the cluster, we recommend reducing one data node at a time to ensure service availability. If the service is available after the first attempt of scaling in, you can continue to further reduce the number of the data node.
+我们不推荐大幅度减少worker节点的数量。例如，如果集群中有五个数据节点，我们建议一次只减少一个数据节点，以确保服务可用性。如果在第一次缩容尝试后服务仍然可用，则可以继续进一步减少数据节点的数量。
 
 先决条件
 ----
 
 运行`kubectl get pods`获取您创建的Milvus集群中组件及其工作状态的列表。
 
-```python
+```bash
 NAME                                            READY   STATUS       RESTARTS   AGE
 my-release-etcd-0                               1/1     Running      0          1m
 my-release-milvus-datacoord-7b5d84d8c6-rzjml    1/1     Running      0          1m
@@ -73,7 +73,7 @@ my-release-minio-5564fbbddc-9sbgv               1/1     Running      0          
 
 ```
 
-Milvus only supports adding the worker nodes and does not support adding the coordinator components.
+Milvus仅支持添加Worker节点，不支持添加协调者组件。
 
 扩展 Milvus 集群
 ------------
@@ -88,7 +88,7 @@ Milvus only supports adding the worker nodes and does not support adding the coo
 
 如果成功，将会添加三个正在运行的查询节点Pods，如以下示例所示。
 
-```python
+```bash
 NAME                                            READY   STATUS    RESTARTS   AGE
 my-release-etcd-0                               1/1     Running   0          2m
 my-release-milvus-datacoord-7b5d84d8c6-rzjml    1/1     Running   0          2m
@@ -112,7 +112,7 @@ my-release-minio-5564fbbddc-9sbgv               1/1     Running   0          2m
 
 如果成功，查询节点上的三个运行中的pod将减少为一个，如下面的示例所示。
 
-```python
+```bash
 NAME                                            READY   STATUS    RESTARTS   AGE
 my-release-etcd-0                               1/1     Running   0          2m
 my-release-milvus-datacoord-7b5d84d8c6-rzjml    1/1     Running   0          2m

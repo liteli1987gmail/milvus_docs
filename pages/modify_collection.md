@@ -5,7 +5,7 @@
 
 目前，TTL特性仅在Python中可用。
 
-```python
+```bash
 collection.set_properties(properties={"collection.ttl.seconds": 1800})
 
 ```

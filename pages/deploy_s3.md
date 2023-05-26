@@ -4,7 +4,7 @@ Milvus配置S3
 
 Milvus默认使用MinIO进行对象存储，但它也支持使用[Amazon Simple Storage Service (S3)](https://aws.amazon.com/s3/)作为日志和索引文件的持久性对象存储。本主题描述了如何为Milvus配置S3。如果您对MinIO感到满意，可以跳过该主题。
 
-You can configure S3 with [Docker Compose](https://docs.docker.com/get-started/overview/) or on K8s.
+您可以通过[Docker Compose](https://docs.docker.com/get-started/overview/)或K8s来配置S3。
 
 使用Docker Compose配置S3
 --------------------------------
@@ -12,7 +12,7 @@ You can configure S3 with [Docker Compose](https://docs.docker.com/get-started/o
 ### 1. 配置S3
 [MinIO](https://min.io/product/overview) 兼容 S3。要使用 Docker Compose 配置 S3，请在 milvus/configs 路径下的 `milvus.yaml` 文件中提供 `minio` 部分的值。
 
-```python
+```bash
 minio:
   address: <your_s3_endpoint>
   port: <your_s3_port>
@@ -29,7 +29,7 @@ minio:
 
 运行以下命令以启动使用S3配置的Milvus。
 
-```python
+```bash
 docker-compose up
 
 ```
@@ -40,23 +40,22 @@ docker-compose up
 对于在 K8s 上的 Milvus 集群，您可以在启动 Milvus 的同一命令中配置 S3。或者，在启动 Milvus 之前，您可以在 [milvus-helm](https://github.com/milvus-io/milvus-helm) 存储库中 /charts/milvus 路径下的 values.yml 文件中配置 S3。
 
 以下表格列出了在 YAML 文件中配置 S3 的键。
-
-| Key | Description | Value |
+| 键 | 描述 | 值 |
 | --- | --- | --- |
-| `minio.enabled` | Enables or disables MinIO. | `true`/`false` |
-| `externalS3.enabled` | Enables or disables S3. | `true`/`false` |
-| `externalS3.host` | The endpoint to access S3. |  |
-| `externalS3.port` | The port to access S3. |  |
-| `externalS3.rootPath` | The root path of the S3 storage. | An emtpy string by default. |
-| `externalS3.accessKey` | The access key ID for S3. |  |
-| `externalS3.secretKey` | The secret access key for S3. |  |
-| `externalS3.bucketName` | The name of the S3 bucket. |  |
+| `minio.enabled` | 启用或禁用MinIO。 | `true`/`false` |
+| `externalS3.enabled` | 启用或禁用S3。 | `true`/`false` |
+| `externalS3.host` | 访问S3的终端节点。 |  |
+| `externalS3.port` | 访问S3的端口。 |  |
+| `externalS3.rootPath` | S3存储的根路径。 | 默认情况下为空字符串。 |
+| `externalS3.accessKey` | S3的访问密钥ID。 |  |
+| `externalS3.secretKey` | S3的访问密钥。 |  |
+| `externalS3.bucketName` | S3存储桶的名称。 |  |
 
 ### 使用 YAML 文件
 
 1. 在 `values.yaml` 文件中配置 `minio` 部分。
 
-```python
+```bash
 minio:
   enabled: false
 
@@ -64,7 +63,7 @@ minio:
 
 2. 在 `values.yaml` 文件中使用您的值配置 `externalS3` 部分。
 
-```python
+```bash
 externalS3:
   enabled: true
   host: "<your_s3_endpoint>"
@@ -78,7 +77,7 @@ externalS3:
 
 3. 在配置完上述部分并保存 `values.yaml` 文件后，运行以下命令以安装使用 S3 配置的 Milvus。
 
-```python
+```bash
 helm install <your_release_name> milvus/milvus -f values.yaml
 
 ```
@@ -87,7 +86,7 @@ helm install <your_release_name> milvus/milvus -f values.yaml
 
 要安装Milvus并配置S3，请使用您的值运行以下命令。
 
-```python
+```bash
 helm install <your_release_name> milvus/milvus --set cluster.enabled=true  --set minio.enabled=false --set externalS3.enabled=true --set externalS3.host=<your_s3_endpoint> --set externalS3.port=<your_s3_port> --set externalS3.accessKey=<your_s3_access_key_id> --set externalS3.secretKey=<your_s3_secret_key> --set externalS3.bucketName=<your_bucket_name>
 
 ```

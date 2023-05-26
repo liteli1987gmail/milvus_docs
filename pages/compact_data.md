@@ -20,14 +20,14 @@ Milvus 默认支持自动数据压缩。您可以 [配置](configure-docker.md) 
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.compact()
 
 ```
 
-```python
+```bash
 const res = await milvusClient.compact({
   collection_name: "book",
 });
@@ -35,12 +35,12 @@ const compactionID = res.compactionID;
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 R<ManualCompactionResponse> response = milvusClient.manualCompaction(
   ManualCompactionParam.newBuilder()
     .withCollectionName("book")
@@ -50,12 +50,12 @@ long compactionID = response.getData().getCompactionID();
 
 ```
 
-```python
+```bash
 compact -c book
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/compaction' 
   -H 'accept: application/json' 
@@ -68,7 +68,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {"status":{},"compactionID":434262132129005569}
 
 ```
@@ -97,24 +97,24 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 collection.get_compaction_state()
 
 ```
 
-```python
+```bash
 const state = await milvusClient.getCompactionState({
     compactionID
 });
 
 ```
 
-```python
+```bash
 // This function is under active development on the GO client.
 
 ```
 
-```python
+```bash
 milvusClient.getCompactionState(GetCompactionStateParam.newBuilder()
   .withCompactionID(compactionID)
   .build()
@@ -122,12 +122,12 @@ milvusClient.getCompactionState(GetCompactionStateParam.newBuilder()
 
 ```
 
-```python
+```bash
 show compaction_state -c book
 
 ```
 
-```python
+```bash
 curl -X 'GET' 
   'http://localhost:9091/api/v1/compaction/state' 
   -H 'accept: application/json' 
@@ -140,7 +140,7 @@ curl -X 'GET'
 
 Output:
 
-```python
+```bash
 {"status":{},"state":2}
 
 ```

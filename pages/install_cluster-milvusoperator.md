@@ -28,7 +28,7 @@ Milvus Operator 是一个解决方案，帮助您部署和管理全面的 Milvus
 
 安装minikube后，执行以下命令启动K8s集群。
 
-```python
+```bash
 $ minikube start
 
 ```
@@ -48,7 +48,7 @@ Milvus 操作器在 Kubernetes 自定义资源的基础上定义了 Milvus 集�
 
 * 确保安装了StorageClass依赖项，因为Milvus集群依赖默认的StorageClass进行数据持久化。当安装minikube时，会有一个默认的StorageClass依赖项。通过运行命令`kubectl get sc`来检查该依赖项。如果已安装StorageClass，则会看到以下输出。否则，请参见[更改默认的StorageClass](https://kubernetes.io/docs/tasks/administer-cluster/change-default-storage-class/)获取更多信息。
 
-```python
+```bash
 NAME                  PROVISIONER                  RECLAIMPOLICY    VOLUMEBIINDINGMODE    ALLOWVOLUMEEXPANSION     AGE
 standard (default)    k8s.io/minikube-hostpath     Delete           Immediate             false                    3m36s
 
@@ -60,7 +60,7 @@ standard (default)    k8s.io/minikube-hostpath     Delete           Immediate   
 
 Milvus Operator使用[cert-manager](https://cert-manager.io/docs/installation/supported-releases/)为Webhook服务器提供证书。运行以下命令安装cert-manager。
 
-```python
+```bash
 $ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
 
 ```
@@ -119,7 +119,7 @@ validatingwebhookconfiguration.admissionregistration.k8s.io/cert-manager-webhook
 cert-manager要求使用1.1.3及以上版本。
 
 运行`$ kubectl get pods -n cert-manager`检查cert-manager是否正在运行。如果所有Pod都在运行，则可以看到以下输出。
-```python
+```bash
 NAME                                      READY   STATUS    RESTARTS   AGE
 cert-manager-848f547974-gccz8             1/1     Running   0          70s
 cert-manager-cainjector-54f4cc6b5-dpj84   1/1     Running   0          70s
@@ -137,7 +137,7 @@ cert-manager-webhook-7c9588c76-tqncn      1/1     Running   0          70s
 
 #### 通过Helm命令安装
 
-```python
+```bash
 helm install milvus-operator
   -n milvus-operator --create-namespace
   --wait --wait-for-jobs
@@ -147,7 +147,7 @@ helm install milvus-operator
 
 如果已安装Milvus Operator，则可以查看以下输出。
 
-```python
+```bash
 NAME: milvus-operator
 LAST DEPLOYED: Thu Jul  7 13:18:40 2022
 NAMESPACE: milvus-operator
@@ -166,14 +166,14 @@ CRD Documentation can be found in https://github.com/milvus-io/milvus-operator/t
 
 #### 通过`kubectl`命令安装
 
-```python
+```bash
 $ kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/main/deploy/manifests/deployment.yaml
 
 ```
 
 如果已安装Milvus Operator，则可以看到以下输出。
 
-```python
+```bash
 namespace/milvus-operator created
 customresourcedefinition.apiextensions.k8s.io/milvusclusters.milvus.io created
 serviceaccount/milvus-operator-controller-manager created
@@ -197,7 +197,7 @@ validatingwebhookconfiguration.admissionregistration.k8s.io/milvus-operator-vali
 
 运行`$ kubectl get pods -n milvus-operator`检查Milvus Operator是否正在运行。如果Milvus Operator正在运行，则可以看到以下输出。
 
-```python
+```bash
 NAME                               READY   STATUS    RESTARTS   AGE
 milvus-operator-5fd77b87dc-msrk4   1/1     Running   0          46s
 
@@ -214,14 +214,14 @@ If you have very limited local resources, you can install a Milvus cluster [使�
 
 Milvus Operator启动后，请运行以下命令部署Milvus集群。
 
-```python
+```bash
 $ kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/main/config/samples/milvus_cluster_default.yaml
 
 ```
 
 集群部署完成后，您可以看到以下输出内容。
 
-```python
+```bash
 milvuscluster.milvus.io/my-release created
 
 ```
@@ -230,14 +230,14 @@ milvuscluster.milvus.io/my-release created
 
 运行以下命令检查您刚部署的 Milvus 集群的状态。
 
-```python
+```bash
 $ kubectl get milvus my-release -o yaml
 
 ```
 
 您可以从输出的 `status` 字段确认 Milvus 集群的当前状态。当 Milvus 集群仍在创建过程中时，`status` 显示为 `Unhealthy`。
 
-```python
+```bash
 apiVersion: milvus.io/v1alpha1
 kind: MilvusCluster
 metadata:
@@ -272,12 +272,12 @@ status:
 
 运行以下命令检查 Milvus pods 的当前状态。
 
-```python
+```bash
 $ kubectl get pods
 
 ```
 
-```python
+```bash
 NAME                                  READY   STATUS              RESTARTS   AGE
 my-release-etcd-0                     0/1     Running             0          16s
 my-release-etcd-1                     0/1     ContainerCreating   0          16s
@@ -304,7 +304,7 @@ my-release-pulsar-zookeeper-0         0/1     Pending             0          16s
 
 Milvus Operator首先创建所有依赖项，如etcd，Pulsar和MinIO，然后继续创建Milvus组件。因此，您现在只能看到etcd，Pulsar和MinIO的pod。一旦所有依赖项都启用，Milvus Operator将启动所有Milvus组件。Milvus集群的状态显示在以下输出中。
 
-```python
+```bash
 ...
 status:
   conditions:
@@ -335,12 +335,12 @@ status:
 
 再次检查Milvus pods的状态。
 
-```python
+```bash
 $ kubectl get pods
 
 ```
 
-```python
+```bash
 NAME                                            READY   STATUS              RESTARTS   AGE
 my-release-etcd-0                               1/1     Running             0          6m49s
 my-release-etcd-1                               1/1     Running             0          6m49s
@@ -375,7 +375,7 @@ my-release-pulsar-zookeeper-2                   1/1     Running             0   
 
 当所有组件都启用时，Milvus集群的`status`显示为`Healthy`。
 
-```python
+```bash
 ...
 status:
   conditions:
@@ -405,7 +405,7 @@ status:
 
 再次检查Milvus pod的状态。现在你可以看到所有的pod都在运行。
 
-```python
+```bash
 $ kubectl get pods
 NAME                                            READY   STATUS      RESTARTS   AGE
 my-release-etcd-0                               1/1     Running     0          14m
@@ -446,7 +446,7 @@ my-release-pulsar-zookeeper-2                   1/1     Running     0          1
 
 运行以下命令卸载Milvus集群。
 
-```python
+```bash
 $ kubectl delete milvus my-release
 
 ```
@@ -462,14 +462,14 @@ $ kubectl delete milvus my-release
 
 ### 使用 Helm 命令卸载 Milvus 操作符
 
-```python
+```bash
 $ helm -n milvus-operator uninstall milvus-operator
 
 ```
 
 ### 通过`kubectl`命令卸载Milvus Operator
 
-```python
+```bash
 $ kubectl delete -f https://raw.githubusercontent.com/milvus-io/milvus-operator/v0.7.12/deploy/manifests/deployment.yaml
 
 ```

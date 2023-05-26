@@ -23,7 +23,7 @@
 
 从JSON文件下载并导入Milvus仪表板。
 
-```python
+```bash
 wget https://raw.githubusercontent.com/milvus-io/milvus/2.2.0/deployments/monitor/grafana/milvus-dashboard.json
 
 ```

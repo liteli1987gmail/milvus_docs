@@ -21,7 +21,7 @@ Milvus 基于向量的距离计算搜索最相似的向量。反之，您也可�
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 vectors_left = {
     "ids": [0, 1], 
     "collection": "book", 
@@ -34,27 +34,27 @@ vectors_right = {"float_vectors": external_vectors}
 
 ```
 
-```python
+```bash
 // Node User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 // GO User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 // CLI User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 vectors_left='{
   "dim": 2,
   "ids": {
@@ -103,7 +103,7 @@ vectors_right='{
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 params = {
     "metric": "IP", 
     "dim": 2
@@ -111,27 +111,27 @@ params = {
 
 ```
 
-```python
+```bash
 // Node User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 // GO User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 // CLI User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 params='[
   {"key": "metric", "value": "IP"}
 ]'
@@ -163,21 +163,21 @@ params='[
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load()
 
 ```
 
-```python
+```bash
 await milvusClient.loadCollection({
   collection_name: "book",
 });
 
 ```
 
-```python
+```bash
 err := milvusClient.LoadCollection(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -189,7 +189,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.loadCollection(
   LoadCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -198,12 +198,12 @@ milvusClient.loadCollection(
 
 ```
 
-```python
+```bash
 load -c book
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/collection/load' 
   -H 'accept: application/json' 
@@ -219,7 +219,7 @@ curl -X 'POST'
 
 根据提供的向量和参数计算向量之间的距离。
 
-```python
+```bash
 from pymilvus import utility
 results = utility.calc_distance(
     vectors_left=vectors_left, 
@@ -230,27 +230,27 @@ print(results)
 
 ```
 
-```python
+```bash
 // Node User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 // GO User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 // Java User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 // CLI User Guide will be ready soon.
 
 ```
 
-```python
+```bash
 curl -X 'GET' 
   'http://localhost:9091/api/v1/distance' 
   -H 'accept: application/json' 
@@ -265,7 +265,7 @@ curl -X 'GET'
 
 Output:
 
-```python
+```bash
 {"status":{},"Array":{"FloatDist":{"data":[3,7,11,15,4,10,16,22]}}}
 
 ```

@@ -19,21 +19,21 @@ Milvus中的所有搜索和查询操作都在内存中执行。在进行向量�
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 from pymilvus import Collection
 collection = Collection("book")      # Get an existing collection.
 collection.load()
 
 ```
 
-```python
+```bash
 await milvusClient.loadCollection({
   collection_name: "book",
 });
 
 ```
 
-```python
+```bash
 err := milvusClient.LoadCollection(
   context.Background(),   // ctx
   "book",                 // CollectionName
@@ -45,7 +45,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 milvusClient.loadCollection(
   LoadCollectionParam.newBuilder()
     .withCollectionName("book")
@@ -54,12 +54,12 @@ milvusClient.loadCollection(
 
 ```
 
-```python
+```bash
 load -c book
 
 ```
 
-```python
+```bash
 # See the following step.
 
 ```
@@ -83,7 +83,7 @@ Milvus支持对查询设置一致性级别。本主题中的示例将一致性�
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 res = collection.query(
   expr = "book_id in [2,4,6,8]",
   offset = 0,
@@ -94,7 +94,7 @@ res = collection.query(
 
 ```
 
-```python
+```bash
 const results = await milvusClient.query({
   collection_name: "book",
   expr: "book_id in [2,4,6,8]",
@@ -103,7 +103,7 @@ const results = await milvusClient.query({
 
 ```
 
-```python
+```bash
 queryResult, err := milvusClient.Query(
 	context.Background(),                                   // ctx
 	"book",                                                 // CollectionName
@@ -117,7 +117,7 @@ if err != nil {
 
 ```
 
-```python
+```bash
 List<String> query_output_fields = Arrays.asList("book_id", "word_count");
 QueryParam queryParam = QueryParam.newBuilder()
   .withCollectionName("book")
@@ -131,7 +131,7 @@ R<QueryResults> respQuery = milvusClient.query(queryParam);
 
 ```
 
-```python
+```bash
 query
 
 collection_name: book
@@ -146,7 +146,7 @@ timeout []:
 
 ```
 
-```python
+```bash
 curl -X 'POST' 
   'http://localhost:9091/api/v1/query' 
   -H 'accept: application/json' 
@@ -161,7 +161,7 @@ curl -X 'POST'
 
 Output:
 
-```python
+```bash
 {
   "status":{},
   "fields_data":[
@@ -231,18 +231,18 @@ Output:
 [CLI](#shell)
 [Curl](#curl)
 
-```python
+```bash
 sorted_res = sorted(res, key=lambda k: k['book_id'])
 sorted_res
 
 ```
 
-```python
+```bash
 console.log(results.data)
 
 ```
 
-```python
+```bash
 fmt.Printf("%#v", queryResult)
 for _, qr := range queryResult {
 	fmt.Println(qr.IDs)
@@ -250,19 +250,19 @@ for _, qr := range queryResult {
 
 ```
 
-```python
+```bash
 QueryResultsWrapper wrapperQuery = new QueryResultsWrapper(respQuery.getData());
 System.out.println(wrapperQuery.getFieldWrapper("book_id").getFieldData());
 System.out.println(wrapperQuery.getFieldWrapper("word_count").getFieldData());
 
 ```
 
-```python
+```bash
 # Milvus CLI automatically returns the entities with the pre-defined output fields.
 
 ```
 
-```python
+```bash
 # See the output of the previous step.
 
 ```

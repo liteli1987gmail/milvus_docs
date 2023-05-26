@@ -14,7 +14,7 @@ Milvus支持使用用户名和密码进行身份验证的访问。
 
 从Milvus Helm Chart 4.0.0开始，您可以按照以下方式修改`values.yaml` 来启用用户身份验证：
 
-```python
+```bash
 extraConfigFiles:
   user.yaml: |+
     common:
@@ -29,7 +29,7 @@ extraConfigFiles:
 
 使用以下命令创建具有用户名和密码的用户：
 
-```python
+```bash
 from pymilvus import utility
 utility.create_user('user', 'password', using='default') 
 ```
@@ -45,7 +45,7 @@ utility.create_user('user', 'password', using='default')
 
 使用现有用户连接Milvus。
 
-```python
+```bash
 from pymilvus import connections
 connections.connect(
     alias='default',
@@ -72,7 +72,7 @@ connections.connect(
 
 更改现有用户的密码并重置Milvus连接。
 
-```python
+```bash
 from pymilvus import utility
 utility.reset_password('user', 'old_password', 'new_password', using='default')
 
@@ -92,7 +92,7 @@ utility.update_password('user', 'old_password', 'new_password', using='default')
 
 您应该将以下配置项添加到管理Milvus实例运行的Milvus配置文件中。
 
-```python
+```bash
 common:
     security:
         superUsers: root, foo
@@ -103,7 +103,7 @@ common:
 
 删除已认证的用户。
 
-```python
+```bash
 from pymilvus import utility
 utility.delete_user('user', using='default')
 ```
@@ -118,7 +118,7 @@ utility.delete_user('user', using='default')
 
 列出所有凭据用户。
 
-```python
+```bash
 from pymilvus import utility
 users = utility.list_usernames(using='default')
 ```

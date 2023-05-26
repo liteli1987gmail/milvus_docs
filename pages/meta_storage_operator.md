@@ -8,7 +8,7 @@ Milvus使用etcd存储元数据。本主题介绍了在使用Milvus Operator安�
 See [部署Milvus Operator](https://milvus.io/docs/v2.2.x/install_cluster-milvusoperator.md) for more information. 
 您需要为使用Milvus Operator启动Milvus集群指定一个配置文件。
 
-```python
+```bash
 kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/main/config/samples/milvuscluster_default.yaml
 
 ```
@@ -34,7 +34,7 @@ kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/mai
 
 下面的示例配置了一个外部的etcd服务。
 
-```python
+```bash
 kind: MilvusCluster
 
 metadata:
@@ -77,7 +77,7 @@ spec:
 
 以下示例配置了一个内部 etcd 服务。
 
-```python
+```bash
 apiVersion: milvus.io/v1alpha1
 
 kind: MilvusCluster
@@ -122,11 +122,14 @@ spec:
 
 ```
 
-The preceding example specifies the number of replicas as `5` and limits the compute resources for etcd.
-Find the complete configuration items to configure an internal etcd service in [values.yaml](https://github.com/bitnami/charts/blob/ba6f8356e725a8342fe738a3b73ae40d5488b2ad/bitnami/etcd/values.yaml). Add configuration items as needed under `etcd.inCluster.values` as shown in the preceding example.
+前面的示例将副本数指定为 `5`，并限制了 etcd 的计算资源。
+在[values.yaml](https://github.com/bitnami/charts/blob/ba6f8356e725a8342fe738a3b73ae40d5488b2ad/bitnami/etcd/values.yaml)中找到完整的配置项，以配置内部 etcd 服务。
+
+根据上述示例，在 `etcd.inCluster.values` 下添加所需的配置项。
+
 假设配置文件名为 `milvuscluster.yaml`，执行以下命令应用配置。
 
-```python
+```bash
 kubectl apply -f milvuscluster.yaml
 
 ```

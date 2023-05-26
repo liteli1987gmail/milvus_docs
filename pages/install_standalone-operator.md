@@ -29,7 +29,7 @@ Milvus Operator是一种解决方案，帮助您在目标Kubernetes（K8s）集�
 
 安装完minikube后，运行以下命令启动K8s集群。
 
-```python
+```bash
 $ minikube start
 
 ```
@@ -49,7 +49,7 @@ Milvus Operator通过[Kubernetes自定义资源](https://kubernetes.io/docs/conc
 
 * 确保已安装StorageClass依赖项，因为Milvus集群依赖默认的StorageClass进行数据持久化。当安装minikube时，默认依赖于StorageClass。通过运行命令`kubectl get sc`检查依赖项。如果安装了StorageClass，则将看到以下输出。如果没有，请查看[更改默认的StorageClass](https://kubernetes.io/docs/tasks/administer-cluster/change-default-storage-class/)以获取更多信息。
 
-```python
+```bash
 NAME                  PROVISIONER                  RECLAIMPOLICY    VOLUMEBIINDINGMODE    ALLOWVOLUMEEXPANSION     AGE
 standard (default)    k8s.io/minikube-hostpath     Delete           Immediate             false                    3m36s
 
@@ -61,14 +61,14 @@ You can install Milvus Operator with Helm or `kubectl` command. If you choose to
 
 Milvus Operator 使用 [cert-manager](https://cert-manager.io/docs/installation/supported-releases/) 为 webhook 服务器提供证书。运行以下命令安装 cert-manager。
 
-```python
+```bash
 $ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
 
 ```
 
 如果已安装了cert-manager，则可以看到以下输出。
 
-```python
+```bash
 customresourcedefinition.apiextensions.k8s.io/certificaterequests.cert-manager.io created
 customresourcedefinition.apiextensions.k8s.io/certificates.cert-manager.io created
 customresourcedefinition.apiextensions.k8s.io/challenges.acme.cert-manager.io created
@@ -121,7 +121,7 @@ cert-manager version 1.13 or later is required.
 
 运行`$ kubectl get pods -n cert-manager`检查cert-manager是否正在运行。如果所有pod都在运行，则可以看到以下输出。
 
-```python
+```bash
 NAME                                      READY   STATUS    RESTARTS   AGE
 cert-manager-848f547974-gccz8             1/1     Running   0          70s
 cert-manager-cainjector-54f4cc6b5-dpj84   1/1     Running   0          70s
@@ -139,7 +139,7 @@ cert-manager-webhook-7c9588c76-tqncn      1/1     Running   0          70s
 
 #### 通过Helm命令安装
 
-```python
+```bash
 helm install milvus-operator 
   -n milvus-operator --create-namespace 
   --wait --wait-for-jobs 
@@ -149,7 +149,7 @@ helm install milvus-operator
 
 如果安装了Milvus Operator，您可以看到以下输出。
 
-```python
+```bash
 NAME: milvus-operator
 LAST DEPLOYED: Thu Jul  7 13:18:40 2022
 NAMESPACE: milvus-operator
@@ -168,14 +168,14 @@ CRD Documentation can be found in https://github.com/milvus-io/milvus-operator/t
 
 #### 安装 `kubectl` 命令
 
-```python
+```bash
 $ kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/main/deploy/manifests/deployment.yaml
 
 ```
 
 如果 Milvus Operator 已安装，您可以看到以下输出。
 
-```python
+```bash
 namespace/milvus-operator created
 customresourcedefinition.apiextensions.k8s.io/milvusclusters.milvus.io created
 serviceaccount/milvus-operator-controller-manager created
@@ -199,7 +199,7 @@ validatingwebhookconfiguration.admissionregistration.k8s.io/milvus-operator-vali
 
 运行 `$ kubectl get pods -n milvus-operator` 检查 Milvus Operator 是否运行。如果 Milvus Operator 运行，则可以看到以下输出。
 
-```python
+```bash
 NAME                               READY   STATUS    RESTARTS   AGE
 milvus-operator-5fd77b87dc-msrk4   1/1     Running   0          46s
 
@@ -212,7 +212,7 @@ milvus-operator-5fd77b87dc-msrk4   1/1     Running   0          46s
 
 当 Milvus Operator 启动后，请运行以下命令安装 Milvus。
 
-```python
+```bash
 $ kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/main/config/samples/milvus_default.yaml
 
 ```
@@ -221,7 +221,7 @@ $ kubectl apply -f https://raw.githubusercontent.com/milvus-io/milvus-operator/m
 
 运行以下命令来检查刚刚安装的 Milvus 的状态。
 
-```python
+```bash
 $ kubectl get milvus my-release -o yaml
 
 ```
@@ -233,7 +233,7 @@ $ kubectl get milvus my-release -o yaml
 
 运行以下命令以卸载 Milvus。
 
-```python
+```bash
 $ kubectl delete milvus my-release
 
 ```
@@ -245,14 +245,14 @@ $ kubectl delete milvus my-release
 
 ### 使用Helm命令卸载Milvus Operator
 
-```python
+```bash
 $ helm -n milvus-operator uninstall milvus-operator
 
 ```
 
 ### 通过`kubectl`命令卸载Milvus操作器
 
-```python
+```bash
 $ kubectl delete -f https://raw.githubusercontent.com/milvus-io/milvus-operator/v0.7.12/deploy/manifests/deployment.yaml
 
 ```

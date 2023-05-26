@@ -10,7 +10,7 @@
 
 [直接下载](https://raw.githubusercontent.com/milvus-io/milvus/v2.2.8/configs/milvus.yaml) `milvus.yaml` 或使用以下命令。
 
-```python
+```bash
 $ wget https://raw.githubusercontent.com/milvus-io/milvus/v2.2.8/configs/milvus.yaml
 
 ```
@@ -24,142 +24,53 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus/v2.2.8/configs/milvus.
 
 按以下方式排序：
 
-[组件或依赖项](#component) [配置目的](#purpose)
 
-| Dependencies | Components |
+以下是整理后的表格和相关说明：
+
+| 依赖项 | 组件 |
 | --- | --- |
-| * [etcd](configure_etcd.md)
+| * [etcd](configure_etcd.md) <br> * [MinIO或S3](configure_minio.md) <br> * [Pulsar](configure_pulsar.md) <br> * [RocksMQ](configure_rocksmq.md) | * [Root coord](configure_rootcoord.md) <br> * [Proxy](configure_proxy.md) <br> * [Query coord](configure_querycoord.md) <br> * [Query node](configure_querynode.md) <br> * [Index coord](configure_indexcoord.md) <br> * [Index node](configure_indexnode.md) <br> * [Data coord](configure_datacoord.md) <br> * [Data node](configure_datanode.md) <br> * [本地存储](configure_localstorage.md) <br> * [日志](configure_log.md) <br> * [消息通道](configure_messagechannel.md) <br> * [通用](configure_common.md) <br> * [知道哪里](configure_knowhere.md) <br> * [配额和限制](configure_quota_limits.md) |
 
-* [MinIO或S3](configure_minio.md)
+说明：该表格显示了Milvus的依赖项和组件。依赖项包括：etcd、MinIO（或S3）、Pulsar和RocksMQ。有关每个依赖项的配置目的，请参见链接页面。组件包括：Root coord、Proxy、Query coord、Query node、Index coord、Index node、Data coord、Data node、本地存储、日志、消息通道、通用、知道哪里和配额和限制。
 
-* [Pulsar](configure_pulsar.md)
-
-* [RocksMQ](configure_rocksmq.md)
- | * [Root coord](configure_rootcoord.md)
-
-* [Proxy](configure_proxy.md)
-
-* [Query coord](configure_querycoord.md)
-
-* [Query node](configure_querynode.md)
-
-* [Index coord](configure_indexcoord.md)
-
-* [Index node](configure_indexnode.md)
-
-* [Data coord](configure_datacoord.md)
-
-* [Data node](configure_datanode.md)
-
-* [本地存储](configure_localstorage.md)
-
-* [日志](configure_log.md)
-
-* [消息通道](configure_messagechannel.md)
-
-* [通用](configure_common.md)
-
-* [知道哪里](configure_knowhere.md)
-
-* [配额和限制](configure_quota_limits.md)
- |
-
-| Purpose | Parameters |
+| 目的 | 参数 |
 | --- | --- |
-| Performance tuning | * [`queryNode.gracefulTime`查询节点渐进时间](configure_querynode.md#queryNodegracefulTime)
+| 性能调优 | * [`queryNode.gracefulTime`](configure_querynode.md#queryNodegracefulTime) <br> * [`rootCoord.minSegmentSizeToEnableIndex`](configure_rootcoord.md#rootCoordminSegmentSizeToEnableIndex) <br> * [`dataCoord.segment.maxSize`](configure_datacoord.md#dataCoordsegmentmaxSize) <br> * [`dataCoord.segment.sealProportion`](configure_datacoord.md#dataCoordsegmentsealProportion) <br> * [`dataNode.flush.insertBufSize`](configure_datanode.md#dataNodeflushinsertBufSize) <br> * [`queryCoord.autoHandoff`](configure_querycoord.md#queryCoordautoHandoff) <br> * [`queryCoord.autoBalance`](configure_querycoord.md#queryCoordautoBalance) <br> * [`localStorage.enabled`](configure_localstorage.md#localStorageenabled) |
 
-* [`rootCoord.minSegmentSizeToEnableIndex`RootCoord启用索引的最小段大小](configure_rootcoord.md#rootCoordminSegmentSizeToEnableIndex)
+说明：该表格列出了Milvus性能调优参数。这些参数包括：`queryNode.gracefulTime`、`rootCoord.minSegmentSizeToEnableIndex`、`dataCoord.segment.maxSize`、`dataCoord.segment.sealProportion`、`dataNode.flush.insertBufSize`、`queryCoord.autoHandoff`、`queryCoord.autoBalance`和`localStorage.enabled`。对于每个参数的详细信息和用法，请参见相应的链接页面。
 
-* [`dataCoord.segment.maxSize`DataCoord段的最大大小](configure_datacoord.md#dataCoordsegmentmaxSize)
+| 数据和元数据 | 参数 |
+| --- | --- |
+| * [`common.retentionDuration`](configure_common.md#commonretentionDuration) <br> * [`rocksmq.retentionTimeInMinutes`](configure_rocksmq.md#rocksmqretentionTimeInMinutes) <br> * [`dataCoord.enableCompaction`](configure_datacoord.md#dataCoordenableCompaction) <br> * [`dataCoord.enableGarbageCollection`](configure_datacoord.md#dataCoordenableGarbageCollection) <br> * [`dataCoord.gc.dropTolerance`](configure_datacoord.md#dataCoordgcdropTolerance) | 
 
-* [`dataCoord.segment.sealProportion`DataCoord段封存比例](configure_datacoord.md#dataCoordsegmentsealProportion)
+说明：该表格列出了与数据和元数据相关的Milvus参数。这些参数包括：`common.retentionDuration`、`rocksmq.retentionTimeInMinutes`、`dataCoord.enableCompaction`、`dataCoord.enableGarbageCollection`和`dataCoord.gc.dropTolerance`。有关每个参数的详细信息和用法，请参见相应的链接页面。
 
-* [`dataNode.flush.insertBufSize`DataNode插入缓冲区大小](configure_datanode.md#dataNodeflushinsertBufSize)
+| 管理 | 参数 |
+| --- | --- |
+| * [`log.level`](configure_log.md#loglevel) <br> * [`log.file.rootPath`](configure_log.md#logfilerootPath) <br> * [`log.file.maxAge`](configure_log.md#logfilemaxAge) <
 
-* [`queryCoord.autoHandoff`QueryCoord自动切换](configure_querycoord.md#queryCoordautoHandoff)
-
-* [`queryCoord.autoBalance`QueryCoord自动平衡](configure_querycoord.md#queryCoordautoBalance)
-
-* [`localStorage.enabled`本地存储是否启用](configure_localstorage.md#localStorageenabled)
- |
-| Data and meta | * [`common.retentionDuration`](configure_common.md#commonretentionDuration)
-* [`rocksmq.retentionTimeInMinutes`](configure_rocksmq.md#rocksmqretentionTimeInMinutes)
-* [`dataCoord.enableCompaction`](configure_datacoord.md#dataCoordenableCompaction)
-* [`dataCoord.enableGarbageCollection`](configure_datacoord.md#dataCoordenableGarbageCollection)
-* [`dataCoord.gc.dropTolerance`](configure_datacoord.md#dataCoordgcdropTolerance)
- |
-| Administration | * [`log.level`](configure_log.md#loglevel)
-* [`log.file.rootPath`](configure_log.md#logfilerootPath)
-* [`log.file.maxAge`](configure_log.md#logfilemaxAge)
-* [`minio.accessKeyID`](configure_minio.md#minioaccessKeyID)
-* [`minio.secretAccessKey`](configure_minio.md#miniosecretAccessKey)
- |
-| Quota and Limits | * [`quotaAndLimits.ddl.enabled`](configure_quota_limits.md#quotaAndLimitsddlenabled)
-* [`quotaAndLimits.ddl.collectionRate`](configure_quota_limits.md#quotaAndLimitsddlcollectionRate)
-* [`quotaAndLimits.ddl.partitionRate`](configure_quota_limits.md#quotaAndLimitsddlpartitionRate)
-* [`quotaAndLimits.indexRate.enabled`](configure_quota_limits.md#quotaAndLimitsindexRateenabled)
-* [`quotaAndLimits.indexRate.max`](configure_quota_limits.md#quotaAndLimitsindexRatemax)
-* [`quotaAndLimits.flushRate.enabled`](configure_quota_limits.md#quotaAndLimitsflushRateenabled)
-* [`quotaAndLimits.flush.max`](configure_quota_limits.md#quotaAndLimitsflushmax)
-* [`quotaAndLimits.compation.enabled`](configure_quota_limits.md#quotaAndLimitscompationenabled)
-
-* [`quotaAndLimits.compaction.max`](configure_quota_limits.md#quotaAndLimitscompactionmax)
-
-* [`quotaAndLimits.dml.enabled`](configure_quota_limits.md#quotaAndLimitsdmlenabled)
-
-* [`quotaAndLimits.dml.insertRate.max`](configure_quota_limits.md#quotaAndLimitsdmlinsertRatemax)
-
-* [`quotaAndLimits.dml.deleteRate.max`](configure_quota_limits.md#quotaAndLimitsdmldeleteRatemax)
-
-* [`quotaAndLimits.dql.enabled`](configure_quota_limits.md#quotaAndLimitsdqlenabled)
-
-* [`quotaAndLimits.dql.searchRate.max`](configure_quota_limits.md#quotaAndLimitsdqlsearchRatemax)
-
-* [`quotaAndLimits.dql.queryRate.max`](configure_quota_limits.md#quotaAndLimitsdqlqueryRatemax)
-
-* [`quotaAndLimits.limitWriting.ttProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitWritingttProtectionenabled)
-
-* [`quotaAndLimits.limitWriting.ttProtection.maxTimeTickDelay`](configure_quota_limits.md#quotaAndLimitslimitWritingttProtectionmaxTimeTickDelay)
-
-* [`quotaAndLimits.limitWriting.memProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectionenabled)
-
-* [`quotaAndLimits.limitWriting.memProtection.dataNodeMemoryLowWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectiondataNodeMemoryLowWaterLevel)
-
-* [`quotaAndLimits.limitWriting.memProtection.queryNodeMemoryLowWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectionqueryNodeMemoryLowWaterLevel)
-* [`quotaAndLimits.limitWriting.memProtection.dataNodeMemoryHighWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectiondataNodeMemoryHighWaterLevel)
-* [`quotaAndLimits.limitWriting.memProtection.queryNodeMemoryHighWaterLevel`](configure_quota_limits.md#quotaAndLimitslimitWritingmemProtectionqueryNodeMemoryHighWaterLevel)
-* [`quotaAndLimits.limitWriting.diskProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitWritingdiskProtectionenabled)
-* [`quotaAndLimits.limitWriting.diskProtection.diskQuota`](configure_quota_limits.md#quotaAndLimitslimitWritingdiskProtectiondiskQuota)
-* [`quotaAndLimits.limitWriting.forceDeny`](configure_quota_limits.md#quotaAndLimitslimitWritingforceDeny)
-* [`quotaAndLimits.limitReading.queueProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitReadingqueueProtectionenabled)
-* [`quotaAndLimits.limitReading.queueProtection.nqInQueueThreshold`](configure_quota_limits.md#quotaAndLimitslimitReadingqueueProtectionnqInQueueThreshold)
-* [`quotaAndLimits.limitReading.queueProtection.queueLatencyThreshold`](configure_quota_limits.md#quotaAndLimitslimitReadingqueueProtectionqueueLatencyThreshold)
-* [`quotaAndLimits.limitReading.resultProtection.enabled`](configure_quota_limits.md#quotaAndLimitslimitReadingresultProtectionenabled)
-* [`quotaAndLimits.limitReading.resultProtection.maxReadResultRate`](configure_quota_limits.md#quotaAndLimitslimitReadingresultProtectionmaxReadResultRate)
-* [`quotaAndLimits.limitReading.forceDeny`](configure_quota_limits.md#quotaAndLimitslimitReadingforceDeny)
- |
-
-Download an installation file
+下载安装文件
 -----------------------------
 
-Download the installation file for Milvus [standalone](https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml), and save it as `docker-compose.yml`.
+下载Milvus [单机版](https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml)的安装文件，并将其另存为`docker-compose.yml`。
 
-You can also simply run the following command.
+你也可以直接运行以下命令。
 
-```python
+```bash
 # For Milvus standalone
 $ wget https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml -O docker-compose.yml
 
 ```
 
-Modify the installation file
+修改安装文件
 ----------------------------
 
-In `docker-compose.yml`, add a `volumes` section under each Milvus component, i.e. root coord, data coord, data node, query coord, query node, index coord, index node, and proxy.
+在`docker-compose.yml`中，为每个Milvus组件添加一个`volumes`部分，即：root coord、data coord、data node、query coord、query node、index coord、index node和proxy。
 
-Map the local path to your `milvus.yaml` file onto the corresponding docker container paths to the configuration files `/milvus/configs/milvus.yaml` under all `volumes` sections.
+将本地路径映射到相应的docker容器路径，配置文件`/milvus/configs/milvus.yaml`，在所有`volumes`节下。
 
-```python
+
+```bash
 ...
 proxy:
     container_name: milvus-proxy
@@ -177,22 +88,23 @@ proxy:
 
 ```
 
-Data are stored in the `/volumes` folder according to the default configuration in `docker-compose.yml`. To change the folder to store data, edit `docker-compose.yml` or run `$ export DOCKER_VOLUME_DIRECTORY=`.
+根据`docker-compose.yml`中的默认配置，数据存储在`/volumes`文件夹中。要更改存储数据的文件夹，请编辑`docker-compose.yml`或运行`$ export DOCKER_VOLUME_DIRECTORY=`。
 
-Start Milvus
+启动 Milvus
 ------------
 
-Having finished modifying the configuration file and installation file, you can then start Milvus.
+在完成修改配置文件和安装文件后，您可以启动 Milvus。
 
-```python
+
+```bash
 $ sudo docker-compose up -d
 
 ```
 
-What's next
+接下来的步骤
 -----------
 
-* Learn how to manage the following Milvus dependencies with Docker Compose or Helm:
+* 了解如何使用Docker Compose或Helm管理以下Milvus依赖项：
 	+ [Configure Object Storage with Docker Compose or Helm](deploy_s3.md)
 	+ [Configure Meta Storage with Docker Compose or Helm](deploy_etcd.md)
 	+ [Configure Message Storage with Docker Compose or Helm](deploy_pulsar.md)

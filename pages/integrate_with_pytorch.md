@@ -11,7 +11,7 @@
 
 对于这个例子，我们将使用`pymilvus` 来连接和使用Milvus，`torch`来运行嵌入模型， `torchvision`来构建实际模型和预处理，`gdown` 用来下载示例数据集,`tqdm`用于进度条。
 
-```python
+```bash
 pip install pymilvus torch gdown torchvision tqdm
 ```
 
@@ -20,7 +20,7 @@ pip install pymilvus torch gdown torchvision tqdm
 
 我们将使用`gdown `从Google Drive获取zip文件，然后使用内置的`zipfile`库进行解压缩。
 
-```python
+```bash
 import gdown
 import zipfile
 
@@ -39,7 +39,7 @@ with zipfile.ZipFile("./paintings.zip","r") as zip_ref:
 
 这些是我们将使用的一些主要全局变量，以便于跟踪和更新。
 
-```python
+```bash
 # Milvus Setup Arguments
 COLLECTION_NAME = 'image_search'  # 集合名称
 DIMENSION = 2048  # 在这个例子中嵌入向量的大小
@@ -58,7 +58,7 @@ TOP_K = 3
 
 1. 使用提供的 URI 连接到 Milvus 实例。
 
-```python
+```bash
 from pymilvus import connections
 
 # 连接到实例
@@ -67,7 +67,7 @@ connections.connect(host=MILVUS_HOST, port=MILVUS_PORT)
 
 2. 如果集合已经存在，则删除它。
 
-```python
+```bash
 from pymilvus import utility
 
 # 删除具有相同名称的以前集合
@@ -77,7 +77,7 @@ if utility.has_collection(COLLECTION_NAME):
 
 3. 创建包含 ID、图像文件路径和其嵌入的集合。
 
-```python
+```bash
 from pymilvus import FieldSchema, CollectionSchema, DataType, Collection
 
 # 创建包含 ID、图像文件路径和图像嵌入的集合
@@ -92,7 +92,7 @@ collection = Collection(name=COLLECTION_NAME, schema=schema)
 
 4. 为新创建的集合创建索引并将其加载到内存中。
 
-```python
+```bash
 #为集合创建AutoIndex索引
 index_params = {
 'metric_type':'L2',
@@ -114,7 +114,7 @@ collection.load()
 
 在本例中，我们将搜索两个示例图像。因为我们正在进行批量搜索，所以搜索时间将在批次图像之间共享。
 
-```python
+```bash
 import glob
 
 # Get the filepaths of the search images
@@ -123,7 +123,7 @@ len(search_paths)
 
 ```
 
-```python
+```bash
 import time
 from matplotlib import pyplot as plt
 
@@ -152,7 +152,7 @@ finish = time.time()
 
 ```
 
-```python
+```bash
 # Show the image results
 f, axarr = plt.subplots(len(data_batch[1]), TOP_K + 1, figsize=(20, 10), squeeze=False)
 
