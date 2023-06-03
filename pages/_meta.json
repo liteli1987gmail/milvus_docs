@@ -513,15 +513,9 @@
     "display": "hidden"
   },
   "openaidoc": {
-    "title": "Openai中文文档",
+    "title": "OpenAI中文文档",
     "type": "page",
     "href": "https://www.openaidoc.com.cn/",
-    "newWindow": true
-  },
-  "milvus-io": {
-    "title": "Milvus-io 中文文档",
-    "type": "page",
-    "href": "https://www.milvus-io.com/overview",
     "newWindow": true
   },
   "langchain": {
