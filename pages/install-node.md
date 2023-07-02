@@ -49,4 +49,4 @@ yarn add @zilliz/milvus2-sdk-node
 	+ [插入数据](insert_data.md)
 	+ [进行向量搜索](search.md)
 
-* 探索[Milvus Node.js API参考](/api-reference/node/v2.2.x/About.md)
+* 探索[Milvus Node.js API参考](https://milvus.io/api-reference/node/v2.2.x/About.md)

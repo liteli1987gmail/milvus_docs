@@ -49,4 +49,4 @@ $ python3 -c "from pymilvus import Collection"
 	+ [插入数据](insert_data.md)
 	+ [进行向量搜索](search.md)
 
-* 探索[PyMilvus API 参考文档](/api-reference/pymilvus/v2.2.8/About.md)
+* 探索[PyMilvus API 参考文档](https://milvus.io/api-reference/pymilvus/v2.2.x/About.md)

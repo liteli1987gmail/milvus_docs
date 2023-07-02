@@ -48,4 +48,4 @@ compile 'io.milvus:milvus-sdk-java:2.2.5'
 	+ [插入数据](insert_data.md)
 	+ [进行向量搜索](search.md)
 
-* 探索[Milvus Java API参考](/api-reference/java/v2.2.5/About.md)
+* 探索[Milvus Java API参考](https://milvus.io/api-reference/java/v2.2.x/About.md)

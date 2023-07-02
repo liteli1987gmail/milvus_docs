@@ -337,7 +337,7 @@ System.out.println(wrapperSearch.getFieldData("book_id", 0));
 * 尝试使用[Time Travel搜索（Search with Time Travel）](timetravel.md)
 * 查看Milvus SDK的API参考文档：
 
-	+ [PyMilvus API参考文档](/api-reference/pymilvus/v2.2.8/About.md)
-	+ [Node.js API参考文档](/api-reference/node/v2.2.x/About.md)
-	+ [Go API参考文档](/api-reference/go/v2.2.2/About.md)
-	+ [Java API参考文档](/api-reference/java/v2.2.5/About.md)
+	+ [PyMilvus API参考文档](https://milvus.io/api-reference/pymilvus/v2.2.x/About.md)
+	+ [Node.js API参考文档](https://milvus.io/api-reference/node/v2.2.x/About.md)
+	+ [Go API参考文档](https://milvus.io/api-reference/go/v2.2.x/About.md)
+	+ [Java API参考文档](https://milvus.io/api-reference/java/v2.2.x/About.md)

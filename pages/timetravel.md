@@ -864,7 +864,7 @@ Output:
 
 * 探索Milvus SDK的API参考：
 
-	+ [PyMilvus API参考](/api-reference/pymilvus/v2.2.8/About.md)
-	+ [Node.js API参考](/api-reference/node/v2.2.x/About.md)
-	+ [Go API参考](/api-reference/go/v2.2.2/About.md)
-	+ [Java API参考](/api-reference/java/v2.2.5/About.md)
+	+ [PyMilvus API参考](https://milvus.io/api-reference/pymilvus/v2.2.x/About.md)
+	+ [Node.js API参考](https://milvus.io/api-reference/node/v2.2.x/About.md)
+	+ [Go API参考](https://milvus.io/api-reference/go/v2.2.x/About.md)
+	+ [Java API参考](https://milvus.io/api-reference/java/v2.2.x/About.md)
