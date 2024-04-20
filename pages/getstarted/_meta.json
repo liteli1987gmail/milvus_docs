@@ -1,0 +1,17 @@
+{
+    "cluster":{
+        "title":"集群管理"
+    },
+    "install_SDKs":{
+        "title":"安装SDK"
+    },
+    "offline":{
+        "title":"离线安装"
+    },
+    "standalone":{
+        "title":"单机部署"
+    },
+    "with_gpu":{
+        "title":"支持GPU部署"
+    }
+}

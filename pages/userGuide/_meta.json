@@ -1,0 +1,11 @@
+{
+    "manage-indexes":{
+        "title": "索引管理"
+    },
+    "search-query-get":{
+        "title":"查询"
+    },
+    "tools":{
+        "title":"工具"
+    }
+}

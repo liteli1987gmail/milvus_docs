@@ -1,0 +1,11 @@
+{
+    "backup":{
+        "title":"备份"
+    },
+    "clouds":{
+        "title":"云备份"
+    },
+    "monitor":{
+        "title":"监控"
+    }
+}
