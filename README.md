@@ -1,26 +1,39 @@
-# Nextra Docs Template 
+## 什么是Milvus向量数据库？
 
-This is a template for creating documentation with [Nextra](https://nextra.site).
+Milvus 是在2019年创建的，其唯一目标是存储、索引和管理由深度神经网络和其他机器学习（ML）模型生成的大规模嵌入向量。作为一个专门设计用于处理输入向量查询的数据库，它能够处理万亿级别的向量索引。与现有的关系型数据库主要处理遵循预定义模式的结构化数据不同，Milvus从底层设计用于处理从非结构化数据转换而来的嵌入向量。
 
-[**Live Demo →**](https://nextra-docs-template.vercel.app)
+## 工作流程
 
-[![](.github/screenshot.png)](https://nextra-docs-template.vercel.app)
+![](https://milvus.io/static/3b65292e6a7d800168c56ecfd8f7109e/0a251/milvus_workflow.jpg)
 
-## Quick Start
+## 关键概念
 
-Click the button to clone this repository and deploy it on Vercel:
+如果您对向量数据库和相似度搜索的世界还不熟悉，请阅读以下关键概念的解释，以更好地理解。
 
-[![](https://vercel.com/button)](https://vercel.com/new/clone?s=https%3A%2F%2Fgithub.com%2Fshuding%2Fnextra-docs-template&showOptionalTeamCreation=false)
+- **非结构化数据**：包括图像、视频、音频和自然语言等信息，这些信息不遵循预定义的模型或组织方式。这种数据类型占据了世界数据的约80%，可以使用各种人工智能（AI）和机器学习（ML）模型将其转换为向量。
 
-## Local Development
+- **嵌入向量**：是对非结构化数据的特征抽象。数学上，嵌入向量是一个浮点数或二进制数的数组。现代的嵌入技术被用于将非结构化数据转换为嵌入向量。
 
-First, run `pnpm i` to install the dependencies.
+- **向量相似度搜索**：是将向量与数据库进行比较，以找到与查询向量最相似的向量的过程。使用近似最近邻搜索算法加速搜索过程。如果两个嵌入向量非常相似，那么原始数据源也是相似的。
 
-Then, run `pnpm dev` to start the development server and visit localhost:3000.
+## 为什么选择Milvus？
 
-## License
+- **高性能**：在处理大规模数据集的向量搜索时具有高性能。
+  
+- **开发者社区**：开发者优先的社区，提供多语言支持和工具链。
+  
+- **云扩展性**：高可靠性，即使出现故障也不会受到影响。
+  
+- **混合搜索**：通过将标量过滤与向量相似度搜索配对，实现混合搜索。
 
-This project is licensed under the MIT License.
+## 了解更多
+
+- [Milvus 中文文档](https://www.milvus-io.com/)
+
+
+## 组队，入群学习
+
+![学习社群](https://www.aiqbh.com/jiaqun.jpg)
 
 ## links
 
@@ -35,7 +48,7 @@ This project is licensed under the MIT License.
 "milvus-io": {
   "title": "Milvus-io 中文文档",
   "type": "page",
-  "href": "https://www.milvus-io.com/overview",
+  "href": "https://www.milvus-io.com",
   "newWindow": true
 },
 "langchain":{
