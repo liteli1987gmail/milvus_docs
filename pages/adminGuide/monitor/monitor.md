@@ -1,10 +1,8 @@
 ---
-
 id: monitor.md
 title: 部署监控服务
 related_key: monitor, alert
 summary: 学习如何使用 Prometheus 在 Kubernetes 上为 Milvus 集群部署监控服务。
-
 ---
 
 # 在 Kubernetes 上部署监控服务

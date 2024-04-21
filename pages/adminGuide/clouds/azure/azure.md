@@ -126,3 +126,52 @@ extraConfigFiles:
       storageType: remote
 
 minio:
+  enabled: false
+
+externalS3:
+  enabled: true
+  host: core.windows.net
+  port: 443
+  rootPath: my-release
+  bucketName: testmilvus # the storage account container name
+  cloudProvider: azure
+  useSSL: true
+  accessKey: "milvustesting1" # the storage account name
+  secretKey: "<secret-key>" 
+```
+
+## Deploy Milvus
+
+Now the Kubernetes cluster is ready. Let's deploy Milvus right now. 
+
+```bash
+helm repo add milvus https://zilliztech.github.io/milvus-helm/
+helm repo update
+helm install -f values.yaml my-release milvus/milvus
+```
+
+In the preceding commands, we add the repo of Milvus Helm charts locally and update the repo to fetch the latest charts. Then we install a Milvus instance and name it **my-release**. 
+
+Notice the config `service.type` value, which indicates that we would like to expose the Milvus instance through a Layer-4 load balancer. 
+
+
+## Verify the deployment
+
+Once all pods are running, run the following command to get the external IP address.
+
+```bash
+kubectl get services|grep my-release-milvus|grep LoadBalancer|awk '{print $4}'
+```
+
+
+## Hello Milvus
+
+Please refer to [Hello Milvus](https://milvus.io/docs/example_code.md), change the host value to external IP address, then run the code.
+
+
+## What's next
+
+If you want to learn how to deploy Milvus on other clouds:
+- [Deploy a Milvus Cluster on EC2](aws.md)
+- [Deploy a Milvus Cluster on EKS](eks.md)
+- [Deploy a Milvus Cluster on GCP](gcp.md)

@@ -1,6 +1,7 @@
 ---
+id: configure_grafana_loki.md
 title: 配置 Grafana Loki
-
+summary: 本主题介绍如何使用 Loki 收集日志，并使用 Grafana 查询 Milvus 集群的日志。
 ---
 
 # 配置 Grafana Loki
@@ -26,7 +27,7 @@ Loki 是一个受 Prometheus 启发的日志聚合系统。使用 Helm 部署 Lo
 
 向 Helm 添加 Grafana 的图表仓库并更新它：
 
-```
+```bash
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 ```
@@ -132,4 +133,17 @@ kubectl --namespace monitoring port-forward $POD_NAME 3000
 
 1. 打开一个 web 浏览器，导航到 `127.0.0.1:3000`。使用用户名 `admin` 和之前获得的密码登录。
 2. 在左侧菜单中，选择 __Connections__ > __Add new connection__。
-3. 在出现的页面上，选择 __Loki__ 作为数据源类型。您可以在搜索栏中输入 __lo
+3. 在出现的页面中，选择__Loki__作为数据源类型。您可以在搜索栏中输入__loki__查找数据源。
+4. 在Loki数据源的设置中, 指定 __Name__ 和 __URL__, 然后点击 __Save & test__.
+
+![DataSource](/public/assets/datasource.jpg "The data source config.")
+
+### 3. 筛选 Milvus 日志
+
+在添加 Loki 作为数据源之后，在 Grafana 中筛选 Milvus 日志
+
+1. 在菜单的左侧, 点击 __Explore__。
+2. 在页面左上角，选择 Loki 数据源。
+3. 使用 __Label browser__ 来选择标签和筛选日志。
+
+![Query](/public/assets/milvuslog.jpg "在 Grafana 中筛选 Milvus 日志")
