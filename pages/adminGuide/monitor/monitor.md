@@ -20,7 +20,7 @@ ServiceMonitor 自定义资源定义（CRD）使您能够声明性地定义如�
 
 下图说明了 Prometheus 工作流程。
 
-![Prometheus_architecture](..//prometheus_architecture.png "Prometheus 架构。")
+<!-- ![Prometheus_architecture](..//prometheus_architecture.png "Prometheus 架构。") -->
 
 ## 前提条件
 

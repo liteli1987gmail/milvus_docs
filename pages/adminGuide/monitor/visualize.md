@@ -29,15 +29,15 @@ summary: 学习如何在 Grafana 中可视化 Milvus 指标。
 wget https://raw.githubusercontent.com/milvus-io/milvus/2.2.0/deployments/monitor/grafana/milvus-dashboard.json
 ```
 
-![Download_and_import](..//import_dashboard.png "下载并导入仪表板。")
+<!-- ![Download_and_import](..//import_dashboard.png "下载并导入仪表板。") -->
 
 ### 2. 查看指标
 
 选择您想要监控的 Milvus 实例。然后，您可以看到 Milvus 组件面板。
 
-![Select_instance](..//grafana_select.png "选择一个实例。")
+<!-- ![Select_instance](..//grafana_select.png "选择一个实例。")-->
 
-![Grafana_panel](..//grafana_panel.png "Milvus 组件面板。")
+<!-- ![Grafana_panel](..//grafana_panel.png "Milvus 组件面板。") -->
 
 ## 接下来做什么
 - 如果您已经设置 Grafana 来可视化 Milvus 指标，您可能还想要：

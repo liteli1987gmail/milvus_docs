@@ -132,9 +132,8 @@ kubectl get ingress
 NAME                CLASS   HOSTS                                   ADDRESS        PORTS     AGE
 my-release-milvus   nginx   milvustest.eastus2.cloudapp.azure.com   EXTERNAL-IP   80, 443   8m15s
 ```
-
 ## Hello Milvus
-Please refer to [Hello Milvus](https://milvus.io/docs/example_code.md), change uri args, then run the code.
+请参阅 [Hello Milvus](https://milvus.io/docs/example_code.md)，更改 uri 参数，然后运行代码。
 ```python
-connections.connect("default",uri="https://milvustest.eastus2.cloudapp.azure.com:443") 
+connections.connect("default", uri="https://milvustest.eastus2.cloudapp.azure.com:443")
 ```
