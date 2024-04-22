@@ -18,7 +18,7 @@ title: 使用Helm安装Milvus集群
 
 ## 先决条件
 
-在安装之前，请检查[硬件和软件要求](prerequisite-helm.md)。
+在安装之前，请检查[硬件和软件要求](../prerequisite-helm.md)。
 
 ## 创建K8s集群
 

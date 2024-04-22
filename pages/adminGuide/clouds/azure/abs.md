@@ -71,6 +71,7 @@ az identity federated-credential create \
 ```
 
 ## 部署 Milvus
+
 ```bash
 helm install -f values.yaml my-release milvus/milvus
 ``` 

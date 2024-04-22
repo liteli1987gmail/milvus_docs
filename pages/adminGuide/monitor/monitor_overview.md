@@ -1,10 +1,8 @@
 ---
-
 id: monitor_overview.md
 title: 概览
 related_key: 监控，警报
 summary: 了解 Prometheus 和 Grafana 如何在 Milvus 中用于监控和警报服务。
-
 ---
 
 # Milvus 监控框架概述

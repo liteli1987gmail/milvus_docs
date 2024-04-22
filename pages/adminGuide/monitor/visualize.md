@@ -1,10 +1,8 @@
 ---
-
 id: visualize.md
 title: 可视化指标
 related_key: 监控，警报
 summary: 学习如何在 Grafana 中可视化 Milvus 指标。
-
 ---
 
 # 在 Grafana 中可视化 Milvus 指标

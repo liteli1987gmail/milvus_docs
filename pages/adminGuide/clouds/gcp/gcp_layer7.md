@@ -95,4 +95,170 @@ kubectl annotate service my-release-milvus \
 
 TLS需要证书才能工作。有两种创建证书的方法，即自管理的和Google管理的。
 
-本指南使用**my-release.milvus.io**作为访问我们的Milvus
+This guide uses **my-release.milvus.io** as the domain name to access our Milvus service. 
+
+#### Create self-managed certificates
+
+Run the following commands to create a certificate.
+
+```bash
+# Generates a tls.key.
+openssl genrsa -out tls.key 2048
+
+# Creates a certificate and signs it with the preceding key.
+openssl req -new -key tls.key -out tls.csr \
+    -subj "/CN=my-release.milvus.io"
+
+openssl x509 -req -days 99999 -in tls.csr -signkey tls.key \
+    -out tls.crt
+```
+
+Then create a secret in your GKE cluster with these files for later use.
+
+```bash
+kubectl create secret tls my-release-milvus-tls --cert=./tls.crt --key=./tls.key
+```
+
+#### Create Google-managed certificates
+
+The following snippet is a ManagedCertificate setting. Save it as `managed-crt.yaml` for later use.
+
+```yaml
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: my-release-milvus-tls
+spec:
+  domains:
+    - my-release.milvus.io
+```
+
+Create a managed certificate by applying the setting to your GKE cluster as follows:
+
+```bash
+kubectl apply -f ./managed-crt.yaml
+```
+
+This could last for a while. You can check the progress by running
+
+```bash
+kubectl get -f ./managed-crt.yaml -o yaml -w
+```
+
+The output should be similar to the following:
+
+```shell
+status:
+  certificateName: mcrt-34446a53-d639-4764-8438-346d7871a76e
+  certificateStatus: Provisioning
+  domainStatus:
+  - domain: my-release.milvus.io
+    status: Provisioning
+```
+
+Once **certificateStatus** turns to **Active**, you are ready to set up the load balancer.
+
+### Create an Ingress to generate a Layer-7 Load Balancer
+
+Create a YAML file with one of the following snippets.
+
+- Using self-managed certificates
+
+  ```yaml
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+  name: my-release-milvus
+  namespace: default
+  spec:
+  tls:
+  - hosts:
+      - my-release.milvus.io
+      secretName: my-release-milvus-tls
+  rules:
+  - host: my-release.milvus.io
+      http:
+      paths:
+      - path: /
+          pathType: Prefix
+          backend:
+          service:
+              name: my-release-milvus
+              port:
+              number: 19530
+  ```
+- Using Google-managed certificates
+
+  ```yaml
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+  name: my-release-milvus
+  namespace: default
+  annotations:
+      networking.gke.io/managed-certificates: "my-release-milvus-tls"
+  spec:
+  rules:
+  - host: my-release.milvus.io
+      http:
+      paths:
+      - path: /
+          pathType: Prefix
+          backend:
+          service:
+              name: my-release-milvus
+              port:
+              number: 19530
+  ```
+
+Then you can create the Ingress by applying the file to your GKE cluster.
+
+```bash
+kubectl apply -f ingress.yaml
+```
+
+Now, wait for Google to set up the Layer-7 load balancer. You can check the progress by running
+
+```bash
+kubectl  -f ./config/samples/ingress.yaml get -w
+```
+
+The output should be similar to the following:
+
+```shell
+NAME                CLASS    HOSTS                  ADDRESS   PORTS   AGE
+my-release-milvus   <none>   my-release.milvus.io             80      4s
+my-release-milvus   <none>   my-release.milvus.io   34.111.144.65   80, 443   41m
+```
+
+Once an IP address is displayed in the **ADDRESS** field, the Layer-7 load balancer is ready to use. Both port 80 and port 443 are displayed in the above output. Remember, you should always use port 443 for your own good.
+
+## Verify the connection through the Layer-7 load balancer
+
+This guide uses PyMilvus to verify the connection to the Milvus service behind the Layer-7 load balancer we have just created. For detailed steps, [read this](example_code).
+
+Notice that connection parameters vary with the way you choose to manage the certificates in [Prepare TLS certificates](#prepare-tls-certificates).
+
+```python
+from pymilvus import (
+    connections,
+    utility,
+    FieldSchema,
+    CollectionSchema,
+    DataType,
+    Collection,
+)
+
+# For self-managed certificates, you need to include the certificate in the parameters used to set up the connection.
+connections.connect("default", host="34.111.144.65", port="443", server_pem_path="tls.crt", secure=True, server_name="my-release.milvus.io")
+
+# For Google-managed certificates, there is not need to do so.
+connections.connect("default", host="34.111.144.65", port="443", secure=True, server_name="my-release.milvus.io")
+```
+
+<div class="alert note">
+
+- The IP address and port number in **host** and **port** should match those listed at the end of [Create an Ingress to generate a Layer-7 Load Balancer](#create-an-ingress-to-generate-a-layer-7-load-balancer).
+- If you have set up a DNS record to map domain name to the host IP address, replace the IP address in **host** with the domain name and omit **server_name**.
+
+</div>

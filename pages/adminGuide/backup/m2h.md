@@ -11,18 +11,19 @@ summary: 将 Milvus 数据保存为 HDF5 文件。
 
 1. 下载 **M2H.yaml**：
 
-   ```
+   ```bash
    $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/M2H.yaml
    ```
 
 2. 设置以下参数：
+
    - `source_milvus_path`: Milvus 的工作目录。
    - `mysql_parameter`: Milvus 的 MySQL 设置。如果未使用 MySQL，请将此参数设置为 ''。
    - `source_collection`: Milvus 中集合及其分区的名称。
    - `data_dir`: 保存 HDF5 文件的目录。
 
    例如：
-   ```
+   ```yaml
    M2H:
      milvus_version: 2.x
      source_milvus_path: '/home/user/milvus'
@@ -45,15 +46,16 @@ summary: 将 Milvus 数据保存为 HDF5 文件。
    ```
 
 ## 示例代码
+
 1. 读取本地驱动器上 **milvus/db** 下的数据，并根据指定集合或分区的元数据从 Milvus 获取向量及其对应的 ID：
 
-   ```
+   ```python 
    collection_parameter, version = milvus_meta.get_collection_info(collection_name)
    r_vectors, r_ids, r_rows = milvusdb.read_milvus_file(self.milvus_meta, collection_name, partition_tag)
    ```
 
 2. 将检索到的数据保存为 HDF5 文件：
 
-   ```
+   ```python
    data_save.save_yaml(collection_name, partition_tag, collection_parameter, version, save_hdf5_name)
    ```

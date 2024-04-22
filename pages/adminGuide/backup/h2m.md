@@ -41,7 +41,7 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/M2H.y
 
 ### 示例 1
 
-```
+```yaml
 H2M:
   milvus-version: 2.0.0
   data_path:
@@ -61,7 +61,7 @@ H2M:
 
 ### 示例 2
 
-```
+```yaml
 H2M:
   milvus_version: 2.0.0
   data_path:
@@ -81,7 +81,7 @@ H2M:
 
 使用以下命令运行 MilvusDM，将 HDF5 文件中的数据导入 Milvus。
 
-```
+```bash
 $ milvusdm --yaml H2M.yaml
 ```
 

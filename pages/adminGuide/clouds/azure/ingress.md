@@ -130,4 +130,11 @@ NAME         READY   SECRET       AGE
 tls-secret   True    tls-secret   8m7s
 kubectl get ingress
 NAME                CLASS   HOSTS                                   ADDRESS        PORTS     AGE
-my-release-milvus   nginx   milvustest.eastus2.cloudapp.azure.com   EXTERNAL-IP   
+my-release-milvus   nginx   milvustest.eastus2.cloudapp.azure.com   EXTERNAL-IP   80, 443   8m15s
+```
+
+## Hello Milvus
+Please refer to [Hello Milvus](https://milvus.io/docs/example_code.md), change uri args, then run the code.
+```python
+connections.connect("default",uri="https://milvustest.eastus2.cloudapp.azure.com:443") 
+```

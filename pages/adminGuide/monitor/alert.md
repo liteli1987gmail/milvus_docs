@@ -1,10 +1,8 @@
 ---
-
 id: alert.md
 title: 创建警报
 related_key: 监控和警报。
 summary: 学习如何在 Grafana 中为 Milvus 服务创建警报。
-
 ---
 
 # 为 Milvus 服务创建警报
@@ -42,29 +40,29 @@ summary: 学习如何在 Grafana 中为 Milvus 服务创建警报。
 ### 1. 添加新查询
 要为 Milvus 组件的内存使用添加警报，请编辑内存面板。然后，使用指标 `process_resident_memory_bytes{app_kubernetes_io_name="milvus", app_kubernetes_io_instance=~"my-release", namespace="default"}` 添加一个新查询。
 
-![Alert_metric](..//alert_metric.png "添加警报。")
+![Alert_metric](/public/assets/alert_metric.png "添加警报。")
 
 ### 2. 保存仪表板
 保存仪表板，等待几分钟以查看警报。
 
-![Alert_dashboard](..//alert_dashboard.png "保存仪表板。")
+![Alert_dashboard](/public/assets/alert_dashboard.png "保存仪表板。")
 
 Grafana 警报查询不支持模板变量。因此，您应该在标签中添加一个没有任何模板变量的第二个查询。第二个查询默认命名为 "A"。您可以通过单击下拉菜单重命名它。
 
-![Alert_query](..//alert_query.png "新添加的查询。")
+![Alert_query](/public/assets/alert_query.png "新添加的查询。")
 
 ### 3. 添加警报通知
 要接收警报通知，请添加一个 "通知渠道"。然后，在 "发送到" 字段中指定该渠道。
 
-![Alert_notification](..//alert_notification.png "指定通知渠道。")
+![Alert_notification](/public/assets/alert_notification.png "指定通知渠道。")
 
 如果成功创建并触发了警报，您将收到如下图所示的通知。
 
-![Notification_message](..//notification_message.png "已创建并触发警报。")
+![Notification_message](/public/assets/notification_message.png "已创建并触发警报。")
 
 要删除警报，请转到 "警报" 面板并单击删除按钮。
 
-![Delete_alert](..//delete_alert.png "删除警报。")
+![Delete_alert](/public/assets//delete_alert.png "删除警报。")
 
 ## 接下来做什么
 

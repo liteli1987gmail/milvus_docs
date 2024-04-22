@@ -38,7 +38,6 @@ Milvus 是在2019年创建的，其唯一目标是存储、索引和管理由深
 ## links
 
 ```
-
 "openaidoc": {
   "title": "Openai中文文档",
   "type": "page",
@@ -57,5 +56,4 @@ Milvus 是在2019年创建的，其唯一目标是存储、索引和管理由深
   "href": "https://www.langchain.com.cn/",
   "newWindow": true
 }
-
 ```
