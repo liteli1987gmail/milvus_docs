@@ -1,10 +1,14 @@
 ---
+id: configure-docker.md
+label: Docker Compose
+related_key: configure
+summary: 使用Docker Compose配置Milvus
 title: 使用Docker Compose配置Milvus
 ---
 
-# 使用Docker Compose配置Milvus
+# 使用 Docker Compose 配置 Milvus
 
-本主题描述了如何使用Docker Compose配置Milvus组件及其第三方依赖。
+本主题描述了如何使用 Docker Compose 配置 Milvus 组件及其第三方依赖。
 
 <div class="alert note">
 在当前版本中，所有参数仅在Milvus重启后生效。
@@ -20,14 +24,14 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus/v{{var.milvus_release_
 
 ## 修改配置文件
 
-通过调整`milvus.yaml`中的相应参数，配置您的Milvus实例以适应您的应用场景。
+通过调整`milvus.yaml`中的相应参数，配置您的 Milvus 实例以适应您的应用场景。
 
 有关每个参数的更多信息，请查看以下链接。
 
 按以下分类排序：
 
 <div class="filter">
-<a href="#component">组件或依赖</a> <a href="#purpose">配置目的</a> 
+<a href="#component">组件或依赖</a> <a href="#purpose">配置目的</a>
 
 </div>
 

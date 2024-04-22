@@ -1,9 +1,7 @@
 ---
-
 id: allocate.md
 title: 在 Kubernetes 上为 Milvus 分配资源
 summary: 学习如何在 Kubernetes 上为 Milvus 分配资源。
-
 ---
 
 # 在 Kubernetes 上分配资源
@@ -38,19 +36,15 @@ summary: 学习如何在 Kubernetes 上为 Milvus 分配资源。
 </div>
 
 <div class="table-wrapper filter-standalone" markdown="block">
-
 ```Shell
 helm upgrade my-release milvus/milvus --reuse-values --set standalone.resources.limits.cpu=2 --set standalone.resources.limits.memory=4Gi --set standalone.resources.requests.cpu=0.1 --set standalone.resources.requests.memory=128Mi
 ```
-
 </div>
 
 <div class="table-wrapper filter-cluster" markdown="block">
-
 ```Shell
 helm upgrade my-release milvus/milvus --reuse-values --set dataNode.resources.limits.cpu=2 --set dataNode.resources.limits.memory=4Gi --set dataNode.resources.requests.cpu=0.1 --set dataNode.resources.requests.memory=128Mi
 ```
-
 </div>
 
 ### 通过设置配置文件分配资源
@@ -83,6 +77,7 @@ queryNode:
 ```Shell
 helm upgrade my-release milvus/milvus --reuse-values -f resources.yaml
 ```
+
 <div class="alert note">
 如果未指定 <code>resources.limits</code>，则 pod 将消耗所有可用的 CPU 和内存资源。因此，请确保指定 <code>resources.requests</code> 和 <code>resources.limits</code>，以避免在同一个实例上运行的其他任务需要更多内存消耗时资源的过度分配。
 </div>

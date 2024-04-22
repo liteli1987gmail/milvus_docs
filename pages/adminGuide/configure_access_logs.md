@@ -1,4 +1,5 @@
 ---
+id: configure_access_logs.md
 title: 配置访问日志
 ---
 
@@ -72,7 +73,7 @@ proxy:
     filename: "access_log.txt"
     localPath: "/var/logs/milvus"
     maxSize: 500
-    rotatedTime: 24 
+    rotatedTime: 24
     maxBackups: 7
     minioEnable: true
     remotePath: "/milvus/logs/access_logs"
@@ -96,6 +97,41 @@ proxy:
     enable: true
     filename: "access_log.txt"
     localPath: "/var/logs/milvus"
-    # 为访问日志定义自定义格式化器，包括格式和适用方法
+    # Define custom formatters for access logs with format and applicable methods
     formatters:
-      # `base` 格式化器默认适用于所有方法
+      # The `base` formatter applies to all methods by default
+      # The `base` formatter does not require specific method association
+      base:
+        # Format string; an empty string means no log output
+        format: "[$time_now] [ACCESS] <$user_name: $user_addr> $method_name-$method_status-$error_code [traceID: $trace_id] [timeCost: $time_cost]"
+      # Custom formatter for specific methods (e.g., Query, Search)
+      query:
+        format: "[$time_now] [ACCESS] <$user_name: $user_addr> $method_status-$method_name [traceID: $trace_id] [timeCost: $time_cost] [database: $database_name] [collection: $collection_name] [partitions: $partition_name] [expr: $method_expr]"
+        # Specify the methods to which this custom formatter applies
+        methods: ["Query", "Search"]
+```
+
+- `proxy.accessLog.<formatter_name>.format`: Defines the log format with dynamic metrics. For more information, see [Supported metrics](#reference-supported-metrics).
+- `proxy.accessLog.<formatter_name>.methods`: Lists Milvus operations using this formatter. To obtain method names, see **MilvusService** in [Milvus methods](https://github.com/milvus-io/milvus-proto/blob/master/proto/milvus.proto).
+
+## Reference: Supported metrics
+
+| Metric Name        | Description                                                                 |
+| ------------------ | --------------------------------------------------------------------------- |
+| `$method_name`     | Name of the method                                                          |
+| `$method_status`   | Status of access: **OK** or **Fail**                                        |
+| `$method_expr`     | Expression used for query, search, or delete operations                     |
+| `$trace_id`        | TraceID associated with the access                                          |
+| `$user_addr`       | IP address of the user                                                      |
+| `$user_name`       | Name of the user                                                            |
+| `$response_size`   | Size of the response data                                                   |
+| `$error_code`      | Error code specific to Milvus                                               |
+| `$error_msg`       | Detailed error message                                                      |
+| `$database_name`   | Name of the target Milvus database                                          |
+| `$collection_name` | Name of the target Milvus collection                                        |
+| `$partition_name`  | Name or names of the target Milvus partition(s)                             |
+| `$time_cost`       | Time taken for completing the access                                        |
+| `$time_now`        | Time at which the access log is printed (usually equivalent to `$time_end`) |
+| `$time_start`      | Time at which the access starts                                             |
+| `$time_end`        | Time at which the access ends                                               |
+| `$sdk_version`     | Version of the Milvus SDK used by the user                                  |
