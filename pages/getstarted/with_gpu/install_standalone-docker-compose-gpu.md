@@ -1,5 +1,4 @@
 ---
-
 id: 使用Docker Compose安装独立Milvus集群.md
 label: 独立模式（Docker Compose）
 related_key: Kubernetes
@@ -7,7 +6,6 @@ order: 1
 group: 使用Helm安装独立Milvus集群.md
 summary: 学习如何在Kubernetes上安装Milvus集群。
 title: 使用Docker Compose安装Milvus集群
-
 ---
 
 {{tab}}
@@ -87,6 +85,25 @@ title: 使用Docker Compose安装Milvus集群
 
   将多个GPU设备分配给Milvus：
 
+ ```yaml
+  ...
+  standalone:
+    gpu:
+      initMemSize: 0
+      maxMemSize: 1024
+    ...
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: ["gpu"]
+              device_ids: ["0"]
+  ...
+  ```
+
+  Assign multiple GPU devices to Milvus:
+
   ```yaml
   ...
   standalone:
@@ -100,4 +117,97 @@ title: 使用Docker Compose安装Milvus集群
           devices:
             - driver: nvidia
               capabilities: ["gpu"]
-              device_ids: ['0
+              device_ids: ['0', '1']
+  ...
+  ```
+
+### Start Milvus
+
+In the directory that holds `docker-compose.yml`, start Milvus by running:
+
+```shell
+$ sudo docker compose up -d
+```
+
+<div class="alert note">
+
+If you failed to run the above command, please check whether your system has Docker Compose V1 installed. If this is the case, you are advised to migrate to Docker Compose V2 due to the notes on [this page](https://docs.docker.com/compose/).
+
+</div>
+
+```text
+Creating milvus-etcd  ... done
+Creating milvus-minio ... done
+Creating milvus-standalone ... done
+```
+
+Now check if the containers are up and running.
+
+```
+$ sudo docker compose ps
+```
+
+## Verify the Installation
+
+After Milvus standalone starts, there will be three docker containers running, including the Milvus standalone service and its two dependencies.
+
+```
+      Name                     Command                  State                            Ports
+--------------------------------------------------------------------------------------------------------------------
+milvus-etcd         etcd -advertise-client-url ...   Up             2379/tcp, 2380/tcp
+milvus-minio        /usr/bin/docker-entrypoint ...   Up (healthy)   9000/tcp
+milvus-standalone   /tini -- milvus run standalone   Up             0.0.0.0:19530->19530/tcp, 0.0.0.0:9091->9091/tcp
+```
+
+If you have assigned multiple GPU devices to Milvus in `docker-compose.yml`, you can specify which GPU device is visible or available for use.
+
+Make GPU device `0` visible to Milvus:
+
+```shell
+CUDA_VISIBLE_DEVICES=0 ./milvus run standalone
+```
+
+Make GPU devices `0` and `1` visible to Milvus:
+
+```shell
+CUDA_VISIBLE_DEVICES=0,1 ./milvus run standalone
+```
+
+### Connect to Milvus
+
+Verify which local port the Milvus server is listening on. Replace the container name with your own.
+
+```bash
+$ docker port milvus-standalone 19530/tcp
+```
+
+Please refer to [Hello Milvus](https://milvus.io/docs/example_code.md), then run the example code.
+
+## Stop Milvus
+
+To stop Milvus standalone, run:
+```
+sudo docker compose down
+```
+
+To delete data after stopping Milvus, run:
+```
+sudo rm -rf  volumes
+```
+
+## What's next
+
+Having installed Milvus, you can:
+- Check [Hello Milvus](quickstart.md) to run an example code with different SDKs to see what Milvus can do.
+- Check [In-memory Index](index.md) for more about CPU-compatible index types.
+- Learn the basic operations of Milvus:
+  - [Manage Databases](manage_databases.md)
+  - [Manage Collections](manage-collections.md)
+  - [Manage Partitions](manage-partitions.md)
+  - [Insert, Upsert & Delete](insert-update-delete.md)
+  - [Single-Vector Search](single-vector-search.md)
+  - [Multi-Vector Search](multi-vector-search.md)
+- Explore [Milvus Backup](milvus_backup_overview.md), an open-source tool for Milvus data backups.
+- Explore [Birdwatcher](birdwatcher_overview.md), an open-source tool for debugging Milvus and dynamic configuration updates.
+- Explore [Attu](https://milvus.io/docs/attu.md), an open-source GUI tool for intuitive Milvus management.
+- [Monitor Milvus with Prometheus](monitor.md)

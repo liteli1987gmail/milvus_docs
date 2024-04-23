@@ -1,5 +1,7 @@
 ---
-title: 常见操作问题解答
+id: operational_faq.md
+summary: 常见操作问题解答.
+title: Operational FAQ
 ---
 
 # 常见操作问题解答
@@ -82,4 +84,31 @@ Milvus 需要你的 CPU 支持 SIMD 指令集：SSE4.2、AVX、AVX2 或 AVX512�
 
 默认情况下，Milvus 日志会打印到 stout（标准输出）和 stderr（标准错误），但我们强烈建议在生产环境中将日志重定向到持久卷。为此，更新 **milvus.yaml** 中的 `log.file.rootPath`。如果你使用 `milvus-helm` 图表部署 Milvus，你还需要通过 `--set log.persistence.enabled=true` 首先启用日志持久性。
 
-如果你没有更改配置，使用 kubectl
+If you didn't change the config, using kubectl logs <pod-name> or docker logs CONTAINER can also help you to find the log.
+
+
+#### Can I create index for a segment before inserting data into it?
+
+Yes, you can. But we recommend inserting data in batches, each of which should not exceed 256 MB, before indexing each segment.
+
+#### Can I share an etcd instance among multiple Milvus instances?
+
+Yes, you can share an etcd instance among multiple Milvus instances. To do so, you need to change `etcd.rootPath` to a separate value for each Milvus instance in the configuration files of each before starting them.
+
+#### Can I share a Pulsar instance among multiple Milvus instances?
+
+Yes, you can share a Pulsar instance among multiple Milvus instances. To do so, you can
+
+- If multi-tenancy is enabled on your Pulsar instance, consider allocating a separate tenant or namespace for each Milvus instance. To do so, you need to change `pulsar.tenant` or `pulsar.namespace` in the configuration files of your Milvus instances to a unique value for each before starting them.
+- If you do not plan on enabling multi-tenancy on your Pulsar instance, consider changing `msgChannel.chanNamePrefix.cluster` in the configuration files of your Milvus instances to a unique value for each before starting them.
+
+#### Can I share a MinIO instance among multiple Milvus instances?
+
+Yes, you can share a MinIO instance among multiple Milvus instances. To do so, you need to change `minio.rootPath` to a unique value for each Milvus instance in the configuration files of each before starting them.
+
+#### Still have questions?
+
+You can:
+
+- Check out [Milvus](https://github.com/milvus-io/milvus/issues) on GitHub. Feel free to ask questions, share ideas, and help others.
+- Join our [Milvus Forum](https://discuss.milvus.io/) or [Slack Channel](https://join.slack.com/t/milvusio/shared_invite/enQtNzY1OTQ0NDI3NjMzLWNmYmM1NmNjOTQ5MGI5NDhhYmRhMGU5M2NhNzhhMDMzY2MzNDdlYjM5ODQ5MmE3ODFlYzU3YjJkNmVlNDQ2ZTk) to find support and engage with our open-source community.

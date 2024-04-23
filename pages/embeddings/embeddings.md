@@ -13,9 +13,9 @@ title: 嵌入模型概述
 
 嵌入主要分为两大类，每种产生不同类型的向量：
 
-- __密集嵌入__：大多数嵌入模型将信息表示为数百到数千个维度的浮点数向量。输出称为“密集”向量，因为大多数维度都有非零值。例如，流行的开源嵌入模型BAAI/bge-base-en-v1.5输出768个浮点数的向量（768维浮点数向量）。
+- __Dense embedding__：大多数嵌入模型将信息表示为数百到数千个维度的浮点数向量。输出称为“密集”向量，因为大多数维度都有非零值。例如，流行的开源嵌入模型BAAI/bge-base-en-v1.5输出768个浮点数的向量（768维浮点数向量）。
 
-- __稀疏嵌入__：相比之下，稀疏嵌入的输出向量大多数维度为零，即“稀疏”向量。这些向量通常具有更高的维度（数万或更多），由令牌词汇表的大小决定。稀疏向量可以由深度神经网络或文本语料库的统计分析生成。由于它们的可解释性和观察到的更好的跨领域泛化能力，稀疏嵌入越来越多地被开发者作为密集嵌入的补充采用。
+- __Sparse embedding__：相比之下，稀疏嵌入的输出向量大多数维度为零，即“稀疏”向量。这些向量通常具有更高的维度（数万或更多），由令牌词汇表的大小决定。稀疏向量可以由深度神经网络或文本语料库的统计分析生成。由于它们的可解释性和观察到的更好的跨领域泛化能力，稀疏嵌入越来越多地被开发者作为密集嵌入的补充采用。
 
 Milvus提供了内置的嵌入函数，与流行的嵌入提供商兼容。在创建Milvus集合之前，您可以使用这些函数为您的数据集生成嵌入，简化了准备数据和向量搜索的过程。
 
@@ -48,4 +48,115 @@ ef = model.DefaultEmbeddingFunction()
 
 # 要从中生成嵌入的数据
 docs = [
-    "人工智能作为一门
+    "Artificial intelligence was founded as an academic discipline in 1956.",
+    "Alan Turing was the first person to conduct substantial research in AI.",
+    "Born in Maida Vale, London, Turing was raised in southern England.",
+]
+
+embeddings = ef.encode_documents(docs)
+
+# Print embeddings
+print("Embeddings:", embeddings)
+# Print dimension and shape of embeddings
+print("Dim:", ef.dim, embeddings[0].shape)
+```
+
+The expected output is similar to the following:
+
+```python
+Embeddings: [array([-3.09392996e-02, -1.80662833e-02,  1.34775648e-02,  2.77156215e-02,
+       -4.86349640e-03, -3.12581174e-02, -3.55921760e-02,  5.76934684e-03,
+        2.80773244e-03,  1.35783911e-01,  3.59678417e-02,  6.17732145e-02,
+...
+       -4.61330153e-02, -4.85207550e-02,  3.13997865e-02,  7.82178566e-02,
+       -4.75336798e-02,  5.21207601e-02,  9.04406682e-02, -5.36676683e-02],
+      dtype=float32)]
+Dim: 384 (384,)
+```
+
+## Example 2: Generate dense and sparse vectors in one call with BGE M3 model
+
+In this example, we use [BGE M3](https://milvus.io/docs/embed-with-bgm-m3.md) hybrid model to embed text into both dense and sparse vectors and use them to retrieve relevant documents. The overall steps are as follows:
+
+1. Embed the text as dense and sparse vectors using BGE-M3 model;
+
+1. Set up a Milvus collection to store the dense and sparse vectors;
+
+1. Insert the data to Milvus;
+
+1. Search and inspect the result.
+
+First, we need to install the necessary dependencies.
+
+```python
+from pymilvus.model.hybrid import BGEM3EmbeddingFunction
+from pymilvus import (
+    utility,
+    FieldSchema, CollectionSchema, DataType,
+    Collection, AnnSearchRequest, RRFRanker, connections,
+)
+```
+
+Use BGE M3 to encode docs and queries for embedding retrieval. 
+
+```python
+# 1. prepare a small corpus to search
+docs = [
+    "Artificial intelligence was founded as an academic discipline in 1956.",
+    "Alan Turing was the first person to conduct substantial research in AI.",
+    "Born in Maida Vale, London, Turing was raised in southern England.",
+]
+query = "Who started AI research?"
+
+# BGE-M3 model can embed texts as dense and sparse vectors.
+# It is included in the optional `model` module in pymilvus, to install it,
+# simply run "pip install pymilvus[model]".
+
+bge_m3_ef = BGEM3EmbeddingFunction(use_fp16=False, device="cpu")
+
+docs_embeddings = bge_m3_ef(docs)
+query_embeddings = bge_m3_ef([query])
+```
+
+## Example 3: Generate  sparse vectors using BM25 model
+
+BM25 is a well-known method that uses word occurrence frequencies to determine the relevance between queries and documents. In this example, we will show how to use `BM25EmbeddingFunction` to generate sparse embeddings for both queries and documents.
+
+First, import the __BM25EmbeddingFunction__ class.
+
+```xml
+from pymilvus.model.sparse import BM25EmbeddingFunction
+```
+
+In BM25, it's important to calculate the statistics in your documents to obtain the IDF (Inverse Document Frequency), which can represent the pattern in your documents. The IDF is a measure of how much information a word provides, that is, whether it's common or rare across all documents.
+
+```python
+# 1. prepare a small corpus to search
+docs = [
+    "Artificial intelligence was founded as an academic discipline in 1956.",
+    "Alan Turing was the first person to conduct substantial research in AI.",
+    "Born in Maida Vale, London, Turing was raised in southern England.",
+]
+query = "Where was Turing born?"
+bm25_ef = BM25EmbeddingFunction()
+
+# 2. fit the corpus to get BM25 model parameters on your documents.
+bm25_ef.fit(docs)
+
+# 3. store the fitted parameters to disk to expedite future processing.
+bm25_ef.save("bm25_params.json")
+
+# 4. load the saved params
+new_bm25_ef = BM25EmbeddingFunction()
+new_bm25_ef.load("bm25_params.json")
+
+docs_embeddings = new_bm25_ef.encode_documents(docs)
+query_embeddings = new_bm25_ef.encode_queries([query])
+print("Dim:", new_bm25_ef.dim, list(docs_embeddings)[0].shape)
+```
+
+The expected output is similar to the following:
+
+```python
+Dim: 21 (1, 21)
+```

@@ -1,5 +1,4 @@
 ---
-
 id: install_standalone-aptyum.md
 label: DEB/RPM
 related_key: 安装
