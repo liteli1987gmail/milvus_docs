@@ -1,9 +1,7 @@
 ---
-
 id: product_faq.md
 summary: 寻找关于世界上最先进的向量数据库的常见问题答案。
 title: 产品常见问题解答
-
 ---
 
 # 产品常见问题解答
@@ -83,4 +81,102 @@ etcd存储Milvus模块的元数据；MinIO存储实体。
 
 #### 在插入向量后可以创建索引吗？
 
-是的。如果在插入向量之前，已经通过`create_index()`为集合构建了索引，Milvus将自动为随后插入的向量构建索引。然而，Milvus直到新插入的向量填满一个完整的段并且新创建的索引文件与之前的索引文件分开时，才会构建
+Yes. If an index has been built for a collection by `create_index()` before, Milvus will automatically build an index for subsequently inserted vectors. However, Milvus does not build an index until the newly inserted vectors fill an entire segment and the newly created index file is separate from the previous one.
+
+#### How are the FLAT and IVF_FLAT indexes different?
+
+The IVF_FLAT index divides vector space into list clusters. At the default list value of 16,384, Milvus compares the distances between the target vector and the centroids of all 16,384 clusters to return probe nearest clusters. Milvus then compares the distances between the target vector and the vectors in the selected clusters to get the nearest vectors. Unlike IVF_FLAT, FLAT directly compares the distances between the target vector and every other vector.
+
+When the total number of vectors approximately equals nlist, there is little distance between IVF_FLAT and FLAT in terms of calculation requirements and search performance. However, as the number of vectors exceeds nlist by a factor of two or more, IVF_FLAT begins to demonstrate performance advantages.
+
+See [Vector Index](index.md) for more information.
+
+#### How does Milvus flush data?
+
+Milvus returns success when inserted data are loaded to the message queue. However, the data are not yet flushed to the disk. Then Milvus' data node writes the data in the message queue to persistent storage as incremental logs. If `flush()` is called, the data node is forced to write all data in the message queue to persistent storage immediately.
+
+#### What is normalization? Why is normalization needed?
+
+Normalization refers to the process of converting a vector so that its norm equals 1. If inner product is used to calculate vector similarity, vectors must be normalized. After normalization, inner product equals cosine similarity.
+
+See [Wikipedia](https://en.wikipedia.org/wiki/Unit_vector) for more information.
+
+#### Why do Euclidean distance (L2) and inner product (IP) return different results?
+
+For normalized vectors, Euclidean distance (L2) is mathematically equivalent to inner product (IP). If these similarity metrics return different results, check to see if your vectors are normalized
+
+#### Is there a limit to the total number of collections and partitions in Milvus?
+
+Yes. You can create up to 65,535 collections in a Milvus instance. When calculating the number of existing collections, Milvus counts all collections with shards and partitions in them.
+
+For example, let's assume you have already created 100 collections, with 2 shards and 4 partitions in 60 of them and with 1 shard and 12 partitions in the rest 40 collections. The current number of collections can be calculated as:
+
+```
+60 * 2 * 4 + 40 * 1 * 12 = 960
+```
+
+#### Why do I get fewer than k vectors when searching for `topk` vectors?
+
+Among the indexes that Milvus supports, IVF_FLAT and IVF_SQ8 implement the k-means clustering method. A data space is divided into `nlist` clusters and the inserted vectors are distributed to these clusters. Milvus then selects the `nprobe` nearest clusters and compares the distances between the target vector and all vectors in the selected clusters to return the final results.
+
+If `nlist` and `topk` are large and nprobe is small, the number of vectors in the nprobe clusters may be less than `k`. Therefore, when you search for the `topk` nearest vectors, the number of returned vectors is less than `k`.
+
+To avoid this, try setting `nprobe` larger and `nlist` and `k` smaller.
+
+See [Vector Index](index.md) for more information.
+
+#### What is the maximum vector dimension supported in Milvus?
+
+Milvus can manage vectors with up to 32,768 dimensions.
+
+#### Does Milvus support Apple M1 CPU?
+
+Current Milvus release does not support Apple M1 CPU.
+
+#### What data types does Milvus support on the primary key field?
+
+In current release, Milvus supports both INT64 and string.
+
+#### Is Milvus scalable?
+
+Yes. You can deploy Milvus cluster with multiple nodes via Helm Chart on Kubernetes. Refer to [Scale Guide](scaleout.md) for more instruction.
+
+#### Does the query perform in memory? What are incremental data and historical data?
+
+Yes. When a query request comes, Milvus searches both incremental data and historical data by loading them into memory. Incremental data are in the growing segments, which are buffered in memory before they reach the threshold to be persisted in storage engine, while historical data are from the sealed segments that are stored in the object storage. Incremental data and historical data together constitute the whole dataset to search.
+
+#### Is Milvus available for concurrent search?
+
+Yes. For queries on the same collection, Milvus concurrently searches the incremental and historical data. However, queries on different collections are conducted in series. Whereas the historical data can be an extremely huge dataset, searches on the historical data are relatively more time-consuming and essentially performed in series.
+
+#### Why does the data in MinIO remain after the corresponding collection is dropped?
+
+Data in MinIO is designed to remain for a certain period of time for the convenience of data rollback.
+
+#### Does Milvus support message engines other than Pulsar?
+
+Yes. Kafka is supported in Milvus 2.1.0.
+
+#### What's the difference between a search and a query?
+
+In Milvus, a vector similarity search retrieves vectors based on similarity calculation and vector index acceleration. Unlike a vector similarity search, a vector query retrieves vectors via scalar filtering based on a boolean expression. The boolean expression filters on scalar fields or the primary key field, and it retrieves all results that match the filters. In a query, neither similarity metrics nor vector index is involved.
+
+#### Why does a float vector value have a precision of 7 decimal digits in Milvus?
+
+Milvus supports storing vectors as Float32 arrays. A Float32 value has a precision of 7 decimal digits. Even with a Float64 value, such as 1.3476964684980388, Milvus stores it as 1.347696. Therefore, when you retrieve such a vector from Milvus, the precision of the Float64 value is lost.
+
+#### How does Milvus handle vector data types and precision?
+
+Milvus supports Binary, Float32, Float16, and BFloat16 vector types.
+
+- Binary vectors: Store binary data as sequences of 0s and 1s, used in image processing and information retrieval.
+- Float32 vectors: Default storage with a precision of about 7 decimal digits. Even Float64 values are stored with Float32 precision, leading to potential precision loss upon retrieval.
+- Float16 and BFloat16 vectors: Offer reduced precision and memory usage. Float16 is suitable for applications with limited bandwidth and storage, while BFloat16 balances range and efficiency, commonly used in deep learning to reduce computational requirements without significantly impacting accuracy.
+
+#### Still have questions?
+
+You can:
+
+- Check out [Milvus](https://github.com/milvus-io/milvus/issues) on GitHub. You're welcome to raise questions, share ideas, and help others.
+- Join our [Slack community](https://slack.milvus.io/) to find support and engage with our open-source community.
+

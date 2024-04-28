@@ -1,6 +1,9 @@
 
 ---
-title: BM25 嵌入模型
+id: embed-with-bm25.md
+order: 5
+summary: BM25 是一种用于信息检索的排名函数，用于估计文档对给定搜索查询的相关性。
+title: BM25
 ---
 
 # BM25 嵌入模型
@@ -94,4 +97,26 @@ Sparse dim: 21 (1, 21)
 queries = ["When was artificial intelligence founded", 
            "Where was Alan Turing born?"]
 
-query_embeddings = bm25_ef.encode_queries(queries
+query_embeddings = bm25_ef.encode_queries(queries)
+
+# Print embeddings
+print("Embeddings:", query_embeddings)
+# Since the output embeddings are in a 2D csr_array format, we convert them to a list for easier manipulation.
+print("Sparse dim:", bm25_ef.dim, list(query_embeddings)[0].shape)
+```
+
+The expected output is similar to the following:
+
+```python
+Embeddings:   (0, 0)        0.5108256237659907
+  (0, 1)        0.5108256237659907
+  (0, 2)        0.5108256237659907
+  (1, 6)        0.5108256237659907
+  (1, 7)        0.11554389108992644
+  (1, 14)        0.5108256237659907
+Sparse dim: 21 (1, 21)
+```
+
+__Notes:__
+
+When using __BM25EmbeddingFunction__, note that __encoding_queries()__ and __encoding_documents()__ operations cannot be interchanged mathematically. Therefore, there is no implemented __bm25_ef(texts)__ available.

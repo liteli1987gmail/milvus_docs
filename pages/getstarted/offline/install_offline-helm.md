@@ -16,7 +16,7 @@ title: 使用Helm图表离线安装Milvus
 
 1. 本地添加并更新Milvus Helm仓库。
 
-```
+```bash
 helm repo add milvus https://zilliztech.github.io/milvus-helm/
 helm repo update
 ```
@@ -25,13 +25,13 @@ helm repo update
 
 - 对于Milvus独立模式：
 
-```
+```bash
 helm template my-release --set cluster.enabled=false --set etcd.replicaCount=1 --set minio.mode=standalone --set pulsar.enabled=false milvus/milvus > milvus_manifest.yaml
 ```
 
 - 对于Milvus集群模式：
 
-```cluster
+```bash
 helm template my-release milvus/milvus > milvus_manifest.yaml
 ```
 
@@ -44,14 +44,14 @@ helm template -f values.yaml my-release milvus/milvus > milvus_manifest.yaml
 
 3. 下载需求和脚本文件。
 
-```
+```bash
 $ wget https://raw.githubusercontent.com/milvus-io/milvus/master/deployments/offline/requirements.txt
 $ wget https://raw.githubusercontent.com/milvus-io/milvus/master/deployments/offline/save_image.py
 ```
 
 4. 拉取并保存镜像。
 
-```
+```bash
 pip3 install -r requirements.txt
 python3 save_image.py --manifest milvus_manifest.yaml
 ```
@@ -62,7 +62,7 @@ python3 save_image.py --manifest milvus_manifest.yaml
 
 5. 加载镜像。
 
-```
+```bash
 cd images/for image in $(find . -type f -name "*.tar.gz") ; do gunzip -c $image | docker load; done
 ```
 
@@ -70,7 +70,7 @@ cd images/for image in $(find . -type f -name "*.tar.gz") ; do gunzip -c $image 
 
 将镜像传输到目标主机后，运行以下命令以离线方式安装Milvus。
 
-```
+```bash
 kubectl apply -f milvus_manifest.yaml
 ```
 
@@ -78,7 +78,7 @@ kubectl apply -f milvus_manifest.yaml
 
 要卸载Milvus，请运行以下命令。
 
-```
+```bash
 kubectl delete -f milvus_manifest.yaml
 ```
 
