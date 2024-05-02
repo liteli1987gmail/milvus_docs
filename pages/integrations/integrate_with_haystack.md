@@ -1,6 +1,7 @@
 ---
+id: integrate_with_haystack.md
+summary: This page goes over how to search for the best answer to questions using Milvus as the Vector Database and Haystack as the LLM framework.
 title: 构建使用 Milvus 和 Haystack 的检索增强生成系统
-
 ---
 
 # 构建使用 Milvus 和 Haystack 的检索增强生成系统
@@ -25,8 +26,8 @@ pip install milvus-haystack
 
 一旦您在 `localhost:19530` 上本地运行了 Milvus，您可以通过初始化一个 `MilvusDocumentStore` 来开始使用 Milvus 和 Haystack：
 
-
 ### 创建索引管道并索引一些文档
+
 ```python
 import os
 
@@ -62,10 +63,10 @@ indexing_pipeline.connect("embedder", "writer")
 indexing_pipeline.run({"converter": {"sources": file_paths}})
 
 print("文档数量：", document_store.count_documents())
-
 ```
 
 ### 创建检索管道并尝试一个查询
+
 ```python
 question = "如何安装 Haystack 和 Milvus 集成?"
 
@@ -82,6 +83,7 @@ for doc in retrieval_results["retriever"]["documents"]:
 ```
 
 ### 创建 RAG 管道并尝试一个查询
+
 ```python
 from haystack.utils import Secret
 from haystack.components.embedders import SentenceTransformersTextEmbedder
@@ -94,11 +96,23 @@ prompt_template = """根据提供的上下文回答以下查询。如果上下�
                      {% for doc in documents %}
                         {{ doc.content }}
                      {% endfor %}
-                     答案： 
+                     答案：
                   """
 
 rag_pipeline = Pipeline()
 rag_pipeline.add_component("text_embedder", SentenceTransformersTextEmbedder())
 rag_pipeline.add_component("retriever", MilvusEmbeddingRetriever(document_store=document_store, top_k=3))
 rag_pipeline.add_component("prompt_builder", PromptBuilder(template=prompt_template))
-rag_pipeline.add_component("generator", OpenAI
+rag_pipeline.add_component("generator", OpenAIGenerator(api_key=Secret.from_token(os.getenv("OPENAI_API_KEY")),generation_kwargs={"temperature": 0}))
+rag_pipeline.connect("text_embedder.embedding", "retriever.query_embedding")
+rag_pipeline.connect("retriever.documents", "prompt_builder.documents")
+rag_pipeline.connect("prompt_builder", "generator")
+
+results = rag_pipeline.run(
+    {
+        "text_embedder": {"text": question},
+        "prompt_builder": {"query": question},
+    }
+)
+print('RAG answer:', results["generator"]["replies"][0])
+```

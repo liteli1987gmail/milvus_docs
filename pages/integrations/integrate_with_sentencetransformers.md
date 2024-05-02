@@ -1,6 +1,7 @@
 ---
+id: integrate_with_sentencetransformers.md
+summary: This page discusses movie search using Milvus
 title: 使用 Milvus 和 SentenceTransformers 进行电影搜索
-
 ---
 
 # 使用 Milvus 和 SentenceTransformers 进行电影搜索
@@ -54,51 +55,51 @@ TOP_K = 3
 
 1. 使用提供的 URI 连接到 Milvus 实例。
 
-    ```python
-    from pymilvus import connections
+   ```python
+   from pymilvus import connections
 
-    # 连接到 Milvus 数据库
-    connections.connect(host=MILVUS_HOST, port=MILVUS_PORT)
-    ```
+   # 连接到 Milvus 数据库
+   connections.connect(host=MILVUS_HOST, port=MILVUS_PORT)
+   ```
 
 2. 如果集合已经存在，将其删除。
 
-    ```python
-    from pymilvus import utility
+   ```python
+   from pymilvus import utility
 
-    # 删除同名的任何之前的集合
-    if utility.has_collection(COLLECTION_NAME):
-        utility.drop_collection(COLLECTION_NAME)
-    ```
+   # 删除同名的任何之前的集合
+   if utility.has_collection(COLLECTION_NAME):
+       utility.drop_collection(COLLECTION_NAME)
+   ```
 
 3. 创建包含电影 ID、标题和情节文本嵌入的集合。
 
-    ```python
-    from pymilvus import FieldSchema, CollectionSchema, DataType, Collection
+   ```python
+   from pymilvus import FieldSchema, CollectionSchema, DataType, Collection
 
 
-    # 创建包含 ID、标题和嵌入的集合。
-    fields = [
-        FieldSchema(name='id', dtype=DataType.INT64, is_primary=True, auto_id=True),
-        FieldSchema(name='title', dtype=DataType.VARCHAR, max_length=200),  # VARCHARS 需要最大长度，因此在这个示例中设置为 200 个字符
-        FieldSchema(name='embedding', dtype=DataType.FLOAT_VECTOR, dim=DIMENSION)
-    ]
-    schema = CollectionSchema(fields=fields)
-    collection = Collection(name=COLLECTION_NAME, schema=schema)
-    ```
+   # 创建包含 ID、标题和嵌入的集合。
+   fields = [
+       FieldSchema(name='id', dtype=DataType.INT64, is_primary=True, auto_id=True),
+       FieldSchema(name='title', dtype=DataType.VARCHAR, max_length=200),  # VARCHARS 需要最大长度，因此在这个示例中设置为 200 个字符
+       FieldSchema(name='embedding', dtype=DataType.FLOAT_VECTOR, dim=DIMENSION)
+   ]
+   schema = CollectionSchema(fields=fields)
+   collection = Collection(name=COLLECTION_NAME, schema=schema)
+   ```
 
 4. 在新创建的集合上创建索引并将其加载到内存中。
 
-    ```python
-    # 为集合创建一个 IVF_FLAT 索引。
-    index_params = {
-        'metric_type':'L2',
-        'index_type':"IVF_FLAT",
-        'params':{'nlist': 1536}
-    }
-    collection.create_index(field_name="embedding", index_params=index_params)
-    collection.load()
-    ```
+   ```python
+   # 为集合创建一个 IVF_FLAT 索引。
+   index_params = {
+       'metric_type':'L2',
+       'index_type':"IVF_FLAT",
+       'params':{'nlist': 1536}
+   }
+   collection.create_index(field_name="embedding", index_params=index_params)
+   collection.load()
+   ```
 
 完成这些步骤后，集合就准备好插入和搜索了。添加的任何数据都将自动被索引，并且可以立即用于搜索。如果数据非常新鲜，搜索可能会变慢，因为在索引过程中将使用暴力搜索。
 
@@ -130,7 +131,7 @@ def csv_load(file):
 
 # 使用 OpenAI 从文本中提取嵌入
 def embed_insert(data):
-    embeds = transformer.encode(data[1]) 
+    embeds = transformer.encode(data[1])
     ins = [
             data[0],
             [x for x in embeds]
@@ -147,4 +148,5 @@ for title, plot in csv_load('./movies/plots.csv'):
     if count <= COUNT:
         data_batch[0].append(title)
         data_batch[1].append(plot)
-        
+
+```

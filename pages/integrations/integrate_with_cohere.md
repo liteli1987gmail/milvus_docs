@@ -1,6 +1,7 @@
 ---
+id: integrate_with_cohere.md
+summary: This page goes over how to search for the best answer to questions using Milvus as the Vector Database and Hugging Face as the embedding system.
 title: 使用 Milvus 和 Cohere 进行问答
-
 ---
 
 # 使用 Milvus 和 Cohere 进行问答
@@ -118,4 +119,140 @@ collection.load()
 # 设置 co:here 客户端。
 cohere_client = cohere.Client(COHERE_API_KEY)
 
-# 使用 Cohere 从问题
+# Extract embeddings from questions using Cohere
+def embed(texts, input_type):
+    res = cohere_client.embed(texts, model='embed-multilingual-v3.0', input_type=input_type)
+    return res.embeddings
+
+# Insert each question, answer, and qustion embedding
+total = pandas.DataFrame()
+for batch in tqdm(np.array_split(simplified_records, (COUNT/BATCH_SIZE) + 1)):
+    questions = batch['question'].tolist()
+    embeddings = embed(questions, "search_document")
+
+    data = [
+        {
+            'original_question': x,
+            'answer': batch['answer'].tolist()[i],
+            'original_question_embedding': embeddings[i]
+        } for i, x in enumerate(questions)
+    ]
+
+    collection.insert(data=data)
+
+time.sleep(10)
+```
+
+## Ask questions
+
+Once all the data is inserted into the Milvus collection, we can ask the system questions by taking our question phrase, embedding it with Cohere, and searching with the collection.
+
+<div class="alert note">
+
+Searches performed on data right after insertion might be a little slower as searching unindexed data is done in a brute-force manner. Once the new data is automatically indexed, the searches will speed up.
+
+</div>
+
+```python
+# Search the cluster for an answer to a question text
+def search(text, top_k = 5):
+
+    # AUTOINDEX does not require any search params
+    search_params = {}
+
+    results = collection.search(
+        data = embed([text], "search_query"),  # Embeded the question
+        anns_field='original_question_embedding',
+        param=search_params,
+        limit = top_k,  # Limit to top_k results per search
+        output_fields=['original_question', 'answer']  # Include the original question and answer in the result
+    )
+
+    distances = results[0].distances
+    entities = [ x.entity.to_dict()['entity'] for x in results[0] ]
+
+    ret = [ {
+        "answer": x[1]["answer"],
+        "distance": x[0],
+        "original_question": x[1]['original_question']
+    } for x in zip(distances, entities)]
+
+    return ret
+
+# Ask these questions
+search_questions = ['What kills bacteria?', 'What\'s the biggest dog?']
+
+# Print out the results in order of [answer, similarity score, original question]
+
+ret = [ { "question": x, "candidates": search(x) } for x in search_questions ]
+```
+
+The output should be similar to the following:
+
+```shell
+# Output
+#
+# [
+#     {
+#         "question": "What kills bacteria?",
+#         "candidates": [
+#             {
+#                 "answer": "farming",
+#                 "distance": 0.6261022090911865,
+#                 "original_question": "What makes bacteria resistant to antibiotic treatment?"
+#             },
+#             {
+#                 "answer": "Phage therapy",
+#                 "distance": 0.6093736886978149,
+#                 "original_question": "What has been talked about to treat resistant bacteria?"
+#             },
+#             {
+#                 "answer": "oral contraceptives",
+#                 "distance": 0.5902313590049744,
+#                 "original_question": "In therapy, what does the antibacterial interact with?"
+#             },
+#             {
+#                 "answer": "slowing down the multiplication of bacteria or killing the bacteria",
+#                 "distance": 0.5874154567718506,
+#                 "original_question": "How do antibiotics work?"
+#             },
+#             {
+#                 "answer": "in intensive farming to promote animal growth",
+#                 "distance": 0.5667208433151245,
+#                 "original_question": "Besides in treating human disease where else are antibiotics used?"
+#             }
+#         ]
+#     },
+#     {
+#         "question": "What's the biggest dog?",
+#         "candidates": [
+#             {
+#                 "answer": "English Mastiff",
+#                 "distance": 0.7875324487686157,
+#                 "original_question": "What breed was the largest dog known to have lived?"
+#             },
+#             {
+#                 "answer": "forest elephants",
+#                 "distance": 0.5886962413787842,
+#                 "original_question": "What large animals reside in the national park?"
+#             },
+#             {
+#                 "answer": "Rico",
+#                 "distance": 0.5634892582893372,
+#                 "original_question": "What is the name of the dog that could ID over 200 things?"
+#             },
+#             {
+#                 "answer": "Iditarod Trail Sled Dog Race",
+#                 "distance": 0.546872615814209,
+#                 "original_question": "Which dog-sled race in Alaska is the most famous?"
+#             },
+#             {
+#                 "answer": "part of the family",
+#                 "distance": 0.5387814044952393,
+#                 "original_question": "Most people today describe their dogs as what?"
+#             }
+#         ]
+#     }
+# ]
+
+```

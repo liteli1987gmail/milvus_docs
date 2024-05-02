@@ -1,6 +1,7 @@
 ---
+id: integrate_with_llamaindex.md
+summary: This page goes over how to search for the best answer to questions using Milvus as the Vector Database and LlamaIndex as the embedding system.
 title: 利用 Milvus 和 LlamaIndex 构建检索增强生成（RAG）系统
-
 ---
 
 # 利用 Milvus 和 LlamaIndex 构建检索增强生成（RAG）系统
@@ -36,7 +37,7 @@ openai.api_key = "sk-**************************"
 !wget 'https://raw.githubusercontent.com/run-llama/llama_index/main/docs/examples/data/paul_graham/paul_graham_essay.txt' -O 'data/paul_graham/paul_graham_essay.txt'
 ```
 
-示例数据是 Paul Graham 的一篇名为 *What I Worked On* 的单篇散文。在您可以将其用于 RAG 系统之前，您需要使其对 LlamaIndex 可访问。
+示例数据是 Paul Graham 的一篇名为 _What I Worked On_ 的单篇散文。在您可以将其用于 RAG 系统之前，您需要使其对 LlamaIndex 可访问。
 
 ```python
 from llamaindex import SimpleDirectoryReader
@@ -81,7 +82,68 @@ index = VectorStoreIndex.from_documents(
 
 </div>
 
-
 ## 查询数据
 
-现在您已经将文档存储在 Milvus 集合
+Now that you have our document stored in the Milvus collection, you can ask questions against the collection. The collection will use its data as the knowledge base for ChatGPT to generate answers.
+
+```python
+query_engine = index.as_query_engine()
+response = query_engine.query("What did the author learn?")
+print(textwrap.fill(str(response), 100))
+
+# The author learned several things during their time at Interleaf. They learned that it's better for technology companies to be run by product people than sales people, that code edited by too many people leads to bugs, that cheap office space is not worth it if it's depressing, that planned meetings are inferior to corridor conversations, that big bureaucratic customers can be a dangerous source of money, and that there's not much overlap between conventional office hours and the optimal time for hacking. However, the most important thing the author learned is that the low end eats the high end, meaning that it's advantageous to be the "entry level" option because if you're not, someone else will be and will surpass you.
+```
+
+Let's give it another try.
+
+```python
+response = query_engine.query("What was a hard moment for the author?")
+print(textwrap.fill(str(response), 100))
+
+# The author experienced a difficult moment when their mother had a stroke and was put in a nursing home. The stroke destroyed her balance, and the author and their sister were determined to help her get out of the nursing home and back to her house.
+```
+
+## Notes on overwriting the Milvus collection
+
+If you want to reuse an existing Milvus collection and overwrite its data, you can use the `overwrite` argument when creating the `MilvusVectorStore` object.
+
+```python
+vector_store = MilvusVectorStore(
+    dim=1536,
+    overwrite=True,
+)
+```
+
+In such a case, when you run the following code, all the data in the Milvus collection will be erased and replaced with the new data.
+
+```python
+storage_context = StorageContext.from_defaults(vector_store=vector_store)
+index = VectorStoreIndex.from_documents(
+    [Document(text="The number that is being searched for is ten.")],
+    storage_context=storage_context
+)
+```
+
+Now when you ask the same questions again, you will receive different answers.
+
+If you want to append additional data to an existing Milvus collection, you should not use the `overwrite` argument or set it to `False` when creating the `MilvusVectorStore` object.
+
+```python
+vector_store = MilvusVectorStore(
+    dim=1536,
+    overwrite=False,
+)
+```
+
+In such a case, when you run the following code, the new data will be appended to the existing data in the Milvus collection.
+
+```python
+storage_context = StorageContext.from_defaults(vector_store=vector_store)
+index = VectorStoreIndex.from_documents(
+    documents, storage_context=storage_context
+)
+```
+
+## Conclusion
+
+In this article, we demonstrated how to build a (RAG) system using LlamaIndex and Milvus. We used the OpenAI as the LLM backend and prepared the example data for the RAG system. We also demonstrated how to query the data and generate new text using the ChatGPT model.
