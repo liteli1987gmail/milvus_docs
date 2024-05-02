@@ -1,5 +1,5 @@
 ---
-id: 使用-splade进行嵌入.md
+id: embed-with-splade.md
 order: 6
 summary: 本文描述了如何使用SpladeEmbeddingFunction来使用SPLADE模型对文档和查询进行编码。
 title: SPLADE 嵌入模型
@@ -22,7 +22,7 @@ splade_ef = model.sparse.SpladeEmbeddingFunction(
 )
 ```
 
-__参数__：
+参数：
 
 - __model_name__ (_string_)
 

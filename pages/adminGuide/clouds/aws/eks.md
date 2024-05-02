@@ -125,15 +125,16 @@ summary: 学习如何在 EKS 上部署 Milvus 集群
     # }    
     ```
 
-3. (Optional) Attach the policy to your AWS User/Role if you want to accesskey instead of IAM AssumeRole.
-  
+
+3. （可选）如果您想使用访问密钥而不是 IAM AssumeRole，可以将策略附加到您的 AWS 用户/角色。
+
       ```shell
       aws iam attach-user-policy --user-name <your-user-name> --policy-arn "arn:aws:iam::<your-iam-account-id>:policy/MilvusS3ReadWrite"
       ```
 
-### Create an Amazon EKS Cluster
+### 创建 Amazon EKS 集群
 
-1. Prepare a cluster configuration file as follows and name it `eks_cluster.yaml`. Do replace `MilvusS3ReadWrite_Policy_ARN` with the one listed in the command output above.
+1. 准备一个如下的集群配置文件，并将其命名为 `eks_cluster.yaml`。请将 `MilvusS3ReadWrite_Policy_ARN` 替换为上述命令输出中列出的 ARN。
 
     ```yaml
     apiVersion: eksctl.io/v1alpha5
@@ -181,19 +182,20 @@ summary: 学习如何在 EKS 上部署 Milvus 集群
       wellKnownPolicies:
         ebsCSIController: true
     ```
-2. Run the following command to create an EKS cluster.
+
+2. 运行以下命令以创建 EKS 集群。
 
     ```bash
     eksctl create cluster -f eks_cluster.yaml
     ```
 
-3. Get the kubeconfig file.
+3. 获取 kubeconfig 文件。
 
     ```bash
     aws eks update-kubeconfig --region 'us-east-2' --name 'milvus-eks-cluster'
     ```
 
-4. Verify the EKS cluster.
+4. 验证 EKS 集群。
 
     ```bash
     kubectl cluster-info
@@ -201,9 +203,9 @@ summary: 学习如何在 EKS 上部署 Milvus 集群
     kubectl get nodes -A -o wide
     ```
 
-## Create a StorageClass
+## 创建 StorageClass
 
-Milvus uses `etcd` as meta storage and needs to rely on the `gp3` StorageClass to create and manage PVC.
+Milvus 使用 `etcd` 作为元存储，并且需要依赖 `gp3` StorageClass 来创建和管理 PVC。
 
 ```yaml
 cat <<EOF | kubectl apply -f -
@@ -220,22 +222,22 @@ parameters:
 EOF
 ```
 
-Set the original gp2 StorageClass to non-default.
+将原始的 gp2 StorageClass 设置为非默认。
 
 ```shell
 kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
 ```
 
-### Install AWS LoadBalancer Controller
+### 安装 AWS LoadBalancer Controller
 
-1. Add Helm chars repo.
+1. 添加 Helm charts 仓库。
 
     ```shell
-    helm repo add eks https://aws.github.io/eks-charts
+    helm repo add eks https://aws.github.io/eks-charts 
     helm repo update
     ```
 
-2. Install the AWS Load Balancer Controller.
+2. 安装 AWS Load Balancer Controller。
 
     ```shell
     helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
@@ -245,30 +247,30 @@ kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.ku
       --set serviceAccount.name=aws-load-balancer-controller 
     ```
 
-3. Verify the installation
+3. 验证安装
 
     ```shell
     kubectl get deployment -n kube-system aws-load-balancer-controller
     ```
 
-## Deploy Milvus
+## 部署 Milvus
 
-In this guide, we will use Milvus Helm Charts to deploy a Milvus cluster. You can find the charts [here](https://github.com/zilliztech/milvus-helm/tree/master/charts/milvus).
+在本指南中，我们将使用 Milvus Helm Charts 部署 Milvus 集群。您可以在 [这里](https://github.com/zilliztech/milvus-helm/tree/master/charts/milvus) 找到 charts。
 
-1. Add Milvus Helm Chart repo.
+1. 添加 Milvus Helm Chart 仓库。
 
     ```bash
-    helm repo add milvus https://zilliztech.github.io/milvus-helm/
+    helm repo add milvus https://zilliztech.github.io/milvus-helm/ 
     helm repo update
     ```
 
-2. Prepare the Milvus configuration file `milvus.yaml`, and replace `<bucket-name>` with the name of the bucket created above.
+2. 准备 Milvus 配置文件 `milvus.yaml`，并用上面创建的存储桶名称替换 `<bucket-name>`。
 
     <div class="alert note">
-    
-    - To configure HA for your Milvus, refer to [this calculator](https://milvus.io/tools/sizing/) for more information. You can download the related configurations directly from the calculator, and you should remove MinIO-related configurations.
-    - To implement multi-replica deployments of coordinators, set `xxCoordinator.activeStandby.enabled` to `true`.
-    - To access your Milvus from the Internet, change `service.beta.kubernetes.io/aws-load-balancer-scheme` from `internal` to `internet-facing`. 
+
+    - 要为您的 Milvus 配置 HA，请参考 [此计算器](https://milvus.io/tools/sizing/) 获取更多信息。您可以直接从计算器下载相关配置，并应删除 MinIO 相关的配置。
+    - 要实现协调器的多副本部署，将 `xxCoordinator.activeStandby.enabled` 设置为 `true`。
+    - 要从互联网访问您的 Milvus，将 `service.beta.kubernetes.io/aws-load-balancer-scheme` 从 `internal` 更改为 `internet-facing`。
 
     </div>
 
@@ -292,8 +294,8 @@ In this guide, we will use Milvus Helm Charts to deploy a Milvus cluster. You ca
     minio:
       enabled: false
 
-    # Use the milvus-s3-access-sa to access milvus buckets instead of using ak/sk.  
-    # Details see https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html
+    # 使用 milvus-s3-access-sa 访问 milvus 存储桶，而不是使用 ak/sk。
+    # 详细信息见 https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html 
     externalS3:
       enabled: true
       host: "s3.us-east-2.amazonaws.com"
@@ -304,7 +306,7 @@ In this guide, we will use Milvus Helm Charts to deploy a Milvus cluster. You ca
       cloudProvider: "aws"
       iamEndpoint: ""
 
-    # HA Configurations
+    # HA 配置
     rootCoordinator:
       replicas: 2
       activeStandby:
@@ -349,13 +351,13 @@ In this guide, we will use Milvus Helm Charts to deploy a Milvus cluster. You ca
           memory: 2Gi  
     ```
 
-3. Install Milvus.
+3. 安装 Milvus。
 
     ```shell
     helm install milvus-demo milvus/milvus -n milvus -f milvus.yaml
     ```
 
-4. Wait until all pods are `Running`.
+4. 等待所有 pod 变为 `Running` 状态。
 
     ```shell
     kubectl get pods -n milvus
@@ -363,31 +365,31 @@ In this guide, we will use Milvus Helm Charts to deploy a Milvus cluster. You ca
 
     <div class="alert note">
 
-    Helm does not support scheduling the order of service creation. It is normal that business pods to restart for one or two times before `etcd` and `pulsar` are up in the early stage.
+    Helm 不支持调度服务创建的顺序。在早期阶段，当 `etcd` 和 `pulsar` 启动时，业务 pod 重启一两次是正常的。
 
     </div>
 
-5. Get Milvus service address.
+5. 获取 Milvus 服务地址。
 
     ```shell
     kubectl get svc -n milvus
     ```
 
-## Verify the installation
+## 验证安装
 
-You can follow the simple guide below to verify the installation. For more details, refer to [this example](https://milvus.io/docs/example_code.md).
+您可以按照下面的简单指南验证安装。有关更多详细信息，请参阅 [这个示例](https://milvus.io/docs/example_code.md)。
 
-1. Download the example code.
+1. 下载示例代码。
 
     ```shell
-    wget https://raw.githubusercontent.com/milvus-io/pymilvus/master/examples/hello_milvus.py
+    wget https://raw.githubusercontent.com/milvus-io/pymilvus/master/examples/hello_milvus.py 
     ```
 
-2. Change the `host` argument in the example code to the Milvus service address above.
+2. 将示例代码中的 `host` 参数更改为上面的 Milvus 服务地址。
 
     <div class="alert note">
 
-    If You have set `service.beta.kubernetes.io/aws-load-balancer-scheme` to `internal` in `milvus.yaml`. You should run the example code within the EKS VPC.
+    如果您在 `milvus.yaml` 中将 `service.beta.kubernetes.io/aws-load-balancer-scheme` 设置为 `internal`，则应在 EKS VPC 内运行示例代码。
 
     </div>
 
@@ -397,13 +399,13 @@ You can follow the simple guide below to verify the installation. For more detai
     ...
     ```
 
-3. Run the example code.
+3. 运行示例代码。
 
     ```shell
     python3 hello_milvus.py
     ```
 
-    The output should be similar to the following:
+    输出应类似于以下内容：
 
     ```shell
     === start connecting to Milvus     ===
@@ -461,29 +463,28 @@ You can follow the simple guide below to verify the installation. For more detai
 
     query after delete by expr=`pk in ["0" , "1"]` -> result: []
 
-
     === Drop collection `hello_milvus` ===
     ```
 
-## Clean-up works
+## 清理工作
 
-In case you need to restore the environment by uninstalling Milvus, destroying the EKS cluster, and deleting the AWS S3 buckets and related IAM policies.
+如果需要通过卸载 Milvus、销毁 EKS 集群以及删除 AWS S3 存储桶和相关 IAM 策略来恢复环境。
 
-1. Uninstall Milvus.
+1. 卸载 Milvus。
 
     ```shell
     helm uninstall milvus-demo -n milvus
     ```
 
-2. Destroy the EKS cluster.
+2. 销毁 EKS 集群。
 
     ```shell
     eksctl delete cluster --name milvus-eks-cluster
     ```
 
-3. Delete the AWS S3 bucket and related IAM policies.
+3. 删除 AWS S3 存储桶和相关 IAM 策略。
 
-    You should replace the bucket name and policy ARN with your own.
+    您应该将存储桶名称和策略 ARN 替换为您自己的。
 
     ```shell
     aws s3api delete-bucket --bucket milvus-bucket-039dd013c0712f085d60e21f --region us-east-2
@@ -491,9 +492,9 @@ In case you need to restore the environment by uninstalling Milvus, destroying t
     aws iam delete-policy --policy-arn 'arn:aws:iam::12345678901:policy/MilvusS3ReadWrite'
     ```
 
-## What's next
+## 接下来做什么
 
-If you want to learn how to deploy Milvus on other clouds:
-- [Deploy a Milvus Cluster on EC2](aws.md)
-- [Deploy Milvus Cluster on GCP with Kubernetes](gcp.md)
-- [Guide to Deploying Milvus on Microsoft Azure With Kubernetes](azure.md)
+如果您想学习如何在其他云上部署 Milvus：
+- [在 EC2 上部署 Milvus 集群](aws.md)
+- [在 GCP 上使用 Kubernetes 部署 Milvus 集群](gcp.md)
+- [在 Microsoft Azure 上使用 Kubernetes 部署 Milvus 的指南](azure.md)

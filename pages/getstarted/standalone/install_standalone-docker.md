@@ -1,5 +1,4 @@
 ---
-
 id: 安装独立Docker版Milvus.md
 label: Docker
 related_key: Docker
@@ -35,12 +34,14 @@ bash standalone_embed.sh start
 - 停止Milvus
 
 要停止Milvus独立版，请运行：
-```
+
+```bash
 bash standalone_embed.sh stop
 ```
 
 在停止Milvus后删除数据，请运行：
-```
+
+```bash
 bash standalone_embed.sh delete
 ```
 

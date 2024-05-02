@@ -140,38 +140,35 @@ externalS3:
   secretKey: "<secret-key>" 
 ```
 
-## Deploy Milvus
+## 部署 Milvus
 
-Now the Kubernetes cluster is ready. Let's deploy Milvus right now. 
+现在 Kubernetes 集群已经准备好了。让我们立即部署 Milvus。
 
 ```bash
-helm repo add milvus https://zilliztech.github.io/milvus-helm/
+helm repo add milvus https://zilliztech.github.io/milvus-helm/ 
 helm repo update
 helm install -f values.yaml my-release milvus/milvus
 ```
 
-In the preceding commands, we add the repo of Milvus Helm charts locally and update the repo to fetch the latest charts. Then we install a Milvus instance and name it **my-release**. 
+在上述命令中，我们本地添加了 Milvus Helm charts 的仓库，并更新了仓库以获取最新的 charts。然后我们安装了一个 Milvus 实例，并将其命名为 **my-release**。
 
-Notice the config `service.type` value, which indicates that we would like to expose the Milvus instance through a Layer-4 load balancer. 
+请注意配置 `service.type` 的值，这表明我们希望通过第 4 层负载均衡器公开 Milvus 实例。
 
+## 验证部署
 
-## Verify the deployment
-
-Once all pods are running, run the following command to get the external IP address.
+一旦所有 pod 都在运行，运行以下命令以获取外部 IP 地址。
 
 ```bash
 kubectl get services|grep my-release-milvus|grep LoadBalancer|awk '{print $4}'
 ```
 
-
 ## Hello Milvus
 
-Please refer to [Hello Milvus](https://milvus.io/docs/example_code.md), change the host value to external IP address, then run the code.
+请参阅 [Hello Milvus](https://milvus.io/docs/example_code.md)，将主机值更改为外部 IP 地址，然后运行代码。
 
+## 接下来做什么
 
-## What's next
-
-If you want to learn how to deploy Milvus on other clouds:
-- [Deploy a Milvus Cluster on EC2](aws.md)
-- [Deploy a Milvus Cluster on EKS](eks.md)
-- [Deploy a Milvus Cluster on GCP](gcp.md)
+如果您想学习如何在其他云上部署 Milvus：
+- [在 EC2 上部署 Milvus 集群](aws.md)
+- [在 EKS 上部署 Milvus 集群](eks.md)
+- [在 GCP 上部署 Milvus 集群](gcp.md)

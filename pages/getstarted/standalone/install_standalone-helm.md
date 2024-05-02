@@ -32,7 +32,7 @@ title: 使用Kubernetes安装Milvus独立部署
 
 安装minikube后，运行以下命令以启动K8s集群。
 
-```
+```bash
 $ minikube start
 ```
 
@@ -42,11 +42,11 @@ $ minikube start
 
 minikube安装时依赖于默认的StorageClass。通过运行以下命令检查依赖性。其他安装方法需要手动配置StorageClass。有关更多信息，请参见[更改默认StorageClass](https://kubernetes.io/docs/tasks/administer-cluster/change-default-storage-class/)。
 
-```
+```bash
 $ kubectl get sc
 ```
 
-```
+```bash
 NAME                  PROVISIONER                  RECLAIMPOLICY    VOLUMEBIINDINGMODE    ALLOWVOLUMEEXPANSION     AGE
 standard (default)    k8s.io/minikube-hostpath     Delete           Immediate             false                    3m36s
 ```
@@ -80,7 +80,7 @@ $ helm repo add milvus https://zilliztech.github.io/milvus-helm/
 
 Milvus Helm Charts仓库在 `https://milvus-io.github.io/milvus-helm/` 已被归档，您可以通过以下方式从 `https://zilliztech.github.io/milvus-helm/` 获取进一步更新：
 
-```shell
+```bash
 helm repo add zilliztech https://zilliztech.github.io/milvus-helm
 helm repo update
 # 升级现有的helm release
@@ -117,4 +117,91 @@ $ helm install my-release milvus/milvus --set cluster.enabled=false --set etcd.r
 $ kubectl get pods
 ```
 
-Mil
+
+After Milvus starts, the `READY` column displays `1/1` for all pods.
+
+```text
+NAME                                               READY   STATUS      RESTARTS   AGE
+my-release-etcd-0                                  1/1     Running     0          30s
+my-release-milvus-standalone-54c4f88cb9-f84pf      1/1     Running     0          30s
+my-release-minio-5564fbbddc-mz7f5                  1/1     Running     0          30s
+```
+
+## Connect to Milvus
+
+Verify which local port the Milvus server is listening on. Replace the pod name with your own.
+
+```bash
+$ kubectl get pod my-release-milvus-standalone-54c4f88cb9-f84pf --template='{{(index (index .spec.containers 0).ports 0).containerPort}}{{"\n"}}'
+```
+
+```
+19530
+```
+
+Open a new terminal and run the following command to forward a local port to the port that Milvus uses. Optionally, omit the designated port and use `:19530` to let `kubectl` allocate a local port for you so that you don't have to manage port conflicts.
+
+```bash
+$ kubectl port-forward service/my-release-milvus 27017:19530
+```
+
+```
+Forwarding from 127.0.0.1:27017 -> 19530
+```
+
+By default, ports forwarded by kubectl only listen on localhost. Use flag `address` if you want Milvus server to listen on selected IP or all addresses.
+
+```bash
+$ kubectl port-forward --address 0.0.0.0 service/my-release-milvus 27017:19530
+Forwarding from 0.0.0.0:27017 -> 19530
+```
+
+## Uninstall Milvus
+
+Run the following command to uninstall Milvus.
+
+```bash
+$ helm uninstall my-release
+```
+
+## Stop the K8s cluster
+
+Stop the cluster and the minikube VM without deleting the resources you created.
+
+```bash
+$ minikube stop
+```
+
+Run `minikube start` to restart the cluster.
+
+## Delete the K8s cluster
+
+<div class="alert note">
+Run <code>$ kubectl logs `pod_name`</code> to get the <code>stderr</code> log of the pod before deleting the cluster and all resources.
+</div>
+
+Delete the cluster, the minikube VM, and all resources you created including persistent volumes.
+
+```bash
+$ minikube delete
+```
+
+## What's next
+
+Having installed Milvus, you can:
+
+- Check [Hello Milvus](quickstart.md) to run an example code with different SDKs to see what Milvus can do.
+
+- Learn the basic operations of Milvus:
+  - [Manage Databases](manage_databases.md)
+  - [Manage Collections](manage-collections.md)
+  - [Manage Partitions](manage-partitions.md)
+  - [Insert, Upsert & Delete](insert-update-delete.md)
+  - [Single-Vector Search](single-vector-search.md)
+  - [Multi-Vector Search](multi-vector-search.md)
+
+- [Upgrade Milvus Using Helm Chart](upgrade_milvus_standalone-helm.md).
+- Explore [Milvus Backup](milvus_backup_overview.md), an open-source tool for Milvus data backups.
+- Explore [Birdwatcher](birdwatcher_overview.md), an open-source tool for debugging Milvus and dynamic configuration updates.
+- Explore [Attu](https://milvus.io/docs/attu.md), an open-source GUI tool for intuitive Milvus management.
+- [Monitor Milvus with Prometheus](monitor.md).

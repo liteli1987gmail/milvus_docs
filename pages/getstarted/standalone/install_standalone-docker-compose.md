@@ -23,7 +23,7 @@ title：使用Docker Compose安装Milvus独立模式
 
 [下载](https://github.com/milvus-io/milvus/releases/download/v{{var.milvus_release_tag}}/milvus-standalone-docker-compose.yml) `milvus-standalone-docker-compose.yml` 并手动将其保存为 `docker-compose.yml`，或使用以下命令。
 
-```shell
+```bash
 $ wget https://github.com/milvus-io/milvus/releases/download/v{{var.milvus_release_tag}}/milvus-standalone-docker-compose.yml -O docker-compose.yml
 ```
 
@@ -78,12 +78,14 @@ $ docker port milvus-standalone 19530/tcp
 ## 停止Milvus
 
 要停止Milvus独立模式，运行：
-```
+
+```bash
 sudo docker compose down
 ```
 
 停止Milvus后要删除数据，运行：
-```
+
+```bash
 sudo rm -rf  volumes
 ```
 

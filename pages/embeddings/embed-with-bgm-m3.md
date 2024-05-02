@@ -1,4 +1,7 @@
 ---
+id: embed-with-bgm-m3.md
+order: 4
+summary: BGE-M3 因其多语言性、多功能性和多粒度性而得名.
 title: BGE M3 嵌入模型
 ---
 
@@ -6,27 +9,27 @@ title: BGE M3 嵌入模型
 
 [BGE-M3](https://arxiv.org/abs/2402.03216)因其多语言性、多功能性和多粒度性而得名。BGE-M3能够支持超过100种语言，在多语言和跨语言检索任务中树立了新的基准。它独特的能力在于能够在单一框架内执行密集检索、多向量检索和稀疏检索，使其成为各种信息检索（IR）应用的理想选择。
 
-Milvus通过__BGEM3EmbeddingFunction__类与BGE M3模型集成。这个类处理嵌入的计算，并将它们以与Milvus兼容的格式返回，用于索引和搜索。要使用此功能，必须安装FlagEmbedding。
+Milvus 通过 __BGEM3EmbeddingFunction__ 类与 BGE M3 模型集成。这个类处理嵌入的计算，并将它们以与Milvus兼容的格式返回，用于索引和搜索。要使用此功能，必须安装 FlagEmbedding。
 
-要安装必要的FlagEmbedding Python包，请使用以下命令：
+要安装必要的 FlagEmbedding Python 包，请使用以下命令：
 
 ```python
 pip install FlagEmbedding
 ```
 
-然后，实例化__BGEM3EmbeddingFunction__：
+然后，实例化 __BGEM3EmbeddingFunction__：
 
 ```python
 from pymilvus.model.hybrid import BGEM3EmbeddingFunction
 
 bge_m3_ef = BGEM3EmbeddingFunction(
-    模型名称='BAAI/bge-m3', # 指定模型名称
-    设备='cpu', # 指定要使用的设备，例如'cpu'或'cuda:0'
-    使用_fp16=False # 指定是否使用16位浮点精度（fp16）。如果设备是'cpu'，则设置为`False`。
+    model_name='BAAI/bge-m3', # 指定模型名称
+    device='cpu', # 指定要使用的设备，例如'cpu'或'cuda:0'
+    use_fp16=False # 指定是否使用16位浮点精度（fp16）。如果设备是'cpu'，则设置为`False`。
 )
 ```
 
-__参数__：
+参数：
 
 - __model_name__ (_string_)
 
@@ -40,7 +43,7 @@ __参数__：
 
     是否使用16位浮点精度（fp16）。当设备为cpu时，指定为False。
 
-要为文档创建嵌入，请使用__encode_documents()__方法：
+要为文档创建嵌入，请使用 __encode_documents()__ 方法：
 
 ```python
 docs = [
@@ -71,7 +74,7 @@ print("稀疏文档维度：", bge_m3_ef.dim["sparse"], list(docs_embeddings["sp
 稀疏文档维度：250002 (1, 250002)
 ```
 
-要为查询创建嵌入，请使用__encode_queries()__方法：
+要为查询创建嵌入，请使用 __encode_queries()__ 方法：
 
 ```python
 queries = ["人工智能是什么时候创立的",
@@ -89,5 +92,12 @@ print("稀疏查询维度：", bge_m3_ef.dim["sparse"], list(query_embeddings["s
 
 预期输出类似于以下内容：
 
+
 ```python
-嵌入：{'dense': [array([-0.02024024, -0.01514386,  0.0238
+嵌入: {'dense': [array([-0.02024024, -0.01514386,  0.02380808, ...,  0.00234648,
+       -0.00264978, -0.04317448], dtype=float32), array([ 0.00648045, -0.0081542 , -0.02717067, ..., -0.00380103,
+        0.04200587, -0.01274772], dtype=float32)], 'sparse': <2x250002 sparse array of type '<class 'numpy.float32'>'
+        with 14 stored elements in Compressed Sparse Row format>}
+密集查询维度: 1024 (1024,)
+稀疏查询维度: 250002 (1, 250002)
+```

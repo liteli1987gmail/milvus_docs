@@ -91,21 +91,21 @@ kubectl annotate service my-release-milvus \
 
 </div>
 
-### 准备TLS证书
+### 准备 TLS 证书
 
-TLS需要证书才能工作。有两种创建证书的方法，即自管理的和Google管理的。
+TLS 需要证书才能工作。有两种创建证书的方法，即自管理的和 Google 管理的。
 
-This guide uses **my-release.milvus.io** as the domain name to access our Milvus service. 
+本指南使用 **my-release.milvus.io** 作为域名来访问我们的 Milvus 服务。
 
-#### Create self-managed certificates
+#### 创建自管理证书
 
-Run the following commands to create a certificate.
+运行以下命令来创建一个证书。
 
 ```bash
-# Generates a tls.key.
+# 生成 tls.key。
 openssl genrsa -out tls.key 2048
 
-# Creates a certificate and signs it with the preceding key.
+# 创建一个证书并用前面的密钥签名。
 openssl req -new -key tls.key -out tls.csr \
     -subj "/CN=my-release.milvus.io"
 
@@ -113,15 +113,15 @@ openssl x509 -req -days 99999 -in tls.csr -signkey tls.key \
     -out tls.crt
 ```
 
-Then create a secret in your GKE cluster with these files for later use.
+然后在您的 GKE 集群中使用这些文件创建一个密钥，以便稍后使用。
 
 ```bash
 kubectl create secret tls my-release-milvus-tls --cert=./tls.crt --key=./tls.key
 ```
 
-#### Create Google-managed certificates
+#### 创建 Google 管理的证书
 
-The following snippet is a ManagedCertificate setting. Save it as `managed-crt.yaml` for later use.
+以下是一个 ManagedCertificate 设置的片段。将其保存为 `managed-crt.yaml` 以供稍后使用。
 
 ```yaml
 apiVersion: networking.gke.io/v1
@@ -133,19 +133,19 @@ spec:
     - my-release.milvus.io
 ```
 
-Create a managed certificate by applying the setting to your GKE cluster as follows:
+通过将设置应用到您的 GKE 集群，如下创建一个管理证书：
 
 ```bash
 kubectl apply -f ./managed-crt.yaml
 ```
 
-This could last for a while. You can check the progress by running
+这可能需要一段时间。您可以通过运行以下命令来检查进度：
 
 ```bash
 kubectl get -f ./managed-crt.yaml -o yaml -w
 ```
 
-The output should be similar to the following:
+输出应该类似于以下内容：
 
 ```shell
 status:
@@ -156,13 +156,13 @@ status:
     status: Provisioning
 ```
 
-Once **certificateStatus** turns to **Active**, you are ready to set up the load balancer.
+一旦 **certificateStatus** 变为 **Active**，您就准备好设置负载均衡器了。
 
-### Create an Ingress to generate a Layer-7 Load Balancer
+### 创建一个入口来生成第 7 层负载均衡器
 
-Create a YAML file with one of the following snippets.
+使用以下代码段之一创建一个 YAML 文件。
 
-- Using self-managed certificates
+- 使用自管理证书
 
   ```yaml
   apiVersion: networking.k8s.io/v1
@@ -187,7 +187,8 @@ Create a YAML file with one of the following snippets.
               port:
               number: 19530
   ```
-- Using Google-managed certificates
+
+- 使用 Google 管理的证书
 
   ```yaml
   apiVersion: networking.k8s.io/v1
@@ -211,19 +212,19 @@ Create a YAML file with one of the following snippets.
               number: 19530
   ```
 
-Then you can create the Ingress by applying the file to your GKE cluster.
+然后，您可以通过将文件应用到您的 GKE 集群来创建入口。
 
 ```bash
 kubectl apply -f ingress.yaml
 ```
 
-Now, wait for Google to set up the Layer-7 load balancer. You can check the progress by running
+现在，等待 Google 设置第 7 层负载均衡器。您可以通过运行以下命令来检查进度：
 
 ```bash
 kubectl  -f ./config/samples/ingress.yaml get -w
 ```
 
-The output should be similar to the following:
+输出应该类似于以下内容：
 
 ```shell
 NAME                CLASS    HOSTS                  ADDRESS   PORTS   AGE
@@ -231,13 +232,13 @@ my-release-milvus   <none>   my-release.milvus.io             80      4s
 my-release-milvus   <none>   my-release.milvus.io   34.111.144.65   80, 443   41m
 ```
 
-Once an IP address is displayed in the **ADDRESS** field, the Layer-7 load balancer is ready to use. Both port 80 and port 443 are displayed in the above output. Remember, you should always use port 443 for your own good.
+一旦在 **ADDRESS** 字段中显示了 IP 地址，第 7 层负载均衡器就准备好使用了。上述输出中显示了端口 80 和端口 443。请记住，出于您自己的考虑，您应该始终使用端口 443。
 
-## Verify the connection through the Layer-7 load balancer
+## 通过第 7 层负载均衡器验证连接
 
-This guide uses PyMilvus to verify the connection to the Milvus service behind the Layer-7 load balancer we have just created. For detailed steps, [read this](example_code).
+本指南使用 PyMilvus 来验证我们刚刚创建的第 7 层负载均衡器后面的 Milvus 服务的连接。有关详细步骤，[请阅读此文](example_code)。
 
-Notice that connection parameters vary with the way you choose to manage the certificates in [Prepare TLS certificates](#prepare-tls-certificates).
+请注意，连接参数会根据您选择的在 [准备 TLS 证书](#prepare-tls-certificates) 中管理证书的方式而变化。
 
 ```python
 from pymilvus import (
@@ -249,16 +250,16 @@ from pymilvus import (
     Collection,
 )
 
-# For self-managed certificates, you need to include the certificate in the parameters used to set up the connection.
+# 对于自管理证书，您需要在用于设置连接的参数中包含证书。
 connections.connect("default", host="34.111.144.65", port="443", server_pem_path="tls.crt", secure=True, server_name="my-release.milvus.io")
 
-# For Google-managed certificates, there is not need to do so.
+# 对于 Google 管理的证书，无需这样做。
 connections.connect("default", host="34.111.144.65", port="443", secure=True, server_name="my-release.milvus.io")
 ```
 
 <div class="alert note">
 
-- The IP address and port number in **host** and **port** should match those listed at the end of [Create an Ingress to generate a Layer-7 Load Balancer](#create-an-ingress-to-generate-a-layer-7-load-balancer).
-- If you have set up a DNS record to map domain name to the host IP address, replace the IP address in **host** with the domain name and omit **server_name**.
+- **host** 和 **port** 中的 IP 地址和端口号应与 [创建一个入口来生成第 7 层负载均衡器](#create-an-ingress-to-generate-a-layer-7-load-balancer) 最后列出的相匹配。
+- 如果您已经设置了 DNS 记录将域名映射到主机 IP 地址，请将 **host** 中的 IP 地址替换为域名，并省略 **server_name**。
 
 </div>

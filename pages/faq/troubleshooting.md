@@ -67,5 +67,3 @@ kubectl kubectl scale sts <etcd-sts> --replicas=1
 
 - 加入我们的 [Slack 频道](https://join.slack.com/t/milvusio/shared_invite/enQtNzY1OTQ0NDI3NjMzLWNmYmM1NmNjOTQ5MGI5NDhhYmRhMGU5M2NhNzhhMDMzY2MzNDdlYjM5ODQ5MmE3ODFlYzU3YjJkNmVlNDQ2ZTk) 并向 Milvus 团队寻求支持。
 - 在 GitHub 上 [提交问题](https://github.com/milvus-io/milvus/issues/new/choose)，包括有关您问题的详细信息。
-
----
