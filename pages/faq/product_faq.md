@@ -80,103 +80,90 @@ etcd存储Milvus模块的元数据；MinIO存储实体。
 - 如果在搜索之前未能加载集合或分区，Milvus将返回错误。
 
 #### 在插入向量后可以创建索引吗？
+对如果之前通过“create_index（）”为集合建立了索引，Milvus将自动为随后插入的向量建立索引。但是，Milvus不会建立索引，直到新插入的矢量填充整个线段，并且新创建的索引文件与前一个文件分离。
 
-Yes. If an index has been built for a collection by `create_index()` before, Milvus will automatically build an index for subsequently inserted vectors. However, Milvus does not build an index until the newly inserted vectors fill an entire segment and the newly created index file is separate from the previous one.
+#### FLAT和IVF_FLAT索引有何不同？
 
-#### How are the FLAT and IVF_FLAT indexes different?
+IVF_FLAT索引将向量空间划分为列表簇。在默认列表值16384处，Milvus比较目标向量和所有16384个簇的质心之间的距离，以返回最接近的簇。Milvus然后比较目标向量和所选聚类中的向量之间的距离，以获得最近的向量。与IVF_FLAT不同，FLAT直接比较目标矢量与其他矢量之间的距离。
+当向量总数近似等于nlist时，IVF_FLAT和FLAT之间在计算要求和搜索性能方面几乎没有距离。然而，当矢量的数量超过nlist两倍或更多时，IVF_FLAT开始显示出性能优势。
+有关详细信息，请参见[Vector Index]（Index.md）。
 
-The IVF_FLAT index divides vector space into list clusters. At the default list value of 16,384, Milvus compares the distances between the target vector and the centroids of all 16,384 clusters to return probe nearest clusters. Milvus then compares the distances between the target vector and the vectors in the selected clusters to get the nearest vectors. Unlike IVF_FLAT, FLAT directly compares the distances between the target vector and every other vector.
+#### Milvus如何刷新数据？
+当插入的数据加载到消息队列时，Milvus返回成功。但是，数据尚未刷新到磁盘。然后Milvus的数据节点将消息队列中的数据作为增量日志写入持久存储。如果调用了“flush（）”，数据节点将被迫立即将消息队列中的所有数据写入持久存储。
 
-When the total number of vectors approximately equals nlist, there is little distance between IVF_FLAT and FLAT in terms of calculation requirements and search performance. However, as the number of vectors exceeds nlist by a factor of two or more, IVF_FLAT begins to demonstrate performance advantages.
+#### 什么是归一化？为什么需要归一化？
 
-See [Vector Index](index.md) for more information.
+归一化是指将向量转换为其范数等于1的过程。如果使用内积来计算向量相似度，则必须对向量进行归一化。归一化后，内积等于余弦相似度。
+参见[维基百科](https://en.wikipedia.org/wiki/Unit_vector)了解更多信息。
 
-#### How does Milvus flush data?
+#### 为什么欧几里得距离（L2）和内积（IP）返回不同的结果？
 
-Milvus returns success when inserted data are loaded to the message queue. However, the data are not yet flushed to the disk. Then Milvus' data node writes the data in the message queue to persistent storage as incremental logs. If `flush()` is called, the data node is forced to write all data in the message queue to persistent storage immediately.
+对于归一化向量，欧几里得距离（L2）在数学上等价于内积（IP）。如果这些相似性度量返回不同的结果，请检查向量是否已归一化
 
-#### What is normalization? Why is normalization needed?
+#### Milvus中集合和分区的总数有限制吗？
 
-Normalization refers to the process of converting a vector so that its norm equals 1. If inner product is used to calculate vector similarity, vectors must be normalized. After normalization, inner product equals cosine similarity.
-
-See [Wikipedia](https://en.wikipedia.org/wiki/Unit_vector) for more information.
-
-#### Why do Euclidean distance (L2) and inner product (IP) return different results?
-
-For normalized vectors, Euclidean distance (L2) is mathematically equivalent to inner product (IP). If these similarity metrics return different results, check to see if your vectors are normalized
-
-#### Is there a limit to the total number of collections and partitions in Milvus?
-
-Yes. You can create up to 65,535 collections in a Milvus instance. When calculating the number of existing collections, Milvus counts all collections with shards and partitions in them.
-
-For example, let's assume you have already created 100 collections, with 2 shards and 4 partitions in 60 of them and with 1 shard and 12 partitions in the rest 40 collections. The current number of collections can be calculated as:
-
+对在一个Milvus实例中，最多可以创建65535个集合。在计算现有集合的数量时，Milvus会统计所有包含碎片和分区的集合。
+例如，假设您已经创建了100个集合，其中60个集合中有2个碎片和4个分区，其余40个集合中则有1个碎片和12个分区。当前集合的数量可以计算为：
 ```
 60 * 2 * 4 + 40 * 1 * 12 = 960
 ```
+#### 为什么在搜索“topk”矢量时得到的矢量少于k个？
 
-#### Why do I get fewer than k vectors when searching for `topk` vectors?
+在Milvus支持的指标中，IVF_FLAT和IVF_SQ8实现了k均值聚类方法。数据空间被划分为“nlist”簇，并且插入的向量被分配到这些簇。Milvus然后选择“nprobe”最近的聚类，并比较目标向量与所选聚类中所有向量之间的距离，以返回最终结果。
+如果“nlist”和“topk”较大，而nprobe较小，则nprobe簇中的矢量数量可能小于“k”。因此，当您搜索“topk”最近的矢量时，返回的矢量数量小于“k”。
+若要避免这种情况，请尝试将“nprobe”设置为更大、“nlist”和“k”设置为更小。
+有关详细信息，请参见[Vector Index]（Index.md）。
 
-Among the indexes that Milvus supports, IVF_FLAT and IVF_SQ8 implement the k-means clustering method. A data space is divided into `nlist` clusters and the inserted vectors are distributed to these clusters. Milvus then selects the `nprobe` nearest clusters and compares the distances between the target vector and all vectors in the selected clusters to return the final results.
+#### Milvus支持的最大矢量维数是多少？
 
-If `nlist` and `topk` are large and nprobe is small, the number of vectors in the nprobe clusters may be less than `k`. Therefore, when you search for the `topk` nearest vectors, the number of returned vectors is less than `k`.
+Milvus可以管理多达32768个维度的矢量。
 
-To avoid this, try setting `nprobe` larger and `nlist` and `k` smaller.
+#### Milvus支持Apple M1 CPU吗？
 
-See [Vector Index](index.md) for more information.
+当前的Milvus版本不支持Apple M1 CPU。
 
-#### What is the maximum vector dimension supported in Milvus?
+#### Milvus在主键字段上支持哪些数据类型？
+在当前版本中，Milvus同时支持INT64和字符串。
 
-Milvus can manage vectors with up to 32,768 dimensions.
+#### Milvus可扩展吗？
 
-#### Does Milvus support Apple M1 CPU?
+对您可以通过Kubernetes上的Helm Chart部署具有多个节点的Milvus集群。有关更多说明，请参阅[Scale-Guide]（scaleout.md）。
 
-Current Milvus release does not support Apple M1 CPU.
+#### 查询在内存中执行吗？什么是增量数据和历史数据？
 
-#### What data types does Milvus support on the primary key field?
+对当查询请求到来时，Milvus通过将增量数据和历史数据加载到内存中来搜索它们。增量数据位于增长段中，在达到存储引擎中要持久化的阈值之前，这些增长段被缓冲在内存中，而历史数据则来自存储在对象存储中的密封段。增量数据和历史数据共同构成了要搜索的整个数据集。
 
-In current release, Milvus supports both INT64 and string.
+#### Milvus可用于并发搜索吗？
 
-#### Is Milvus scalable?
+对对于同一集合上的查询，Milvus同时搜索增量数据和历史数据。但是，对不同集合的查询是按顺序进行的。尽管历史数据可能是一个极其庞大的数据集，但对历史数据的搜索相对更耗时，而且基本上是串行执行的。
 
-Yes. You can deploy Milvus cluster with multiple nodes via Helm Chart on Kubernetes. Refer to [Scale Guide](scaleout.md) for more instruction.
+#### 为什么删除相应的集合后，MinIO中的数据仍保留？
 
-#### Does the query perform in memory? What are incremental data and historical data?
+MinIO中的数据被设计为保留一段时间，以方便数据回滚。
 
-Yes. When a query request comes, Milvus searches both incremental data and historical data by loading them into memory. Incremental data are in the growing segments, which are buffered in memory before they reach the threshold to be persisted in storage engine, while historical data are from the sealed segments that are stored in the object storage. Incremental data and historical data together constitute the whole dataset to search.
+#### Milvus支持Pulsar以外的消息引擎吗？
 
-#### Is Milvus available for concurrent search?
+对Milvus 2.1.0支持Kafka。
 
-Yes. For queries on the same collection, Milvus concurrently searches the incremental and historical data. However, queries on different collections are conducted in series. Whereas the historical data can be an extremely huge dataset, searches on the historical data are relatively more time-consuming and essentially performed in series.
+#### 搜索和查询之间有什么区别？
 
-#### Why does the data in MinIO remain after the corresponding collection is dropped?
+在Milvus中，向量相似度搜索基于相似度计算和向量索引加速来检索向量。与向量相似性搜索不同，向量查询通过基于布尔表达式的标量过滤来检索向量。布尔表达式对标量字段或主键字段进行筛选，并检索与筛选匹配的所有结果。在查询中，既不涉及相似性度量也不涉及向量索引。
 
-Data in MinIO is designed to remain for a certain period of time for the convenience of data rollback.
+#### 为什么在Milvus中浮点矢量值的精度为小数点后7位？
 
-#### Does Milvus support message engines other than Pulsar?
+Milvus支持将矢量存储为Float32数组。Float32值的精度为小数点后7位。即使Float64值为1.3476964684980388，Milvus也会将其存储为1.347696。因此，当您从Milvus检索这样一个向量时，Float64值的精度会丢失。
 
-Yes. Kafka is supported in Milvus 2.1.0.
+#### Milvus如何处理矢量数据类型和精度？
 
-#### What's the difference between a search and a query?
+Milvus支持二进制、浮点32、浮点16和BFloat16矢量类型。
 
-In Milvus, a vector similarity search retrieves vectors based on similarity calculation and vector index acceleration. Unlike a vector similarity search, a vector query retrieves vectors via scalar filtering based on a boolean expression. The boolean expression filters on scalar fields or the primary key field, and it retrieves all results that match the filters. In a query, neither similarity metrics nor vector index is involved.
+- 二进制矢量：将二进制数据存储为0和1的序列，用于图像处理和信息检索。
+- 浮点32矢量：默认存储，精度约为小数点后7位。即使Float64值也是以Float32精度存储的，这会导致检索时潜在的精度损失。
+- Floa16和BFloat16矢量：降低精度和内存使用率。Floa16适用于带宽和存储有限的应用程序，而BFloat16平衡了范围和效率，通常用于深度学习，以减少计算需求，而不会显著影响准确性。
 
-#### Why does a float vector value have a precision of 7 decimal digits in Milvus?
+#### 还有问题吗？
 
-Milvus supports storing vectors as Float32 arrays. A Float32 value has a precision of 7 decimal digits. Even with a Float64 value, such as 1.3476964684980388, Milvus stores it as 1.347696. Therefore, when you retrieve such a vector from Milvus, the precision of the Float64 value is lost.
+你可以：
 
-#### How does Milvus handle vector data types and precision?
-
-Milvus supports Binary, Float32, Float16, and BFloat16 vector types.
-
-- Binary vectors: Store binary data as sequences of 0s and 1s, used in image processing and information retrieval.
-- Float32 vectors: Default storage with a precision of about 7 decimal digits. Even Float64 values are stored with Float32 precision, leading to potential precision loss upon retrieval.
-- Float16 and BFloat16 vectors: Offer reduced precision and memory usage. Float16 is suitable for applications with limited bandwidth and storage, while BFloat16 balances range and efficiency, commonly used in deep learning to reduce computational requirements without significantly impacting accuracy.
-
-#### Still have questions?
-
-You can:
-
-- Check out [Milvus](https://github.com/milvus-io/milvus/issues) on GitHub. You're welcome to raise questions, share ideas, and help others.
-- Join our [Slack community](https://slack.milvus.io/) to find support and engage with our open-source community.
-
+- 查看[Milvus](https://github.com/milvus-io/milvus/issues)在GitHub上。欢迎您提出问题、分享想法并帮助他人。
+- 加入我们的[Slack社区](https://slack.milvus.io/)寻求支持并与我们的开源社区互动。

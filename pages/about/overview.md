@@ -61,78 +61,77 @@ Milvus 支持的大多数向量索引类型使用近似最近邻搜索（ANNS）
 有关更多详细信息，请参见 [向量索引](index.md)。
 
 ### 相似性度量
+在 Milvus 中，相似度量用于衡量向量之间的相似性。选择一个好的距离度量有助于显著提高分类和聚类性能。根据输入数据的形式，选择特定的相似性度量以获得最佳性能。
 
-In Milvus, similarity metrics are used to measure similarities among vectors. Choosing a good distance metric helps improve classification and clustering performance significantly. Depending on the input data forms, specific similarity metric is selected for optimal performance.
+广泛用于浮点嵌入的指标包括
 
-The metrics that are widely used for floating point embeddings include:
+- 欧氏距离（L2）**： 该指标通常用于计算机视觉（CV）领域。
+- 内积（IP）**： 该指标通常用于自然语言处理 (NLP) 领域。
+  广泛用于二进制嵌入的度量包括
+- 哈明**： 自然语言处理（NLP）领域通常使用该度量。
+- **贾卡**： 该度量通常用于分子相似性搜索领域。
 
-- **Euclidean distance (L2)**: This metric is generally used in the field of computer vision (CV).
-- **Inner product (IP)**: This metric is generally used in the field of natural language processing (NLP).
-  The metrics that are widely used for binary embeddings include:
-- **Hamming**: This metric is generally used in the field of natural language processing (NLP).
-- **Jaccard**: This metric is generally used in the field of molecular similarity search.
+更多信息，请参阅 [Similarity Metrics](metric.md#floating)。
 
-See [Similarity Metrics](metric.md#floating) for more information.
+## 应用实例
 
-## Example applications
+Milvus 可以让您轻松地将相似性搜索添加到您的应用程序中。Milvus 的应用实例包括
 
-Milvus makes it easy to add similarity search to your applications. Example applications of Milvus include:
+- 图像相似性搜索](image_similarity_search.md)： 可搜索图像，并从海量数据库中即时返回最相似的图像。
+- 视频相似性搜索](video_similarity_search.md)： 通过将关键帧转换成向量，然后将结果输入 Milvus，可以近乎实时地搜索和推荐数十亿部视频。
+- 音频相似性搜索](audio_similarity_search.md)： 快速查询海量音频数据，如语音、音乐、音效和表面相似声音。
+- 推荐系统](recommend_system.md)： 根据用户行为和需求推荐信息或产品。
+- 问题解答系统](question_answering_system.md)： 自动回答用户问题的交互式数字 QA 聊天机器人。
+- DNA 序列分类](dna_sequence_classification.md)： 通过比较相似的 DNA 序列，在几毫秒内准确地整理出基因的分类。
+- 文本搜索引擎](text_search_engine.md)： 通过比较文本数据库中的关键词，帮助用户找到所需的信息。
 
-- [Image similarity search](image_similarity_search.md): Images made searchable and instantaneously return the most similar images from a massive database.
-- [Video similarity search](video_similarity_search.md): By converting key frames into vectors and then feeding the results into Milvus, billions of videos can be searched and recommended in near real-time.
-- [Audio similarity search](audio_similarity_search.md): Quickly query massive volumes of audio data such as speech, music, sound effects, and surface similar sounds.
-- [Recommender system](recommendation_system.md): Recommend information or products based on user behaviors and needs.
-- [Question answering system](question_answering_system.md): Interactive digital QA chatbot that automatically answers user questions.
-- [DNA sequence classification](dna_sequence_classification.md): Accurately sort out the classification of a gene in milliseconds by comparing similar DNA sequences.
-- [Text search engine](text_search_engine.md): Help users find the information they are looking for by comparing keywords against a database of texts.
+有关 Milvus 的更多应用场景，请参阅 [Milvus tutorials](https://github.com/milvus-io/bootcamp/tree/master/solutions) 和 [Milvus Adopters](milvus_adopters.md) 。
 
-See [Milvus tutorials](https://github.com/milvus-io/bootcamp/tree/master/solutions) and [Milvus Adopters](milvus_adopters.md) for more Milvus application scenarios.
+## Milvus 是如何设计的？
 
-## How is Milvus designed?
+作为云原生向量数据库，Milvus 在设计上将存储和计算分离开来。为了增强弹性和灵活性，Milvus 的所有组件都是无状态的。
 
-As a cloud-native vector database, Milvus separates storage and computation by design. To enhance elasticity and flexibility, all components in Milvus are stateless.
+系统分为四个层次：
 
-The system breaks down into four levels:
+- 访问层： 访问层由一组无状态代理组成，是系统的前端层，也是用户的终端。
+- 协调服务： 协调服务将任务分配给工作节点，是系统的大脑。
+- 工作节点： 工作节点就像手和脚，是哑执行器，遵循协调器服务的指令，执行用户触发的 DML/DDL 命令。
+- 存储器： 存储是系统的骨骼，负责数据持久性。它包括元存储、日志代理和对象存储。
 
-- Access layer: The access layer is composed of a group of stateless proxies and serves as the front layer of the system and endpoint to users.
-- Coordinator service: The coordinator service assigns tasks to the worker nodes and functions as the system's brain.
-- Worker nodes: The worker nodes function as arms and legs and are dumb executors that follow instructions from the coordinator service and execute user-triggered DML/DDL commands.
-- Storage: Storage is the bone of the system, and is responsible for data persistence. It comprises meta storage, log broker, and object storage.
+更多信息，请参阅[架构概述](architecture_overview.md)。
 
-For more information, see [Architecture Overview](architecture_overview.md).
+![架构](/public/assets/milvus_architecture.png "Milvus architecure.")
 
-![Architecture](../../../assets/milvus_architecture.png "Milvus architecure.")
+## 开发工具
 
-## Developer tools
+Milvus 由丰富的 API 和工具支持，以促进 DevOps。
 
-Milvus is supported by rich APIs and tools to facilitate DevOps.
+### API 访问
 
-### API access
-
-Milvus has client libraries wrapped on top of the Milvus API that can be used to insert, delete, and query data programmatically from application code:
+Milvus 在 Milvus API 的基础上封装了客户端库，可用于从应用程序代码中以编程方式插入、删除和查询数据：
 
 - [PyMilvus](https://github.com/milvus-io/pymilvus)
 - [Node.js SDK](https://github.com/milvus-io/milvus-sdk-node)
 - [Go SDK](https://github.com/milvus-io/milvus-sdk-go)
 - [Java SDK](https://github.com/milvus-io/milvus-sdk-java)
 
-We are working on enabling more new client libraries. If you would like to contribute, go to the corresponding repository of [the Milvus Project](https://github.com/milvus-io).
+我们正在努力启用更多新的客户端库。如果您想贡献自己的力量，请访问[Milvus 项目](https://github.com/milvus-io) 的相应资源库。
 
-### Milvus ecosystem tools
+### Milvus 生态系统工具
 
-The Milvus ecosystem provides helpful tools including:
+Milvus 生态系统提供的有用工具包括
 
 - [Milvus CLI](https://github.com/zilliztech/milvus_cli#overview)
-- [Attu](https://github.com/zilliztech/attu), a graphical management system for Milvus.
-- [MilvusDM](migrate_overview.md) (Milvus Data Migration), an open-source tool designed specifically for importing and exporting data with Milvus.
-- [Milvus sizing tool](https://milvus.io/tools/sizing/), which helps you estimate the raw file size, memory size, and stable disk size needed for a specified number of vectors with various index types.
+- [Milvus的图形管理系统 Attu](https://github.com/zilliztech/attu)。
+- [MilvusDM](migrate_overview.md)（Milvus 数据迁移），这是一个开源工具，专门用于使用 Milvus 导入和导出数据。
+- [Milvus sizing tool](https://milvus.io/tools/sizing/)，它可以帮助你估算指定数量、各种索引类型的向量所需的原始文件大小、内存大小和稳定磁盘大小。
 
-## What's next
+## 下一步
 
-- Get started with a 3-minute tutorial:
-  - [Hello Milvus](quickstart.md)
-- Install Milvus for your testing or production environment:
-  - [Installation Prerequisites](prerequisite-docker.md)
-  - [Install Milvus Standalone](install_standalone-docker.md)
-- If you're interested in diving deep into the design details of Milvus:
-  - Read about [Milvus architecture](architecture_overview.md)
+- 从 3 分钟教程开始：
+  - [你好，Milvus](quickstart.md)
+- 为你的测试或生产环境安装 Milvus：
+  - [安装前提条件](prerequisite-docker.md)
+  - [安装 Milvus 单机版](install_standalone-docker.md)
+- 如果你有兴趣深入了解 Milvus 的设计细节：
+  - [阅读Milvus 架构](architecture_overview.md)

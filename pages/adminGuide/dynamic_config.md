@@ -124,7 +124,7 @@ QueryCoord-1(ip:port) > configuration  # 列出节点的配置
 | dataCoord.segment.diskSegmentMaxSize                                    | 2048                |
 | dataCoord.compaction.enableAutoCompaction                               | TRUE                |
 
-## What's next
+## 下一步
 
-- Learn more about [System Configurations](system_configuration.md).
-- Learn how to configure Milvus installed using [Milvus Operator](configure_operator.md), [Helm charts](configure-helm.md), and [Docker](configure-docker.md).
+- 了解有关 [系统配置](system_configuration.md) 的更多信息。
+- 了解如何使用 [Milvus Operator](configure_operator.md)、[Helm 图表](configure-helm.md) 和 [Docker](configure-docker.md) 配置已安装的 Milvus。

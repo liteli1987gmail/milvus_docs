@@ -22,7 +22,7 @@ title: 使用Helm图表配置Milvus
 
 您可以直接下载`values.yaml`，或者使用以下命令：
 
-```
+```bash
 $ wget https://raw.githubusercontent.com/milvus-io/milvus-helm/master/charts/milvus/values.yaml
 ```
 
@@ -187,43 +187,43 @@ extraConfigFiles:
 
 </div>
 
-For other parameters specifically to Kubernetes installation, See [Milvus Helm Chart Configuration](https://github.com/milvus-io/milvus-helm/tree/master/charts/milvus#configuration).
+有关专门针对 Kubernetes 安装的其他参数，请参阅 [Milvus Helm Chart Configuration](https://github.com/milvus-io/milvus-helm/tree/master/charts/milvus#configuration)。
 
-### Start Milvus
+### 启动 Milvus
 
-Having finished modifying the configuration file, you can then start Milvus with the file.
+修改完配置文件后，就可以用文件启动 Milvus 了。
 
-```
+```bash
 $ helm upgrade my-release milvus/milvus -f values.yaml
 ```
 
-## Configure Milvus via command line
+## 通过命令行配置 Milvus
 
-Alternatively, you can upgrade Milvus configurations directly with the Helm command.
+另外，你也可以使用 Helm 命令直接升级 Milvus 配置。
 
-### Check the configurable parameters
+### 检查可配置参数
 
-Before upgrade, you can check the configurable parameters with Helm charts.
+升级前，你可以用 Helm 图表检查可配置参数。
 
-```
+```bash
 $ helm show values milvus/milvus
 ```
 
-### Start Milvus
+### 启动 Milvus
 
-Configure and start Milvus by adding `--values` or `--set` in the command for upgrade.
+在升级命令中添加 `--values` 或 `--set`，配置并启动 Milvus。
 
-```
-# For instance, upgrade the Milvus cluster with compaction disabled
+```bash
+# 例如，升级 Milvus 集群，禁用压缩功能
 $ helm upgrade my-release milvus/milvus --set dataCoord.enableCompaction=false
 ```
 
-## What's next
+## 下一步
 
-- If you want to learn how to monitor the Milvus services and create alerts:
+- 如果你想了解如何监控 Milvus 服务并创建警报：
 
-  - Learn [Monitor Milvus with Prometheus Operator on Kubernetes](monitor.md)
-  - Learn [Visualize Milvus Metrics in Grafana](visualize.md).
+  - 学习[在 Kubernetes 上使用 Prometheus 操作器监控 Milvus](monitor.md)
+  - 学习[在 Grafana 中可视化 Milvus 指标]visualize.md）。
 
-- If you are looking for instructions on how to allocate resources:
-  - [Allocate Resources on Kubernetes](allocate.md#standalone)
+- 如果你正在寻找如何分配资源的说明：
+  - [在 Kubernetes 上分配资源](allocate.md#standalone)

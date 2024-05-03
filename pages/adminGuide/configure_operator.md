@@ -109,7 +109,7 @@ kubectl apply -f milvuscluster_resource.yaml
 此外，在配置代理时，还有一个额外的字段称为 `serviceType`。此字段定义了 Milvus 在 K8s 集群中提供的服务类型。
 </div>
 
-To configure resources for a specific component, add the component name in the field under `spec.componets` first and then configure its private resources.
+要为特定组件配置资源，请先在 `spec.componets` 下的字段中添加组件名称，然后配置其私有资源。
 
 <div class="filter">
 <a href="#component">Components or dependencies</a> <a href="#purpose">Configuration purposes</a>
@@ -259,9 +259,9 @@ To configure resources for a specific component, add the component name in the f
 
 ### Example
 
-The example below configures the replicas and compute resources of proxy and datanode in the `milvuscluster.yaml` file.
+下面的示例在 `milvuscluster.yaml` 文件中配置了代理和数据节点的副本和计算资源。
 
-```
+```yaml
 apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -310,15 +310,15 @@ spec:
 This example configures not only global resources but also private compute resources for root coord and proxy. When using this configuration file to start a Milvus cluster, the private resources configurations will be applied to root coord and proxy, while the rest of the components will follow the global resource configuration.
 </div>
 
-Run the following command to apply new configurations:
+运行以下命令应用新配置：
 
-```
+```bash
 kubectl apply -f milvuscluster.yaml
 ```
 
-## What's next
+## 下一步是什么
 
-- Learn how to manage the following Milvus dependencies with Milvus Operator:
-  - [Configure Object Storage with Milvus Operator](object_storage_operator.md)
-  - [Configure Meta Storage with Milvus Operator](meta_storage_operator.md)
-  - [Configure Message Storage with Milvus Operator](message_storage_operator.md)
+- 了解如何使用 Milvus Operator 管理下列 Milvus 依赖项：
+  - [使用 Milvus Operator 配置对象存储](object_storage_operator.md)
+  - [使用 Milvus Operator 配置元存储](meta_storage_operator.md)
+  - [使用 Milvus 操作器配置消息存储](message_storage_operator.md)

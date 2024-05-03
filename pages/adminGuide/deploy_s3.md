@@ -94,9 +94,9 @@ helm install <你的发布名称> milvus/milvus -f values.yaml
 helm install <你的发布名称> milvus/milvus --set cluster.enabled=true  --set minio.enabled=false -set externalS3.enabled=true --set externalS3.host=<your_s3_endpoint> --set externalS3.port=<your_s3_port> --set externalS3.accessKey=<your_s3_access_key_id> --set externalS3.secretKey=<your_s3_secret_key> --set externalS3.bucketName=<your_bucket_name>
 ```
 
-## What's next
+## 下一步
 
-Learn how to configure other Milvus dependencies with Docker Compose or Helm:
+了解如何使用 Docker Compose 或 Helm 配置 Milvus 的其他依赖项：
 
-- [Configure Meta Storage with Docker Compose or Helm](deploy_etcd.md)
-- [Configure Message Storage with Docker Compose or Helm](deploy_pulsar.md)
+- [使用 Docker Compose 或 Helm 配置元存储](deploy_etcd.md)
+- [使用 Docker Compose 或 Helm 配置消息存储](deploy_pulsar.md)

@@ -136,15 +136,15 @@ users = utility.list_usernames(using='default')
 
 ## 限制
 
-1. Username must not be empty, and must not exceed 32 characters in length. It must start with a letter, and only contains underscores, letters, or numbers.
-2. Password must have at least 6 characters and must not exceed 256 characters in length.
+1. 用户名不得为空，长度不得超过 32 个字符。必须以字母开头，且只能包含下划线、字母或数字。
+2. 密码必须至少包含 6 个字符，长度不得超过 256 个字符。
 
-## What's next
+## 下一步
 
-- You might also want to learn how to:
-  - [Scale a Milvus cluster](scaleout.md)
-- If you are ready to deploy your cluster on clouds:
-  - Learn how to [Deploy Milvus on AWS with Terraform and Ansible](aws.md)
-  - Learn how to [Deploy Milvus on Amazon EKS with Terraform](eks.md)
-  - Learn how to [Deploy Milvus Cluster on GCP with Kubernetes](gcp.md)
-  - Learn how to [Deploy Milvus on Microsoft Azure With Kubernetes](azure.md)
+- 你可能还想了解如何
+  - 扩展 Milvus 集群]（scaleout.md
+- 如果你已经准备好在云上部署集群：
+  - 学习如何[使用 Terraform 和 Ansible 在 AWS 上部署 Milvus](aws.md)
+  - 了解如何[使用 Terraform 在亚马逊 EKS 上部署 Milvus](eks.md)
+  - 学习如何[使用 Kubernetes 在 GCP 上部署 Milvus 集群](gcp.md)
+  - 学习如何[使用 Kubernetes 在 Microsoft Azure 上部署 Milvus](azure.md)

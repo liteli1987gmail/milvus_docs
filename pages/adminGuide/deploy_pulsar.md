@@ -81,14 +81,14 @@ helm install <your_release_name> milvus/milvus -f values.yaml
 
 Milvus 独立模式使用 RocksMQ 作为默认消息存储。有关如何使用 Helm 配置 Milvus 的详细步骤，请参阅 [使用 Helm 图表配置 Milvus](configure-helm.md)。有关 RocksMQ 相关配置项的详细信息，请参阅 [RocksMQ 相关配置](configure_rocksmq.md).
 
-- If you start Milvus with RocksMQ and want to change its settings, you can run `helm upgrade -f ` with the changed settings in the following YAML file.
+- 如果你用 RocksMQ 启动 Milvus 并想更改它的设置，你可以运行 `helm upgrade -f ` 并在下面的 YAML 文件中修改设置。
 
-- If you have installed Milvus standalone using Helm with a message store other than RocksMQ and want to change it back to RocksMQ, run `helm upgrade -f ` with the following YAML file after you have flushed all collections and stopped Milvus.
+- 如果你使用 Helm 独立安装了 Milvus，并使用了 RocksMQ 以外的消息存储空间，但想把它改回 RocksMQ，可以在刷新所有集合并停止 Milvus 后，使用下面的 YAML 文件运行 `helm upgrade -f `。
 
 ```yaml
-extraConfigFiles:
-  user.yaml: |+
-    rocksmq:  # The path where the message is stored in rocksmq  # please adjust in embedded Milvus: /tmp/milvus/rdb_data  path: /var/lib/milvus/rdb_data  lrucacheratio: 0.06 # rocksdb cache memory ratio  rocksmqPageSize: 67108864 # 64 MB, 64 * 1024 * 1024 bytes, The size of each page of messages in rocksmq  retentionTimeInMinutes: 4320 # 3 days, 3 * 24 * 60 minutes, The retention time of the message in rocksmq.  retentionSizeInMB: 8192 # 8 GB, 8 * 1024 MB, The retention size of the message in rocksmq.  compactionInterval: 86400 # 1 day, trigger rocksdb compaction every day to remove deleted data  # compaction compression type, only support use 0,7.  # 0 means not compress, 7 will use zstd  # len of types means num of rocksdb level.  compressionTypes: [0, 0, 7, 7, 7]
+extraConfigFiles：
+user.yaml： |+
+rocksmq：  # 在 rocksmq 中存储信息的路径 # 请在嵌入式中调整 Milvus: /tmp/milvus/rdb_data path： /var/lib/milvus/rdb_data lrucacheratio: 0.06 # rocksdb 缓存内存比率 rocksmqPageSize: 67108864 # 64 MB，64 * 1024 * 1024 字节，rocksmq 中每页邮件的大小 retentionTimeInMinutes： retentionSizeInMB: 8192 # 8 GB, 8 * 1024 MB, 在 rocksmq 中保存邮件的大小。 compactionInterval: 86400 # 1 day, 每天触发 rocksdb 压缩，删除已删除的数据 # 压缩类型，只支持使用 0、7。 # 压缩类型： [0, 0, 7, 7, 7]
 ```
 
 <div class="alert warning">
@@ -97,19 +97,52 @@ Changing the message store is not recommended. If this is you want to do this, s
 
 </div>
 
-## Configure NATS with Helm
+## 使用 Helm 配置 NATS
 
-NATS is an experimental message store alternative to RocksMQ. For detailed steps on how to configure Milvus with Helm, refer to [Configure Milvus with Helm Charts](configure-helm.md). For details on RocksMQ-related configuration items, refer to [NATS-related configurations](configure_nats.md).
+NATS 是 RocksMQ 的实验性消息存储替代品。关于如何用 Helm 配置 Milvus 的详细步骤，请参阅 [Configure Milvus with Helm Charts](configure-helm.md)。有关 RocksMQ 相关配置项的详情，请参阅 [NATS 相关配置](configure_nats.md)。
 
-- If you start Milvus with NATS and want to change its settings, you can run `helm upgrade -f ` with the changed settings in the following YAML file.
+- 如果你用 NATS 启动 Milvus 并想更改它的设置，你可以运行 `helm upgrade -f ` 并在下面的 YAML 文件中修改设置。
 
-- If you have installed Milvus standalone with a message store other than NATS and want to change it to NATS, run `helm upgrade -f ` with the following YAML file after you flushed all collections and stopped Milvus.
+- 如果使用 NATS 以外的消息存储安装了 Milvus 单机版，并希望将其更改为 NATS，可在刷新所有集合并停止 Milvus 后，使用以下 YAML 文件运行 `helm upgrade -f `。
 
 ```yaml
 extraConfigFiles:
   user.yaml: |+
-    mq:  type: natsmqnatsmq:  # server side configuration for natsmq.  server:     # 4222 by default, Port for nats server listening.    port: 4222     # /var/lib/milvus/nats by default, directory to use for JetStream storage of nats.    storeDir: /var/lib/milvus/nats     # (B) 16GB by default, Maximum size of the 'file' storage.    maxFileStore: 17179869184     # (B) 8MB by default, Maximum number of bytes in a message payload.    maxPayload: 8388608     # (B) 64MB by default, Maximum number of bytes buffered for a connection applies to client connections.    maxPending: 67108864     # (√ms) 4s by default, waiting for initialization of natsmq finished.    initializeTimeout: 4000     monitor:      # false by default, If true enable debug log messages.      debug: false       # true by default, If set to false, log without timestamps.      logTime: true       # no log file by default, Log file path relative to.. .      logFile:       # (B) 0, unlimited by default, Size in bytes after the log file rolls over to a new one.      logSizeLimit: 0     retention:      # (min) 3 days by default, Maximum age of any message in the P-channel.      maxAge: 4320       # (B) None by default, How many bytes the single P-channel may contain. Removing oldest messages if the P-channel exceeds this size.      maxBytes:      # None by default, How many message the single P-channel may contain. Removing oldest messages if the P-channel exceeds this limit.          maxMsgs:
+    mq:
+      type: natsmq
+    natsmq:
+      # server side configuration for natsmq.
+      server: 
+        # 4222 by default, Port for nats server listening.
+        port: 4222 
+        # /var/lib/milvus/nats by default, directory to use for JetStream storage of nats.
+        storeDir: /var/lib/milvus/nats 
+        # (B) 16GB by default, Maximum size of the 'file' storage.
+        maxFileStore: 17179869184 
+        # (B) 8MB by default, Maximum number of bytes in a message payload.
+        maxPayload: 8388608 
+        # (B) 64MB by default, Maximum number of bytes buffered for a connection applies to client connections.
+        maxPending: 67108864 
+        # (√ms) 4s by default, waiting for initialization of natsmq finished.
+        initializeTimeout: 4000 
+        monitor:
+          # false by default, If true enable debug log messages.
+          debug: false 
+          # true by default, If set to false, log without timestamps.
+          logTime: true 
+          # no log file by default, Log file path relative to.. .
+          logFile: 
+          # (B) 0, unlimited by default, Size in bytes after the log file rolls over to a new one.
+          logSizeLimit: 0 
+        retention:
+          # (min) 3 days by default, Maximum age of any message in the P-channel.
+          maxAge: 4320 
+          # (B) None by default, How many bytes the single P-channel may contain. Removing oldest messages if the P-channel exceeds this size.
+          maxBytes:
+          # None by default, How many message the single P-channel may contain. Removing oldest messages if the P-channel exceeds this limit.    
+          maxMsgs: 
 ```
+
 
 <div class="alert note">
 

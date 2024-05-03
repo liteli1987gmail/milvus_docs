@@ -83,32 +83,30 @@ Milvus 需要你的 CPU 支持 SIMD 指令集：SSE4.2、AVX、AVX2 或 AVX512�
 ### 我在哪里可以找到 Milvus 生成的日志？
 
 默认情况下，Milvus 日志会打印到 stout（标准输出）和 stderr（标准错误），但我们强烈建议在生产环境中将日志重定向到持久卷。为此，更新 **milvus.yaml** 中的 `log.file.rootPath`。如果你使用 `milvus-helm` 图表部署 Milvus，你还需要通过 `--set log.persistence.enabled=true` 首先启用日志持久性。
+如果你没有更改配置，使用 kubectl logs <pod-name> 或 docker logs CONTAINER 也可以帮助你找到日志。
 
-If you didn't change the config, using kubectl logs <pod-name> or docker logs CONTAINER can also help you to find the log.
+#### 在插入数据之前，我可以为段创建索引吗？
 
+可以。但我们建议在为每个数据段创建索引之前，分批插入数据，每批不应超过 256 MB。
 
-#### Can I create index for a segment before inserting data into it?
+#### 能否在多个 Milvus 实例之间共享一个 etcd 实例？
 
-Yes, you can. But we recommend inserting data in batches, each of which should not exceed 256 MB, before indexing each segment.
+可以，您可以在多个 Milvus 实例之间共享一个 etcd 实例。为此，在启动每个 Milvus 实例之前，需要在每个实例的配置文件中将 `etcd.rootPath` 更改为单独的值。
 
-#### Can I share an etcd instance among multiple Milvus instances?
+#### 我可以在多个 Milvus 实例之间共享一个 Pulsar 实例吗？
 
-Yes, you can share an etcd instance among multiple Milvus instances. To do so, you need to change `etcd.rootPath` to a separate value for each Milvus instance in the configuration files of each before starting them.
+可以，你可以在多个 Milvus 实例之间共享一个 Pulsar 实例。为此，您可以
 
-#### Can I share a Pulsar instance among multiple Milvus instances?
+- 如果在 Pulsar 实例上启用了多租户，考虑为每个 Milvus 实例分配一个单独的租户或命名空间。为此，你需要在启动 Milvus 实例之前，将其配置文件中的 `pulsar.tenant` 或 `pulsar.namespace` 更改为每个实例的唯一值。
+- 如果不打算在 Pulsar 实例上启用多租户，请考虑在启动 Milvus 实例之前，将其配置文件中的 `msgChannel.chanNamePrefix.cluster` 更改为每个实例的唯一值。
 
-Yes, you can share a Pulsar instance among multiple Milvus instances. To do so, you can
+#### 我可以在多个 Milvus 实例之间共享 MinIO 实例吗？
 
-- If multi-tenancy is enabled on your Pulsar instance, consider allocating a separate tenant or namespace for each Milvus instance. To do so, you need to change `pulsar.tenant` or `pulsar.namespace` in the configuration files of your Milvus instances to a unique value for each before starting them.
-- If you do not plan on enabling multi-tenancy on your Pulsar instance, consider changing `msgChannel.chanNamePrefix.cluster` in the configuration files of your Milvus instances to a unique value for each before starting them.
+可以，您可以在多个 Milvus 实例之间共享一个 MinIO 实例。为此，您需要在启动每个 Milvus 实例之前，在每个实例的配置文件中将 `minio.rootPath` 更改为唯一值。
 
-#### Can I share a MinIO instance among multiple Milvus instances?
+#### 仍有问题？
 
-Yes, you can share a MinIO instance among multiple Milvus instances. To do so, you need to change `minio.rootPath` to a unique value for each Milvus instance in the configuration files of each before starting them.
+您可以
 
-#### Still have questions?
-
-You can:
-
-- Check out [Milvus](https://github.com/milvus-io/milvus/issues) on GitHub. Feel free to ask questions, share ideas, and help others.
-- Join our [Milvus Forum](https://discuss.milvus.io/) or [Slack Channel](https://join.slack.com/t/milvusio/shared_invite/enQtNzY1OTQ0NDI3NjMzLWNmYmM1NmNjOTQ5MGI5NDhhYmRhMGU5M2NhNzhhMDMzY2MzNDdlYjM5ODQ5MmE3ODFlYzU3YjJkNmVlNDQ2ZTk) to find support and engage with our open-source community.
+- 查看 GitHub 上的 [Milvus](https://github.com/milvus-io/milvus/issues)。随时提问、分享想法并帮助他人。
+- 加入我们的[Milvus 论坛](https://discuss.milvus.io/) 或[Slack 频道](https://join.slack.com/t/milvusio/shared_invite/enQtNzY1OTQ0NDI3NjMzLWNmYmM1NmNjOTQ5MGI5NDhhYmRhMGU5M2NhNzhhMDMzY2MzNDdlYjM5ODQ5MmE3ODFlYzU3YjJkNmVlNDQ2ZTk) 以寻求支持并参与我们的开源社区。

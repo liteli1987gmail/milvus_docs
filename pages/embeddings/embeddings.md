@@ -61,7 +61,7 @@ print("Embeddings:", embeddings)
 print("Dim:", ef.dim, embeddings[0].shape)
 ```
 
-The expected output is similar to the following:
+预期输出类似于下面的内容：
 
 ```python
 Embeddings: [array([-3.09392996e-02, -1.80662833e-02,  1.34775648e-02,  2.77156215e-02,
@@ -74,19 +74,16 @@ Embeddings: [array([-3.09392996e-02, -1.80662833e-02,  1.34775648e-02,  2.771562
 Dim: 384 (384,)
 ```
 
-## Example 2: Generate dense and sparse vectors in one call with BGE M3 model
+## 示例 2：使用 BGE M3 模型一次调用生成密集向量和稀疏向量
 
-In this example, we use [BGE M3](https://milvus.io/docs/embed-with-bgm-m3.md) hybrid model to embed text into both dense and sparse vectors and use them to retrieve relevant documents. The overall steps are as follows:
+在本例中，我们使用 [BGE M3](https://milvus.io/docs/embed-with-bgm-m3.md) 混合模型将文本嵌入密集向量和稀疏向量，并利用它们检索相关文档。总体步骤如下：
 
-1. Embed the text as dense and sparse vectors using BGE-M3 model;
+1. 使用 BGE-M3 模型将文本嵌入到密集向量和稀疏向量中； 
+2. 建立一个 Milvus 集合来存储密集向量和稀疏向量； 
+3. 将数据插入 Milvus； 
+4. 搜索并检查结果。
 
-1. Set up a Milvus collection to store the dense and sparse vectors;
-
-1. Insert the data to Milvus;
-
-1. Search and inspect the result.
-
-First, we need to install the necessary dependencies.
+首先，我们需要安装必要的依赖项。
 
 ```python
 from pymilvus.model.hybrid import BGEM3EmbeddingFunction
@@ -97,7 +94,7 @@ from pymilvus import (
 )
 ```
 
-Use BGE M3 to encode docs and queries for embedding retrieval. 
+使用 BGE M3 对文档和查询进行编码，以便嵌入检索。
 
 ```python
 # 1. prepare a small corpus to search
@@ -118,20 +115,20 @@ docs_embeddings = bge_m3_ef(docs)
 query_embeddings = bge_m3_ef([query])
 ```
 
-## Example 3: Generate  sparse vectors using BM25 model
+## 示例 3：使用 BM25 模型生成稀疏向量
 
-BM25 is a well-known method that uses word occurrence frequencies to determine the relevance between queries and documents. In this example, we will show how to use `BM25EmbeddingFunction` to generate sparse embeddings for both queries and documents.
+BM25 是一种著名的方法，它使用单词出现频率来确定查询和文档之间的相关性。在本例中，我们将展示如何使用 `BM25EmbeddingFunction` 为查询和文档生成稀疏嵌入。
 
-First, import the __BM25EmbeddingFunction__ class.
+首先，导入 __BM25EmbeddingFunction__ 类。
 
-```xml
+```python
 from pymilvus.model.sparse import BM25EmbeddingFunction
 ```
 
-In BM25, it's important to calculate the statistics in your documents to obtain the IDF (Inverse Document Frequency), which can represent the pattern in your documents. The IDF is a measure of how much information a word provides, that is, whether it's common or rare across all documents.
+在 BM25 中，计算文档中的统计数据以获得 IDF（反向文档频率）非常重要，它可以代表文档中的模式。IDF 是一个衡量单词所提供信息量的指标，即该单词在所有文档中是常见还是罕见。
 
 ```python
-# 1. prepare a small corpus to search
+# 1. 准备语料库
 docs = [
     "Artificial intelligence was founded as an academic discipline in 1956.",
     "Alan Turing was the first person to conduct substantial research in AI.",
@@ -140,13 +137,13 @@ docs = [
 query = "Where was Turing born?"
 bm25_ef = BM25EmbeddingFunction()
 
-# 2. fit the corpus to get BM25 model parameters on your documents.
+# 2. 对语料库进行拟合，以获得文档的 BM25 模型参数。
 bm25_ef.fit(docs)
 
-# 3. store the fitted parameters to disk to expedite future processing.
+# 3. 将拟合参数存储到磁盘中，以加快特性的处理速度
 bm25_ef.save("bm25_params.json")
 
-# 4. load the saved params
+# 4. 载保存的参数
 new_bm25_ef = BM25EmbeddingFunction()
 new_bm25_ef.load("bm25_params.json")
 
@@ -155,7 +152,7 @@ query_embeddings = new_bm25_ef.encode_queries([query])
 print("Dim:", new_bm25_ef.dim, list(docs_embeddings)[0].shape)
 ```
 
-The expected output is similar to the following:
+预期输出类似于下面的内容：
 
 ```python
 Dim: 21 (1, 21)

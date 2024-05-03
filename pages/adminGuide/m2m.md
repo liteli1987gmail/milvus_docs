@@ -45,7 +45,7 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/M2M.y
 
 ### 示例 1
 
-```
+```yaml
 M2M:
   milvus_version: 2.0.0
   source_milvus_path: '/home/user/milvus'
@@ -66,7 +66,7 @@ M2M:
 
 ### 示例 2
 
-```
+```yaml
 M2M:
   milvus_version: 2.0.0
   source_milvus_path: '/home/user/milvus'
@@ -82,14 +82,14 @@ M2M:
 
 使用以下命令运行 MilvusDM，将数据从 Milvus 1.x 导入到 Milvus 2.0。
 
-```
+```bash
 $ milvusdm --yaml M2M.yaml
 ```
 
 ## 接下来做什么
 
-- If you are interested in migrating data in other forms into Milvus,
-  - Learn how to [Migrate Data from Faiss to Milvus](f2m.md).
-  - Learn how to [Migrate from HDF5 to Milvus](h2m.md).
-- If you are interested in learning more about the data migration tool,
-  - Read the overview of [MilvusDM](migrate_overview.md).
+- 如果您有兴趣将其他形式的数据迁移到 Milvus、
+  - 学习如何 [将数据从 Faiss 迁移到 Milvus](f2m.md)。
+  - 了解如何[从 HDF5 迁移数据到 Milvus](h2m.md)。
+- 如果你有兴趣了解有关数据迁移工具的更多信息
+  - 阅读 [MilvusDM](migrate_overview.md)。
