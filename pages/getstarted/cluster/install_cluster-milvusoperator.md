@@ -1,5 +1,4 @@
 ---
-
 id: 安装_milvusoperator集群.md
 label: Milvus Operator
 related_key: Kubernetes
@@ -7,14 +6,13 @@ order: 0
 group: 安装_milvusoperator集群.md
 summary: 学习如何使用Milvus Operator在Kubernetes上安装Milvus集群
 title: 使用Milvus Operator安装Milvus集群
-
 ---
 
 {{tab}}
 
 # 使用Milvus Operator安装Milvus集群
 
-Milvus Operator是一个解决方案，它可以帮助您在目标Kubernetes（K8s）集群上部署和管理完整的Milvus服务栈。该栈包括所有Milvus组件和相关依赖项，如etcd、Pulsar和MinIO。本主题介绍如何在K8s上使用Milvus Operator部署Milvus集群。
+Milvus Operator是一个解决方案，它可以帮助您在目标Kubernetes(K8s)集群上部署和管理完整的Milvus服务栈。该栈包括所有Milvus组件和相关依赖项，如etcd、Pulsar和MinIO。本主题介绍如何在K8s上使用Milvus Operator部署Milvus集群。
 
 ## 前提条件
 在安装之前，请[检查硬件和软件的要求](prerequisite-helm.md)。
@@ -114,24 +112,25 @@ cert-manager-cainjector-54f4cc6b5-dpj84   1/1     Running   0          70s
 cert-manager-webhook-7c9588c76-tqncn      1/1     Running   0          70s
 ```
 
-### 2. Install Milvus Operator
+### 2.安装Milvus操作员
 
-There are two ways to install Milvus Operator on K8s: 
+在K8s上安装Milvus Operator有两种方法：
 
-- with helm chart
-- with `kubectl` command directly with raw manifests
+- 带舵图
+- 直接使用带有原始清单的“kubectl”命令
 
-#### Install by Helm command
+#### 通过Helm命令安装
 
-```
+```bash
 helm install milvus-operator \
   -n milvus-operator --create-namespace \
   --wait --wait-for-jobs \
   https://github.com/zilliztech/milvus-operator/releases/download/v{{var.milvus_operator_version}}/milvus-operator-{{var.milvus_operator_version}}.tgz
 ```
 
-If Milvus Operator is installed, you can see the following output.
-```
+如果安装了Milvus Operator，您可以看到以下输出。
+
+```bash
 NAME: milvus-operator
 LAST DEPLOYED: Thu Jul  7 13:18:40 2022
 NAMESPACE: milvus-operator
@@ -147,15 +146,15 @@ More samples can be found in https://github.com/zilliztech/milvus-operator/tree/
 CRD Documentation can be found in https://github.com/zilliztech/milvus-operator/tree/main/docs/CRD
 ```
 
-#### Install by `kubectl` command
+#### 通过“kubectl”命令安装
 
-```
+```bash
 $ kubectl apply -f https://raw.githubusercontent.com/zilliztech/milvus-operator/main/deploy/manifests/deployment.yaml
 ```
 
-If Milvus Operator is installed, you can see the following output.
+如果安装了Milvus Operator，您可以看到以下输出。
 
-```
+```bash
 namespace/milvus-operator created
 customresourcedefinition.apiextensions.k8s.io/milvusclusters.milvus.io created
 serviceaccount/milvus-operator-controller-manager created
@@ -176,50 +175,51 @@ mutatingwebhookconfiguration.admissionregistration.k8s.io/milvus-operator-mutati
 validatingwebhookconfiguration.admissionregistration.k8s.io/milvus-operator-validating-webhook-configuration created
 ```
 
-Run `$ kubectl get pods -n milvus-operator` to check if Milvus Operator is running. You can see the following output if Milvus Operator is running.
+运行“$kubectl get-pods-n milvus operator”以检查milvus operator是否正在运行。如果Milvus Operator正在运行，您可以看到以下输出。
 
-```
+```bash
 NAME                               READY   STATUS    RESTARTS   AGE
 milvus-operator-5fd77b87dc-msrk4   1/1     Running   0          46s
 ```
 
-## Install a Milvus cluster
+## 安装Milvus集群
 
-This tutorial uses the default configuration to install a Milvus cluster. All Milvus cluster components are enabled with multiple replicas, which consumes many resources. 
+本教程使用默认配置来安装Milvus集群。所有Milvus集群组件都启用了多个副本，这会消耗大量资源。
 
-<div class="alert note">
-If you have very limited local resources, you can install a Milvus cluster <a href="https://github.com/zilliztech/milvus-operator/blob/main/config/samples/milvus_cluster_minimum.yaml">using the minimum configuration</a>).
+<div class=“alert note”>
+如果您的本地资源非常有限，您可以安装Milvus集群<a href=“https://github.com/zilliztech/milvus-operator/blob/main/config/samples/milvus_cluster_minimum.yaml“>使用最低配置</a>)。
 </div>
 
-### 1. Deploy a Milvus cluster
+### 1.部署Milvus集群
 
-When Milvus Operator starts, run the following command to deploy a Milvus cluster.
+Milvus Operator启动后，运行以下命令部署Milvus集群。
 
-```
+```bash
 $ kubectl apply -f https://raw.githubusercontent.com/zilliztech/milvus-operator/main/config/samples/milvus_cluster_default.yaml
 ```
 
-When the cluster is deployed, you can see the following output.
+部署集群后，您可以看到以下输出。
 
-```
+```bash
 milvuscluster.milvus.io/my-release created
 ```
 
-### 2. Check the Milvus cluster status
+### 2. 检查Milvus集群状态
 
-Run the following command to check the status of the Milvus cluster you just deployed.
+运行以下命令以检查您刚刚部署的Milvus集群的状态。
 
-```
+```bash
 $ kubectl get milvus my-release -o yaml
 ```
 
-You can confirm the current status of Milvus cluster from the `status` field in the output. When the Milvus cluster is still under creation, the `status` shows `Unhealthy`.
 
-```
+您可以从输出中的“status”字段确认Milvus集群的当前状态。当Milvus集群仍在创建中时，“status”显示为“Unhealthy”。
+
+```yaml
 apiVersion: milvus.io/v1alpha1
 kind: MilvusCluster
 metadata:
-...
+  ...
 status:
   conditions:
   - lastTransitionTime: "2021-11-02T02:52:04Z"
@@ -246,14 +246,14 @@ status:
   endpoint: my-release-milvus.default:19530
   status: Unhealthy
 ```
-  
-Run the following command to check the current status of Milvus pods.
 
-```
+运行以下命令以检查Milvus pods的当前状态。
+
+```bash
 $ kubectl get pods
 ```
 
-```
+```bash
 NAME                                  READY   STATUS              RESTARTS   AGE
 my-release-etcd-0                     0/1     Running             0          16s
 my-release-etcd-1                     0/1     ContainerCreating   0          16s
@@ -276,11 +276,11 @@ my-release-pulsar-zookeeper-0         0/1     Pending             0          16s
 ```
 
 
-### 3. Enable Milvus components
+### 3. 启用Milvus组件
 
-Milvus Operator first creates all dependencies like etcd, Pulsar, and MinIO, and then continues to create Milvus components. Therefore, you can only see the pods of etcd, Pulsar, and MinIO now.  Once all denependencies are enabled, Milvus Operator will start all Milvus components. The status of the Milvus cluster is shown as in the following output.
+Milvus Operator首先创建所有依赖项，如etcd、Pulsar和MinIO，然后继续创建Milvus组件。因此，你现在只能看到etcd、Pulsar和Mineo的吊舱。一旦启用了所有非独立性，Milvus操作员将启动所有Milvus组件。Milvus集群的状态如以下输出所示。
 
-```
+```yaml
 ...
 status:
   conditions:
@@ -308,13 +308,13 @@ status:
   status: Unhealthy
 ```
 
-Check the status of the Milvus pods again.
+再次检查 Milvus pods 的状态
 
-```
+```bash
 $ kubectl get pods
 ```
 
-```
+```bash
 NAME                                            READY   STATUS              RESTARTS   AGE
 my-release-etcd-0                               1/1     Running             0          6m49s
 my-release-etcd-1                               1/1     Running             0          6m49s
@@ -346,9 +346,9 @@ my-release-pulsar-zookeeper-1                   1/1     Running             0   
 my-release-pulsar-zookeeper-2                   1/1     Running             0          6m26s
 ```
 
-When all components are enabled, the `status` of the Milvus cluster is shown as `Healthy`.
+当所有组件都启用时，Milvus集群的“status”显示为“Healthy”。
 
-```
+```yaml
 ...
 status:
   conditions:
@@ -375,10 +375,13 @@ status:
   status: Healthy
 ```
 
-Check the status of the Milvus pods again. You can see all the pods are running now.
+再次检查milvus pods的状态，你可以发现所有的pods都在运行中了。
 
-```
+```bash
 $ kubectl get pods
+```
+
+```bash
 NAME                                            READY   STATUS      RESTARTS   AGE
 my-release-etcd-0                               1/1     Running     0          14m
 my-release-etcd-1                               1/1     Running     0          14m
@@ -410,11 +413,11 @@ my-release-pulsar-zookeeper-1                   1/1     Running     0          1
 my-release-pulsar-zookeeper-2                   1/1     Running     0          13m
 ```
 
-When the Milvus cluster is installed, you can learn how to [Connect to Milvus server](manage_connection.md).
+安装Milvus集群后，您可以学习如何[连接到Milvus服务器](manage_connection.md)。
 
-## Connect to Milvus
+## 连接Milvus
 
-Verify which local port the Milvus server is listening on. Replace the pod name with your own.
+验证Milvus服务器正在侦听哪个本地端口。将pod名称替换为您自己的名称。
 
 ```bash
 $ kubectl get pod my-release-milvus-proxy-84f67cdb7f-pg6wf --template
@@ -422,25 +425,25 @@ $ kubectl get pod my-release-milvus-proxy-84f67cdb7f-pg6wf --template
 19530
 ```
 
-Open a new terminal and run the following command to forward a local port to the port that Milvus uses. Optionally, omit the designated port and use `:19530` to let `kubectl` allocate a local port for you so that you don't have to manage port conflicts.
+打开一个新的终端，运行以下命令将本地端口转发到Milvus使用的端口。或者，省略指定的端口，并使用“：19530”让“kubectl”为您分配一个本地端口，这样您就不必管理端口冲突。
 
 ```bash
 $ kubectl port-forward service/my-release-milvus 27017:19530
 Forwarding from 127.0.0.1:27017 -> 19530
 ```
 
-By default, kubectl's port-forwarding only listens on localhost. Use flag `address` if you want Milvus server to listen on selected IP or all addresses.
+默认情况下，kubectl的端口转发只在localhost上侦听。如果您希望Milvus服务器侦听选定的IP或所有地址，请使用标志“address”。
 
 ```bash
 $ kubectl port-forward --address 0.0.0.0 service/my-release-milvus 27017:19530
 Forwarding from 0.0.0.0:27017 -> 19530
 ```
 
-## Uninstall the Milvus cluster
+## 卸载Milvus集群
 
-Run the following command to uninstall the Milvus cluster.
+运行以下命令卸载Milvus集群。
 
-```
+```bash
 $ kubectl delete milvus my-release
 ```
 
@@ -450,42 +453,42 @@ $ kubectl delete milvus my-release
 
 </div>
 
-## Uninstall Milvus Operator
+## 卸载Milvus操作员
 
-There are also two ways to uninstall Milvus Operator on K8s:
+还有两种方法可以在K8s上卸载Milvus Operator：
 
-### Uninstall Milvus Operator by Helm command
+### 通过Helm命令卸载Milvus操作员
 
-```
+```bash
 $ helm -n milvus-operator uninstall milvus-operator
 ```
 
-### Uninstall Milvus Operator by `kubectl` command
+### 通过“kubectl”命令卸载 Milvus Operator
 
-```
+```bash
 $ kubectl delete -f https://raw.githubusercontent.com/zilliztech/milvus-operator/v{{var.milvus_operator_version}}/deploy/manifests/deployment.yaml
 ```
 
-## Delete the K8s cluster
+## 删除K8s集群
 
-When you no longer need the K8s cluster in the test environment, you can run `$ minikube delete` to delete it.
+当您在测试环境中不再需要K8s集群时，可以运行“$minikube-delete”来删除它。
 
-## What's next
+## 接下来是什么
 
-Having installed Milvus, you can:
-- Check [Hello Milvus](example_code.md) to run an example code with different SDKs to see what Milvus can do.
-- Learn the basic operations of Milvus:
-  - [Connect to Milvus server](manage_connection.md)
-  - [Create a collection](create_collection.md)
-  - [Create a partition](create_partition.md)
-  - [Insert data](insert_data.md)
-  - [Conduct a vector search](search.md)
-- [Upgrade Milvus Using Milvus Operator](upgrade_milvus_cluster-operator.md)
-- [Scale your Milvus cluster](scaleout.md)
-- Deploy your Milvu cluster on clouds:
-  - [Amazon EC2](aws.md)
-  - [Amazon EKS](eks.md)
-- Explore [MilvusDM](migrate_overview.md), an open-source tool designed for importing and exporting data in Milvus.
-- [Monitor Milvus with Prometheus](monitor.md)
+安装Milvus后，您可以：
+- 检查[Hello-Milvus](example_code.md)，用不同的SDK运行示例代码，看看Milvus能做什么。
+- 学习Milvus的基本操作：
+  - [连接到Milvus服务器](manage_connection.md)
+  - [创建集合](Create_collection.md)
+  - [创建分区](Create_partition.md)
+  - [插入数据](Insert_data.md)
+  - [进行矢量搜索](search.md)
+  - [使用Milvus运算符升级Milvus](Upgrade_Milvus_cluster-Operator.md)
+  - [缩放Milvus集群](scaleout.md)
+- 在云上部署您的Milvu集群：
+  - [亚马逊EC2](aws.md)
+  - [亚马逊EKS](EKS.md)
+- 探索[MilvusDM](migrate_overview.md)，这是一个用于在Milvus中导入和导出数据的开源工具。
+- [用普罗米修斯监视麋鹿](Monitor.md)
 
 
