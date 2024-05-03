@@ -124,27 +124,27 @@ client.create_collection(
 
 - __Schema__
 
-    The schema defines the structure of a collection. Except for adding pre-defined fields and setting their attributes as demonstrated above, you have the option of enabling and disabling
+  架构定义集合的结构。除了如上所述添加预定义字段并设置其属性外，您还可以选择启用和禁用
 
     - __AutoID__
 
-        Whether to enable the collection to automatically increment the primary field.
+      是否启用集合以自动递增主字段。
 
     - __Dynamic Field__
 
-        Whether to use the reserved JSON field __$meta__ to store non-schema-defined fields and their values. 
+      是否使用保留的JSON字段__$meta__来存储非架构定义的字段及其值。
 
-     For a detailed explanation of the schema, refer to [Schema](schema.md).
+   有关模式的详细说明，请参阅 [Schema](schema.md).
 
 - __Index parameters__
 
-    Index parameters dictate how Milvus organizes your data within a collection. You can assign specific indexes to fields by configuring their __metric types__ and __index types__. 
+  索引参数决定Milvus如何在集合中组织数据。您可以通过配置字段的 `__metric types__` 和 `__index types__` 来为字段分配特定索引。
 
-    - For the vector field, you can use __AUTOINDEX__ as the index type and use __COSINE__, __L2__, or __IP__ as the `metric_type`.
+  - 对于矢量字段，可以使用__AUTOINDEX__作为索引类型，并使用__COSINE__、__L2__或__IP__作为`metric_type`。
 
-    - For scalar fields, including the primary field, Milvus uses __TRIE__ for integers and __STL_SORT__ for strings.
+  - 对于标量字段，包括主字段，Milvus对整数使用__TRIE__，对字符串使用__STL_SORT__。
 
-    For additional insights into index types, refer to [Index](index.md).
+有关索引类型的其他见解，请参阅[索引](index.md).
 
 <div class="admonition note">
 
@@ -155,9 +155,9 @@ client.create_collection(
 
 </div>
 
-## Insert Data
+## 插入数据
 
-Collections created in either of the preceding ways have been indexed and loaded. Once you are ready, insert some example data.
+已对以上述任一方式创建的集合进行了索引和加载。准备好后，插入一些示例数据。
 
 ```python
 # 4. Insert data into the collection
@@ -191,13 +191,13 @@ print(res)
 # }
 ```
 
-The provided code assumes that you have created a collection in the __Quick Setup__ manner. As shown in the above code, 
+提供的代码假设您已经以 `__Quick Setup__` 方式创建了一个集合。如上述代码所示，
 
-- The data to insert is organized into a list of dictionaries, where each dictionary represents a data record, termed as an entity.
+- 要插入的数据被组织到字典列表中，其中每个字典表示一个数据记录，称为一个实体。
 
-- Each dictionary contains a non-schema-defined field named __color__.
+- 每个字典都包含一个名为 `__color__` 的非模式定义字段。
 
-- Each dictionary contains the keys corresponding to both pre-defined and dynamic fields.
+- 每个字典都包含对应于预定义字段和动态字段的关键字。
 
 <div class="admonition note">
 
@@ -207,9 +207,9 @@ The provided code assumes that you have created a collection in the __Quick Setu
 
 </div>
 
-### Insert more data
+### 插入更多数据
 
-You can safely skip this section if you prefer to search with the inserted 10 entities later. To learn more about the search performance of  Milvus, you are advised use the following code snippet to add more randomly generated entities into the collection.
+如果以后希望使用插入的10个实体进行搜索，则可以安全地跳过此部分。要了解更多关于Milvus搜索性能的信息，建议您使用以下代码片段将更多随机生成的实体添加到集合中。
 
 ```python
 # 5. Insert more data into the collection
@@ -245,9 +245,9 @@ print(res)
 
 </div>
 
-## Similarity Search
+## 相似性搜索
 
-You can conduct similarity searches based on one or more vector embeddings.
+可以基于一个或多个向量嵌入进行相似性搜索。
 
 <div class="admonition note">
 
@@ -257,9 +257,9 @@ You can conduct similarity searches based on one or more vector embeddings.
 
 </div>
 
-### Single-vector search
+### 单矢量搜索
 
-The value of the __query_vectors__ variable is a list containing a sub-list of floats. The sub-list represents a vector embedding of 5 dimensions. 
+`__query_vectors__` 变量的值是一个包含浮动子列表的列表。子列表表示5个维度的矢量嵌入。
 
 ```python
 # 6. Search with a single vector
@@ -301,11 +301,11 @@ print(res)
 
 ```
 
-The output is a list containing a sub-list of three dictionaries, representing the returned entities with their IDs and distances.
+输出是一个列表，其中包含三个字典的子列表，表示返回的实体及其ID和距离。
 
-### Bulk-vector search
+### 批量矢量搜索
 
-You can also include multiple vector embeddings in the __query_vectors__ variable to conduct a batch similarity search.
+您还可以在 `__query_vectors__` 变量中包含多个矢量嵌入，以进行批量相似性搜索。
 
 ```python
 # 7. Search with multiple vectors
@@ -365,9 +365,9 @@ print(res)
 
 ```
 
-The output should be a list of two sub-lists, each of which contains three dictionaries, representing the returned entities with their IDs and distances. 
+输出应该是两个子列表的列表，每个子列表包含三个字典，用它们的ID和距离表示返回的实体。
 
-### Filtered searches
+### 筛选的搜索
 
 - __With schema-defined fields__
 
@@ -413,11 +413,11 @@ The output should be a list of two sub-lists, each of which contains three dicti
     # ]
     ```
 
-    The output should be a list containing a sub-list of three dictionaries, each representing a searched entity with its ID, distance, and the specified output fields.
+  输出应该是一个包含三个字典的子列表的列表，每个字典代表一个搜索到的实体及其ID、距离和指定的输出字段。
 
 - __With non-schema-defined fields__
 
-    You can also include dynamic fields in a filter expression. In the following code snippet, `color` is a non-schema-defined field. You can include them either as keys in the magic `$meta` field, such as `$meta["color"]`, or directly use it like a schema-defined field, such as `color`.
+  也可以在过滤器表达式中包含动态字段。在下面的代码片段中，“color”是一个非模式定义的字段。您可以将它们作为键包含在神奇的“$meta”字段中，如“$meta[“color”]'，也可以像模式定义的字段一样直接使用它，如“color'”。
 
     ```python
     # 9. Search with a filter expression using custom fields
@@ -467,9 +467,9 @@ The output should be a list of two sub-lists, each of which contains three dicti
     
     ```
 
-## Scalar Query
+## 标量查询
 
-Unlike a vector similarity search, a query retrieves vectors via scalar filtering based on [filter expressions](https://milvus.io/docs/boolean.md).
+  与向量相似性搜索不同，查询通过基于[filter expressions](https://milvus.io/docs/boolean.md)的标量过滤来检索向量
 
 - __With filter using schema-defined fields__
 
@@ -506,9 +506,9 @@ Unlike a vector similarity search, a query retrieves vectors via scalar filterin
     
     ```
 
-## Get Entities
+## 获取实体
 
-If you know the IDs of the entities to retrieve, you can get entities by their IDs as follows:
+如果知道要检索的实体的ID，则可以通过实体的ID获取实体，如下所示：
 
 ```python
 # 12. Get entities by IDs
@@ -564,9 +564,9 @@ print(res)
 
 </div>
 
-## Delete Entities
+## 删除实体
 
-Milvus allows deleting entities by IDs and by filters.
+Milvus允许通过ID和过滤器删除实体。
 
 - __Delete entities by IDs.__
 
@@ -612,9 +612,9 @@ Milvus allows deleting entities by IDs and by filters.
 
     </div>
 
-## Drop the collection
+## 删除集合
 
-The Starter plan allows up to two collections in the serverless cluster. Once you have done this guide, you can drop the collection as follows:
+Starter计划允许在无服务器集群中最多有两个集合。完成本指南后，您可以按如下方式删除集合：
 
 ```python
 # 15. Drop collection
@@ -627,11 +627,11 @@ client.drop_collection(
 )
 ```
 
-## Recaps
+## 简要回顾
 
-- There are two ways to create a collection. The first is the quick setup, which only requires you to provide a name and the dimension of the vector field. The second is the customized setup, which allows you to customize almost every aspect of the collection.
+- 有两种方法可以创建集合。第一种是快速设置，只需要提供矢量场的名称和尺寸。第二个是自定义设置，它允许您自定义集合的几乎所有方面。
 
-- The data insertion process may take some time to complete. It is recommended to wait a few seconds after inserting data and before conducting similarity searches.
+- 数据插入过程可能需要一些时间才能完成。建议在插入数据后和进行相似性搜索前等待几秒钟。
 
-- Filter expressions can be used in both search and query requests. However, they are mandatory for query requests.
+- 筛选表达式既可以用于搜索请求，也可以用于查询请求。但是，它们对于查询请求是强制性的。
 

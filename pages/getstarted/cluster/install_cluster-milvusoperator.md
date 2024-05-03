@@ -32,7 +32,7 @@ Milvus Operator在[Kubernetes Custom Resources](https://kubernetes.io/docs/conce
 - 确保您可以通过`kubectl`或`helm`访问K8s集群。
 - 确保已安装StorageClass依赖项，因为Milvus集群依赖于默认的StorageClass进行数据持久化。minikube在安装时依赖于默认的StorageClass。通过运行命令`kubectl get sc`来检查依赖项。如果已安装StorageClass，您将看到以下输出。如果没有，请查看[更改默认StorageClass](https://kubernetes.io/docs/tasks/administer-cluster/change-default-storage-class/)以获取更多信息。
 
-```
+```bash
 NAME                  PROVISIONER                  RECLAIMPOLICY    VOLUMEBIINDINGMODE    ALLOWVOLUMEEXPANSION     AGE
 standard (default)    k8s.io/minikube-hostpath     Delete           Immediate             false                    3m36s
 ```
@@ -45,13 +45,13 @@ standard (default)    k8s.io/minikube-hostpath     Delete           Immediate   
 
 Milvus Operator使用[cert-manager](https://cert-manager.io/docs/installation/supported-releases/)为webhook服务器提供证书。运行以下命令安装cert-manager。
 
-```
+```bash
 $ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
 ```
 
 如果cert-manager已安装，您将看到以下输出。
 
-```
+```bash
 customresourcedefinition.apiextensions.k8s.io/certificaterequests.cert-manager.io created
 customresourcedefinition.apiextensions.k8s.io/certificates.cert-manager.io created
 customresourcedefinition.apiextensions.k8s.io/challenges.acme.cert-manager.io created
@@ -105,7 +105,7 @@ cert-manager version 1.1.3 or later is required.
 
 Run `$ kubectl get pods -n cert-manager` to check if cert-manager is running. You can see the following output if all the pods are running.
 
-```
+```bash
 NAME                                      READY   STATUS    RESTARTS   AGE
 cert-manager-848f547974-gccz8             1/1     Running   0          70s
 cert-manager-cainjector-54f4cc6b5-dpj84   1/1     Running   0          70s

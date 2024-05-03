@@ -84,7 +84,7 @@ standard (default)    k8s.io/minikube-hostpath     Delete           Immediate   
 
 有关更多信息，请参见[使用helm安装nvidia-device-plugin](https://gitlab.com/nvidia/kubernetes/device-plugin/-/blob/main/README.md#deployment-via-helm)。
 
-After setting up, run `kubectl describe node <gpu-worker-node>` to view the GPU resources. The command output should be similar to the following:
+设置后，运行 `kubectl describe node <gpu-worker-node>` 以查看gpu资源。命令输出应类似于以下内容：
 
 ```bash
 Capacity:
@@ -97,28 +97,28 @@ Allocatable:
   ...
 ```
 
-Note: In this example, we have set up a GPU worker node with 4 GPU cards.
+注意：在这个例子中，我们已经用4个GPU卡设置了一个GPU工作节点。
 
-### 3. Check the default storage class
+### 3. 检查默认存储类
 
-Milvus relies on the default storage class to automatically provision volumes for data persistence. Run the following command to check storage classes:
+Milvus依靠默认存储类来自动为数据持久性提供卷。运行以下命令以检查存储类：
 
 ```bash
 $ kubectl get sc
 ```
 
-The command output should be similar to the following:
+命令输出应类似于以下内容：
 
 ```bash
 NAME                   PROVISIONER                                     RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
 local-path (default)   rancher.io/local-path                           Delete          WaitForFirstConsumer   false                  461d
 ```
 
-## Install Helm Chart for Milvus
+## 为Milvus安装Helm图表
 
-Helm is a K8s package manager that can help you deploy Milvus quickly.
+Helm是一个K8s包管理器，可以帮助您快速部署Milvus。
 
-1. Add Milvus to Helm's repository.
+1. 将Milvus添加到Helm的存储库
 
 ```bash
 $ helm repo add milvus https://zilliztech.github.io/milvus-helm/
@@ -139,23 +139,23 @@ The archived repo is still available for the charts up to 4.0.31. For later rele
 
 </div>
 
-2. Update your local chart repository.
+2. 更新您的本地图表存储库。
 
 ```bash
 $ helm repo update
 ```
 
-## Start Milvus
+## 开始Milvus
 
-Once you have installed the Helm chart, you can start Milvus on Kubernetes. In this section, we will guide you through the steps to start Milvus with GPU support.
+一旦你安装了Helm图表，你就可以在Kubernetes上启动Milvus了。在本节中，我们将指导您完成使用GPU支持启动Milvus的步骤。
 
-You should start Milvus with Helm by specifying the release name, the chart, and the parameters you expect to change. In this guide, we use <code>my-release</code> as the release name. To use a different release name, replace <code>my-release</code> in the following commands with the one you are using.
+您应该通过指定发布名称、图表和期望更改的参数来启动带有Helm的Milvus。在本指南中，我们使用<code>my release</code>作为发布名称。要使用不同的版本名称，请将以下命令中的<code>my release</code>替换为您正在使用的命令。
+Milvus允许您将一个或多个GPU设备分配给Milvus。
 
-Milvus allows you to assign one or more GPU devices to Milvus. 
 
-- Assign a single GPU device
+- 分配单个GPU设备
 
-  Run the following commands to assign a single GPU device to Milvus:
+运行以下命令将单个GPU设备分配给Milvus：
 
   ```bash
   cat <<EOF > custom-values.yaml
@@ -172,11 +172,11 @@ Milvus allows you to assign one or more GPU devices to Milvus.
   $ helm install my-release milvus/milvus --set cluster.enabled=false --set etcd.replicaCount=1 --set minio.mode=standalone --set pulsar.enabled=false -f custom-values.yaml
   ```
 
-- Assign multiple GPU devices
+- 分配多个GPU设备
 
-  Run the following commands to assign multiple GPU devices to Milvus:
+运行以下命令将多个GPU设备分配给Milvus：
 
-  Run the following commands to assign multiple GPU devices to Milvus:
+运行以下命令将多个GPU设备分配给Milvus：
 
   ```bash
   cat <<EOF > custom-values.yaml
@@ -195,7 +195,7 @@ Milvus allows you to assign one or more GPU devices to Milvus.
   EOF
   ```
 
-  In the configuration above, the indexNode and queryNode share two GPUs. To assign different GPUs to the indexNode and the queryNode, you can modify the configuration accordingly by setting `extraEnv` in the configuration file as follows:
+在上面的配置中，indexNode和queryNode共享两个GPU。要为indexNode和queryNode分配不同的GPU，您可以通过在配置文件中设置`extraEnv`来相应地修改配置，如下所示：
 
   ```bash
   cat <<EOF > custom-values.yaml
@@ -234,7 +234,7 @@ Milvus allows you to assign one or more GPU devices to Milvus.
   $ kubectl get pods
   ```
 
-After Milvus starts, the `READY` column displays `1/1` for all pods.
+Milvus启动后，`READY`列显示所有pods的`1/1`。
 
 ```text
 NAME                                               READY   STATUS      RESTARTS   AGE
@@ -243,9 +243,9 @@ my-release-milvus-standalone-54c4f88cb9-f84pf      1/1     Running     0        
 my-release-minio-5564fbbddc-mz7f5                  1/1     Running     0          30s
 ```
 
-## Connect to Milvus
+## 连接Milvus
 
-Verify which local port the Milvus server is listening on. Replace the pod name with your own.
+验证Milvus服务器正在侦听哪个本地端口。将pod名称替换为您自己的名称。
 
 ```bash
 $ kubectl get pod my-release-milvus-standalone-54c4f88cb9-f84pf --template='{{(index (index .spec.containers 0).ports 0).containerPort}}{{"\n"}}'
@@ -255,71 +255,75 @@ $ kubectl get pod my-release-milvus-standalone-54c4f88cb9-f84pf --template='{{(i
 19530
 ```
 
-Open a new terminal and run the following command to forward a local port to the port that Milvus uses. Optionally, omit the designated port and use `:19530` to let `kubectl` allocate a local port for you so that you don't have to manage port conflicts.
+打开一个新的终端，运行以下命令将本地端口转发到Milvus使用的端口。或者，省略指定的端口，并使用`：19530`让`kubectl`为您分配一个本地端口，这样您就不必管理端口冲突。
 
 ```bash
 $ kubectl port-forward service/my-release-milvus 27017:19530
 ```
 
-```
+```bash
 Forwarding from 127.0.0.1:27017 -> 19530
 ```
 
-By default, ports forwarded by kubectl only listen on localhost. Use flag `address` if you want Milvus server to listen on selected IP or all addresses.
+默认情况下，kubectl转发的端口仅在localhost上侦听。如果您希望Milvus服务器侦听选定的IP或所有地址，请使用标志`address`。
+
 
 ```bash
 $ kubectl port-forward --address 0.0.0.0 service/my-release-milvus 27017:19530
 Forwarding from 0.0.0.0:27017 -> 19530
 ```
 
-## Uninstall Milvus
+## 卸载 Milvus
 
-Run the following command to uninstall Milvus.
+执行以下命令卸载milvus
 
 ```bash
 $ helm uninstall my-release
 ```
 
-## Stop the K8s cluster
+## 停止 K8s 集群
 
-Stop the cluster and the minikube VM without deleting the resources you created.
+在不删除您创建的资源的情况下停止群集和minikube虚拟机。
 
 ```bash
 $ minikube stop
 ```
 
-Run `minikube start` to restart the cluster.
+运行 `minikube start` 以重新启动群集。
 
-## Delete the K8s cluster
+## 删除 K8s 集群
 
 <div class="alert note">
 Run <code>$ kubectl logs `pod_name`</code> to get the <code>stderr</code> log of the pod before deleting the cluster and all resources.
 </div>
 
-Delete the cluster, the minikube VM, and all resources you created including persistent volumes.
+删除集群、minikube虚拟机以及您创建的所有资源，包括持久卷。
 
 ```bash
 $ minikube delete
 ```
 
-## What's next
 
-Having installed Milvus, you can:
+## 接下来是什么
 
-- Check [Hello Milvus](quickstart.md) to run an example code with different SDKs to see what Milvus can do.
+安装Milvus后，您可以：
 
-- Learn the basic operations of Milvus:
-  - [Manage Databases](manage_databases.md)
-  - [Manage Collections](manage-collections.md)
-  - [Manage Partitions](manage-partitions.md)
-  - [Insert, Upsert & Delete](insert-update-delete.md)
-  - [Single-Vector Search](single-vector-search.md)
-  - [Multi-Vector Search](multi-vector-search.md)
+- 检查[Hello-Milvus](quickstart.md)，用不同的SDK运行一个示例代码，看看Milvus能做什么。
 
-- [Upgrade Milvus Using Helm Chart](upgrade_milvus_standalone-helm.md).
-- Explore [Milvus Backup](milvus_backup_overview.md), an open-source tool for Milvus data backups.
-- Explore [Birdwatcher](birdwatcher_overview.md), an open-source tool for debugging Milvus and dynamic configuration updates.
-- Explore [Attu](https://milvus.io/docs/attu.md), an open-source GUI tool for intuitive Milvus management.
-- [Monitor Milvus with Prometheus](monitor.md).
+- 学习Milvus的基本操作：
+  - [管理数据库](Manage_Databases.md)
+  - [管理集合](Manage-Collections.md)
+  - [管理分区](Manage Partitions.md)
+  - [插入、更新和删除](Insert-update-Delete.md)
+  - [单矢量搜索](singlevectorsearch.md)
+  - [多矢量搜索](Multi-vvector Search.md)
+
+- [使用头盔图升级Milvus](Upgrade_Milvus_standalone-hem.md)。
+  - 探索[Milvus Backup](Milvus_Backup_overview.md)，一个用于Milvus数据备份的开源工具。
+  - 探索[Birdwatcher](Birdwatcher_overview.md)，这是一个用于调试Milvus和动态配置更新的开源工具。
+  - 浏览[Attu](https://milvus.io/docs/attu.md)，一个用于直观Milvus管理的开源GUI工具。
+  
+- [用普罗米修斯监视Milvus](Monitor.md)。
+
 
 
