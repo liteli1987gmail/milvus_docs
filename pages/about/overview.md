@@ -1,10 +1,8 @@
 ---
-
 id: overview.md
 title: 什么是 Milvus
 related_key: Milvus 概览
 summary: Milvus 是一个开源向量数据库，专为 AI 应用开发、嵌入向量相似性搜索和 MLOps 设计。
-
 ---
 
 # 引言
@@ -64,4 +62,77 @@ Milvus 支持的大多数向量索引类型使用近似最近邻搜索（ANNS）
 
 ### 相似性度量
 
-在 Milvus 中，相似性度量用于测量向量之间的相似性。选择一个好的距离度量可以显著提高分类和聚类性能。根据输入数据的形式，选择特定的相似性度量以获得最佳性能
+In Milvus, similarity metrics are used to measure similarities among vectors. Choosing a good distance metric helps improve classification and clustering performance significantly. Depending on the input data forms, specific similarity metric is selected for optimal performance.
+
+The metrics that are widely used for floating point embeddings include:
+
+- **Euclidean distance (L2)**: This metric is generally used in the field of computer vision (CV).
+- **Inner product (IP)**: This metric is generally used in the field of natural language processing (NLP).
+  The metrics that are widely used for binary embeddings include:
+- **Hamming**: This metric is generally used in the field of natural language processing (NLP).
+- **Jaccard**: This metric is generally used in the field of molecular similarity search.
+
+See [Similarity Metrics](metric.md#floating) for more information.
+
+## Example applications
+
+Milvus makes it easy to add similarity search to your applications. Example applications of Milvus include:
+
+- [Image similarity search](image_similarity_search.md): Images made searchable and instantaneously return the most similar images from a massive database.
+- [Video similarity search](video_similarity_search.md): By converting key frames into vectors and then feeding the results into Milvus, billions of videos can be searched and recommended in near real-time.
+- [Audio similarity search](audio_similarity_search.md): Quickly query massive volumes of audio data such as speech, music, sound effects, and surface similar sounds.
+- [Recommender system](recommendation_system.md): Recommend information or products based on user behaviors and needs.
+- [Question answering system](question_answering_system.md): Interactive digital QA chatbot that automatically answers user questions.
+- [DNA sequence classification](dna_sequence_classification.md): Accurately sort out the classification of a gene in milliseconds by comparing similar DNA sequences.
+- [Text search engine](text_search_engine.md): Help users find the information they are looking for by comparing keywords against a database of texts.
+
+See [Milvus tutorials](https://github.com/milvus-io/bootcamp/tree/master/solutions) and [Milvus Adopters](milvus_adopters.md) for more Milvus application scenarios.
+
+## How is Milvus designed?
+
+As a cloud-native vector database, Milvus separates storage and computation by design. To enhance elasticity and flexibility, all components in Milvus are stateless.
+
+The system breaks down into four levels:
+
+- Access layer: The access layer is composed of a group of stateless proxies and serves as the front layer of the system and endpoint to users.
+- Coordinator service: The coordinator service assigns tasks to the worker nodes and functions as the system's brain.
+- Worker nodes: The worker nodes function as arms and legs and are dumb executors that follow instructions from the coordinator service and execute user-triggered DML/DDL commands.
+- Storage: Storage is the bone of the system, and is responsible for data persistence. It comprises meta storage, log broker, and object storage.
+
+For more information, see [Architecture Overview](architecture_overview.md).
+
+![Architecture](../../../assets/milvus_architecture.png "Milvus architecure.")
+
+## Developer tools
+
+Milvus is supported by rich APIs and tools to facilitate DevOps.
+
+### API access
+
+Milvus has client libraries wrapped on top of the Milvus API that can be used to insert, delete, and query data programmatically from application code:
+
+- [PyMilvus](https://github.com/milvus-io/pymilvus)
+- [Node.js SDK](https://github.com/milvus-io/milvus-sdk-node)
+- [Go SDK](https://github.com/milvus-io/milvus-sdk-go)
+- [Java SDK](https://github.com/milvus-io/milvus-sdk-java)
+
+We are working on enabling more new client libraries. If you would like to contribute, go to the corresponding repository of [the Milvus Project](https://github.com/milvus-io).
+
+### Milvus ecosystem tools
+
+The Milvus ecosystem provides helpful tools including:
+
+- [Milvus CLI](https://github.com/zilliztech/milvus_cli#overview)
+- [Attu](https://github.com/zilliztech/attu), a graphical management system for Milvus.
+- [MilvusDM](migrate_overview.md) (Milvus Data Migration), an open-source tool designed specifically for importing and exporting data with Milvus.
+- [Milvus sizing tool](https://milvus.io/tools/sizing/), which helps you estimate the raw file size, memory size, and stable disk size needed for a specified number of vectors with various index types.
+
+## What's next
+
+- Get started with a 3-minute tutorial:
+  - [Hello Milvus](quickstart.md)
+- Install Milvus for your testing or production environment:
+  - [Installation Prerequisites](prerequisite-docker.md)
+  - [Install Milvus Standalone](install_standalone-docker.md)
+- If you're interested in diving deep into the design details of Milvus:
+  - Read about [Milvus architecture](architecture_overview.md)
