@@ -1,3 +1,9 @@
+---
+id: main_components.md
+summary: Learn about the main components in Milvus standalone and cluster.
+title: Main Components
+---
+
 # 主要组件
 
 运行 Milvus 有两种模式：独立模式和集群模式。这两种模式具有相同的功能。你可以根据你的数据集大小、流量数据等选择最适合你的模式。目前，Milvus 独立模式不能在线升级到 Milvus 集群模式。
@@ -12,7 +18,7 @@ Milvus 独立模式包括三个组件：
 
 - **MinIO:** 存储引擎，负责 Milvus 的数据持久化。
 
-![独立架构](..//standalone_architecture.jpg "Milvus 独立架构。")
+![独立架构](/public/assets/standalone_architecture.jpg "Milvus 独立架构。")
 
 ## Milvus 集群模式
 
@@ -35,7 +41,7 @@ Milvus 独立模式包括三个组件：
 - **MinIO:** 负责集群中大型文件的数据持久化，如索引和二进制日志文件。
 - **Pulsar:** 管理最近的变更操作日志，输出流日志，并提供日志发布-订阅服务。
 
-![分布式架构](..//distributed_architecture.jpg "Milvus 集群架构。")
+![分布式架构](/public/assets/distributed_architecture.jpg "Milvus 集群架构。")
 
 ## 接下来
 

@@ -1,15 +1,19 @@
 ---
-title: 图像相似性搜索
+id: image_similarity_search.md
+summary: Build an image similarity search system with Milvus.
+title: Image Similarity Search
 ---
 
 # 图像相似性搜索
 
 本教程演示了如何使用 Milvus（开源向量数据库）构建反向图像搜索系统。
+
 - [打开 Jupyter 笔记本](https://github.com/towhee-io/examples/tree/main/image/reverse_image_search)
 - [快速部署](https://github.com/milvus-io/bootcamp/blob/master/solutions/image/reverse_image_search/quick_deploy)
 - [尝试在线演示](https://milvus.io/milvus-demos/)
 
 使用的机器学习模型和第三方软件包括：
+
 - YOLOv3
 - ResNet-50
 - MySQL
@@ -25,6 +29,6 @@ title: 图像相似性搜索
 
 </br>
 
-![image_search](/image_search.png "反向图像搜索系统的流程图。")
+![image_search](/public/assets/image_search.png "反向图像搜索系统的流程图。")
 
-![image_search_demo](/image_search_demo.jpeg "反向图像搜索系统的演示。")
+![image_search_demo](/public/assets/image_search_demo.jpeg "反向图像搜索系统的演示。")

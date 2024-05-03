@@ -1,3 +1,9 @@
+---
+id: timestamp.md
+title: Timestamp in Milvus
+summary: Learn about the concept of timestamp and the four main timestamp-related parameters in the Milvus vector database.
+---
+
 # 时间戳
 
 本文解释了时间戳的概念，并介绍了 Milvus 向量数据库中的四个主要与时间戳相关的参数。
@@ -14,7 +20,7 @@ Milvus 是一个向量数据库，可以搜索和查询从非结构化数据转�
 
 - `Service_timestamp`
 
-- `Graceful_time` 
+- `Graceful_time`
 
 - `Travel_timestamp`
 
@@ -54,4 +60,8 @@ Milvus 是一个向量数据库，可以搜索和查询从非结构化数据转�
 
 #### 场景 2：`Service_timestamp` < `Guarantee_timestamp`
 
-如图 2 所示，`Guarantee_timestamp` 的值设置为 `2021-08-26T18:15:00`，而当前的 `Service_timestamp` 值仅为 `2021-08-26T18:14:55`。这意味着只有
+As shown in the figure 2 , the value of `Guarantee_timestamp` is set as `2021-08-26T18:15:01`, and `Graceful_time` as `2s`. The current value of `Service_timestamp` is only `2021-08-26T18:14:54`. This means that the expected DML operations are not completed yet and even given the 2 second of graceful time, data invisibility is still intolerable. Therefore, the query node needs to put off the search or query request until certain DML requests are completed (i.e. when `Service_timestamp` + `Graceful_time` >= `Guarantee_timestamp`).
+
+## What's next
+
+- Learn how [guarantee timestamp enables tunable consistency in Milvus](consistency.md)

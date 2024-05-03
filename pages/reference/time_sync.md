@@ -1,3 +1,9 @@
+---
+id: time_sync.md
+title: Time Synchronization
+summary: Learn about the time synchronization system in Milvus.
+---
+
 # 时间同步
 
 本文介绍了 Milvus 中的时间同步机制。
@@ -14,16 +20,16 @@ Milvus 中的事件通常可以分为两类：
 
 假设有两个用户在 Milvus 中按以下时间顺序发起一系列 DML 和 DDL 事件。
 
-| 时间戳 | 用户 1                   | 用户 2                   |
-|:-----:|:------------------------:|:------------------------:|
-|   t0  | 创建名为 `C0` 的集合。 |                         |
-|   t2  |                         | 在集合 `C0` 上进行搜索。 |
-|   t5  | 向集合 `C0` 插入数据 `A1`。 |                         |
-|   t7  |                         | 在集合 `C0` 上进行搜索。 |
-|  t10  | 向集合 `C0` 插入数据 `A2`。 |                         |
-|  t12  |                         | 在集合 `C0` 上进行搜索。 |
-|  t15  | 从集合 `C0` 删除数据 `A1`。 |                         |
-|  t17  |                         | 在集合 `C0` 上进行搜索。 |
+| 时间戳 |           用户 1            |          用户 2          |
+| :----: | :-------------------------: | :----------------------: |
+|   t0   |   创建名为 `C0` 的集合。    |                          |
+|   t2   |                             | 在集合 `C0` 上进行搜索。 |
+|   t5   | 向集合 `C0` 插入数据 `A1`。 |                          |
+|   t7   |                             | 在集合 `C0` 上进行搜索。 |
+|  t10   | 向集合 `C0` 插入数据 `A2`。 |                          |
+|  t12   |                             | 在集合 `C0` 上进行搜索。 |
+|  t15   | 从集合 `C0` 删除数据 `A1`。 |                          |
+|  t17   |                             | 在集合 `C0` 上进行搜索。 |
 
 理想情况下，用户 2 应该能够看到：
 
@@ -71,4 +77,31 @@ TSO 时间戳是一个 `uint64` 值，由物理部分和逻辑部分组成。下
 
 一个通用原则是，在 `MsgStream` 中，来自同一代理的 `InsertMsgs` 的时间戳必须是递增的。然而，来自不同代理的 `InsertMsgs` 没有这样的规则。
 
-下图是一个 `MsgStream` 中的 `InsertMsgs` 的示例。该代码片段包含五个 `InsertMsgs`，其中三个来自 `Proxy1`，其余
+The following figure is an example of `InsertMsgs` in a `MsgStream`. The snippet contains five `InsertMsgs`, three of which are from `Proxy1` and the rest from `Proxy2`.
+
+![msgstream](../../../assets/msgstream.png "An example of a MsgStream with five InsertMsgs.")
+
+The timestamps of the three `InsertMsgs` from `Proxy1` are incremental, and so are the two `InsertMsgs` from `Proxy2`. However, there is no particular order among `Proxy1` and `Proxy2` `InsertMsgs` .
+
+One possible scenario is that when reading a message with timestamp `110` from `Proxy2`, Milvus finds that the message with timestamp `80` from `Proxy1` is still in the `MsgStream`. Therefore, Milvus introduces a time synchronization system, timetick, to ensure that when reading a message from `MsgStream`, all messages with smaller timestamp values must be consumed.
+
+![time_synchronization](../../../assets/time_synchronization.png "The time synchronization system in Milvus.")
+
+As shown in the figure above,
+
+- Each proxy periodically (every 200 ms by default) reports the largest timestamp value of the latest `InsertMsg` in the `MsgStream`to root coord.
+
+- Root coord identifies the minimum timestamp value on this `Msgstream`, no matter to which proxy does the `InsertMsgs` belong. Then root coord inserts this minimum timestamp into the `Msgstream`. This timestamp is also called timetick.
+
+- When the consumer components reads the timetick inserted by root coord, they understand that all insert messages with smaller timestamp values have been consumed. Therefore, relevant requests can be executed safely without interrupting the order.
+
+The following figure is an example of the `Msgstream` with a timetick inserted.
+
+![timetick](../../../assets/timetick.png "Msgstream with a timetick inserted.")
+
+`MsgStream` processes the messages in batches according to the time tick to ensure that the output messages meet the requirements of timestamp.
+
+## What's next
+
+- Learn about the concept of [timestamp](timestamp.md).
+- Learn about the [data processing workflow](data_processing.md) in Milvus.

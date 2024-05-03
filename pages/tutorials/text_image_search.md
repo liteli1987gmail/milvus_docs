@@ -26,4 +26,4 @@ title: 文本到图像搜索引擎
 
 在本教程中，你将学习如何构建一个文本到图像的搜索引擎。本教程使用 CLIP 模型提取图像特征并将其转换为向量。然后，这些图像向量存储在 Milvus 向量数据库中。当用户输入查询文本时，这些文本也使用相同的机器学习模型 CLIP 转换为嵌入向量。随后，在 Milvus 中执行向量相似性搜索，以检索与输入文本向量最相似的图像向量。
 
-![Text_image_search](/text_to_image_workflow.png "文本到图像搜索引擎的工作流程。")
+![Text_image_search](/public/assets/text_to_image_workflow.png "文本到图像搜索引擎的工作流程。")

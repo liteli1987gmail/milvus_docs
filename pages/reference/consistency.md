@@ -3,6 +3,7 @@ id: consistency.md
 summary: 了解 Milvus 中的四种一致性级别。
 title: 一致性
 ---
+
 # 一致性
 
 本主题介绍了 Milvus 中的四种一致性级别以及它们最适合的场景。本主题还涵盖了在 Milvus 中确保一致性的机制。
@@ -23,7 +24,7 @@ Milvus 支持四种一致性级别：强一致性、有界过时性、会话一�
 
 强一致性是最高和最严格的一致性级别。它确保用户可以读取数据的最新版本。
 
-![强一致性](/Consistency_Strong.png "强一致性的示意图。")
+![强一致性](/public/assets/Consistency_Strong.png "强一致性的示意图。")
 
 根据 PACELC 定理，如果将一致性级别设置为强，延迟将增加。因此，我们建议在功能测试期间选择强一致性，以确保测试结果的准确性。强一致性也最适合对数据一致性有严格要求的应用程序，即使牺牲搜索速度。例如，处理订单支付和账单的在线金融系统。
 
@@ -31,7 +32,7 @@ Milvus 支持四种一致性级别：强一致性、有界过时性、会话一�
 
 顾名思义，有界过时性允许在一定时间内数据不一致。然而，通常在这个时间之外，数据总是全局一致的。
 
-![有界过时性一致性](/Consistency_Bounded.png "有界过时性一致性的示意图。")
+![有界过时性一致性](/public/assets/Consistency_Bounded.png "有界过时性一致性的示意图。")
 
 有界过时性适用于需要控制搜索延迟并且可以接受偶尔数据不可见的场景。例如，在像视频推荐引擎这样的推荐系统中，数据不可见有时对整体召回率的影响很小，但可以显著提高推荐系统的性能。
 
@@ -39,7 +40,7 @@ Milvus 支持四种一致性级别：强一致性、有界过时性、会话一�
 
 会话确保在相同会话期间，所有数据写入都可以立即在读取中被感知。换句话说，当您通过一个客户端写入数据时，新插入的数据立即变得可搜索。
 
-![会话一致性](/Consistency_Session.png "会话一致性的示意图。")
+![会话一致性](/public/assets/Consistency_Session.png "会话一致性的示意图。")
 
 我们建议为那些在同一会话中对数据一致性有高需求的场景选择会话作为一致性级别。一个例子可以是从一个图书馆系统中删除一个图书条目的数据，确认删除并刷新页面（不同的会话）后，该图书不应再在搜索结果中可见。
 
@@ -47,7 +48,7 @@ Milvus 支持四种一致性级别：强一致性、有界过时性、会话一�
 
 没有保证读取和写入的顺序，副本最终会收敛到相同的状态，前提是没有进一步的写入操作。在“最终”一致性下，副本开始使用最新更新的值处理读取请求。最终一致性是四个级别中最弱的。
 
-![最终一致性](/Consistency_Eventual.png "最终一致性的示意图。")
+![最终一致性](/public/assets/Consistency_Eventual.png "最终一致性的示意图。")
 
 然而，根据 PACELC 定理，通过牺牲一致性，可以极大地缩短搜索延迟。因此，最终一致性最适合对数据一致性要求不高但需要极快搜索性能的场景。一个例子可以是以最终一致性级别检索亚马逊产品的评论和评分。
 
@@ -59,4 +60,17 @@ GuaranteeTs 用于通知查询节点，在 GuaranteeTs 之前的所有数据都�
 
 - **强一致性**：GuaranteeTs 设置为与最新系统时间戳相同，查询节点等待直到所有在最新系统时间戳之前的数据都可以被看到，然后处理搜索或查询请求。
 
-- **有界过时性**：GuaranteeTs 设置为相对小于最新系统时间戳，查询节点
+- **Bounded staleness**: GuaranteeTs is set relatively smaller than the newest system timestamp, and query nodes search on a tolerable, less updated data view.
+
+- **Session**: The client uses the timestamp of the latest write operation as the GuaranteeTs, so that each client can at least retrieve the data inserted by the same client.
+
+- **Eventually**: GuaranteeTs is set to a very small value to skip the consistency check. Query nodes search immediately on the existing data view.
+
+See [How GuaranteeTs Works](https://github.com/milvus-io/milvus/blob/f3f46d3bb2dcae2de0bdb7bc0f7b20a72efceaab/docs/developer_guides/how-guarantee-ts-works.md) for more information about the mechanism behind ensuring different levels of consistency in Milvus.
+
+## What's next
+
+- Learn how to tune consistency level when:
+  - [conducting a single-vector search](single-vector-search.md)
+  - [conducting a multi-vector search](multi-vector-search.md)
+  - [conducting a scalar query](get-and-scalar-query.md)

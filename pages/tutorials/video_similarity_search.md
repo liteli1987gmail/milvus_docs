@@ -1,13 +1,17 @@
 ---
-title: 视频相似性搜索
+id: video_similarity_search.md
+summary: Build a video similarity search system with Milvus.
+title: Video Similarity Search
 ---
 
 # 视频相似性搜索
 
 本教程演示了如何使用 Milvus（开源向量数据库）构建视频相似性搜索系统。
+
 - [打开 Jupyter 笔记本](https://github.com/towhee-io/examples/tree/main/video/reverse_video_search)
 
 使用的机器学习模型和第三方软件包括：
+
 - OpenCV
 - ResNet-50
 - MySQL
@@ -23,5 +27,5 @@ title: 视频相似性搜索
 
 <br/>
 
-![video_search](/video_search.png "视频相似性搜索系统的流程。")
-![video_search_demo](/video_search_demo.gif "视频相似性搜索系统的演示。")
+![video_search](/public/assets/video_search.png "视频相似性搜索系统的流程。")
+![video_search_demo](/public/assets/video_search_demo.gif "视频相似性搜索系统的演示。")

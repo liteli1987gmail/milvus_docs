@@ -1,3 +1,9 @@
+---
+id: replica.md
+summary: Learn about in-memory replica in Milvus.
+title: In-Memory Replica
+---
+
 # 内存副本
 
 本文介绍了 Milvus 中的内存副本（复制）机制，该机制通过在工作内存中实现多个段的复制来提高性能和可用性。

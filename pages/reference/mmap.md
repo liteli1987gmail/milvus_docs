@@ -1,3 +1,9 @@
+---
+id: mmap.md
+summary: MMap enables more data in a single node.
+title: MMap-enabled Data Storage
+---
+
 # MMap 启用的数据存储
 
 在 Milvus 中，内存映射文件允许将文件内容直接映射到内存中。这个特性增强了内存效率，特别是在可用内存稀缺但完全加载数据不可行的情况下。这种优化机制可以在确保性能达到一定限制的同时增加数据容量；然而，当数据量超过内存太多时，搜索和查询性能可能会严重下降，因此请根据需要选择开启或关闭此特性。
@@ -20,7 +26,7 @@ queryNode:
     # 为整个集群设置内存映射属性
     mmapEnabled: false | true
     # 设置内存映射目录路径，如果您离开 mmapDirPath 未指定，默认情况下内存映射文件将存储在 {localStorage.path}/ mmap 中。
-    mmapDirPath: 任何/有效/路径 
+    mmapDirPath: any/valid/path
 ....
 ```
 
@@ -65,7 +71,7 @@ extraConfigFiles:
          mmap:
            mmapEnabled: true
            mmapDirPath: any/valid/path
-        
+
 helm upgrade <milvus-release> --reuse-values -f new-values.yaml milvus/milvus
 ```
 
@@ -79,7 +85,7 @@ spec:
       mmap:
         mmapEnabled: true
         mmapDirPath: any/valid/path
-      
+
  kubectl patch milvus <milvus-name> --patch-file patch.yaml
 ```
 
@@ -97,6 +103,34 @@ spec:
 
 ## 常见问题解答
 
-- __在哪些场景下建议启用内存映射？启用此特性后的权衡是什么？__
+- **In which scenarios is it recommended to enable memory mapping? What are the trade-offs after enabling this feature?**
 
-    当内存有限或性能要求适中时，建议启用内存映射。启用此特性可以增加数据加载容量。例如，在配置为 2 个 CPU 和 8 GB 内存的情况下，启用内存映射可以允许加载的数据量
+  Memory mapping is recommended when memory is limited or when performance requirements are moderate. Enabling this feature increases the capacity for data loading. For example, with a configuration of 2 CPUs and 8 GB of memory, enabling memory mapping can allow for up to 4 times more data to be loaded compared to not enabling it. The impact on performance varies:
+
+  - With sufficient memory, the expected performance is similar to that of using only memory.
+
+  - With insufficient memory, the expected performance may degrade.
+
+- **What is the relationship between collection-level and index-level configurations?**
+
+  Collection-level and index-level are not inclusive relationships, collection-level controls whether the original data is mmap-enabled or not, whereas index-level is for vector indexes only.
+
+- **Is there any recommended index type for memory mapping?**
+
+  Yes, HNSW is recommended for enable mmap. We have tested HNSW, IVF_FLAT, IVF_PQ/SQ series indexes before, the performance of IVF series indexes dropped seriously, while the performance drop of turning on mmap for HNSW indexes is still within expectation.
+
+- **What kind of local storage is required for memory mapping?**
+
+  A high-quality disk enhances performance, with NVMe drives being the preferred option.
+
+- **Can scalar data be memory-mapped?**
+
+  Memory mapping can be applied to scalar data, but it is not applicable to indexes built on scalar fields.
+
+- **How is the priority determined for memory mapping configurations across different levels?**
+
+  In Milvus, when memory mapping configurations are explicitly defined across multiple levels, index-level and collection-level configurations share the highest priority, which is then followed by cluster-level configurations.
+
+- **If I upgrade from Milvus 2.3 and have configured the memory mapping directory path, what will happen?**
+
+  If you upgrade from Milvus 2.3 and have configured the memory mapping directory path (`mmapDirPath`), your configuration will be retained, and the default setting for memory mapping enabled (`mmapEnabled`) will be `true`. It's important to migrate the metadata to synchronize the configuration of your existing memory-mapped files. For more details, refer to [Migrate the metadata](https://milvus.io/docs/upgrade_milvus_standalone-docker.md#Migrate-the-metadata).
