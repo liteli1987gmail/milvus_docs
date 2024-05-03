@@ -143,21 +143,21 @@ for batch in tqdm(np.array_split(simplified_records, (COUNT/BATCH_SIZE) + 1)):
 time.sleep(10)
 ```
 
-## Ask questions
+## 提出问题
 
-Once all the data is inserted into the Milvus collection, we can ask the system questions by taking our question phrase, embedding it with Cohere, and searching with the collection.
+一旦所有数据都插入到Milvus集合中，我们就可以通过提取我们的问题短语，将其嵌入Cohere，并使用集合进行搜索来向系统提问。
 
 <div class="alert note">
 
-Searches performed on data right after insertion might be a little slower as searching unindexed data is done in a brute-force manner. Once the new data is automatically indexed, the searches will speed up.
+插入后立即对数据执行的搜索可能会慢一点，因为搜索未索引的数据是以蛮力方式进行的。一旦新数据被自动编入索引，搜索速度就会加快。
 
 </div>
 
 ```python
-# Search the cluster for an answer to a question text
+# 在集群中搜索问题文本的答案
 def search(text, top_k = 5):
 
-    # AUTOINDEX does not require any search params
+    # AUTOINDEX不需要任何搜索参数
     search_params = {}
 
     results = collection.search(
@@ -179,15 +179,15 @@ def search(text, top_k = 5):
 
     return ret
 
-# Ask these questions
+# 提出以下问题
 search_questions = ['What kills bacteria?', 'What\'s the biggest dog?']
 
-# Print out the results in order of [answer, similarity score, original question]
+# 按[答案、相似性得分、原始问题]的顺序打印结果
 
 ret = [ { "question": x, "candidates": search(x) } for x in search_questions ]
 ```
 
-The output should be similar to the following:
+会输出类似于以下内容：
 
 ```shell
 # Output

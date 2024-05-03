@@ -112,13 +112,14 @@ object Hello extends App {
 }
 ```
 
-After executing the above code, you can view the inserted data in Milvus using SDK or Attu (A Milvus Dashboard). You can find a collection named `hello_spark_milvus` created with 4 entities already inserted into it.
+执行完上述代码后，您可以使用SDK或Attu(Milvus Dashboard)在Milvus中查看插入的数据。您可以找到一个名为 `hello_park_milvus` 的集合，其中已插入4个实体。
 
-## Features & concepts
+## 特点和概念
 
-### Milvus options
+### Milvus选项
 
-In the [Quick Start](#Quick-start) section, we have shown setting options during operations with Milvus. These options are abstracted as Milvus Options. They are used to create connections to Milvus and control other Milvus behaviors. Not all of the options are mandatory.
+在[快速启动](#Quick-start)部分，我们展示了Milvus操作期间的设置选项。这些选项被抽象为Milvus选项。它们用于创建与Milvus的连接并控制其他Milvus行为。并非所有选项都是强制性的。
+
 
 | Option Key                          | Default Value    | Description                                                                                                                                                                                                |
 | ----------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -142,22 +143,24 @@ In the [Quick Start](#Quick-start) section, we have shown setting options during
 | `milvus.storage.password`           | `minioadmin`     | Password of the Milvus storage. This should be the same as `minio.secretAccessKey` in [milvus.yaml](https://github.com/milvus-io/milvus/blob/master/configs/milvus.yaml).                                  |
 | `milvus.storage.useSSL`             | `false`          | Whether to use SSL for the Milvus storage. This should be the same as `minio.useSSL` in [milvus.yaml](https://github.com/milvus-io/milvus/blob/master/configs/milvus.yaml).                                |
 
-## Milvus data format
+## Milvus数据格式
 
-The Spark-Milvus Connector supports reading and writing data in the following Milvus data formats:
+Spark Milvus连接器支持以以下Milvus数据格式读取和写入数据：
 
-- `milvus`: Milvus data format for seamless conversion from Spark DataFrame to Milvus entities.
-- `milvusbinlog`: Milvus data format for reading Milvus build-in binlog data.
-- `mjson`: Milvus JSON format for bulk-inserting data into Milvus.
+- `milvus`：用于从Spark DataFrame无缝转换到milvus实体的milvus数据格式。
+- `milvusbinlog`：用于读取Milvus内置binlog数据的Milvus数据格式。
+- `mjson`：用于将数据批量插入Milvus的Milvus JSON格式。
 
 ### milvus
 
-In [Quick start](#Quick-start), we use the **milvus** format to write sample data into a Milvus cluster. The **milvus** format is a new data format that supports seamlessly writing Spark DataFrame data into Milvus Collections. This is achieved by batch calls to the Insert API of Milvus SDK. If a collection doesn't exist in Milvus, a new collection will be created based on the schema of the Dataframe. However, the automatically created collection may not support all features of the collection schema. Therefore, it is recommended to create a collection via SDK first and then use spark-milvus for writing. For further information, please refer to [the demo](https://github.com/zilliztech/spark-milvus/blob/main/examples/src/main/scala/InsertDemo.scala).
+在 [快速开始](#Quick-start), 我们使用**milvus**格式将样本数据写入milvus集群。**milvus**格式是一种新的数据格式，支持将Spark DataFrame数据无缝写入milvus Collections。这是通过批量调用Milvus SDK的Insert API来实现的。如果Milvus中不存在集合，将根据Dataframe的模式创建一个新的集合。但是，自动创建的集合可能不支持集合架构的所有功能。因此，建议先通过SDK创建一个集合，然后使用spark-milvus进行编写。有关更多信息，请参阅[演示](https://github.com/zilliztech/spark-milvus/blob/main/examples/src/main/scala/InsertDemo.scala).
 
 ### milvusbinlog
 
-The new data format **milvusbinlog** is for reading Milvus built-in binlog data. Binlog is Milvus's internal data storage format based on parquet. Unfortunately, it can't be read by a regular parquet library, so we implemented this new data format to help Spark job read it.
-It is not recommended to use **milvusbinlog** directly unless you are familiar with the milvus internal storage details. We suggest using the [MilvusUtils](#MilvusUtils) function that will be introduced in the next section.
+新的数据格式 **milvusbinlog** 用于读取Milvus内置的binlog数据。Binlog是Milvus基于镶木地板的内部数据存储格式。不幸的是，它不能被普通的镶木地板库读取，所以我们实现了这个新的数据格式来帮助Spark job读取它。
+
+除非您熟悉milvus内部存储的详细信息，否则不建议直接使用**milvusbinlog**。我们建议使用[MilvusUtils](#MilvusUtils)函数，该函数将在下一节中介绍。
+
 
 ```scalar
 val df = spark.read
@@ -168,8 +171,8 @@ val df = spark.read
 
 ### mjson
 
-Milvus provides [Bulkinsert](https://milvus.io/docs/bulk_insert.md) functionality for better writing performance when operating with large datasets. However, the JSON format used by Milvus is slightly different than Spark's default JSON output format.
-To resolve this, we introduce **mjson** data format to generate data that meets Milvus requirements. Here is an example that shows the difference between JSON-lines and **mjson**:
+Milvus提供[Bulkinsert](https://milvus.io/docs/bulk_insert.md•在使用大型数据集操作时提供更好的写入性能的功能。然而，Milvus使用的JSON格式与Spark默认的JSON输出格式略有不同。
+为了解决这个问题，我们引入了**mjson**数据格式来生成满足Milvus要求的数据。以下示例显示了JSON行和**mjson**之间的区别：
 
 - JSON-lines:
 
@@ -195,15 +198,15 @@ To resolve this, we introduce **mjson** data format to generate data that meets 
   }
   ```
 
-This will be improved in the future. We recommend using parquet format in spark-milvus intergration if your Milvus version is v2.3.7+ which supports bulkinsert with Parquet format. See [Demo](https://github.com/zilliztech/spark-milvus/blob/main/examples/src/main/scala/BulkInsertDemo.scala) on Github.
+这将在未来得到改善。如果您的milvus版本是v2.3.7+，支持parquet格式的bulksert，我们建议在spark milvus集成中使用parquet形式。参见[演示](https://github.com/zilliztech/spark-milvus/blob/main/examples/src/main/scala/BulkInsertDemo.scala)在Github上。
 
 ## MilvusUtils
 
-MilvusUtils contains several useful util functions. Currently it is only supported in Scala. More usage examples are in [Advanced Usage](#Advanced-Usage) section.
+MilvusUtils包含几个有用的util函数。目前只有Scala支持它。更多用法示例见[高级用法]（#高级用法）部分。
 
 ### MilvusUtils.readMilvusCollection
 
-**MilvusUtils.readMilvusCollection** is a simple interface for loading a whole Milvus collection into a Spark Dataframe. It wraps various operations, including calling Milvus SDK, reading **milvusbinlog** and common union/join operations.
+**readMilvusCollection**是一个简单的接口，用于将整个Milvus集合加载到Spark Dataframe中。它封装了各种操作，包括调用MilvusSDK、读取**milvusbinlog**和常见的联合/联接操作。
 
 ```scala
 val collectionDF = MilvusUtils.readMilvusCollection(spark, milvusOptions)
@@ -211,26 +214,26 @@ val collectionDF = MilvusUtils.readMilvusCollection(spark, milvusOptions)
 
 ### MilvusUtils.bulkInsertFromSpark
 
-**MilvusUtils.bulkInsertFromSpark** provides a convenient way to import Spark output files into Milvus in a large batch. It wraps the **Bullkinsert** API of the Milvus SDK.
+**MilvusUtils.bulkInsertFromSpark**提供了一种将Spark输出文件大批量导入Milvus的方便方法。它包装了Milvus SDK的**Bullkinsert**API。
 
 ```scala
 df.write.format("parquet").save(outputPath)
 MilvusUtils.bulkInsertFromSpark(spark, milvusOptions, outputPath, "parquet")
 ```
 
-## Advanced Usage
+## 高级使用
 
-In this section, you will find advanced usage examples of the Spark-Milvus Connector for data analysis and migration. For more demos, see [examples](https://github.com/zilliztech/spark-milvus/tree/main/examples/src/main/scala).
+在本节中，您将找到用于数据分析和迁移的Spark Milvus连接器的高级使用示例。有关更多演示，请参阅[示例](https://github.com/zilliztech/spark-milvus/tree/main/examples/src/main/scala).
 
 ### MySQL -> embedding -> Milvus
 
-In this demo, we will
+在这个演示中，我们将
 
-1. Read data from MySQL through the Spark-MySQL Connector,
-2. Generate embedding (using Word2Vec as an example), and
-3. Write embedded data into Milvus.
+1. 通过Spark MySQL连接器从MySQL中读取数据，
+2. 生成嵌入（以Word2Verc为例），以及
+3. 将嵌入的数据写入Milvus。
 
-To enable the Spark-MySQL Connector, you need to add the following dependency to your Spark environment:
+要启用Spark MySQL连接器，您需要将以下依赖项添加到您的Spark环境中：
 
 ```
 spark-shell --jars spark-milvus-1.0.0-SNAPSHOT.jar,mysql-connector-j-x.x.x.jar
@@ -313,16 +316,16 @@ object Mysql2MilvusDemo  extends App {
 
 ### Milvus -> Transform -> Milvus
 
-In this demo, we will
+在这个演示中，我们将
 
-1. Read data from a Milvus collection,
-2. Apply a transformation (using PCA as an example), and
-3. Write the transformed data into another Milvus via the Bulkinsert API.
+1. 从Milvus集合读取数据，
+2. 应用变换（以PCA为例），以及
+3. 通过Bulkinsert API将转换后的数据写入另一个Milvus。
 
 <div class="alert notes">
 
-The PCA model is a tranformation model that reduces the dimensionality of embedding vectors, which is a common operation in machine learning.
-You can add any other processing operations, such as filtering, joining, or normalizing, to the transformation step.
+PCA模型是一种降低嵌入向量维数的变换模型，这是机器学习中的常见操作。
+您可以将任何其他处理操作（如过滤、连接或规范化）添加到转换步骤中。
 
 </div>
 
@@ -439,27 +442,27 @@ object TransformDemo extends App {
 
 ### Databricks -> Zilliz Cloud
 
-If you are using Zilliz Cloud (the managed Milvus service), you can leverage its convenient Data Import API. Zilliz Cloud provides comprehensive tools and documentation to help you efficiently move your data from various data sources, including Spark and Databricks. Simply set up an S3 bucket as an intermediary and open its access to your Zilliz Cloud account. The Zilliz Cloud's Data Import API will automatically load the full batch of data from the S3 bucket to your Zilliz Cloud cluster.
+如果您正在使用Zilliz Cloud（托管Milvus服务），您可以利用其方便的数据导入API。Zilliz Cloud提供全面的工具和文档，帮助您高效地从各种数据源（包括Spark和Databricks）中移动数据。只需设置一个S3 bucket作为中介，并打开它对您的Zilliz Cloud帐户的访问权限。Zilliz Cloud的Data Import API将自动将S3存储桶中的整批数据加载到Zilliz云集群中。
 
-**Preparations**
+**准备工作**
 
-1. Load the Spark runtime by adding a jar file to your Databricks Cluster.
+1. 通过向Databricks集群添加一个jar文件来加载Spark运行时。
 
-   You can install a library in different ways. This screenshot shows uploading a jar from local to the cluster. For more information, see [Cluster Libraries](https://docs.databricks.com/en/libraries/cluster-libraries.html) in the Databricks documentation.
+可以用不同的方式安装库。这个屏幕截图显示了将一个jar从本地上传到集群。有关详细信息，请参阅[群集库](https://docs.databricks.com/en/libraries/cluster-libraries.html)在Databricks文档中。
 
-   ![Install Databricks Library](/public/assets/install-databricks-library.png)
+![安装Databricks库]（/public/assets/Install Databricks Library.png）
 
-2. Create an S3 bucket and configure it as an external storage location for you Databricks cluster.
+2. 创建一个S3 bucket，并将其配置为Databricks集群的外部存储位置。
 
-   Bulkinsert required data to be stored in a temporary bucket so that Zilliz Cloud can import the data in a batch. You can create an S3 bucket and configure it as an external location of databricks. Please refer to [External locations](https://docs.databricks.com/en/sql/language-manual/sql-ref-external-locations.html) for details.
+Bulkinsert要求将数据存储在临时存储桶中，以便Zilliz Cloud可以批量导入数据。您可以创建一个S3存储桶，并将其配置为数据块的外部位置。请参阅[外部位置](https://docs.databricks.com/en/sql/language-manual/sql-ref-external-locations.html)详细信息。
 
-3. Secure you Databricks credentials.
+3. 保护您的Databricks凭据。
 
-   For more details, refer to the instructions on the blog [Securely Managing Credentials in Databricks](https://www.databricks.com/blog/2018/06/04/securely-managing-credentials-in-databricks.html).
+有关更多详细信息，请参阅博客上的说明[在Databricks中安全管理凭据](https://www.databricks.com/blog/2018/06/04/securely-managing-credentials-in-databricks.html).
 
 **Demo**
 
-Here's a code snippet showcasing the batch data migration process. Similar to the above Milvus example, you just need to replace the credential and S3 bucket address.
+下面是一个代码片段，展示了批处理数据迁移过程。与上面的Milvus示例类似，您只需要替换凭据和S3存储桶地址。
 
 ```scala
 // Write the data in batch into the Milvus bucket storage.
@@ -488,6 +491,6 @@ MilvusUtils.bulkInsertFromSpark(spark, targetMilvusOptions, outputPath, "mjson")
 
 ## Hands-on
 
-To help you quickly get started with the Spark-Milvus Connector, we have prepared a notebook that walks you through both the streaming and batch data transfer processes, with Milvus and Zilliz Cloud.
+为了帮助您快速开始使用Spark Milvus连接器，我们准备了一个笔记本，通过Milvus和Zilliz Cloud引导您完成流媒体和批量数据传输过程。
 
 - [Spark-Milvus Connector Hands-on](https://zilliz.com/databricks_zilliz_demos)

@@ -84,28 +84,29 @@ index = VectorStoreIndex.from_documents(
 
 ## 查询数据
 
-Now that you have our document stored in the Milvus collection, you can ask questions against the collection. The collection will use its data as the knowledge base for ChatGPT to generate answers.
+现在您已经将我们的文档存储在Milvus集合中，您可以针对该集合提出问题。该集合将使用其数据作为ChatGPT生成答案的知识库。
 
 ```python
 query_engine = index.as_query_engine()
-response = query_engine.query("What did the author learn?")
+response = query_engine.query("作者学到了什么？")
 print(textwrap.fill(str(response), 100))
 
-# The author learned several things during their time at Interleaf. They learned that it's better for technology companies to be run by product people than sales people, that code edited by too many people leads to bugs, that cheap office space is not worth it if it's depressing, that planned meetings are inferior to corridor conversations, that big bureaucratic customers can be a dangerous source of money, and that there's not much overlap between conventional office hours and the optimal time for hacking. However, the most important thing the author learned is that the low end eats the high end, meaning that it's advantageous to be the "entry level" option because if you're not, someone else will be and will surpass you.
+# 作者在Interleaf期间学到了一些东西。他们了解到，科技公司最好由产品人员管理，而不是由销售人员管理，太多人编辑的代码会导致漏洞，如果令人沮丧，廉价的办公空间是不值得的，有计划的会议不如走廊对话，大的官僚客户可能是危险的资金来源，传统的办公时间和黑客攻击的最佳时间之间没有太多重叠。然而，作者学到的最重要的一点是，低端吃掉了高端，这意味着成为“入门级”的选择是有利的，因为如果你不是，其他人将超越你。
 ```
 
-Let's give it another try.
+让我们再试一次。
 
 ```python
-response = query_engine.query("What was a hard moment for the author?")
+response = query_engine.query("作者的艰难时刻是什么？")
 print(textwrap.fill(str(response), 100))
 
-# The author experienced a difficult moment when their mother had a stroke and was put in a nursing home. The stroke destroyed her balance, and the author and their sister were determined to help her get out of the nursing home and back to her house.
+#作者经历了一个艰难的时刻，他们的母亲中风了，被送进了疗养院。中风破坏了她的平衡，提交人和他们的妹妹决心帮助她走出疗养院，回到自己的家中。
 ```
 
-## Notes on overwriting the Milvus collection
+## 关于覆盖Milvus集合的说明
 
-If you want to reuse an existing Milvus collection and overwrite its data, you can use the `overwrite` argument when creating the `MilvusVectorStore` object.
+如果要重用现有的Milvus集合并覆盖其数据，可以在创建 `MilvusVectorStore` 对象时使用 `overwrite` 参数。
+
 
 ```python
 vector_store = MilvusVectorStore(
@@ -114,7 +115,7 @@ vector_store = MilvusVectorStore(
 )
 ```
 
-In such a case, when you run the following code, all the data in the Milvus collection will be erased and replaced with the new data.
+在这种情况下，当您运行以下代码时，Milvus集合中的所有数据都将被擦除并替换为新数据。
 
 ```python
 storage_context = StorageContext.from_defaults(vector_store=vector_store)
@@ -124,9 +125,9 @@ index = VectorStoreIndex.from_documents(
 )
 ```
 
-Now when you ask the same questions again, you will receive different answers.
+现在，当你再次问同样的问题时，你会得到不同的答案。
 
-If you want to append additional data to an existing Milvus collection, you should not use the `overwrite` argument or set it to `False` when creating the `MilvusVectorStore` object.
+如果要将其他数据附加到现有Milvus集合，则在创建“MilvusVectorStore”对象时不应使用“overwrite”参数或将其设置为“False”。
 
 ```python
 vector_store = MilvusVectorStore(
@@ -135,7 +136,7 @@ vector_store = MilvusVectorStore(
 )
 ```
 
-In such a case, when you run the following code, the new data will be appended to the existing data in the Milvus collection.
+在这种情况下，当您运行以下代码时，新数据将附加到Milvus集合中的现有数据。
 
 ```python
 storage_context = StorageContext.from_defaults(vector_store=vector_store)
@@ -144,6 +145,6 @@ index = VectorStoreIndex.from_documents(
 )
 ```
 
-## Conclusion
+## 结论
 
-In this article, we demonstrated how to build a (RAG) system using LlamaIndex and Milvus. We used the OpenAI as the LLM backend and prepared the example data for the RAG system. We also demonstrated how to query the data and generate new text using the ChatGPT model.
+在本文中，我们演示了如何使用LlamaIndex和Milvus构建（RAG）系统。我们使用OpenAI作为LLM后端，并为RAG系统准备了示例数据。我们还演示了如何使用ChatGPT模型查询数据和生成新文本。

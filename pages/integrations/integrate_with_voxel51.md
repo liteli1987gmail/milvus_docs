@@ -103,13 +103,13 @@ import fiftyone.brain as fob
 fob.compute_similarity(..., backend="milvus", ...)
 ```
 
-Alternatively, you can permanently configure FiftyOne to use the Milvus backend by setting the following environment variable:
+或者，您可以通过设置以下环境变量，将FiftyOne永久配置为使用Milvus后端：
 
 ```shell
 export FIFTYONE_BRAIN_DEFAULT_SIMILARITY_BACKEND=milvus
 ```
 
-or by setting the `default_similarity_backend` parameter of your [brain config](https://docs.voxel51.com/user_guide/brain.html#brain-config) located at `~/.fiftyone/brain_config.json`:
+或者通过设置[brain config](https://docs.voxel51.com/user_guide/brain.html#brain-config)位于`~/.5ftyone/brain_config.json` 的`default_simility_backend`参数：
 
 ```json
 {
@@ -117,13 +117,13 @@ or by setting the `default_similarity_backend` parameter of your [brain config](
 }
 ```
 
-## Authentication
+## 身份验证
 
-If you are using a custom Milvus server, you can provide your credentials in a variety of ways.
+如果您使用的是自定义Milvus服务器，您可以通过多种方式提供凭据。
 
-### Environment variables (recommended)
+### 环境变量（推荐）
 
-The recommended way to configure your Milvus credentials is to store them in the environment variables shown below, which are automatically accessed by FiftyOne whenever a connection to Milvus is made.
+配置Milvus凭据的建议方法是将它们存储在下面显示的环境变量中，只要连接到Milvus，FiftyOne就会自动访问这些环境变量。
 
 ```python
 export FIFTYONE_BRAIN_SIMILARITY_MILVUS_URI=XXXXXX
@@ -141,9 +141,9 @@ export FIFTYONE_BRAIN_SIMILARITY_MILVUS_SERVER_PEM_PATH=XXXXXX
 export FIFTYONE_BRAIN_SIMILARITY_MILVUS_SERVER_NAME=XXXXXX
 ```
 
-### FiftyOne Brain config
+### FiftyOne大脑配置
 
-You can also store your credentials in your [brain config](https://docs.voxel51.com/user_guide/brain.html#brain-config) located at `~/.fiftyone/brain_config.json`:
+你也可以将你的凭据存储在你的 [brain config](https://docs.voxel51.com/user_guide/brain.html#brain-config) 中 , 本地地址为 `~/.fiftyone/brain_config.json`:
 
 ```python
 {
@@ -167,11 +167,11 @@ You can also store your credentials in your [brain config](https://docs.voxel51.
 }
 ```
 
-Note that this file will not exist until you create it.
+请注意，在创建此文件之前，该文件将不存在。
 
-### Keyword arguments
+### 关键字参数
 
-You can manually provide your Milvus credentials as keyword arguments each time you call methods like [`compute_similarity()`](https://docs.voxel51.com/api/fiftyone.brain.html#fiftyone.brain.compute_similarity) that require connections to Milvus:
+每次调用像[`compute_smilarity()`]这样的方法时，您可以手动将Milvus凭据作为关键字参数提供(https://docs.voxel51.com/api/fiftyone.brain.html#fiftyone.brain.compute_similarity)需要连接Milvus：
 
 ```python
 import fiftyone.brain as fob
@@ -196,7 +196,7 @@ milvus_index = fob.compute_similarity(
 )
 ```
 
-Note that, when using this strategy, you must manually provide the credentials when loading an index later via [`load_brain_results()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.load_brain_results):
+请注意，使用此策略时，必须在稍后通过[`load_brain_results()`]加载索引时手动提供凭据(https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.load_brain_results):
 
 ```python
 milvus_index = dataset.load_brain_results(
@@ -217,19 +217,19 @@ milvus_index = dataset.load_brain_results(
 )
 ```
 
-### Milvus config parameters
+### Milvus配置参数
 
-The Milvus backend supports a variety of query parameters that can be used to customize your similarity queries. These parameters include:
+Milvus后端支持各种查询参数，这些参数可用于自定义相似性查询。这些参数包括：
 
-- **collection_name** (_None_): the name of the Milvus collection to use or create. If none is provided, a new collection will be created
+-**collection_name**(_None_)：要使用或创建的Milvus集合的名称。如果没有提供，将创建一个新集合
 
-- **metric** (_"dotproduct"_): the embedding distance metric to use when creating a new index. The supported values are (`"dotproduct"`, `"euclidean"`)
+-**metric**(_"dotproduct"_)：创建新索引时使用的嵌入距离度量。支持的值为(`"点积"`，`"欧几里得"`）
 
-- **consistency_level** (_"Session"_): the consistency level to use. Supported values are (`"Strong"`, `"Session"`, `"Bounded"`, `"Eventually"`)
+-**consistency_level**(_"会话"_)：要使用的一致性级别。支持的值为（`"Strong"`、`"Session"`、`"Bounded"`和`"Finally"`）
 
-For detailed information on these parameters, see the [Milvus authentication documentation](authenticate.md) and [Milvus consistency levels documentation](consistency.md).
+有关这些参数的详细信息，请参阅[Milvus身份验证文档](authenticate.md)和[Milvus-consistent-levelsdocumentation](consistent.md)。
 
-You can specify these parameters via any of the strategies described in the previous section. Here’s an example of a [brain config](https://docs.voxel51.com/user_guide/brain.html#brain-config) that includes all of the available parameters:
+您可以通过上一节中描述的任何策略指定这些参数。下面是一个[brain config]的例子(https://docs.voxel51.com/user_guide/brain.html#brain-config），其包括所有可用参数：
 
 ```json
 {
@@ -243,7 +243,7 @@ You can specify these parameters via any of the strategies described in the prev
 }
 ```
 
-However, typically these parameters are directly passed to [`compute_similarity()`](https://docs.voxel51.com/api/fiftyone.brain.html#fiftyone.brain.compute_similarity) to configure a specific new index:
+但是，这些参数通常直接传递给 [`compute_similarity()`](https://docs.voxel51.com/api/fiftyone.brain.html#fiftyone.brain.compute_similarity) 去配置特定的新索引：
 
 ```python
 milvus_index = fob.compute_similarity(
@@ -258,9 +258,9 @@ milvus_index = fob.compute_similarity(
 
 ## Manage brain runs
 
-FiftyOne provides a variety of methods that you can use to manage brain runs.
+FiftyOne 提供了多种方法，可以用来管理 brain 运行。
 
-For example, you can call [`list_brain_runs()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.list_brain_runs) to see the available brain keys on a dataset:
+举个例子, 你可以 [`list_brain_runs()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.list_brain_runs) 查看数据集上可用的 brain 密钥:
 
 ```python
 import fiftyone.brain as fob
@@ -279,22 +279,22 @@ dataset.list_brain_runs(
 )
 ```
 
-Or, you can use [`get_brain_info()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.get_brain_info) to retrieve information about the configuration of a brain run:
+或者，您可以使用 [`get_brain_info()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.get_brain_info) 以检索关于脑运行的配置的信息：
 
 ```python
 info = dataset.get_brain_info(brain_key)
 print(info)
 ```
 
-Use [`load_brain_results()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.load_brain_results) to load the [`SimilarityIndex`](https://docs.voxel51.com/api/fiftyone.brain.similarity.html#fiftyone.brain.similarity.SimilarityIndex) instance for a brain run.
+使用 [`load_brain_results()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.load_brain_results) 去加载 [`SimilarityIndex`](https://docs.voxel51.com/api/fiftyone.brain.similarity.html#fiftyone.brain.similarity.SimilarityIndex) 例子来运行 brain.
 
-You can use [`rename_brain_run()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.rename_brain_run) to rename the brain key associated with an existing similarity results run:
+你可以使用 [`rename_brain_run()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.rename_brain_run) 去重命名与现有相似性结果运行相关联的 brain 密钥:
 
 ```python
 dataset.rename_brain_run(brain_key, new_brain_key)
 ```
 
-Finally, you can use [`delete_brain_run()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.delete_brain_run) to delete a brain run:
+最后，您可以使用 [`delete_brain_run()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.delete_brain_run) 去删除 brain:
 
 ```python
 dataset.delete_brain_run(brain_key)
@@ -302,7 +302,7 @@ dataset.delete_brain_run(brain_key)
 
 <div class="alert note">
 
-Calling [`delete_brain_run()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.delete_brain_run) only deletes the record of the brain run from your FiftyOne dataset; it will not delete any associated Milvus collection, which you can do as follows:
+调用[`delete_brain_run()`](https://docs.voxel51.com/api/fiftyone.core.collections.html#fiftyone.core.collections.SampleCollection.delete_brain_run)仅从FiftyOne数据集中删除大脑运行的记录；它不会删除任何相关的Milvus集合，您可以按如下方式执行：
 
 ```python
 # Delete the Milvus collection
@@ -312,4 +312,5 @@ milvus_index.cleanup()
 
 </div>
 
-For common vector search workflow on a FiftyOne dataset using the Milvus backend, see [Examples here](https://docs.voxel51.com/integrations/milvus.html#examples).
+有关使用Milvus后端在FiftyOne数据集上的常见矢量搜索工作流，请参阅[此处的示例](https://docs.voxel51.com/integrations/milvus.html#examples).
+

@@ -127,7 +127,7 @@ TOP_K = 3
     len(paths)
    ```
 
-2. Preprocessing the data into batches.
+2. 批处理数据。
 
    ```python
    import torch
@@ -138,7 +138,7 @@ TOP_K = 3
    model.eval()
    ```
 
-3. Embedding the data.
+3. 数据降维
 
    ```python
    from torchvision import transforms
@@ -152,7 +152,7 @@ TOP_K = 3
    ])
    ```
 
-4. Inserting the data.
+4. 插入数据.
 
    ```python
    from PIL import Image
@@ -185,14 +185,14 @@ TOP_K = 3
 
    <div class="alert note">
 
-   - This step is relatively time-consuming because embedding takes time. Take a sip of coffee and relax.
-   - PyTorch may not work well with Python 3.9 and earlier versions. Consider using Python 3.10 and later versions instead.
+   - 这一步骤相对耗时，因为降维需要时间。喝一口咖啡放松一下。
+   - PyTorch 可能无法很好地与 Python 3.9 和早期版本配合使用。请考虑使用Python 3.10及更高版本。
 
    </div>
 
-## Performing the search
+## 执行搜索
 
-With all the data inserted into Milvus, we can start performing our searches. In this example, we are going to search for two example images. Because we are doing a batch search, the search time is shared across the images of the batch.
+将所有数据插入Milvus后，我们就可以开始执行搜索了。在本例中，我们将搜索两个示例图像。因为我们正在进行批处理搜索，所以搜索时间在批处理的图像之间共享。
 
 ```python
 import glob
@@ -247,6 +247,6 @@ for hits_i, hits in enumerate(res):
 plt.savefig('search_result.png')
 ```
 
-The search result image should be similar to the following:
+搜索结果图像应类似于以下内容：
 
-![Image search output](../../../assets/integrate_with_pytorch.png)
+![Image search output](/public/assets/integrate_with_pytorch.png)

@@ -137,7 +137,7 @@ for x in search_terms:
     print()
 ```
 
-You should see the following as the output:
+您应该看到以下内容作为输出：
 
 ```
 Search term: self-improvement
