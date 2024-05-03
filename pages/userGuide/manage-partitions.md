@@ -11,7 +11,7 @@ title: 管理分区
 
 在 Milvus 中，分区代表集合的一个子分区。此功能允许将集合的物理存储划分为多个部分，通过将焦点缩小到较小的数据子集而不是整个集合，从而提高查询性能。
 
-创建集合时，至少会自动创建一个名为 __default__ 的默认分区。您可以在集合中创建最多 4,096 个分区。
+创建集合时，至少会自动创建一个名为 **default** 的默认分区。您可以在集合中创建最多 4,096 个分区。
 
 <div class="admonition note">
 
@@ -152,5 +152,196 @@ print(res)
 # 释放集合
 client.release_collection(collection_name="quick_setup")
 
-# 检查加载状态
-res = client.get_load_state
+
+# Check the load status
+res = client.get_load_state(collection_name="quick_setup")
+print(res)
+
+# Output
+#
+# {
+#     "state": "<LoadState: Loaded>"
+# }
+
+res = client.get_load_state(
+    collection_name="quick_setup",
+    partition_name="partitionA"
+)
+
+print(res)
+
+# Output
+#
+# {
+#     "state": "<LoadState: Loaded>"
+# }
+
+res = client.get_load_state(
+    collection_name="quick_setup",
+    partition_name="partitionB"
+)
+
+print(res)
+
+# Output
+#
+# {
+#     "state": "<LoadState: NotLoad>"
+# }
+
+```
+
+Possible load status may be either of the following
+
+- **Loaded**
+
+  A collection is marked as `Loaded` if at least one of its partitions has been loaded.
+
+- **NotLoad**
+
+  A collection is marked as `NotLoad` if none of its partitions has been loaded.
+
+- **Loading**
+
+### Load Partitions
+
+To load all partitions of a collection, you can just call `load_collection()`. To load specific partitions of a collection, do as follows:
+
+```python
+client.load_partitions(
+    collection_name="quick_setup",
+    partition_names=["partitionA"]
+)
+
+res = client.get_load_state(collection_name="quick_setup")
+print(res)
+
+# Output
+#
+# {
+#     "state": "<LoadState: Loaded>"
+# }
+```
+
+To load multiple partitions at a time, do as follows:
+
+```python
+client.load_partitions(
+    collection_name="quick_setup",
+    partition_names=["partitionA", "partitionB"]
+)
+
+res = client.get_load_status(
+    collection_name="quick_setup",
+    partition_name="partitionA"
+)
+
+# Output
+#
+# {
+#     "state": "<LoadState: Loaded>"
+# }
+
+res = client.get_load_status(
+    collection_name="quick_setup",
+    partition_name="partitionB"
+)
+
+# Output
+#
+# {
+#     "state": "<LoadState: Loaded>"
+# }
+```
+
+### Release Partitions
+
+To release all partitions of a collection, you can just call `release_collection`. To release specific partitions of a collection, do as follows:
+
+```python
+# 7. Release a partition
+client.release_partitions(
+    collection_name="quick_setup",
+    partition_names=["partitionA"]
+)
+
+res = client.get_load_state(
+    collection_name="quick_setup",
+    partition_name="partitionA"
+)
+
+print(res)
+
+# Output
+#
+# {
+#     "state": "<LoadState: NotLoad>"
+# }
+
+```
+
+To release multiple partitions at a time, do as follows:
+
+```python
+client.release_partitions(
+    collection_name="quick_setup",
+    partition_names=["_default", "partitionA", "partitionB"]
+)
+
+res = client.get_load_status(
+    collection_name="quick_setup",
+)
+
+# Output
+#
+# {
+#     "state": "<LoadState: NotLoad>"
+# }
+```
+
+## Drop Partitions
+
+Once you release a partition, you can drop it if it is no longer needed.
+
+```python
+# 8. Drop a partition
+client.drop_partition(
+    collection_name="quick_setup",
+    partition_name="partitionB"
+)
+
+res = client.list_partitions(collection_name="quick_setup")
+print(res)
+
+# Output
+#
+# ["_default", "partitionA"]
+```
+
+<div class="admonition note">
+
+<p><b>notes</b></p>
+
+<p>Before dropping a partition, you need to release it from memory.</p>
+
+</div>
+
+## FAQ
+
+- **How much data can be stored in a partition?**
+
+  It is recommended to store less than 1B of data in a partition.
+
+- **What is the maximum number of partitions that can be created?**
+
+  By default, Milvus allows a maximum of 4,096 partitions to be created. You can adjust the maximum number of partitions by configuring `rootCoord.maxPartitionNum`. For details, refer to [System Configurations](https://milvus.io/docs/configure_rootcoord.md#rootCoordmaxPartitionNum).
+
+- **How can I differentiate between partitions and partition keys?**
+
+  Partitions are physical storage units, whereas partition keys are logical concepts that automatically assign data to specific partitions based on a designated column.
+
+  For instance, in Milvus, if you have a collection with a partition key defined as the `color` field, the system automatically assigns data to partitions based on the hashed values of the `color` field for each entity. This automated process relieves the user of the responsibility to manually specify the partition when inserting or searching data.
+
+  On the other hand, when manually creating partitions, you need to assign data to each partition based on the criteria of the partition key. If you have a collection with a `color` field, you would manually assign entities with a `color` value of `red` to `partition A`, and entities with a `color` value of `blue` to `partition B`. This manual management requires more effort.
+
+  In summary, both partitions and partition keys are utilized to optimize data computation and enhance query efficiency. It is essential to recognize that enabling a partition key means surrendering control over the manual management of partition data insertion and loading, as these processes are fully automated and handled by Milvus.

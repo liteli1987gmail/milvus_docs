@@ -11,11 +11,11 @@ Milvus 提供了搜索和查询迭代器，用于迭代处理大量实体的结�
 
 ## 概览
 
-迭代器是强大的工具，它通过使用主键值和布尔表达式帮助您浏览大型数据集。这可以显著改善您检索数据的方式。与传统的 __offset__ 和 __limit__ 参数使用相比，随着时间的推移，迭代器提供了更可扩展的解决方案。
+迭代器是强大的工具，它通过使用主键值和布尔表达式帮助您浏览大型数据集。这可以显著改善您检索数据的方式。与传统的 **offset** 和 **limit** 参数使用相比，随着时间的推移，迭代器提供了更可扩展的解决方案。
 
 ### 使用迭代器的好处
 
-- **简单性**：消除了复杂的 __offset__ 和 __limit__ 设置。
+- **简单性**：消除了复杂的 **offset** 和 **limit** 设置。
 
 - **效率**：通过仅获取所需的数据提供可扩展的数据检索。
 
@@ -59,13 +59,13 @@ client.create_collection(
 ### 第 2 步：插入随机生成的实体
 
 ```python
-# 3. 插入随机生成的向量 
+# 3. 插入随机生成的向量
 colors = ["green", "blue", "yellow", "red", "black", "white", "purple", "pink", "orange", "brown", "grey"]
 data = [ {
-        "id": i, 
-        "vector": [ random.uniform(-1, 1) for _ in range(5) ], 
-        "color": random.choice(colors), 
-        "tag": random.randint(1000, 9999) 
+        "id": i,
+        "vector": [ random.uniform(-1, 1) for _ in range(5) ],
+        "color": random.choice(colors),
+        "tag": random.randint(1000, 9999)
     } for i in range(10000) ]
 
 for i in data:
@@ -110,13 +110,13 @@ print(res)
 
 1. 初始化搜索迭代器以定义搜索参数和输出字段。
 
-2. 在循环中使用 __next__() 方法分页浏览搜索结果。
+2. 在循环中使用 **next**() 方法分页浏览搜索结果。
 
-    - 如果该方法返回一个空数组，则循环结束，没有更多的页面可用。
+   - 如果该方法返回一个空数组，则循环结束，没有更多的页面可用。
 
-    - 所有结果都带有指定的输出字段。
+   - 所有结果都带有指定的输出字段。
 
-3. 一旦检索完所有数据，手动调用 __close__() 方法关闭迭代器。
+3. 一旦检索完所有数据，手动调用 **close**() 方法关闭迭代器。
 
 ```python
 from pymilvus import Collection
@@ -130,10 +130,56 @@ search_params = {
     "params": {}
 }
 
-# 3. 初始化搜索迭代器
+
+# 3. Initialize a search iterator
 iterator = collection.search_iterator(
     data=[[0.3580376395471989, -0.6023495712049978, 0.18414012509913835, -0.26286205330961354, 0.9029438446296592]],
     anns_field="vector",
-    batch_size=10, # 控制每次调用 next() 返回的大小
+    batch_size=10, # Controls the size of the return each time you call next()
     param=search_params,
-   
+    output_fields=["color_tag"]
+)
+
+# 4. Iterate the search results
+results = []
+
+while True:
+    result = iterator.next()
+    if len(result) == 0:
+        iterator.close()
+        break;
+
+    results.extend(result)
+
+# 5. Check the search results
+print(len(results))
+
+print(results[:3])
+```
+
+## Query with an iterator
+
+```python
+# 6. Initialize a query iterator
+iterator = collection.query_iterator(
+    batch_size=10, # Controls the size of the return each time you call next()
+    expr="color_tag like \"brown_8\""
+    output_fields=["color_tag"]
+)
+
+# 7. Iterator the query results
+results = []
+
+while True:
+    result = iterator.next()
+    if len(result) == 0:
+        iterator.close()
+        break;
+
+    results.extend(result)
+
+# 8. Check the search results
+print(len(results))
+
+print(results[:3])
+```

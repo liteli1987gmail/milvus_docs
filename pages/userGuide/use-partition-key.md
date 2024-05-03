@@ -21,7 +21,7 @@ Milvus 中的分区键允许根据各自的分区键值将传入的实体分配�
 
 ## 启用分区键
 
-为了演示分区键的使用，我们将继续使用包含超过 5,000 篇文章的示例数据集，并且 __publication__ 字段将作为分区键。
+为了演示分区键的使用，我们将继续使用包含超过 5,000 篇文章的示例数据集，并且 **publication** 字段将作为分区键。
 
 ```python
 import json, time
@@ -50,6 +50,7 @@ schema.add_field(field_name="publication", datatype=DataType.VARCHAR, max_length
 schema.add_field(field_name="claps", datatype=DataType.INT64)
 schema.add_field(field_name="responses", datatype=DataType.INT64)
 ```
+
 在您定义了字段之后，设置其他必要的参数。
 
 ```python
@@ -132,4 +133,16 @@ time.sleep(5000)
 ```python
 res = client.search(
     collection_name=COLLECTION_NAME,
-    data=[data_rows
+    data=[data_rows[0]['title_vector']],
+    filter='claps > 30 and reading_time < 10',
+    limit=3,
+    output_fields=["title", "reading_time", "claps"],
+    search_params={"metric_type": "L2", "params": {}}
+)
+
+print(result)
+```
+
+## Use cases
+
+To achieve better search performance and enable multi-tenancy, you can utilize the partition key feature. This can be done by assigning a tenant-specific value as the partition key field for each entity. When searching or querying the collection, you can filter entities by the tenant-specific value by including the partition key field in the boolean expression. This approach ensures data isolation by tenants and avoids scanning unnecessary partitions.

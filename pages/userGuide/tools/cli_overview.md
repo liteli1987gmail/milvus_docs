@@ -1,9 +1,9 @@
 ---
-
 id: cli_overview.md
 summary: Milvus 命令行界面（CLI）是一个支持数据库连接、数据操作以及数据导入导出的命令行工具。
 title: Milvus 命令行界面
 ---
+
 # Milvus 命令行界面
 
 Milvus 命令行界面（CLI）是一个支持数据库连接、数据操作以及数据导入导出的命令行工具。它基于 [Milvus Python SDK](https://github.com/milvus-io/pymilvus)，允许您通过终端使用交互式命令行提示执行命令。

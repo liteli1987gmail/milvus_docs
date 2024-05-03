@@ -1,9 +1,7 @@
 ---
-
 id: birdwatcher_install_guides.md
 summary: 学习如何安装 Birdwatch 以调试 Milvus。
 title: 安装 Birdwatcher
-
 ---
 
 # 安装 Birdwatcher
@@ -16,47 +14,47 @@ title: 安装 Birdwatcher
 
 - 作为常见的 Go 模块安装。
 
-    ```shell
-    git clone https://github.com/milvus-io/birdwatcher.git
-    cd birdwatcher
-    go install github.com/milvus-io/birdwatcher
-    ```
+  ```shell
+  git clone https://github.com/milvus-io/birdwatcher.git
+  cd birdwatcher
+  go install github.com/milvus-io/birdwatcher
+  ```
 
-    然后您可以按照以下方式运行 Birdwatcher：
+  然后您可以按照以下方式运行 Birdwatcher：
 
-    ```shell
-    go run main.go
-    ```
+  ```shell
+  go run main.go
+  ```
 
 - 从源代码构建。
 
-    ```shell
-    git clone https://github.com/milvus-io/birdwatcher.git
-    cd birdwatcher
-    go build -o birdwatcher main.go
-    ```
+  ```shell
+  git clone https://github.com/milvus-io/birdwatcher.git
+  cd birdwatcher
+  go build -o birdwatcher main.go
+  ```
 
-    然后您可以按照以下方式运行 Birdwatcher：
+  然后您可以按照以下方式运行 Birdwatcher：
 
-    ```shell
-    ./birdwatcher
-    ```
+  ```shell
+  ./birdwatcher
+  ```
 
 - 下载已构建的二进制文件
 
-    首先，打开 [最新发布页面](https://github.com/milvus-io/birdwatcher/releases/latest)，并找到准备好的二进制文件。
+  首先，打开 [最新发布页面](https://github.com/milvus-io/birdwatcher/releases/latest)，并找到准备好的二进制文件。
 
-    ```shell
-    wget -O birdwatcher.tar.gz \
-    https://github.com/milvus-io/birdwatcher/releases/download/latest/birdwatcher_<os>_<arch>.tar.gz
-    ```
+  ```shell
+  wget -O birdwatcher.tar.gz \
+  https://github.com/milvus-io/birdwatcher/releases/download/latest/birdwatcher_<os>_<arch>.tar.gz
+  ```
 
-    然后您可以解压缩 tarball 并按照以下方式使用 Birdwatcher：
+  然后您可以解压缩 tarball 并按照以下方式使用 Birdwatcher：
 
-    ```shell
-    tar -xvzf birdwatcher.tar.gz
-    ./birdwatcher
-    ```
+  ```shell
+  tar -xvzf birdwatcher.tar.gz
+  ./birdwatcher
+  ```
 
 ## 作为 Kubernetes pod 安装
 
@@ -79,12 +77,12 @@ spec:
         app: birdwatcher
     spec:
       containers:
-      - name: birdwatcher
-        image: milvusdb/birdwatcher
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+        - name: birdwatcher
+          image: milvusdb/birdwatcher
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
 ```
 
 <div class="alert note">
@@ -100,11 +98,10 @@ docker build -t milvusdb/birdwatcher .
 要部署本地构建的镜像，您需要在上述规范中添加 `imagePullPolicy` 并将其设置为 `Never`。
 
 ```yaml
-...
-      - name: birdwatcher
-        image: milvusdb/birdwatcher
-        imagePullPolicy: Never
-...
+---
+- name: birdwatcher
+  image: milvusdb/birdwatcher
+  imagePullPolicy: Never
 ```
 
 </div>

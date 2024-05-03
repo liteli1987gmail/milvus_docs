@@ -135,4 +135,41 @@ print(result)
 #             "distance": 0.36103835701942444,
 #             "entity": {
 #                 "title": "The Hidden Side Effect of the Coronavirus",
-#                 "reading_time": 
+#                 "reading_time": 8,
+#                 "claps": 83
+#             }
+#         },
+#         {
+#             "id": 443943328732915438,
+#             "distance": 0.37674015760421753,
+#             "entity": {
+#                 "title": "Why The Coronavirus Mortality Rate is Misleading",
+#                 "reading_time": 9,
+#                 "claps": 2900
+#             }
+#         },
+#         {
+#             "id": 443943328732913238,
+#             "distance": 0.4162980318069458,
+#             "entity": {
+#                 "title": "Coronavirus shows what ethical Amazon could look like",
+#                 "reading_time": 4,
+#                 "claps": 51
+#             }
+#         }
+#     ]
+# ]
+```
+
+## Recaps
+
+It is worth noting that **claps** and **reading_time** are not present when you define the schema, but this does not prevent you from using them in the filter expression and including them in the output fields if the data entities inserted have these fields, just like you normally do in the past.
+
+If the key of a dynamic field contains characters other than digits, letters, and underscores (e.g. plus signs, asterisks, or dollar signs), you need to include the key within **$meta[]** as shown in the following code snippet when using it in a boolean expression or including it in the output fields.
+
+```python
+...
+expr='$meta["#key"] in ["a", "b", "c"]',
+output_fields='$meta["#key"]'
+...
+```

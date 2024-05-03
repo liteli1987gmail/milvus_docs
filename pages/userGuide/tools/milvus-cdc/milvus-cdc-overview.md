@@ -1,6 +1,8 @@
-
 ---
-title: Milvus-CDC 概览
+id: milvus-cdc-overview.md
+order: 1
+summary: Milvus-CDC is a user-friendly tool that can capture and synchronize incremental data in Milvus instances.
+title: Overview
 ---
 
 # 概览
@@ -19,7 +21,7 @@ Milvus-CDC 是一个用户友好的工具，可以捕获并同步 Milvus 实例�
 
 ## 架构
 
-Milvus-CDC 采用了一个包含两个主要组件的架构 - 一个 HTTP 服务器用于管理任务和元数据，以及一个 __corelib__ 用于与读取器同步任务执行，该读取器从源 Milvus 实例获取数据，写入器将处理后的数据发送到目标 Milvus 实例。
+Milvus-CDC 采用了一个包含两个主要组件的架构 - 一个 HTTP 服务器用于管理任务和元数据，以及一个 **corelib** 用于与读取器同步任务执行，该读取器从源 Milvus 实例获取数据，写入器将处理后的数据发送到目标 Milvus 实例。
 
 ![milvus-cdc-architecture](../..//milvus-cdc-architecture.png)
 
@@ -51,16 +53,16 @@ Milvus-CDC 数据处理流程涉及以下步骤：
 
 - **支持的 API 请求**：Milvus-CDC 目前支持以下 API 请求。我们计划在未来的版本中扩展对其他请求的支持：
 
-    - 创建/删除集合
+  - 创建/删除集合
 
-    - 插入/删除/更新
+  - 插入/删除/更新
 
-    - 创建/删除分区
+  - 创建/删除分区
 
-    - 创建/删除索引
+  - 创建/删除索引
 
-    - 加载/释放/刷新
+  - 加载/释放/刷新
 
-    - 加载/释放分区
+  - 加载/释放分区
 
-    - 创建/删除数据库
+  - 创建/删除数据库
