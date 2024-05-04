@@ -18,7 +18,7 @@ Milvus 通过 [hybrid_search()](https://milvus.io/api-reference/pymilvus/v2.4.x/
 
 下图展示了在 Milvus 中执行多向量搜索的过程，并突出了重新排名在该过程中的作用。
 
-![reranking_process](/public/assets/multi-vector-rerank.png)
+![reranking_process](/assets/multi-vector-rerank.png)
 
 ## 加权评分（WeightedRanker）
 

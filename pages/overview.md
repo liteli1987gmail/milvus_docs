@@ -18,7 +18,7 @@ Milvus workflow.
 
 如果您对向量数据库和相似度搜索的世界还不熟悉，请阅读以下关键概念的解释，以更好地理解。
 
-了解更多关于[Milvus 词汇表](glossary.md)。
+了解更多关于[Milvus 词汇表](/reference/glossary.md)。
 
 ### 非结构化数据
 
