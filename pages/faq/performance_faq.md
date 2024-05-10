@@ -19,8 +19,8 @@ title: 性能FAQ
 
 下面的图表是在sift50m数据集和IVF_SQ8索引上运行的测试结果，比较了不同的`nlist`/`nprobe`对的召回率和查询性能。
 
-![准确性测试](/public/assets/accuracy_nlist_nprobe.png "准确性测试。")
-![性能测试](/public/assets/performance_nlist_nprobe.png "性能测试。")
+![准确性测试](/assets/accuracy_nlist_nprobe.png "准确性测试。")
+![性能测试](/assets/performance_nlist_nprobe.png "性能测试。")
 
 #### 为什么在较小的数据集上查询有时需要更长时间？
 

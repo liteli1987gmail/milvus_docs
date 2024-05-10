@@ -1,5 +1,7 @@
 ---
-title: 文本搜索引擎
+id: text_search_engine.md
+summary: Build a text search engine with Milvus.
+title: Text Search Engine
 ---
 
 # 文本搜索引擎
@@ -11,6 +13,7 @@ title: 文本搜索引擎
 - [打开 Jupyter 笔记本](https://github.com/towhee-io/examples/tree/main/nlp/text_search)
 
 本教程使用的机器学习模型和第三方软件包括：
+
 - BERT
 - MySQL
 - [Towhee](https://towhee.io/)
@@ -25,5 +28,5 @@ Milvus 在自然语言处理（NLP）领域的一个重要应用是文本搜索�
 
 ## 工作流程
 
-![text_search_engine](/text_search_engine.png "文本搜索引擎的工作流程。")
-![text_search_engine](/text_search_engine_demo.png "文本搜索引擎的演示。")
+![text_search_engine](/public/assets/text_search_engine.png "文本搜索引擎的工作流程。")
+![text_search_engine](/public/assets/text_search_engine_demo.png "文本搜索引擎的演示。")

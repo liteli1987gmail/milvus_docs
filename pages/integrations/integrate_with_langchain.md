@@ -1,6 +1,7 @@
 ---
+id: integrate_with_langchain.md
+summary: This page goes over how to search for the best answer to questions using Milvus as the Vector Database and LangChain as the embedding system.
 title: 利用 Milvus 和 LangChain 在文档上进行问答
-
 ---
 
 # 利用 Milvus 和 LangChain 在文档上进行问答
@@ -109,7 +110,7 @@ print(len(docs))
 以下代码片段设置了使用 OpenAI 作为 LLM 和 RAG 提示的 RAG 链。
 
 ```python
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0) 
+llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
 retriever = vector_store.as_retriever()
 
 template = """使用以下上下文片段回答最后的问题。
@@ -135,4 +136,6 @@ print(rag_chain.invoke("解释 Milvus 中的 IVF_FLAT。"))
 ```shell
 # 输出
 #
-# content='IVF_FLAT 是 Milvus 中的一种索引机制，它将向量空间划分为多个簇。它通过比较目标向量和所有簇中心之间的距离来找到最近的簇。然后，它比较目标向量和所选簇中的向量之间的距离，以找到最近的向量。当向量数量超过 nlist 的值时，IVF_FLAT 显示出性能
+# content='IVF_FLAT 是 Milvus 中的一种索引机制，它将向量空间划分为多个簇。它通过比较目标向量和所有簇中心之间的距离来找到最近的簇。然后，它比较目标向量和所选簇中的向量之间的距离，以找到最近的向量。
+# IVF_FLAT demonstrates performance advantages when the number of vectors exceeds the value of nlist. Thanks for asking!
+```

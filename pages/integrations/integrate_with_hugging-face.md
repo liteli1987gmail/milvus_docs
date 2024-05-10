@@ -1,6 +1,7 @@
 ---
+id: integrate_with_hugging-face.md
+summary: This page goes over how to search for the best answer to questions using Milvus as the Vector Database and Hugging Face as the embedding system.
 title: 使用 Milvus 和 Hugging Face 进行问答
-
 ---
 
 # 使用 Milvus 和 Hugging Face 进行问答
@@ -105,3 +106,4 @@ def tokenize_question(batch):
 # 为每个条目生成标记。
 data_dataset = data_dataset.map(tokenize_question, batch_size=TOKENIZATION_BATCH_SIZE, batched=True)
 # 设置输出
+```

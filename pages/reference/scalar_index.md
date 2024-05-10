@@ -1,3 +1,10 @@
+---
+id: scalar_index.md
+related_key: scalar_index
+summary: Scalar index in Milvus.
+title: Scalar Index
+---
+
 # 标量索引
 
 Milvus 支持结合标量和向量字段进行过滤搜索。为了提高涉及标量字段的搜索效率，Milvus 从版本 2.1.0 开始引入了标量字段索引。本文提供了 Milvus 中标量字段索引的概述，帮助您理解其重要性和实现方式。
@@ -22,15 +29,15 @@ Milvus 会自动为标量字段基于其数据类型创建一个默认索引，�
 
 下表列出了 Milvus 支持的数据类型及其相应的默认索引算法。
 
-| 数据类型                     | 默认索引算法                    |
-| ----------------------------- | --------------------------------- |
-| VARCHAR                       | MARISA-trie                       |
-| INT8                          | STL sort                          |
-| INT16                         | STL sort                          |
-| INT32                         | STL sort                          |
-| INT64                         | STL sort                          |
-| FLOAT                         | STL sort                          |
-| DOUBLE                        | STL sort                          |
+| 数据类型 | 默认索引算法 |
+| -------- | ------------ |
+| VARCHAR  | MARISA-trie  |
+| INT8     | STL sort     |
+| INT16    | STL sort     |
+| INT32    | STL sort     |
+| INT64    | STL sort     |
+| FLOAT    | STL sort     |
+| DOUBLE   | STL sort     |
 
 ### 倒排索引
 
@@ -53,18 +60,32 @@ Milvus 会自动为标量字段基于其数据类型创建一个默认索引，�
 
 - 数字字段
 
-    | 数据类型                      | 内存估计函数 (MB)                 |
-    | ------------------------------ | ------------------------------------ |
-    | INT8                           | numOfRows * **12** / 1024 / 1024     |
-    | INT16                          | numOfRows * **12** / 1024 / 1024     |
-    | INT32                          | numOfRows * **12** / 1024 / 1024     |
-    | INT64                          | numOfRows * **24** / 1024 / 1024     |
-    | FLOAT32                        | numOfRows * **12** / 1024 / 1024     |
-    | DOUBLE                         | numOfRows * **24** / 1024 / 1024     |
+  | 数据类型 | 内存估计函数 (MB)                 |
+  | -------- | --------------------------------- |
+  | INT8     | numOfRows \* **12** / 1024 / 1024 |
+  | INT16    | numOfRows \* **12** / 1024 / 1024 |
+  | INT32    | numOfRows \* **12** / 1024 / 1024 |
+  | INT64    | numOfRows \* **24** / 1024 / 1024 |
+  | FLOAT32  | numOfRows \* **12** / 1024 / 1024 |
+  | DOUBLE   | numOfRows \* **24** / 1024 / 1024 |
 
-- 字符串字段
+- String fields
 
-    | 字符串长度                  | 内存估计函数 (MB)                 |
-    | ------------------------------ | ------------------------------------ |
-    | (0, 8]                         | numOfRows * **128** / 1024 / 1024    |
-    | (8, 16]                        |
+  | String length | Memory estimation function (MB)                |
+  | ------------- | ---------------------------------------------- |
+  | (0, 8]        | numOfRows \* **128** / 1024 / 1024             |
+  | (8, 16]       | numOfRows \* **144** / 1024 / 1024             |
+  | (16, 32]      | numOfRows \* **160** / 1024 / 1024             |
+  | (32, 64]      | numOfRows \* **192** / 1024 / 1024             |
+  | (64, 128]     | numOfRows \* **256** / 1024 / 1024             |
+  | (128, 65535]  | numOfRows _ \*\*strLen _ 1.5\*\* / 1024 / 1024 |
+
+## What's next
+
+- To index a scalar field, read [Build an Index on Scalars](index-scalar-fields.md).
+- To learn more about the related terms and rules mentioned above, read
+
+  - [Bitset](bitset.md)
+  - [Multi-Vector search](multi-vector-search.md)
+  - [Boolean expression rules](boolean.md)
+  - [Supported data types](schema.md#Supported-data-type)

@@ -1,6 +1,6 @@
 ---
 id: 使用Docker Compose安装独立Milvus集群.md
-label: 独立模式（Docker Compose）
+label: 独立模式(Docker Compose)
 related_key: Kubernetes
 order: 1
 group: 使用Helm安装独立Milvus集群.md
@@ -44,7 +44,7 @@ title: 使用Docker Compose安装Milvus集群
 - 您已在本地机器上安装了Docker和Docker Compose。
 - 在安装Milvus之前，请检查[硬件和软件要求](prerequisite-docker.md)。
 
-  - 对于使用MacOS 10.14或更高版本的用户，将Docker虚拟机（VM）设置为至少使用2个虚拟CPU（vCPU）和8 GB的初始内存。否则，安装可能会失败。
+  - 对于使用MacOS 10.14或更高版本的用户，将Docker虚拟机(VM)设置为至少使用2个虚拟CPU(vCPU)和8 GB的初始内存。否则，安装可能会失败。
 
 ## 使用Docker Compose安装独立Milvus
 
@@ -121,9 +121,9 @@ title: 使用Docker Compose安装Milvus集群
   ...
   ```
 
-### Start Milvus
+### Milvus 启动
 
-In the directory that holds `docker-compose.yml`, start Milvus by running:
+在保存 `docker compose.yml` 的目录中，运行以下命令启动Milvus：
 
 ```shell
 $ sudo docker compose up -d
@@ -141,17 +141,17 @@ Creating milvus-minio ... done
 Creating milvus-standalone ... done
 ```
 
-Now check if the containers are up and running.
+现在检查容器是否已启动并正在运行。
 
-```
+```bash
 $ sudo docker compose ps
 ```
 
-## Verify the Installation
+## 验证安装
 
-After Milvus standalone starts, there will be three docker containers running, including the Milvus standalone service and its two dependencies.
+Milvus单机版启动后，将有三个docker容器在运行，包括Milvus独立服务及其两个依赖项。
 
-```
+```bash
       Name                     Command                  State                            Ports
 --------------------------------------------------------------------------------------------------------------------
 milvus-etcd         etcd -advertise-client-url ...   Up             2379/tcp, 2380/tcp
@@ -159,55 +159,58 @@ milvus-minio        /usr/bin/docker-entrypoint ...   Up (healthy)   9000/tcp
 milvus-standalone   /tini -- milvus run standalone   Up             0.0.0.0:19530->19530/tcp, 0.0.0.0:9091->9091/tcp
 ```
 
-If you have assigned multiple GPU devices to Milvus in `docker-compose.yml`, you can specify which GPU device is visible or available for use.
+如果您已在`docker-compose.yml`中将多个GPU设备分配给Milvus，则可以指定哪个GPU设备可见或可供使用。
 
-Make GPU device `0` visible to Milvus:
+使GPU设备`0`对Milvus可见：
 
 ```shell
 CUDA_VISIBLE_DEVICES=0 ./milvus run standalone
 ```
 
-Make GPU devices `0` and `1` visible to Milvus:
+使GPU设备 `0` 和 `1` 对Milvus可见：
 
 ```shell
 CUDA_VISIBLE_DEVICES=0,1 ./milvus run standalone
 ```
 
-### Connect to Milvus
+### 连接Milvus
 
-Verify which local port the Milvus server is listening on. Replace the container name with your own.
+验证Milvus服务器正在侦听哪个本地端口。将容器名称替换为您自己的名称。
 
 ```bash
 $ docker port milvus-standalone 19530/tcp
 ```
 
-Please refer to [Hello Milvus](https://milvus.io/docs/example_code.md), then run the example code.
+请参阅 [Hello Milvus](https://milvus.io/docs/example_code.md), 然后运行示例代码。
 
-## Stop Milvus
+## 停止 Milvus
 
-To stop Milvus standalone, run:
-```
+如果需要停止milvus单机版本，可以跑
+
+```bash
 sudo docker compose down
 ```
 
-To delete data after stopping Milvus, run:
-```
+如果想要在停止milvus之后删除milvus的数据，可以运行以下代码
+
+```bash
 sudo rm -rf  volumes
 ```
 
-## What's next
+## 接下来是什么
 
-Having installed Milvus, you can:
-- Check [Hello Milvus](quickstart.md) to run an example code with different SDKs to see what Milvus can do.
-- Check [In-memory Index](index.md) for more about CPU-compatible index types.
-- Learn the basic operations of Milvus:
-  - [Manage Databases](manage_databases.md)
-  - [Manage Collections](manage-collections.md)
-  - [Manage Partitions](manage-partitions.md)
-  - [Insert, Upsert & Delete](insert-update-delete.md)
-  - [Single-Vector Search](single-vector-search.md)
-  - [Multi-Vector Search](multi-vector-search.md)
-- Explore [Milvus Backup](milvus_backup_overview.md), an open-source tool for Milvus data backups.
-- Explore [Birdwatcher](birdwatcher_overview.md), an open-source tool for debugging Milvus and dynamic configuration updates.
-- Explore [Attu](https://milvus.io/docs/attu.md), an open-source GUI tool for intuitive Milvus management.
-- [Monitor Milvus with Prometheus](monitor.md)
+安装Milvus后，您可以：
+- 检查[Hello-Milvus](quickstart.md)，用不同的SDK运行一个示例代码，看看Milvus能做什么。
+- 有关CPU兼容索引类型的详细信息，请查看[In-memory Index](Index.md)。
+- 学习Milvus的基本操作：
+  - [管理数据库](Manage_Databases.md)
+  - [管理集合](Manage-Collections.md)
+  - [管理分区](Manage Partitions.md)
+  - [插入、更新和删除](Insert-update-Delete.md)
+  - [单矢量搜索](singlevectorsearch.md)
+  - [多矢量搜索](Multi-vvector Search.md)
+
+ - 探索[Milvus Backup](Milvus_Backup_overview.md)，一个用于Milvus数据备份的开源工具。
+ - 探索[Birdwatcher](Birdwatcher_overview.md)，这是一个用于调试Milvus和动态配置更新的开源工具。
+ - 浏览[Attu](https://milvus.io/docs/attu.md)，一个用于直观Milvus管理的开源GUI工具。
+ - [用普罗米修斯监视麋鹿](Monitor.md)

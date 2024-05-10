@@ -1,12 +1,17 @@
 ---
-title: 推荐系统
+id: recommendation_system.md
+summary: Build a personalized recommender system with Milvus.
+title: Recommender System
 ---
+
 # 推荐系统
 
 本教程演示了如何使用 Milvus（开源向量数据库）构建推荐系统。
+
 - [打开 Jupyter 笔记本](https://github.com/milvus-io/bootcamp/blob/master/solutions/nlp/recommender_system/recommender_system.ipynb)
 
 使用的机器学习模型和第三方软件包括：
+
 - PaddlePaddle
 - Redis 或 MySQL
 - [Towhee](https://towhee.io/)
@@ -21,4 +26,4 @@ title: 推荐系统
 
 </br>
 
-![recommender_system](/recommendation_system.png "推荐系统的流程图。")
+![recommender_system](/public/assets/recommendation_system.png "推荐系统的流程图。")

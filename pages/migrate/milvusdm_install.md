@@ -1,6 +1,7 @@
 ---
+id: milvusdm_install.md
+summary: Learn how to install MilvusDM to migrate your data.
 title: 安装 MilvusDM
-
 ---
 
 # 安装 MilvusDM
@@ -15,15 +16,15 @@ MilvusDM 是一个专门为与 Milvus 配合使用的数据导入和导出设计
 
 在安装 MilvusDM 之前，请确保您的操作系统和软件版本满足以下要求。
 
-| 操作系统       | 支持的版本       |
-| ---------------  |  ----------------- |
-| CentOS           | 7.5 或更高版本      |
-| Ubuntu LTS       | 18.04 或更高版本    |
+| 操作系统   | 支持的版本       |
+| ---------- | ---------------- |
+| CentOS     | 7.5 或更高版本   |
+| Ubuntu LTS | 18.04 或更高版本 |
 
-| 软件                     | 版本                        |
-|  --------------------------- |  ----------------------------- |
-| [Milvus](https://milvus.io/) | 0.10.x 或 1.x 或 2.x                          |
-| Python3                      | 3.7 或更高版本                  |
+| 软件                         | 版本                     |
+| ---------------------------- | ------------------------ |
+| [Milvus](https://milvus.io/) | 0.10.x 或 1.x 或 2.x     |
+| Python3                      | 3.7 或更高版本           |
 | pip3                         | 应与 Python 版本相对应。 |
 
 ## 安装 MilvusDM

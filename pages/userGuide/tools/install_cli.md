@@ -1,9 +1,7 @@
 ---
-
 id: 安装_milvus_cli.md
 summary: 学习如何安装 Milvus_CLI。
 title: 安装 Milvus_CLI
-
 ---
 
 # 安装 Milvus_CLI
@@ -70,4 +68,4 @@ python -m pip install --editable .
 从 [GitHub](https://github.com/zilliztech/milvus_cli/releases) 下载一个 .exe 文件并运行它来安装 Milvus_CLI。
 如果成功，`milvus_cli-<version>.exe` 将弹出，如下所示。
 
-![Milvus_CLI](..//milvus_cli_exe.png "Milvus_CLI 成功安装。")
+![Milvus_CLI](/public/assets/milvus_cli_exe.png "Milvus_CLI 成功安装。")

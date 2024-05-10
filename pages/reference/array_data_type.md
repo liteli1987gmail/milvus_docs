@@ -1,3 +1,10 @@
+---
+id: array_data_type.md
+related_key: array_data_type
+summary: Array data type in Milvus.
+title: Array
+---
+
 # 数组
 
 在 Milvus 中，数组数据类型是一个有序的元素集合，其中每个元素可以是特定的数据类型：INT、VARCHAR、BOOL、FLOAT 或 DOUBLE。当你需要在单个字段中存储多个值时，数组特别有用。
@@ -72,8 +79,8 @@ fields = [
 
 # 2. 在模式定义中启用动态模式
 schema = CollectionSchema(
-    fields, 
-    "The schema for a medium news collection", 
+    fields,
+    "The schema for a medium news collection",
     enable_dynamic_field=True # 可选，默认为 'False'。
 )
 
@@ -88,7 +95,7 @@ index_params = {
 }
 
 collection.create_index(
-    field_name="title_vector", 
+    field_name="title_vector",
     index_params=index_params
 )
 
@@ -96,3 +103,119 @@ collection.create_index(
 collection.load()
 ```
 
+## Insert field values
+
+Once the collection is created, you can insert the processed data into it.
+
+<div class="alert note">
+
+If `auto_id` is set to `True` for a collection, insert data without the primary key field. Otherwise, an error can occur during data insert.
+
+</div>
+
+```python
+# Insert field values
+
+# 1. insert data
+collection.insert(data)
+
+# 2. call the flush API to make inserted data immediately available for search
+collection.flush()
+
+print("Entity counts: ", collection.num_entities)
+
+# Output
+# Entity counts:  100
+```
+
+## Search or query with array fields
+
+Then, you can search or query with array fields in the same manner as you would with a standard scalar field.
+
+Search data with `int_array` to filter entities whose `reading_time` is between 10 and 20 (exclusive).
+
+```python
+# 1. search data with `int_array`
+result = collection.search(
+    data=data[0]['title_vector'],
+    anns_field='title_vector',
+    param={"metric_type": "L2", "params": {"nprobe": 10}},
+    limit=3,
+    expr='10 < int_array[0] < 20',
+    output_fields=['title','int_array']
+)
+
+for hits in result:
+    print("Matched IDs: ", hits.ids)
+    print("Distance to the query vector: ", hits.distances)
+    print("Matched articles: ")
+    for hit in hits:
+        print(
+            "Title: ",
+            hit.entity.get("title"),
+            ", Reading time: ",
+            hit.entity.get("int_array")[0]
+        )
+```
+
+Query data with `var_array` to filter entities whose `publication` is `'The Startup'`.
+
+```python
+# 2. query data with `var_array`
+result = collection.query(
+    expr='var_array[1] == "The Startup"',
+    output_fields=['title','var_array']
+)
+
+for hits in result:
+    print("Matched IDs: ", hits.id)
+    print("Matched articles: ")
+    for hit in hits:
+        print(
+            "Title: ",
+            hit.entity.get("title"),
+            ", Publication: ",
+            hit.entity.get("var_array")[1]
+        )
+```
+
+Check whether `int_array` contains element `10`.
+
+```python
+# 3. use array_contains to check whether an array contains a specific element
+
+collection.query(
+    expr='array_contains(int_array, 10)',
+    output_fields=['title','int_array']
+)
+```
+
+## Limits
+
+When working with array fields, you can enclose a string value with either double quotation marks ("") or single quotation marks (''). It's important to note that Milvus stores string values in the array field as is without performing semantic escape or conversion. For instance, **'a"b'**, **"a'b"**, **'a\'b'**, and **"a\"b"** will be saved as is, while **'a'b'** and **"a"b"** will be treated as invalid values.
+
+Assume that two array fields `int_array` and `var_array` have been defined. The following table describes the supported boolean expressions that you can use in `expr` when searching with array fields.
+
+| Operator                                | Examples                                                                    | Remarks                                                                                                                                                                                         |
+| --------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <                                       | <code>'int_array[0] < 3'</code>                                             | This expression evaluates to true if the value of <code>int_array[0]</code> is less than 3.                                                                                                     |
+| >                                       | <code>'int_array[0] > 5'</code>                                             | This expression evaluates to true if the value of <code>int_array[0]</code> is greater than 5.                                                                                                  |
+| ==                                      | <code>'int_array[0] == 0'</code>                                            | This expression evaluates to true if the value of <code>int_array[0]</code> is equal to 0.                                                                                                      |
+| !=                                      | <code>'var_array[0] != "a"'</code>                                          | This expression evaluates to true if the value of <code>var_array[0]</code> is not equal to <code>"a"</code>.                                                                                   |
+| <=                                      | <code>'int_array[0] <= 3'</code>                                            | This expression evaluates to true if the value of <code>int_array[0]</code> is smaller than or equal to 3.                                                                                      |
+| >=                                      | <code>'int_array[0] >= 10'</code>                                           | This expression evaluates to true if the value of <code>int_array[0]</code> is greater than or equal to 10.                                                                                     |
+| in                                      | <code>'var_array[0] in ["str1", "str2"]'</code>                             | This expression evaluates to true if the value of <code>var_array[0]</code> is <code>"str1"</code> or <code>"str2"</code>.                                                                      |
+| not in                                  | <code>'int_array[0] not in [1, 2, 3]'</code>                                | This expression evaluates to true if the value of <code>int_array[0]</code> is not 1, 2, or 3.                                                                                                  |
+| +, -, \*, /, %, \*\*                    | <code>'int_array[0] + 100 > 200'</code>                                     | This expression evaluates to true if the value of <code>int_array[0] + 100</code> is greater than 200.                                                                                          |
+| like (LIKE)                             | <code>'var_array[0] like "prefix%"'</code>                                  | This expression evaluates to true if the value of <code>var_array[0]</code> is prefixed with <code>"prefix"</code>.                                                                             |
+| and (&&)                                | <code>'var_array[0] like "prefix%" && int_array[0] <= 100'</code>           | This expression evaluates to true if the value of <code>var_array[0]</code> is prefixed with <code>"prefix"</code>, and the value of <code>int_array[0]</code> is smaller than or equal to 100. |
+| or (&#124;&#124;)                       | <code>'var_array[0] like "prefix%" &#124;&#124; int_array[0] <= 100'</code> | This expression evaluates to true if the value of <code>var_array[0]</code> is prefixed with <code>"prefix"</code>, or the value of <code>int_array[0]</code> is smaller than or equal to 100.  |
+| array_contains (ARRAY_CONTAINS)         | <code>'array_contains(int_array, 100)'</code>                               | This expression evaluates to true if <code>int_array</code> contains element <code>100</code>.                                                                                                  |
+| array_contains_all (ARRAY_CONTAINS_ALL) | <code>'array_contains_all(int_array, [1, 2, 3])'</code>                     | This expression evaluates to true if <code>int_array</code> contains all elements <code>1</code>, <code>2</code>, and <code>3</code>.                                                           |
+| array_contains_any (ARRAY_CONTAINS_ANY) | <code>'array_contains_any(var_array, ["a", "b", "c"])'</code>               | This expression evaluates to true if <code>var_array</code> contains any element of <code>"a"</code>, <code>"b"</code>, and <code>"c"</code>.                                                   |
+| array_length                            | <code>'array_length(int_array) == 10'</code>                                | This expression evaluates to true if <code>int_array</code> contains exactly 10 elements.                                                                                                       |
+
+## What’s next
+
+- [Dynamic Schema](enable-dynamic-field.md)
+- [JSON](use-json-fields.md)

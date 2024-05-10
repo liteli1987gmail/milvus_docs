@@ -41,7 +41,7 @@ $ wget https://raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/F2M.y
 
 以下配置示例供您参考。
 
-```
+```yaml
 F2M:
   milvus_version: 2.0.0
   data_path: '/home/data/faiss1.index'
@@ -61,7 +61,7 @@ F2M:
 
 使用以下命令运行 MilvusDM 将数据从 Faiss 导入到 Milvus。
 
-```
+```bash
 $ milvusdm --yaml F2M.yaml
 ```
 

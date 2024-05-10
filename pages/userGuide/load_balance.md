@@ -1,5 +1,8 @@
 ---
-title: 平衡查询负载
+id: load_balance.md
+related_key: Load balance
+summary: Learn how to balance query load in Milvus.
+title: Balance Query Load
 ---
 
 # 平衡查询负载
@@ -35,7 +38,7 @@ milvusClient.getQuerySegmentInfo(
 
 ```javascript
 await getQuerySegmentInfo({
-    collectionName: "book",
+  collectionName: "book",
 });
 ```
 
@@ -111,8 +114,8 @@ show query_segment -c book
 
 ```python
 utility.load_balance(
-  src_node_id=3, 
-  dst_node_ids=[4], 
+  src_node_id=3,
+  dst_node_ids=[4],
   sealed_segment_ids=[431067441441538050]
 )
 ```
@@ -135,7 +138,7 @@ milvusClient.loadBalance(
 await loadBalance({
   src_nodeID: 3,
   dst_nodeIDs: [4],
-  sealed_segmentIDs: [431067441441538050]
+  sealed_segmentIDs: [431067441441538050],
 });
 ```
 
@@ -146,21 +149,101 @@ load_balance -s 3 -d 4 -ss 431067441441538050
 <table class="language-python">
 	<thead>
 	<tr>
-		<th>参数</th>
-		<th>描述</th>
+		<th>Parameter</th>
+		<th>Description</th>
 	</tr>
 	</thead>
 	<tbody>
 	<tr>
 		<td><code>src_node_id</code></td>
-		<td>您想要从哪个查询节点转移段的 ID。</td>
+		<td>ID of the query node you want to transfer segment(s) from.</td>
 	</tr>
 	<tr>
-		<td><code>dst_node_ids</code> (可选)</td>
-		<td>您想要将段转移到的查询节点的 ID。如果留空此参数，Milvus 会自动将段转移到其他查询节点。</td>
+		<td><code>dst_node_ids</code> (Optional)</td>
+		<td>ID(s) of the query node(s) you want to transfer segment(s) to. Milvus transfers segment(s) to other query nodes automatically if this parameter is left blank.</td>
 	</tr>
 	<tr>
-		<td><code>sealed_segment_ids</code> (可选)</td>
-		<td>您想要转移的段的 ID。如果留空此参数，Milvus 会自动将源查询节点中的所有封闭段转移到其他查询节点。</td>
+		<td><code>sealed_segment_ids</code> (Optional)</td>
+		<td>ID(s) of the segment(s) you want to transfer. Milvus transfers all sealed segment(s) in the source query node to other query nodes automatically if this parameter is left blank.</td>
 	</tr>
 	</tbody>
+</table>
+
+<table class="language-javascript">
+	<thead>
+	<tr>
+		<th>Parameter</th>
+		<th>Description</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td><code>src_nodeID</code></td>
+		<td>ID of the query node you want to transfer segment(s) from.</td>
+	</tr>
+	<tr>
+		<td><code>dst_nodeIDs</code> (Optional)</td>
+		<td>ID(s) of the query node(s) you want to transfer segment(s) to. Milvus transfers segment(s) to other query nodes automatically if this parameter is left blank.</td>
+	</tr>
+	<tr>
+		<td><code>sealed_segmentIDs</code> (Optional)</td>
+		<td>ID(s) of the segment(s) you want to transfer. Milvus transfers all sealed segment(s) in the source query node to other query nodes automatically if this parameter is left blank.</td>
+	</tr>
+	</tbody>
+</table>
+
+<table class="language-java">
+	<thead>
+	<tr>
+		<th>Parameter</th>
+		<th>Description</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td><code>SourceNodeID</code></td>
+		<td>ID of the query node you want to transfer segment(s) from.</td>
+	</tr>
+	<tr>
+		<td><code>DestinationNodeID</code> (Optional)</td>
+		<td>ID(s) of the query node(s) you want to transfer segment(s) to. Milvus transfers segment(s) to other query nodes automatically if this parameter is left blank.</td>
+	</tr>
+	<tr>
+		<td><code>SegmentID</code> (Optional)</td>
+		<td>ID(s) of the segment(s) you want to transfer. Milvus transfers all sealed segment(s) in the source query node to other query nodes automatically if this parameter is left blank.</td>
+	</tr>
+	</tbody>
+</table>
+
+<table class="language-shell">
+	<thead>
+	<tr>
+		<th>Option</th>
+		<th>Description</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td><code>-s</code></td>
+		<td>ID of the query node you want to transfer segment(s) from.</td>
+	</tr>
+	<tr>
+		<td><code>-d</code> (Multiple)</td>
+		<td>ID(s) of the query node(s) you want to transfer segment(s) to.</td>
+	</tr>
+	<tr>
+		<td><code>-ss</code> (Multiple)</td>
+		<td>ID(s) of the segment(s) you want to transfer.</td>
+	</tr>
+	</tbody>
+</table>
+
+## What's next
+
+- Learn more basic operations of Milvus:
+  - [Insert, Upsert & Delete](insert-update-delete.md)
+  - [Manage Partitions](manage-partitions.md)
+  - [Index Vector Fields](index-vector-fields.md)
+  - [Index Scalar Fields](index-scalar-fields.md)
+  - [Single-vector search](single-vector-search.md)
+  - [Multi-vector search](multi-vector-search.md)

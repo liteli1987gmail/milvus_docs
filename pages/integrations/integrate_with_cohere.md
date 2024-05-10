@@ -1,6 +1,7 @@
 ---
+id: integrate_with_cohere.md
+summary: This page goes over how to search for the best answer to questions using Milvus as the Vector Database and Hugging Face as the embedding system.
 title: 使用 Milvus 和 Cohere 进行问答
-
 ---
 
 # 使用 Milvus 和 Cohere 进行问答
@@ -118,4 +119,140 @@ collection.load()
 # 设置 co:here 客户端。
 cohere_client = cohere.Client(COHERE_API_KEY)
 
-# 使用 Cohere 从问题
+# Extract embeddings from questions using Cohere
+def embed(texts, input_type):
+    res = cohere_client.embed(texts, model='embed-multilingual-v3.0', input_type=input_type)
+    return res.embeddings
+
+# Insert each question, answer, and qustion embedding
+total = pandas.DataFrame()
+for batch in tqdm(np.array_split(simplified_records, (COUNT/BATCH_SIZE) + 1)):
+    questions = batch['question'].tolist()
+    embeddings = embed(questions, "search_document")
+
+    data = [
+        {
+            'original_question': x,
+            'answer': batch['answer'].tolist()[i],
+            'original_question_embedding': embeddings[i]
+        } for i, x in enumerate(questions)
+    ]
+
+    collection.insert(data=data)
+
+time.sleep(10)
+```
+
+## 提出问题
+
+一旦所有数据都插入到Milvus集合中，我们就可以通过提取我们的问题短语，将其嵌入Cohere，并使用集合进行搜索来向系统提问。
+
+<div class="alert note">
+
+插入后立即对数据执行的搜索可能会慢一点，因为搜索未索引的数据是以蛮力方式进行的。一旦新数据被自动编入索引，搜索速度就会加快。
+
+</div>
+
+```python
+# 在集群中搜索问题文本的答案
+def search(text, top_k = 5):
+
+    # AUTOINDEX不需要任何搜索参数
+    search_params = {}
+
+    results = collection.search(
+        data = embed([text], "search_query"),  # Embeded the question
+        anns_field='original_question_embedding',
+        param=search_params,
+        limit = top_k,  # Limit to top_k results per search
+        output_fields=['original_question', 'answer']  # Include the original question and answer in the result
+    )
+
+    distances = results[0].distances
+    entities = [ x.entity.to_dict()['entity'] for x in results[0] ]
+
+    ret = [ {
+        "answer": x[1]["answer"],
+        "distance": x[0],
+        "original_question": x[1]['original_question']
+    } for x in zip(distances, entities)]
+
+    return ret
+
+# 提出以下问题
+search_questions = ['What kills bacteria?', 'What\'s the biggest dog?']
+
+# 按[答案、相似性得分、原始问题]的顺序打印结果
+
+ret = [ { "question": x, "candidates": search(x) } for x in search_questions ]
+```
+
+会输出类似于以下内容：
+
+```shell
+# Output
+#
+# [
+#     {
+#         "question": "What kills bacteria?",
+#         "candidates": [
+#             {
+#                 "answer": "farming",
+#                 "distance": 0.6261022090911865,
+#                 "original_question": "What makes bacteria resistant to antibiotic treatment?"
+#             },
+#             {
+#                 "answer": "Phage therapy",
+#                 "distance": 0.6093736886978149,
+#                 "original_question": "What has been talked about to treat resistant bacteria?"
+#             },
+#             {
+#                 "answer": "oral contraceptives",
+#                 "distance": 0.5902313590049744,
+#                 "original_question": "In therapy, what does the antibacterial interact with?"
+#             },
+#             {
+#                 "answer": "slowing down the multiplication of bacteria or killing the bacteria",
+#                 "distance": 0.5874154567718506,
+#                 "original_question": "How do antibiotics work?"
+#             },
+#             {
+#                 "answer": "in intensive farming to promote animal growth",
+#                 "distance": 0.5667208433151245,
+#                 "original_question": "Besides in treating human disease where else are antibiotics used?"
+#             }
+#         ]
+#     },
+#     {
+#         "question": "What's the biggest dog?",
+#         "candidates": [
+#             {
+#                 "answer": "English Mastiff",
+#                 "distance": 0.7875324487686157,
+#                 "original_question": "What breed was the largest dog known to have lived?"
+#             },
+#             {
+#                 "answer": "forest elephants",
+#                 "distance": 0.5886962413787842,
+#                 "original_question": "What large animals reside in the national park?"
+#             },
+#             {
+#                 "answer": "Rico",
+#                 "distance": 0.5634892582893372,
+#                 "original_question": "What is the name of the dog that could ID over 200 things?"
+#             },
+#             {
+#                 "answer": "Iditarod Trail Sled Dog Race",
+#                 "distance": 0.546872615814209,
+#                 "original_question": "Which dog-sled race in Alaska is the most famous?"
+#             },
+#             {
+#                 "answer": "part of the family",
+#                 "distance": 0.5387814044952393,
+#                 "original_question": "Most people today describe their dogs as what?"
+#             }
+#         ]
+#     }
+# ]
+
+```

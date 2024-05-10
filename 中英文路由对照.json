@@ -3,7 +3,7 @@
       "title": "Milvus介绍"
     },
     "getstarted": {
-      "title": "入门指南 (Get Started)"
+      "title": "入门指南"
     },
     "tutorials":{
         "title": "基础概念 (Concepts)"
@@ -244,27 +244,27 @@
       "display": "hidden"
     },
     "install-go": {
-      "title": "安装 Go（install-go）",
+      "title": "安装 Go",
       "display": "hidden"
     },
     "install-java": {
-      "title": "安装 Java（install-java）",
+      "title": "安装 Java",
       "display": "hidden"
     },
     "install-node": {
-      "title": "安装 Node（install-node）",
+      "title": "安装 Node",
       "display": "hidden"
     },
     "install-pymilvus": {
-      "title": "安装 PyMilvus（install-pymilvus）",
+      "title": "安装 PyMilvus",
       "display": "hidden"
     },
     "install_cli": {
-      "title": "安装 CLI（install_cli）",
+      "title": "安装 CLI",
       "display": "hidden"
     },
     "install_cluster-milvusoperator": {
-      "title": "安装 Milvus 集群操作员（install_cluster-milvusoperator）",
+      "title": "安装 Milvus 集群操作）",
       "display": "hidden"
     },
     "install_offline-helm": {

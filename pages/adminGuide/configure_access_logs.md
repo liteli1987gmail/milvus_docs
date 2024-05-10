@@ -1,4 +1,5 @@
 ---
+id: configure_access_logs.md
 title: 配置访问日志
 ---
 
@@ -72,7 +73,7 @@ proxy:
     filename: "access_log.txt"
     localPath: "/var/logs/milvus"
     maxSize: 500
-    rotatedTime: 24 
+    rotatedTime: 24
     maxBackups: 7
     minioEnable: true
     remotePath: "/milvus/logs/access_logs"
@@ -96,6 +97,42 @@ proxy:
     enable: true
     filename: "access_log.txt"
     localPath: "/var/logs/milvus"
-    # 为访问日志定义自定义格式化器，包括格式和适用方法
+    # 访问日志定义自定义格式和适用方法
     formatters:
-      # `base` 格式化器默认适用于所有方法
+      # 默认情况下，`base` 格式适用于所有方法
+      # 基础格式不需要特定的方法关联
+      base:
+        # 特定方法的自定义格式（如查询、搜索）
+        format: "[$time_now] [ACCESS] <$user_name: $user_addr> $method_name-$method_status-$error_code [traceID: $trace_id] [timeCost: $time_cost]"
+      # 指定此方法所对应的方法。
+      query:
+        format: "[$time_now] [ACCESS] <$user_name: $user_addr> $method_status-$method_name [traceID: $trace_id] [timeCost: $time_cost] [database: $database_name] [collection: $collection_name] [partitions: $partition_name] [expr: $method_expr]"
+        # 指定此自定义格式器适用的方法
+        methods: ["Query", "Search"]
+```
+
+- `proxy.accessLog.<formatter_name>.format`: 使用动态指标定义日志格式。更多信息，请参阅 [Supported metrics](#reference-supported-metrics)。
+- `proxy.accessLog.<formatter_name>.methods`: 列出使用此格式化器的 Milvus 操作。要获取方法名称，请参阅 [Milvus methods](https://github.com/milvus-io/milvus-proto/blob/master/proto/milvus.proto) 中的 **MilvusService**。
+
+
+## 参考： 支持的指标
+
+| 指标名称               | 描述                            |
+|--------------------|-------------------------------|
+| `$method_name`     | 方法名称                          |
+| `$method_status`   | 访问状态: **OK** or **Fail**      |
+| `$method_expr`     | 用于查询、搜索或删除操作的表达式              |
+| `$trace_id`        | 与访问相关联的trace id               |
+| `$user_addr`       | 用户的id地址                       |
+| `$user_name`       | 用户名                           |
+| `$response_size`   | 响应体的数据大小                      |
+| `$error_code`      | Milvus 特有的错误code              |
+| `$error_msg`       | 错误信息                          |
+| `$database_name`   | 目标 Milvus 数据库名称               |
+| `$collection_name` | 目标 Milvus 集合                  |
+| `$partition_name`  | 目标 Milvus 分区名称                |
+| `$time_cost`       | 完成访问所需的时间                     |
+| `$time_now`        | 打印访问日志的时间（通常相当于 `$time_end`）。 |
+| `$time_start`      | 开始访问的时间                       |
+| `$time_end`        | 结束访问的时间                       |
+| `$sdk_version`     | 用户使用的 Milvus SDK 版本           |

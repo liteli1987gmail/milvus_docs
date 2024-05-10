@@ -1,3 +1,9 @@
+---
+id: bitset.md
+summary: Learn about bitsets in Milvus.
+title: Bitset
+---
+
 # 位集（Bitset）
 
 本文介绍了位集机制，该机制有助于在 Milvus 中实现关键功能，如属性过滤和[删除操作](https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md)。
@@ -29,7 +35,7 @@
 - 当时间戳 `ts` 等于 300 时，删除了 `primary_key` 为 [7, 8] 的实体。
 - 只有 `primary_key` 为 [1, 3, 5, 7] 的实体满足属性过滤条件。
 
-![DML 事件的顺序](/bitset_0.svg "DML 事件的顺序。")
+![DML 事件的顺序](/public/assets/bitset_0.svg "DML 事件的顺序。")
 
 ### 案例一
 
@@ -42,3 +48,44 @@
 如在[数据删除](#data-deletion)中讨论的，用 `1` 标记的实体在搜索或查询期间将被忽略。位集结果现在需要翻转，以便与删除位图结合，这给我们提供了 `[0, 1, 0, 1, 1, 1, 1, 1]`。
 
 至于删除位集 `del_bitset`，初始值应该是 `[0, 0, 0, 0, 0, 0, 1, 1]`。然而，实体 7 和 8 直到 `ts` 是 300 才被删除。因此，当 `ts` 是 150 时，实体 7 和 8 仍然有效。
+
+As for the deletion bitset `del_bitset`, the initial value should be `[0, 0, 0, 0, 0, 0, 1, 1]`. However, entities 7 and 8 are not deleted until `ts` is 300. Therefore, when `ts` is 150, entities 7 and 8 are still valid. As a result, the `del_bitset` value after Time Travel is `[0, 0, 0, 0, 0, 0, 0, 0]`.
+
+Now we have two bitsets after Time Travel and attribute filtering: `filter_bitset` `[0, 1, 0, 1, 1, 1, 1, 1]` and `del_bitset` `[0, 0, 0, 0, 0, 0, 0, 0]`. Combine these two bitsets with the `OR` binary logic operator. The ultimate value of result_bitset is `[0, 1, 0, 1, 1, 1, 1, 1]`, meaning only entities 1 and 3 will be computed in the following search or query stage.
+
+![Figure 1. Search with Time Travel = 150.](/public/assets/bitset_1.jpg "Figure 1. Search with Time Travel = 150.")
+
+### Case two
+
+In this case, the user sets `time_travel` as 250. The bitset generation process is illustrated by Figure 2.
+
+Like in case one, the initial `filter_bitset` is `[1, 0, 1, 0, 1, 0, 1, 0]`.
+
+All entities are in the vector database when `ts` = 250. Therefore, the `filter_bitset` stays the same when we factor in the timestamp. Again, we need to flip the result and get `[0, 1, 0, 1, 0, 1, 0, 1]`.
+
+As for the deletion bitset `del_bitset`, the initial value is `[0, 0, 0, 0, 0, 0, 1, 1]`. However, entities 7 and 8 were not deleted until `ts` is 300. Therefore, when `ts` is 250, entities 7 and 8 are still valid. As a result, the `del_bitset` after Time Travel is `[0, 0, 0, 0, 0, 0, 0, 0]`.
+
+Now we have two bitsets after Time Travel and attribute filtering: `filter_bitset` `[0, 1, 0, 1, 0, 1, 0, 1]` and `del_bitset` `[0, 0, 0, 0, 0, 0, 0, 0]`. Combine these two bitsets with the `OR` binary logic operator. The result_bitset is `[0, 1, 0, 1, 0, 1, 0, 1]`. That is to say, only entites [1, 3, 5, 7] will be computed in the following search or query stage.
+
+![Figure 2. Search with Time Travel = 250.](../../../assets/bitset_2.jpg "Figure 2. Search with Time Travel = 250.")
+
+### Case three
+
+In this case, the user sets `time_travel` as 350. The bitset generation process is illustrated by Figure 3.
+
+As with previous cases, the initial `filter_bitset` is `[0, 1, 0, 1, 0, 1, 0, 1]`.
+
+All entities are in the vector database when `ts`= 350. Therefore, the final, flipped `filter_bitset` is `[0, 1, 0, 1, 0, 1, 0, 1]`, the same as in case two.
+
+As for the deletion bitset `del_bitset`, since entities 7 and 8 have already been deleted when `ts = 350`, therefore, the result of `del_bitset` is `[0, 0, 0, 0, 0, 0, 1, 1]`.
+
+Now we have two bitsets after Time Travel and attribute filtering: `filter_bitset` `[0, 1, 0, 1, 0, 1, 0, 1]` and `del_bitset` `[0, 0, 0, 0, 0, 0, 1, 1]`. Combine these two bitsets with the `OR` binary logic operator. The ultimate `result_bitset` is `[0, 1, 0, 1, 0, 1, 1, 1]`. That is to say, only entities [1, 3, 5] will be computed in the following search or query stage.
+
+![Figure 3. Search with Time Travel = 350.](/public/assets/bitset_3.jpg "Figure 3. Search with Time Travel = 350.")
+
+## What's next
+
+Now that you know how bitsets work in Milvus, you might also want to:
+
+- Learn how to [use strings to filter](https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md) your search results, or refer to [Hybrid Search](https://milvus.io/docs/hybridsearch.md) on our docs.
+- Understand [how data are processed](https://milvus.io/docs/v2.1.x/data_processing.md) in Milvus.

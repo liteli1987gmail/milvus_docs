@@ -1,14 +1,20 @@
+---
+id: boolean.md
+summary: Learn about boolean expression rules in Milvus.
+title: Scalar Filtering Rules
+---
+
 # 标量过滤规则
 
 ## 概览
 
-谓词表达式输出一个布尔值。Milvus 通过使用谓词进行标量过滤搜索。谓词表达式在评估时返回 TRUE 或 FALSE。查看 [Python SDK API 参考](/api-reference/pymilvus/v{{var.milvus_python_sdk_version}}/Collection/query().md) 了解如何使用谓词表达式。
+谓词表达式输出一个布尔值。Milvus 通过使用谓词进行标量过滤搜索。谓词表达式在评估时返回 TRUE 或 FALSE。查看 [Python SDK API 参考](</api-reference/pymilvus/v{{var.milvus_python_sdk_version}}/Collection/query().md>) 了解如何使用谓词表达式。
 
 使用扩展巴科斯范式（EBNF）语法规则描述布尔表达式规则：
 
 ```
 Expr = LogicalExpr | NIL
-LogicalExpr = LogicalExpr BinaryLogicalOp LogicalExpr 
+LogicalExpr = LogicalExpr BinaryLogicalOp LogicalExpr
               | UnaryLogicalOp LogicalExpr
               | "(" LogicalExpr ")"
               | SingleExpr;
@@ -31,14 +37,14 @@ CmpOpRestricted = "<" | "<=";
 CmpOp = ">" | ">=" | "<" | "<=" | "=="| "!=";
 MatchOp = "like" | "LIKE";
 JsonArrayOps = JsonDefs "(" IDENTIFIER "," JsonExpr | JsonArray ")";
-JsonArrayDefs = "json_contains" | "JSON_CONTAINS" 
-           | "json_contains_all" | "JSON_CONTAINS_ALL" 
+JsonArrayDefs = "json_contains" | "JSON_CONTAINS"
+           | "json_contains_all" | "JSON_CONTAINS_ALL"
            | "json_contains_any" | "JSON_CONTAINS_ANY";
 JsonExpr =  Constant | ConstantArray | STRING | BOOLEAN;
 JsonArray = "[" JsonExpr { "," JsonExpr } "]";
 ArrayOps = ArrayDefs "(" IDENTIFIER "," ArrayExpr | Array ")";
-ArrayDefs = "array_contains" | "ARRAY_CONTAINS" 
-           | "array_contains_all" | "ARRAY_CONTAINS_ALL" 
+ArrayDefs = "array_contains" | "ARRAY_CONTAINS"
+           | "array_contains_all" | "ARRAY_CONTAINS_ALL"
            | "array_contains_any" | "ARRAY_CONTAINS_ANY"
            | "array_length"       | "ARRAY_LENGTH";
 ArrayExpr =  Constant | ConstantArray | STRING | BOOLEAN;
@@ -47,25 +53,273 @@ Array = "[" ArrayExpr { "," ArrayExpr } "]";
 
 下表列出了上述布尔表达式规则中提到的每个符号的描述。
 
-| 符号      | 描述 |
-| ----------- | ----------- |
-| =      | 定义。       |
-| ,      | 连接。       |
-| ;      | 结束。        |
-| \|      | 选择。       |
-| {...}   | 重复。        |
-| (...)      | 分组。       |
-| NIL   | 空。表达式可以为空字符串。        |
-| INTEGER      | 整数，如 1, 2, 3。       |
-| FLOAT   | 浮点数，如 1.0, 2.0。        |
-| CONST      | 整数或浮点数。       |
-| IDENTIFIER   | 标识符。在 Milvus 中，IDENTIFIER 表示字段名称。        |
-| LogicalOp      | LogicalOp 是一个逻辑运算符，支持在一次比较中组合多个关系操作。LogicalOp 的返回值是 TRUE（1）或 FALSE（0）。有两种类型的 LogicalOps，包括 BinaryLogicalOps 和 UnaryLogicalOps。    |
-| UnaryLogicalOp   | UnaryLogicalOp 指的是一元逻辑运算符 "not"。        |
-| BinaryLogicalOp   | 二元逻辑运算符对两个操作数执行操作。在具有两个或更多操作数的复杂表达式中，计算顺序取决于优先级规则。       |
-| ArithmeticOp   | ArithmeticOp，即算术运算符，在操作数上执行数学运算，如加法和减法。         |
-| UnaryArithOp      | UnaryArithOp 是一个算术运算符，对单个操作数执行操作。负的 UnaryArithOp 将正表达式变为负表达式，或反之亦然。      |
-| BinaryArithOp   | BinaryArithOp，即二元运算符，在两个操作数上执行操作。在具有两个或更多操作数的复杂表达式中，计算顺序取决于优先级规则。        |
-| CmpOp   | CmpOp 是关系运算符，对两个操作数执行操作。        |
-| CmpOpRestricted      |  CmpOpRestricted 限制为 "小于" 和 "等于"。       |
-| ConstantExpr   | ConstantExpr 可以是常量或两个 ConstExprs 上的 BinaryArithOp 或单个 ConstantExpr 上
+| 符号            | 描述                                                                                                                                                                                                                        |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| =               | 定义。                                                                                                                                                                                                                      |
+| ,               | 连接。                                                                                                                                                                                                                      |
+| ;               | 结束。                                                                                                                                                                                                                      |
+| \|              | 选择。                                                                                                                                                                                                                      |
+| {...}           | 重复。                                                                                                                                                                                                                      |
+| (...)           | 分组。                                                                                                                                                                                                                      |
+| NIL             | 空。表达式可以为空字符串。                                                                                                                                                                                                  |
+| INTEGER         | 整数，如 1, 2, 3。                                                                                                                                                                                                          |
+| FLOAT           | 浮点数，如 1.0, 2.0。                                                                                                                                                                                                       |
+| CONST           | 整数或浮点数。                                                                                                                                                                                                              |
+| IDENTIFIER      | 标识符。在 Milvus 中，IDENTIFIER 表示字段名称。                                                                                                                                                                             |
+| LogicalOp       | LogicalOp 是一个逻辑运算符，支持在一次比较中组合多个关系操作。LogicalOp 的返回值是 TRUE（1）或 FALSE（0）。有两种类型的 LogicalOps，包括 BinaryLogicalOps 和 UnaryLogicalOps。                                              |
+| UnaryLogicalOp  | UnaryLogicalOp 指的是一元逻辑运算符 "not"。                                                                                                                                                                                 |
+| BinaryLogicalOp | 二元逻辑运算符对两个操作数执行操作。在具有两个或更多操作数的复杂表达式中，计算顺序取决于优先级规则。                                                                                                                        |
+| ArithmeticOp    | ArithmeticOp，即算术运算符，在操作数上执行数学运算，如加法和减法。                                                                                                                                                          |
+| UnaryArithOp    | UnaryArithOp 是一个算术运算符，对单个操作数执行操作。负的 UnaryArithOp 将正表达式变为负表达式，或反之亦然。                                                                                                                 |
+| BinaryArithOp   | BinaryArithOp，即二元运算符，在两个操作数上执行操作。在具有两个或更多操作数的复杂表达式中，计算顺序取决于优先级规则。                                                                                                       |
+| CmpOp           | CmpOp 是关系运算符，对两个操作数执行操作。                                                                                                                                                                                  |
+| CmpOpRestricted | CmpOpRestricted 限制为 "小于" 和 "等于"。                                                                                                                                                                                   |
+| ConstantExpr    | ConstantExpr can be a Constant or a BinaryArithOp on two ConstExprs or a UnaryArithOp on a single ConstantExpr. It is defined recursively.                                                                                  |
+| ConstantArray   | ConstantArray is wrapped by square brackets, and ConstantExpr can be repeated in the square brackets. ConstArray must include at least one ConstantExpr.                                                                    |
+| TermExpr        | TermExpr is used to check whether the value of an IDENTIFIER appears in a ConstantArray. TermExpr is represented by "in".                                                                                                   |
+| CompareExpr     | A CompareExpr, namely comparison expression can be relational operations on two IDENTIFIERs, or relational operations on one IDENTIFIER and one ConstantExpr, or ternary operation on two ConstantExprs and one IDENTIFIER. |
+| SingleExpr      | SingleExpr, namely single expression, can be either a TermExpr or a CompareExpr.                                                                                                                                            |
+| LogicalExpr     | A LogicalExpr can be a BinaryLogicalOp on two LogicalExprs, or a UnaryLogicalOp on a single LogicalExpr, or a LogicalExpr grouped within parentheses, or a SingleExpr. The LogicalExpr is defined recursively.              |
+| Expr            | Expr, an abbreviation meaning expression, can be LogicalExpr or NIL.                                                                                                                                                        |
+| MatchOp         | A MatchOp, namely a match operator, compares a string to a string constant or a string prefix, infix, or suffix constant.                                                                                                   |
+| JsonArrayOp     | A JsonOp, namely a JSON operator, checks whether the specified identifier contains the specified elements.                                                                                                                  |
+| ArrayOp         | An ArrayOp, namely an array operator, checks whether the specified identifier contains the specified elements.                                                                                                              |
+
+## Operators
+
+### Logical operators
+
+Logical operators perform a comparison between two expressions.
+
+| Symbol    | Operation | Example          | Description                             |
+| --------- | --------- | ---------------- | --------------------------------------- |
+| 'and' &&  | and       | expr1 && expr2   | True if both expr1 and expr2 are true.  |
+| 'or' \|\| | or        | expr1 \|\| expr2 | True if either expr1 or expr2 are true. |
+
+### Binary arithmetic operators
+
+Binary arithmetic operators contain two operands and can perform basic arithmetic operations and return the corresponding result.
+
+| Symbol | Operation      | Example  | Description                                                                     |
+| ------ | -------------- | -------- | ------------------------------------------------------------------------------- |
+| +      | Addition       | a + b    | Add the two operands.                                                           |
+| -      | Subtraction    | a - b    | Subtract the second operand from the first operand.                             |
+| \*     | Multiplication | a \* b   | Multiply the two operands.                                                      |
+| /      | Division       | a / b    | Divide the first operand by the second operand.                                 |
+| \*\*   | Power          | a \*\* b | Raise the first operand to the power of the second operand.                     |
+| %      | Modulo         | a % b    | Divide the first operand by the second operand and yield the remainder portion. |
+
+### Relational operators
+
+Relational operators use symbols to check for equality, inequality, or relative order between two expressions.
+
+| Symbol | Operation             | Example | Description                              |
+| ------ | --------------------- | ------- | ---------------------------------------- |
+| <      | Less than             | a < b   | True if a is less than b.                |
+| >      | Greater than          | a > b   | True if a is greater than b.             |
+| ==     | Equal                 | a == b  | True if a is equal to b.                 |
+| !=     | Not equal             | a != b  | True if a is not equal to b.             |
+| <=     | Less than or equal    | a <= b  | True if a is less than or equal to b.    |
+| >=     | Greater than or equal | a >= b  | True if a is greater than or equal to b. |
+
+## Operator precedence and associativity
+
+The following table lists the precedence and associativity of operators. Operators are listed top to bottom, in descending precedence.
+
+| Precedence | Operator                              | Description   | Associativity |
+| ---------- | ------------------------------------- | ------------- | ------------- |
+| 1          | + -                                   | UnaryArithOp  | Left-to-right |
+| 2          | not                                   | UnaryLogicOp  | Right-to-left |
+| 3          | \*\*                                  | BinaryArithOp | Left-to-right |
+| 4          | \* / %                                | BinaryArithOp | Left-to-right |
+| 5          | + -                                   | BinaryArithOp | Left-to-right |
+| 6          | < <= > >=                             | CmpOp         | Left-to-right |
+| 7          | == !=                                 | CmpOp         | Left-to-right |
+| 8          | like LIKE                             | MatchOp       | Left-to-right |
+| 9          | json_contains JSON_CONTAINS           | JsonArrayOp   | Left-to-right |
+| 9          | array_contains ARRAY_CONTAINS         | ArrayOp       | Left-to-right |
+| 10         | json_contains_all JSON_CONTAINS_ALL   | JsonArrayOp   | Left-to-right |
+| 10         | array_contains_all ARRAY_CONTAINS_ALL | ArrayOp       | Left-to-right |
+| 11         | json_contains_any JSON_CONTAINS_ANY   | JsonArrayOp   | Left-to-right |
+| 11         | array_contains_any ARRAY_CONTAINS_ANY | ArrayOp       | Left-to-right |
+| 12         | array_length ARRAY_LENGTH             | ArrayOp       | Left-to-right |
+| 13         | && and                                | BinaryLogicOp | Left-to-right |
+| 14         | \|\| or                               | BinaryLogicOp | Left-to-right |
+
+Expressions are normally evaluated from left to right. Complex expressions are evaluated one at a time. The order in which the expressions are evaluated is determined by the precedence of the operators used.
+
+If an expression contains two or more operators with the same precedence, the operator to the left is evaluated first.
+
+<div class="alert note">
+
+For example, 10 / 2 \* 5 will be evaluated as (10 / 2) and the result multiplied by 5.
+
+</div>
+
+When a lower precedence operation should be processed first, it should be enclosed within parentheses.
+
+<div class="alert note">
+
+For example, 30 / 2 + 8. This is normally evaluated as 30 divided by 2 then 8 added to the result. If you want to divide by 2 + 8, it should be written as 30 / (2 + 8).
+
+</div>
+
+Parentheses can be nested within expressions. Innermost parenthetical expressions are evaluated first.
+
+## Usage
+
+Samples of all available boolean expression usage in Milvus are listed as follows (`int64` represents the scalar field that contains data of INT64 type, `float` represents the scalar field that contains data of floating-point type, and `VARCHAR` represents the scalar field that contains data of VARCHAR type):
+
+1. CmpOp
+
+```
+"int64 > 0"
+```
+
+```
+"0 < int64 < 400"
+```
+
+```
+"500 <= int64 < 1000"
+```
+
+```
+VARCHAR > "str1"
+```
+
+2. BinaryLogicalOp and parentheses
+
+```
+"(int64 > 0 && int64 < 400) or (int64 > 500 && int64 < 1000)"
+```
+
+3. TermExpr and UnaryLogicOp
+
+<div class="alert note">
+
+Milvus only supports deleting entities with clearly specified primary keys, which can be achieved merely with the term expression <code>in</code>.
+
+</div>
+
+```
+"int64 not in [1, 2, 3]"
+```
+
+```
+VARCHAR not in ["str1", "str2"]
+```
+
+4. TermExpr, BinaryLogicalOp, and CmpOp (on different fields)
+
+```
+"int64 in [1, 2, 3] and float != 2"
+```
+
+5. BinaryLogicalOp and CmpOp
+
+```
+"int64 == 0 || int64 == 1 || int64 == 2"
+```
+
+6. CmpOp and UnaryArithOp or BinaryArithOp
+
+```
+"200+300 < int64 <= 500+500"
+```
+
+7. MatchOp
+
+```
+VARCHAR like "prefix%"
+VARCHAR like "%suffix"
+VARCHAR like "%middle%"
+VARCHAR like "_suffix"
+```
+
+8. JsonArrayOp
+
+- `JSON_CONTAINS(identifier, JsonExpr)`
+
+  If the JSON expression of a `JSON_CONTAINS` (the second argument) statement is a list, the identifier (the first argument) should be list of list. Otherwise, the statement always evaluates to False.
+
+  ```python
+  # {"x": [1,2,3]}
+  json_contains(x, 1) # ==> true
+  json_contains(x, "a") # ==> false
+
+  # {"x": [[1,2,3], [4,5,6], [7,8,9]]}
+  json_contains(x, [1,2,3]) # ==> true
+  json_contains(x, [3,2,1]) # ==> false
+  ```
+
+- `JSON_CONTAINS_ALL(identifier, JsonExpr)`
+
+  The JSON expression in a `JSON_CONTAINS_ALL` statement should always be a list.
+
+  ```python
+  # {"x": [1,2,3,4,5,7,8]}
+  json_contains_all(x, [1,2,8]) # ==> true
+  json_contains_all(x, [4,5,6]) # ==> false 6 is not exists
+  ```
+
+- `JSON_CONTAINS_ANY(identifier, JsonExpr)`
+
+  The JSON expression in a `JSON_CONTAINS_ANY` statement should always be a list. Otherwise, it acts the same as `JSON_CONTAINS`.
+
+  ```python
+  # {"x": [1,2,3,4,5,7,8]}
+  json_contains_any(x, [1,2,8]) # ==> true
+  json_contains_any(x, [4,5,6]) # ==> true
+  json_contains_any(x, [6,9]) # ==> false
+  ```
+
+9. ArrayOp
+
+- `ARRAY_CONTAINS(identifier, ArrayExpr)`
+
+  If the array expression of an `ARRAY_CONTAINS` (the second argument) statement is a list, the identifier (the first argument) should be list of list. Otherwise, the statement always evaluates to False.
+
+  ```python
+  # 'int_array': [1,2,3]
+  array_contains(int_array, 1) # ==> true
+  array_contains(int_array, "a") # ==> false
+  ```
+
+- `ARRAY_CONTAINS_ALL(identifier, ArrayExpr)`
+
+  The array expression in an `ARRAY_CONTAINS_ALL` statement should always be a list.
+
+  ```python
+  # "int_array": [1,2,3,4,5,7,8]
+  array_contains_all(int_array, [1,2,8]) # ==> true
+  array_contains_all(int_array, [4,5,6]) # ==> false 6 is not exists
+  ```
+
+- `ARRAY_CONTAINS_ANY(identifier, ArrayExpr)`
+
+  The array expression in an `ARRAY_CONTAINS_ANY` statement should always be a list. Otherwise, it acts the same as `ARRAY_CONTAINS`.
+
+  ```python
+  # "int_array": [1,2,3,4,5,7,8]
+  array_contains_any(int_array, [1,2,8]) # ==> true
+  array_contains_any(int_array, [4,5,6]) # ==> true
+  array_contains_any(int_array, [6,9]) # ==> false
+  ```
+
+- `ARRAY_LENGTH(identifier)`
+
+  Check the number of elements in an array.
+
+  ```python
+  # "int_array": [1,2,3,4,5,7,8]
+  array_length(int_array) # ==> 7
+  ```
+
+## What's next
+
+Now that you know how bitsets work in Milvus, you might also want to:
+
+- Learn how to conduct a [Multi-Vector Search](multi-vector-search.md).
+- Learn how to [use strings to filter](https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md) your search results.
+- Learn how to [use dynamic fields in building boolean expressions](enable-dynamic-field.md).

@@ -1,13 +1,17 @@
 ---
-title: 音频相似性搜索
+id: audio_similarity_search.md
+summary: Build an audio similarity search system with Milvus.
+title: Audio Similarity Search
 ---
 
 # 音频相似性搜索
 
 本教程演示了如何使用 Milvus（开源向量数据库）构建音频相似性搜索系统。
+
 - [打开 Jupyter 笔记本](https://github.com/milvus-io/bootcamp/blob/master/solutions/audio/audio_similarity_search/audio_similarity_search.ipynb)
 
 使用的机器学习模型和第三方软件包括：
+
 - PANNs（大规模预训练音频神经网络）
 - MySQL
 - [Towhee](https://towhee.io/)
@@ -22,5 +26,5 @@ title: 音频相似性搜索
 
 <br/>
 
-![Audio_search](/audio_search.png "音频相似性搜索系统的流程。")
-![Audio_search_demo](/audio_search_demo.png "音频相似性搜索系统的演示。")
+![Audio_search](/public/assets/audio_search.png "音频相似性搜索系统的流程。")
+![Audio_search_demo](/public/assets/audio_search_demo.png "音频相似性搜索系统的演示。")

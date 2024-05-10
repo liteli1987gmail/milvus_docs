@@ -1,22 +1,28 @@
+---
+id: data_processing.md
+summary: Learn about the data processing procedure in Milvus.
+title: Data Processing
+---
+
 # 数据处理
 
 本文详细介绍了 Milvus 中数据插入、索引构建和数据查询的实现。
 
 ## 数据插入
 
-在 Milvus 中，您可以为每个集合指定多个分片，每个分片对应一个虚拟通道（*vchannel*）。如下所示，Milvus 为日志代理中的每个 vchannel 分配一个物理通道（*pchannel*）。任何传入的插入/删除请求都根据主键的哈希值路由到分片。
+在 Milvus 中，您可以为每个集合指定多个分片，每个分片对应一个虚拟通道（_vchannel_）。如下所示，Milvus 为日志代理中的每个 vchannel 分配一个物理通道（_pchannel_）。任何传入的插入/删除请求都根据主键的哈希值路由到分片。
 
 由于 Milvus 没有复杂的事务，DML（数据操作语言）请求的验证提前到代理进行。代理会从与根协调器共位的时间模块 TSO（时间戳预言器）请求每个插入/删除请求的时间戳。使用较新的时间戳覆盖旧的时间戳，时间戳用于确定正在处理的数据请求的顺序。代理从数据协调器批量检索信息，包括实体的段和主键，以提高整体吞吐量并避免过载中心节点。
 
-![Channels 1](..//channels_1.jpg "每个分片对应一个 vchannel.")
+![Channels 1](/public/assets/channels_1.jpg "每个分片对应一个 vchannel.")
 
 DML（数据操作语言）操作和 DDL（数据定义语言）操作都写入日志序列，但由于它们的低频发生，DDL 操作只分配一个通道。
 
-![Channels 2](..//channels_2.jpg "日志代理节点.")
+![Channels 2](/public/assets/channels_2.jpg "日志代理节点.")
 
-*Vchannels* 在底层日志代理节点中维护。每个通道在物理上是不可分割的，并且对任何节点都是可用的，但只能对一个节点可用。当数据摄取速率达到瓶颈时，考虑两件事：日志代理节点是否过载需要扩展，以及是否有足够的分片以确保每个节点的负载平衡。
+_Vchannels_ 在底层日志代理节点中维护。每个通道在物理上是不可分割的，并且对任何节点都是可用的，但只能对一个节点可用。当数据摄取速率达到瓶颈时，考虑两件事：日志代理节点是否过载需要扩展，以及是否有足够的分片以确保每个节点的负载平衡。
 
-![Write log sequence](..//write_log_sequence.jpg "写入日志序列的过程.")
+![Write log sequence](/public/assets/write_log_sequence.jpg "写入日志序列的过程.")
 
 上述图表概括了写入日志序列过程中涉及的四个组件：代理、日志代理、数据节点和对象存储。该过程涉及四个任务：DML 请求的验证、日志序列的发布-订阅、从流式日志到日志快照的转换以及日志快照的持久化。这四个任务相互解耦，以确保每个任务由其相应的节点类型处理。同类型的节点被平等对待，并且可以独立地弹性扩展以适应各种数据负载，特别是大规模和高度波动的流式数据。
 
@@ -24,7 +30,7 @@ DML（数据操作语言）操作和 DDL（数据定义语言）操作都写入�
 
 索引构建由索引节点执行。为了避免对数据更新频繁构建索引，Milvus 中的集合进一步划分为多个段，每个段都有自己的索引。
 
-![Index building](..//index_building.jpg "Milvus 中的索引构建.")
+![Index building](/public/assets/index_building.jpg "Milvus 中的索引构建.")
 
 Milvus 支持为每个向量字段、标量字段和主字段构建索引。索引构建的输入和输出都涉及对象存储：索引节点从对象存储中的段（在对象存储中）加载日志快照以进行索引，反序列化相应的数据和元数据以构建索引，完成索引构建时序列化索引，然后将其写回对象存储。
 
@@ -36,12 +42,20 @@ Milvus 支持为每个向量字段、标量字段和主字段构建索引。索�
 
 ## 数据查询
 
-数据查询是指在指定集合中搜索与目标向量最近的 *k* 个向量或在指定距离范围内搜索所有向量的过程。向量与其相应的主键和字段一起返回。
+数据查询是指在指定集合中搜索与目标向量最近的 _k_ 个向量或在指定距离范围内搜索所有向量的过程。向量与其相应的主键和字段一起返回。
 
-![Data query](..//data_query.jpg "Milvus 中的数据查询.")
+![Data query](/public/assets/data_query.jpg "Milvus 中的数据查询.")
 
 在 Milvus 中，集合被分成多个段，查询节点按段加载索引。当搜索请求到达时，它被广播到所有查询节点进行并行搜索。然后，每个节点修剪本地段，搜索符合标准的向量，并减少并返回搜索结果。
 
 在数据查询中，查询节点彼此独立。每个节点只负责两个任务：根据查询协调器的指令加载或释放段；在本地段内进行搜索。代理负责从每个查询节点减少搜索结果，并将最终结果返回给客户端。
 
-![Handoff](
+![Handoff](/public/assets/handoff.jpg "Handoff in Milvus.")
+
+There are two types of segments, growing segments (for incremental data), and sealed segments (for historical data). Query nodes subscribe to vchannel to receive recent updates (incremental data) as growing segments. When a growing segment reaches a predefined threshold, data coord seals it and index building begins. Then a _handoff_ operation initiated by query coord turns incremental data to historical data. Query coord will distribute sealed segments evenly among all query nodes according to memory usage, CPU overhead, and segment number.
+
+## What's next
+
+- Learn about how to [use the Milvus vector database for real-time query](https://milvus.io/blog/deep-dive-5-real-time-query.md).
+- Learn about [data insertion and data persistence in Milvus](https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md).
+- Learn how [data is processed in Milvus](https://milvus.io/blog/deep-dive-3-data-processing.md).

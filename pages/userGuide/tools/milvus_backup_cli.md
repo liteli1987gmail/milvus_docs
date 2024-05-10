@@ -1,7 +1,8 @@
 ---
-title: 使用命令备份和恢复数据
+id: milvus_backup_cli.md
+summary: Learn how to use Milvus Backup through CLI
+title: Back up and Restore Data Using Commands
 ---
-
 
 # 使用命令备份和恢复数据
 
@@ -42,10 +43,10 @@ workspace
 
 默认的 Minio 存储桶名称因安装 Milvus 的方式而异。在更改 Minio 设置时，请参考下表。
 
-| 字段           | Docker Compose | Helm / Milvus Operator |
-| --------------- | -------------- | ---------------------- |
-| `bucketName`    | a-bucket       | milvus-bucket          |
-| `rootPath`      | files          | file                   |
+| 字段         | Docker Compose | Helm / Milvus Operator |
+| ------------ | -------------- | ---------------------- |
+| `bucketName` | a-bucket       | milvus-bucket          |
+| `rootPath`   | files          | file                   |
 
 </div>
 
@@ -110,3 +111,18 @@ mc cp --recursive my_minio/<your-bucket-path> <local_dir_path>
 python example/clean_data.py
 ```
 
+Then run the following command to restore the data from the backup.
+
+```shell
+./milvus-backup restore -n my_backup
+```
+
+## Verify restored data
+
+Once the restore completes, you can verify the restored data by indexing the restored collection as follows:
+
+```shell
+python example/verify_data.py
+```
+
+Note that the above script assumes that you have run the `restore` command with the `-s` flag and the suffix is set to `-recover`. Feel free to make necessary changes to the script to fit your need.

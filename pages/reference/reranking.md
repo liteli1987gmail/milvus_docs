@@ -1,3 +1,9 @@
+---
+id: reranking.md
+summary: This topic covers the reranking process, explaining its significance and implementation of two reranking methods.
+title: Reranking
+---
+
 # 重新排名
 
 Milvus 通过 [hybrid_search()](https://milvus.io/api-reference/pymilvus/v2.4.x/ORM/Collection/hybrid_search.md) API 实现了多向量搜索功能，结合了复杂的重新排名策略，以优化来自多个 `AnnSearchRequest` 实例的搜索结果。本主题涵盖了重新排名过程，解释了其重要性以及在 Milvus 中实现不同重新排名策略的方法。
@@ -12,7 +18,7 @@ Milvus 通过 [hybrid_search()](https://milvus.io/api-reference/pymilvus/v2.4.x/
 
 下图展示了在 Milvus 中执行多向量搜索的过程，并突出了重新排名在该过程中的作用。
 
-<img src="/multi-vector-rerank.png" alt="reranking_process" width="300"/>
+![reranking_process](/assets/multi-vector-rerank.png)
 
 ## 加权评分（WeightedRanker）
 
@@ -28,7 +34,7 @@ Milvus 中加权评分算法的输入是一组对应于每个 `AnnSearchRequest`
 from pymilvus import WeightedRanker
 
 # 使用 WeightedRanker 结合指定权重组合结果
-rerank = WeightedRanker(0.8, 0.8, 0.7) 
+rerank = WeightedRanker(0.8, 0.8, 0.7)
 ```
 
 请注意：

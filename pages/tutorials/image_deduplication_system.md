@@ -1,5 +1,7 @@
 ---
-title: 图像去重系统
+id: image_deduplication_system.md
+summary: Build an image deduplication system with Milvus.
+title: Image Deduplication
 ---
 
 # 图像去重系统
@@ -18,4 +20,4 @@ title: 图像去重系统
 
 在本教程中，你将学习如何构建一个图像去重系统。本教程使用 ResNet-50 模型提取图像特征并将其转换为向量。然后，这些图像向量存储在 Milvus 向量数据库中，并在 Milvus 中进行向量相似性搜索。
 
-![Image_deduplication_workflow](/image_deduplication.png "图像去重系统的流程图。")
+![Image_deduplication_workflow](/public/assets/image_deduplication.png "图像去重系统的流程图。")

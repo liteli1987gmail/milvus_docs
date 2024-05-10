@@ -1,6 +1,10 @@
 ---
-title: 使用 MilvusClient
+id: using_milvusclient.md
+related_key: Milvus Client Python
+summary: Learn how to use the MilvusClient Python API.
+title: Use the MilvusClient
 ---
+
 # 使用 MilvusClient
 
 本页面介绍了如何在 Pymilvus 中使用 MilvusClient。MilvusClient 是 Pymilvus 的简化包装器，更易于使用，并且隐藏了使用原始 SDK 时发现的大部分复杂性。
@@ -10,6 +14,7 @@ title: 使用 MilvusClient
 </div>
 
 MilvusClient 支持通过 URI 使用单一统一的方式来连接服务。以下是一些有效的 URI 示例：
+
 1. "http://localhost:19530"
 2. "https://user:password@mysite:19530"
 3. "https://username:password@in01-12a.aws-us-west-2.vectordb.zillizcloud.com:19538"
@@ -34,7 +39,7 @@ from pymilvus import MilvusClient
 client = MilvusClient(
     collection_name="qux",
     uri="http://localhost:19530",
-    vector_field="float_vector", 
+    vector_field="float_vector",
     # pk_field= "id", # 如果您想提供自己的 PK
     overwrite=True,
 )
@@ -98,9 +103,175 @@ MilvusClient 在当前版本中支持分区。分区可以在 MilvusClient 构�
 from pymilvus import MilvusClient
 
 
+
 client = MilvusClient(
     collection_name="qux",
     uri="http://localhost:19530",
     vector_field="float_vector",
     partitions = ["zaz"],
-    overwrite
+    overwrite=True,
+)
+
+data = [
+    {
+        "float_vector": [1,2,3],
+        "id": 1,
+        "text": "foo"
+    },
+]
+client.insert_data(data, partition="zaz")
+
+client.add_partitions(["zoo"])
+
+data = [
+    {
+        "float_vector": [4,5,6],
+        "id": 2,
+        "text": "bar"
+    },
+]
+client.insert_data(data, partition="zoo")
+
+res = client.search_data(
+    data = [1,3,5],
+    top_k = 2,
+)
+
+# [[
+#     {'data': {'id': 1, 'internal_pk_3bd4': 441363276234227849, 'text': 'foo'}, 'score': 5.0},
+#     {'data': {'id': 2, 'internal_pk_3bd4': 441363276234227866, 'text': 'bar'}, 'score': 14.0}
+# ]]
+
+
+res = client.search_data(
+    data = [1,3,5],
+    top_k = 2,
+    partitions=["zaz"]
+)
+
+# [[
+#     {'data': {'id': 1, 'internal_pk_3bd4': 441363276234227849, 'text': 'foo'}, 'score': 5.0}
+# ]]
+
+res = client.search_data(
+    data = [1,3,5],
+    top_k = 2,
+    partitions=["zoo"]
+)
+
+# [[
+#     {'data': {'id': 2, 'internal_pk_3bd4': 441363276234227866, 'text': 'bar'}, 'score': 14.0}
+# ]]
+```
+
+### Filtering
+
+Filtering can be used to narrow down results to match metadata or to query data based on metadata.
+
+```python
+from pymilvus import MilvusClient
+
+client = MilvusClient(
+    collection_name="qux",
+    uri="http://localhost:19530",
+    vector_field="float_vector",
+    # pk_field= "id", # If you wanted to provide your own PK
+    overwrite=True,
+)
+
+data = [
+    {
+        "float_vector": [1,2,3],
+        "id": 1,
+        "text": "foo"
+    },
+    {
+        "float_vector": [4,5,6],
+        "id": 2,
+        "text": "bar"
+    },
+    {
+        "float_vector": [7,8,9],
+        "id": 3,
+        "text": "baz"
+    }
+]
+client.insert_data(data)
+
+res = client.search_data(
+    data = [1,3,5],
+    top_k = 2,
+    filter_expression = "id > 1"
+)
+
+# [[
+#     {'score': 14.0, 'data': {'id': 2, 'text': 'bar', 'internal_pk_5465': 441363276234227922}},
+#     {'score': 77.0, 'data': {'id': 3, 'text': 'baz', 'internal_pk_5465': 441363276234227923}}
+# ]]
+
+res = client.query_data(
+    filter_expression = "id == 1"
+)
+
+# [
+#   {'id': 1, 'text': 'foo', 'internal_pk_5465': 441363276234227921}
+# ]
+```
+
+### Vector Retrieval and Deletion
+
+As a vector database we have the ability to return the actual vectors and delete their entries. In order to do these two functions we need to first get the pks corresponding to the entry we are trying to act on. Here is an example below.
+
+```python
+from pymilvus import MilvusClient
+
+client = MilvusClient(
+    collection_name="qux",
+    uri="http://localhost:19530",
+    vector_field="float_vector",
+    pk_field= "text",
+    overwrite=True,
+)
+
+data = [
+    {
+        "float_vector": [1,2,3],
+        "id": 1,
+        "text": "foo"
+    },
+    {
+        "float_vector": [4,5,6],
+        "id": 2,
+        "text": "bar"
+    },
+    {
+        "float_vector": [7,8,9],
+        "id": 3,
+        "text": "baz"
+    }
+]
+
+client.insert_data(data)
+
+res = client.query_data(
+    filter_expression = "id == 1"
+)
+
+# [
+#   {'id': 1, 'text': 'foo'}
+# ]
+
+res = client.get_vectors_by_pk(pks = res[0]["text"])
+
+# [
+#     {'float_vector': [1.0, 2.0, 3.0], 'text': 'foo'}
+# ]
+
+client.delete_by_pk(pks = res[0]["text"])
+
+res = client.query_data(
+    filter_expression = "id == 1"
+)
+
+# []
+```

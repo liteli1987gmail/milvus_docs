@@ -1,3 +1,10 @@
+---
+id: users_and_roles.md
+related_key: users, roles
+summary: Learn about the definition of users, roles, objects, and privileges in role-based access control (RBAC).
+title: Users and Roles
+---
+
 # 用户和角色
 
 本主题解释了基于角色的访问控制（RBAC）中用户、角色、对象和权限的定义。
@@ -20,58 +27,63 @@ Milvus 默认创建了一个 `root` 用户，并为其分配了默认密码 `Mil
 
 下表列出了在[启用 RBAC](rbac.md)时可以选择的值。
 
-| 对象名称 | 权限名称        | 客户端相关 API 描述 |
-| ----------- | --------------------- | ------------------------------------------------- |
-| 集合        | CreateIndex           | CreateIndex                                       |
-| 集合        | DropIndex             | DropIndex                                         |
-| 集合        | IndexDetail           | DescribeIndex/GetIndexState/GetIndexBuildProgress |
-| 集合        | Load                  | LoadCollection/GetLoadingProgress/GetLoadState    |
-| 集合        | GetLoadingProgress    | GetLoadingProgress                                |
-| 集合        | GetLoadState          | GetLoadState                                      |
-| 集合        | Release               | ReleaseCollection                                 |
-| 集合        | Insert                | Insert                                            |
-| 集合        | Delete                | Delete                                            |
-| 集合        | Upsert                | Upsert                                            |
-| 集合        | Search                | Search                                            |
-| 集合        | Flush                 | Flush/GetFlushState                               |
-| 集合        | GetFlushState         | GetFlushState                                     |
-| 集合        | Query                 | Query                                             |
-| 集合        | GetStatistics         | GetCollectionStatistics                           |
-| 集合        | Compaction            | Compact                                           |
-| 集合        | Import                | BulkInsert/Import                                 |
-| 集合        | LoadBalance           | LoadBalance                                       |
-| 集合        | CreatePartition       | CreatePartition                                   |
-| 集合        | DropPartition         | DropPartition                                     |
-| 集合        | ShowPartitions        | ShowPartitions                                    |
-| 集合        | HasPartition          | HasPartition                                      |
-| 全局        | All                   | 此表中所有 API 操作权限                           |
-| 全局        | CreateCollection      | CreateCollection                                  |
-| 全局        | DropCollection        | DropCollection                                    |
-| 全局        | DescribeCollection    | DescribeCollection                                |
-| 全局        | ShowCollections       | ShowCollections                                   |
-| 全局        | RenameCollection      | RenameCollection                                  |
-| 全局        | FlushAll              | FlushAll                                          |
-| 全局        | CreateOwnership       | CreateUser CreateRole                             |
-| 全局        | DropOwnership         | DeleteCredential DropRole                         |
-| 全局        | SelectOwnership       | SelectRole/SelectGrant                            |
-| 全局        | ManageOwnership       | OperateUserRole OperatePrivilege                  |
-| 全局        | CreateResourceGroup   | CreateResourceGroup                               |
-| 全局        | DropResourceGroup     | DropResourceGroup                                 |
-| 全局        | DescribeResourceGroup | DescribeResourceGroup                             |
-| 全局        | ListResourceGroups    | ListResourceGroups                                |
-| 全局        | TransferNode          | TransferNode                                      |
-| 全局        | TransferReplica       | TransferReplica                                   |
-| 全局        | CreateDatabase        | CreateDatabase                                    |
-| 全局        | DropDatabase          | DropDatabase                                      |
-| 全局        | ListDatabases         | ListDatabases                                     |
-| 全局        | CreateAlias           | CreateAlias                                       |
-| 全局        | DropAlias             | DropAlias                                         |
-| 全局        | DescribeAlias         | DescribeAlias                                     |
-| 全局        | ListAliases           | ListAliases                                       |
-| 用户        | UpdateUser            | UpdateCredential                                  |
-| 用户        | SelectUser            | SelectUser                                        |
+| 对象名称 | 权限名称              | 客户端相关 API 描述                               |
+| -------- | --------------------- | ------------------------------------------------- |
+| 集合     | CreateIndex           | CreateIndex                                       |
+| 集合     | DropIndex             | DropIndex                                         |
+| 集合     | IndexDetail           | DescribeIndex/GetIndexState/GetIndexBuildProgress |
+| 集合     | Load                  | LoadCollection/GetLoadingProgress/GetLoadState    |
+| 集合     | GetLoadingProgress    | GetLoadingProgress                                |
+| 集合     | GetLoadState          | GetLoadState                                      |
+| 集合     | Release               | ReleaseCollection                                 |
+| 集合     | Insert                | Insert                                            |
+| 集合     | Delete                | Delete                                            |
+| 集合     | Upsert                | Upsert                                            |
+| 集合     | Search                | Search                                            |
+| 集合     | Flush                 | Flush/GetFlushState                               |
+| 集合     | GetFlushState         | GetFlushState                                     |
+| 集合     | Query                 | Query                                             |
+| 集合     | GetStatistics         | GetCollectionStatistics                           |
+| 集合     | Compaction            | Compact                                           |
+| 集合     | Import                | BulkInsert/Import                                 |
+| 集合     | LoadBalance           | LoadBalance                                       |
+| 集合     | CreatePartition       | CreatePartition                                   |
+| 集合     | DropPartition         | DropPartition                                     |
+| 集合     | ShowPartitions        | ShowPartitions                                    |
+| 集合     | HasPartition          | HasPartition                                      |
+| 全局     | All                   | 此表中所有 API 操作权限                           |
+| 全局     | CreateCollection      | CreateCollection                                  |
+| 全局     | DropCollection        | DropCollection                                    |
+| 全局     | DescribeCollection    | DescribeCollection                                |
+| 全局     | ShowCollections       | ShowCollections                                   |
+| 全局     | RenameCollection      | RenameCollection                                  |
+| 全局     | FlushAll              | FlushAll                                          |
+| 全局     | CreateOwnership       | CreateUser CreateRole                             |
+| 全局     | DropOwnership         | DeleteCredential DropRole                         |
+| 全局     | SelectOwnership       | SelectRole/SelectGrant                            |
+| 全局     | ManageOwnership       | OperateUserRole OperatePrivilege                  |
+| 全局     | CreateResourceGroup   | CreateResourceGroup                               |
+| 全局     | DropResourceGroup     | DropResourceGroup                                 |
+| 全局     | DescribeResourceGroup | DescribeResourceGroup                             |
+| 全局     | ListResourceGroups    | ListResourceGroups                                |
+| 全局     | TransferNode          | TransferNode                                      |
+| 全局     | TransferReplica       | TransferReplica                                   |
+| 全局     | CreateDatabase        | CreateDatabase                                    |
+| 全局     | DropDatabase          | DropDatabase                                      |
+| 全局     | ListDatabases         | ListDatabases                                     |
+| 全局     | CreateAlias           | CreateAlias                                       |
+| 全局     | DropAlias             | DropAlias                                         |
+| 全局     | DescribeAlias         | DescribeAlias                                     |
+| 全局     | ListAliases           | ListAliases                                       |
+| 用户     | UpdateUser            | UpdateCredential                                  |
+| 用户     | SelectUser            | SelectUser                                        |
 
 <div class="alert note">
-<li>对象和权限名称是区分大小写的。</li>
-<li>要授予一种对象（如集合、全局、用户）的所有权限，使用 "*" 作为权限名称。 </li>
-<li>全局对象的 "*" 权限名称不包括 All 权限，因为 All 权限包括所有权限，包括任何集合和用户对象。
+<li>Object and privilege names are case-sensitive.</li>
+<li>To grant all privileges to a kind of object, like Collection, Global, User, use "*" for privilege name. </li>
+<li>The "*" privilege name for the Global object doesn't include the All privilege, because the All privilege includes all permissions, including any collection and user object.</li>
+</div>
+
+## What's next
+
+- Learn how to [enable RBAC](rbac.md).

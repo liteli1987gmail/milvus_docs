@@ -1,14 +1,18 @@
 ---
-title: 问答系统
+id: question_answering_system.md
+summary: Build a question answering system with Milvus.
+title: Question Answering System
 ---
 
 # 问答系统
 
 本教程演示了如何使用 Milvus（一个开源的向量数据库）构建一个问答（QA）系统。
+
 - [打开 Jupyter 笔记本](https://github.com/towhee-io/examples/tree/main/nlp/question_answering)
 - [尝试在线演示](https://milvus.io/milvus-demos/)
 
 使用的机器学习模型和第三方软件包括：
+
 - BERT
 - MySQL
 - [Towhee](https://towhee.io/)
@@ -23,6 +27,6 @@ title: 问答系统
 
 </br>
 
-![QA_Chatbot](/qa_chatbot.png "问答聊天机器人的工作流程。")
+![QA_Chatbot](/public/assets/qa_chatbot.png "问答聊天机器人的工作流程。")
 
-![QA_chatbot_demo](/qa_chatbot_demo.png "问答聊天机器人的演示。")
+![QA_chatbot_demo](/public/assets/qa_chatbot_demo.png "问答聊天机器人的演示。")

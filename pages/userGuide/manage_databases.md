@@ -1,5 +1,6 @@
 ---
-title: 管理数据库
+id: manage_databases.md
+title: Manage Databases
 ---
 
 # 管理数据库
@@ -124,9 +125,17 @@ role.revoke("Global", "*", _PRIVILEGE_INSERT)
 - 如果在 Milvus 连接上进行了权限 API 调用，无论是否指定了 `db_name`，则 **database** 指的是权限 API 调用中指定的数据库。
 
 ```python
-# 注意：请确保已创建 'foo' 数据库
+# NOTE: please make sure the 'foo' db has been created
 db_name = "foo"
 connect_to_milvus()
 role.grant("Collection", "*", _PRIVILEGE_INSERT, db_name=db_name)
 print(role.list_grants(db_name=db_name))
-print(role
+print(role.list_grant("Collection", "*", db_name=db_name))
+role.revoke("Global", "*", _PRIVILEGE_INSERT, db_name=db_name)
+```
+
+## What's next
+
+[Enable RBAC](rbac.md)
+
+[Multi-tenancy](multi_tenancy.md)

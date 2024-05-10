@@ -93,25 +93,21 @@ $ helm repo update
 $ helm install my-release milvus/milvus
 ```
 
-<div class="alert note">
-  <ul>
-    <li>The release name should only contain letters, numbers and dashes. Dots are not allowed in the release name.</li>
-    <li>The default command line installs cluster version of Milvus while installing Milvus with Helm. Further setting is needed while installing Milvus standalone.</li>
-    <li>According to the <a href="https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-25">deprecated API migration guide of Kuberenetes</a>, the <b>policy/v1beta1</b> API version of PodDisruptionBudget is not longer served as of v1.25. You are suggested to migrate manifests and API clients to use the <b>policy/v1</b> API version instead. <br>As a workaround for users who still use the <b>policy/v1beta1</b> API version of PodDisruptionBudget on Kuberenetes v1.25 and later, you can instead run the following command to install Milvus:<br>
-    <code>helm install my-release milvus/milvus --set pulsar.bookkeeper.pdb.usePolicy=false,pulsar.broker.pdb.usePolicy=false,pulsar.proxy.pdb.usePolicy=false,pulsar.zookeeper.pdb.usePolicy=false</code></li> 
-    <li>See <a href="https://artifacthub.io/packages/helm/milvus/milvus">Milvus Helm Chart</a> and <a href="https://helm.sh/docs/">Helm</a> for more information.</li>
-  </ul>
-</div>
+- 发布名称应仅包含字母、数字和短划线。发布名称中不允许使用句点。
+- 默认命令行安装集群版本的Milvus，同时使用Helm安装Milvus。安装Milvus单机版时需要进一步设置。
+- 根据<a href="https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-25">Kuberetes的API迁移指南</a>已弃用，PodDisruptionBudget的<b>policy/v1beta1</b>API版本自v1.25起不再使用。建议您迁移清单和API客户端，改用<b>policy/v1</b>API版本<br>对于仍在Kuberetes v1.25及更高版本上使用<b>policy/v1 beta1</b>API版本PodDisruptionBudget的用户，作为一种解决方法，您可以运行以下命令来安装Milvus：<br>
+  <code>helm install my release milvus/milvus--set pulsat.bookkeeper.pdb.usePolicy=false，pulsat.broker.pdb.use Policy=false、pulsat.proxy.pdb.usePolicy=false和pulsat.zookeeper.pdb.usePolicy=false</code>
+- 请参阅<a href="https://artifacthub.io/packages/helm/milvus/milvus">Milvus Helm图表</a>和<a href=”https://helm.sh/docs/“>Helm</a>了解更多信息。
 
-Check the status of the running pods.
+检查正在运行的pods的状态。
 
-```
+```bash
 $ kubectl get pods
 ```
 
-After Milvus starts, the `READY` column displays `1/1` for all pods.
+Milvus启动后，`READY` 列显示所有pods的 `1/1`。
 
-```
+```bash
 NAME                                             READY  STATUS   RESTARTS  AGE
 my-release-etcd-0                                1/1    Running   0        3m23s
 my-release-etcd-1                                1/1    Running   0        3m23s
@@ -137,9 +133,9 @@ my-release-pulsar-zookeeper-0                    1/1    Running   0        3m23s
 my-release-pulsar-zookeeper-metadata-98zbr       0/1   Completed  0        3m24s
 ```
 
-## Connect to Milvus
+## 连接Milvus
 
-Verify which local port the Milvus server is listening on. Replace the pod name with your own.
+验证Milvus服务器正在侦听哪个本地端口。将pod名称替换为您自己的名称。
 
 ```bash
 $ kubectl get pod my-release-milvus-proxy-6bd7f5587-ds2xv --template
@@ -147,68 +143,67 @@ $ kubectl get pod my-release-milvus-proxy-6bd7f5587-ds2xv --template
 19530
 ```
 
-Open a new terminal and run the following command to forward a local port to the port that Milvus uses. Optionally, omit the designated port and use `:19530` to let `kubectl` allocate a local port for you so that you don't have to manage port conflicts.
+打开一个新的终端，运行以下命令将本地端口转发到Milvus使用的端口。或者，省略指定的端口，并使用`：19530`让`kubectl`为您分配一个本地端口，这样您就不必管理端口冲突。
 
 ```bash
 $ kubectl port-forward service/my-release-milvus 27017:19530
 Forwarding from 127.0.0.1:27017 -> 19530
 ```
 
-By default, ports forward by kubectl only listen on localhost. Use flag `address` if you want Milvus server to listen on selected IP or all addresses.
+默认情况下，kubectl转发的端口仅在localhost上侦听。如果您希望Milvus服务器侦听选定的IP或所有地址，请使用标志`address`。
 
 ```bash
 $ kubectl port-forward --address 0.0.0.0 service/my-release-milvus 27017:19530
 Forwarding from 0.0.0.0:27017 -> 19530
 ```
 
-## Uninstall Milvus
+## 卸载 Milvus
 
-Run the following command to uninstall Milvus.
+跑下面这条命令可以卸载 Milvus.
 
 ```bash
 $ helm uninstall my-release
 ```
 
-## Stop the K8s cluster
+## 停止 K8s 集群
 
-Stop the cluster and the minikube VM without deleting the resources you created.
+在不删除您创建的资源的情况下 停止群集 和 minikube 虚拟机。
 
 ```bash
 $ minikube stop
 ```
 
-Run `minikube start` to restart the cluster.
+运行"minikube start"以重新启动群集。
 
-
-## Delete the K8s cluster
+## 删除 K8s 集群
 
 <div class="alert note">
 Run <code>$ kubectl logs `pod_name`</code> to get the <code>stderr</code> log of the pod before deleting the cluster and all resources.
 </div>
 
-Delete the cluster, the minikube VM, and all resources you created including persistent volumes.
+删除集群、minikube虚拟机以及您创建的所有资源，包括持久卷。
 
 ```bash
 $ minikube delete
 ```
 
-## What's next
+## 接下来是什么
 
-Having installed Milvus, you can:
+安装Milvus后，您可以：
 
-- Check [Hello Milvus](example_code.md) to run an example code with different SDKs to see what Milvus can do.
+- 检查[Hello-Milvus](example_code.md)，用不同的SDK运行示例代码，看看Milvus能做什么。
 
-- Learn the basic operations of Milvus:
-  - [Connect to Milvus server](manage_connection.md)
-  - [Create a collection](create_collection.md)
-  - [Create a partition](create_partition.md)
-  - [Insert data](insert_data.md)
-  - [Conduct a vector search](search.md)
+- 学习Milvus的基本操作：
+  - [连接到Milvus服务器](manage_connection.md)
+  - [创建集合](Create_collection.md)
+  - [创建分区](Create_partition.md)
+  - [插入数据](Insert_data.md)
+  - [进行矢量搜索](search.md)
 
-- [Upgrade Milvus Using Helm Chart](upgrade_milvus_cluster-helm.md).
-- [Scale your Milvus cluster](scaleout.md).
-- Deploy your Milvu cluster on clouds:
-  - [Amazon EC2](aws.md)
-  - [Amazon EKS](eks.md)
-- Explore [MilvusDM](migrate_overview.md), an open-source tool designed for importing and exporting data in Milvus.
-- [Monitor Milvus with Prometheus](monitor.md).
+- [使用Helm Chart升级Milvus](Upgrade_Milvus_cluster-Helm.md)。
+- [缩放Milvus集群](scaleout.md)。
+- 在云上部署您的Milvu集群：
+  - [亚马逊EC2](aws.md)
+  - [亚马逊EKS](EKS.md)
+- 探索[MilvusDM](migrate_overview.md)，这是一个用于在Milvus中导入和导出数据的开源工具。
+- [用普罗米修斯监视Milvus](Monitor.md)。
