@@ -38,14 +38,6 @@
         "image_deduplication_system": {
           "title": "图像去重系统 (image_deduplication_system)",
           "href": "/image_deduplication_system"
-        },
-        "cli_commands": {
-          "title": "CLI 命令 (cli_commands)",
-          "href": "/cli_commands"
-        },
-        "cli_overview": {
-          "title": "CLI 概述 (cli_overview)",
-          "href": "/cli_overview"
         }
       }
       
