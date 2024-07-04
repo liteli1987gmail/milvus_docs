@@ -35,8 +35,9 @@ Milvus 是在2019年创建的，其唯一目标是存储、索引和管理由深
 1. fork 仓库
 2. 翻译文字
 3. 图片拉入public/assets/文件夹下，所有图片路径(../../../assets/)替换为/assets/。
-4. 替换所有跳转链接
-5. 
+4. 替换所有跳转链接执行 links_convert.py
+5. 生成目录映射文件_meta.json，执行update_Chinese_metajson.py 配置项将"need_create_meta"设置为 1。
+6. 中英文目录映射，pages下的aggregated_meta.json存放了中英文对照。执行update_Chinese_metajson.py 配置项将"need_replace_values"设置为 1,
 
 ## 组队，入群学习
 
