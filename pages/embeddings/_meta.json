@@ -1,0 +1,8 @@
+{
+    "embed-with-bgm-m3": "嵌入 BGM M3(Embed-with-bgm-m3)",
+    "embed-with-bm25": "嵌入 BM25(Embed-with-bm25)",
+    "embed-with-openai": "嵌入 OpenAI(Embed-with-openai)",
+    "embed-with-sentence-transform": "嵌入句子转换(Embed-with-sentence-transform)",
+    "embed-with-splade": "嵌入 SPLADE(Embed-with-splade)",
+    "embeddings": "(Embeddings)"
+}

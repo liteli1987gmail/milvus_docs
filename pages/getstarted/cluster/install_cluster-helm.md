@@ -1,45 +1,34 @@
----
 
-id: 使用Helm安装Milvus集群.md
-label: Helm
-related_key: Kubernetes
-order: 1
-group: 使用MilvusOperator安装Milvus集群.md
-summary: 学习如何在Kubernetes上安装Milvus集群。
-title: 使用Helm安装Milvus集群
 
----
 
-{{tab}}
+# 使用 Helm 安装 Milvus 集群
 
-# 使用Helm安装Milvus集群
+这个主题介绍了如何使用 Kubernetes 安装 Milvus 的独立版本。
 
-本主题描述了如何使用Kubernetes安装Milvus独立部署。
+## 准备条件
 
-## 先决条件
+在安装之前，请先检查硬件和软件 [要求](/getstarted/prerequisite-helm.md)。
 
-在安装之前，请检查[硬件和软件要求](../prerequisite-helm.md)。
+## 创建一个 K8s 集群
 
-## 创建K8s集群
-
-如果您已经为生产部署了一个K8s集群，可以跳过这一步，直接进行[为Milvus安装Helm Chart](install_cluster-helm.md#为Milvus安装Helm-Chart)。如果没有，您可以按照以下步骤快速创建一个用于测试的K8s，并使用它通过Helm部署Milvus集群。
+如果你已经为生产部署了 K8s 集群，可以跳过此步骤，直接进入 [安装 Milvus 的 Helm 图表](install_cluster-helm.md#Install-Helm-Chart-for-Milvus)。否则，你可以按照以下步骤快速创建一个用于测试的 K8s 集群，然后使用它来部署一个 Milvus 集群。
 
 {{fragments/create_a_k8s_cluster_using_minikube.md}}
 
-minikube在安装时依赖于默认的StorageClass。通过运行以下命令检查依赖性。其他安装方法需要手动配置StorageClass。有关更多信息，请参见[更改默认的StorageClass](https://kubernetes.io/docs/tasks/administer-cluster/change-default-storage-class/)。
+当安装 minikube 时，默认会有一个对 default StorageClass 的依赖。使用以下命令检查依赖关系。其他安装方法需要手动配置 StorageClass。有关更多信息，请参阅 [更改默认的 StorageClass](https://kubernetes.io/docs/tasks/administer-cluster/change-default-storage-class/)。
 
-```bash
+```
 $ kubectl get sc
 ```
 
-```bash
+```
 NAME                  PROVISIONER                  RECLAIMPOLICY    VOLUMEBIINDINGMODE    ALLOWVOLUMEEXPANSION     AGE
 standard (default)    k8s.io/minikube-hostpath     Delete           Immediate             false                    3m36s
 ```
 
-## 检查默认存储类
+## 检查默认的存储类别
 
-Milvus依赖于默认存储类来自动为数据持久性配置卷。运行以下命令以检查存储类：
+Milvus 在自动为数据持久化提供卷时，依赖于默认的存储类别。运行以下命令检查存储类别：
 
 ```bash
 $ kubectl get sc
@@ -52,19 +41,19 @@ NAME                   PROVISIONER                                     RECLAIMPO
 local-path (default)   rancher.io/local-path                           Delete          WaitForFirstConsumer   false                  461d
 ```
 
-## 为Milvus安装Helm Chart
+## 安装 Milvus 的 Helm 图表
 
-Helm是一个K8s包管理器，可以帮助您快速部署Milvus。
+Helm 是一个 K8s 包管理器，可以帮助你快速部署 Milvus。
 
-1. 添加Milvus Helm仓库。
+1. 添加 Milvus 的 Helm 存储库。
 
-```bash
+```
 $ helm repo add milvus https://zilliztech.github.io/milvus-helm/
 ```
 
 <div class="alert note">
 
-Milvus Helm Charts仓库在`https://milvus-io.github.io/milvus-helm/`已被归档，您可以按照以下方式从`https://zilliztech.github.io/milvus-helm/`获取进一步更新：
+Milvus 的 Helm Charts 存储库 `https://milvus-io.github.io/milvus-helm/` 已归档，你可以从 `https://zilliztech.github.io/milvus-helm/` 获取进一步的更新，具体操作如下：
 
 ```shell
 helm repo add zilliztech https://zilliztech.github.io/milvus-helm
@@ -73,41 +62,49 @@ helm repo update
 helm upgrade my-release zilliztech/milvus
 ```
 
-归档的仓库仍然适用于4.0.31及以前的版本。对于后续版本，请使用新的仓库。
+归档的存储库仍可用于 4.0.31 之前的版本。对于更新的版本，请使用新的存储库。
 
 </div>
 
-2. 更新本地仓库。
+2. 更新本地图表。
 
 ```
 $ helm repo update
 ```
 
-## 启动Milvus
+## 启动 Milvus
 
-安装Helm chart后，您可以在Kubernetes上启动Milvus。在本节中，我们将指导您完成启动Milvus的步骤。
 
-您应该通过指定发布名称、图表和您希望更改的参数来使用Helm启动Milvus。在本指南中，我们使用<code>my-release</code>作为发布名称。如果您使用不同的发布名称，请在以下命令中将<code>my-release</code>替换为您正在使用的名称。
 
-```bash
+
+
+一旦你安装了 Helm 图表，你可以在 Kubernetes 上启动 Milvus。在本节中，我们将指导你完成启动 Milvus 的步骤。
+
+你应该通过指定发布名称、图表和预期更改的参数来使用 Helm 启动 Milvus。在本指南中，我们使用 <code> my-release </code> 作为发布名称。要使用不同的发布名称，请将下面的命令中的 <code> my-release </code> 替换为你正在使用的命令。
+
+```
 $ helm install my-release milvus/milvus
 ```
 
-- 发布名称应仅包含字母、数字和短划线。发布名称中不允许使用句点。
-- 默认命令行安装集群版本的Milvus，同时使用Helm安装Milvus。安装Milvus单机版时需要进一步设置。
-- 根据<a href="https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-25">Kuberetes的API迁移指南</a>已弃用，PodDisruptionBudget的<b>policy/v1beta1</b>API版本自v1.25起不再使用。建议您迁移清单和API客户端，改用<b>policy/v1</b>API版本<br>对于仍在Kuberetes v1.25及更高版本上使用<b>policy/v1 beta1</b>API版本PodDisruptionBudget的用户，作为一种解决方法，您可以运行以下命令来安装Milvus：<br>
-  <code>helm install my release milvus/milvus--set pulsat.bookkeeper.pdb.usePolicy=false，pulsat.broker.pdb.use Policy=false、pulsat.proxy.pdb.usePolicy=false和pulsat.zookeeper.pdb.usePolicy=false</code>
-- 请参阅<a href="https://artifacthub.io/packages/helm/milvus/milvus">Milvus Helm图表</a>和<a href=”https://helm.sh/docs/“>Helm</a>了解更多信息。
+<div class="alert note">
+  <ul>
+    <li> 发布名称只能包含字母、数字和连字符。发布名称中不允许使用句点。</li>
+    <li> 在使用 Helm 安装 Milvus 时，默认命令行安装的是 Milvus 的集群版本。在安装 Milvus 时需要进一步进行设置，以安装 Milvus 的独立版本。</li>
+    <li> 根据 Kubernetes 的 <a href="https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-25"> 弃用的 API 迁移指南 </a>，从 v1.25 开始，PodDisruptionBudget 的 API 版本 <b> policy/v1beta1 </b> 不再提供服务。建议你将清单和 API 客户端迁移到使用 <b> policy/v1 </b> API 版本。 <br> 作为在 Kubernetes v1.25 及更高版本上仍然使用 PodDisruptionBudget 的 <b> policy/v1beta1 </b> API 版本的用户的解决方法，你可以使用以下命令安装 Milvus：<br>
+    <code> helm install my-release milvus/milvus --set pulsar.bookkeeper.pdb.usePolicy = false, pulsar.broker.pdb.usePolicy = false, pulsar.proxy.pdb.usePolicy = false, pulsar.zookeeper.pdb.usePolicy = false </code> </li>
+    <li> 有关更多信息，请参见 <a href="https://artifacthub.io/packages/helm/milvus/milvus"> Milvus Helm 图表 </a> 和 <a href="https://helm.sh/docs/"> Helm </a>。</li>
+  </ul>
+</div>
 
-检查正在运行的pods的状态。
+检查运行的 pod 的状态。
 
-```bash
+```
 $ kubectl get pods
 ```
 
-Milvus启动后，`READY` 列显示所有pods的 `1/1`。
+Milvus 启动后，所有 pod 的 `READY` 列将显示为 `1/1`。
 
-```bash
+```
 NAME                                             READY  STATUS   RESTARTS  AGE
 my-release-etcd-0                                1/1    Running   0        3m23s
 my-release-etcd-1                                1/1    Running   0        3m23s
@@ -133,9 +130,9 @@ my-release-pulsar-zookeeper-0                    1/1    Running   0        3m23s
 my-release-pulsar-zookeeper-metadata-98zbr       0/1   Completed  0        3m24s
 ```
 
-## 连接Milvus
+## 连接到 Milvus
 
-验证Milvus服务器正在侦听哪个本地端口。将pod名称替换为您自己的名称。
+验证 Milvus 服务器侦听的本地端口。将 pod 名称替换为你自己的名称。
 
 ```bash
 $ kubectl get pod my-release-milvus-proxy-6bd7f5587-ds2xv --template
@@ -143,14 +140,14 @@ $ kubectl get pod my-release-milvus-proxy-6bd7f5587-ds2xv --template
 19530
 ```
 
-打开一个新的终端，运行以下命令将本地端口转发到Milvus使用的端口。或者，省略指定的端口，并使用`：19530`让`kubectl`为您分配一个本地端口，这样您就不必管理端口冲突。
+打开一个新的终端并运行以下命令，将本地端口转发到 Milvus 使用的端口。可选地，省略指定的端口并使用 `:19530`，让 `kubectl` 为你分配一个本地端口，这样你就不必管理端口冲突。
 
 ```bash
 $ kubectl port-forward service/my-release-milvus 27017:19530
 Forwarding from 127.0.0.1:27017 -> 19530
 ```
 
-默认情况下，kubectl转发的端口仅在localhost上侦听。如果您希望Milvus服务器侦听选定的IP或所有地址，请使用标志`address`。
+默认情况下，kubectl 转发的端口仅在本地主机上侦听。如果希望 Milvus 服务器侦听所选的 IP 或所有地址，请使用 `address` 标志。
 
 ```bash
 $ kubectl port-forward --address 0.0.0.0 service/my-release-milvus 27017:19530
@@ -159,7 +156,7 @@ Forwarding from 0.0.0.0:27017 -> 19530
 
 ## 卸载 Milvus
 
-跑下面这条命令可以卸载 Milvus.
+运行以下命令以卸载 Milvus。
 
 ```bash
 $ helm uninstall my-release
@@ -167,43 +164,55 @@ $ helm uninstall my-release
 
 ## 停止 K8s 集群
 
-在不删除您创建的资源的情况下 停止群集 和 minikube 虚拟机。
+停止集群和 minikube 虚拟机，而不删除你创建的资源。
 
 ```bash
 $ minikube stop
 ```
 
-运行"minikube start"以重新启动群集。
+运行 `minikube start` 以重新启动集群。
 
 ## 删除 K8s 集群
 
+
+
+
+
 <div class="alert note">
-Run <code>$ kubectl logs `pod_name`</code> to get the <code>stderr</code> log of the pod before deleting the cluster and all resources.
+运行 <code>$ kubectl logs `pod_name`</code > 命令获取删除集群和所有资源之前，pod 的标准错误日志。
 </div>
 
-删除集群、minikube虚拟机以及您创建的所有资源，包括持久卷。
+删除集群，minikube 虚拟机和包括持久卷在内的所有资源。
 
 ```bash
 $ minikube delete
 ```
 
-## 接下来是什么
+## 接下来做什么
 
-安装Milvus后，您可以：
 
-- 检查[Hello-Milvus](example_code.md)，用不同的SDK运行示例代码，看看Milvus能做什么。
+安装 Milvus 后，你可以：
 
-- 学习Milvus的基本操作：
-  - [连接到Milvus服务器](manage_connection.md)
-  - [创建集合](Create_collection.md)
-  - [创建分区](Create_partition.md)
-  - [插入数据](Insert_data.md)
-  - [进行矢量搜索](search.md)
+- 查阅 [Hello Milvus](/getstarted/quickstart.md)，使用不同 SDK 运行示例代码，了解 Milvus 的功能。
 
-- [使用Helm Chart升级Milvus](Upgrade_Milvus_cluster-Helm.md)。
-- [缩放Milvus集群](scaleout.md)。
-- 在云上部署您的Milvu集群：
-  - [亚马逊EC2](aws.md)
-  - [亚马逊EKS](EKS.md)
-- 探索[MilvusDM](migrate_overview.md)，这是一个用于在Milvus中导入和导出数据的开源工具。
-- [用普罗米修斯监视Milvus](Monitor.md)。
+- 学习 Milvus 的基本操作：
+  - [管理数据库](管理数据库.md)
+  - [管理集合](管理集合.md)
+  - [管理分区](管理分区.md)
+  - [插入、上插和删除](插入、更新和删除.md)
+  - [单向量搜索](单向量搜索.md)
+  - [多向量搜索](多向量搜索.md)
+
+- [使用 Helm Chart 升级 Milvus 集群](使用Helm Chart升级Milvus集群.md)。
+- [扩展你的 Milvus 集群](扩展Milvus集群.md)。
+- 在云端部署你的 Milvus 集群：
+  - [Amazon EC2](部署到Amazon EC2.md)
+  - [Amazon EKS](部署到Amazon EKS.md)
+  - [Google Cloud](部署到Google Cloud.md)
+  - [Google Cloud Storage](部署到Google Cloud Storage.md)
+  - [Microsoft Azure](部署到Microsoft Azure.md)
+  - [Microsoft Azure Blob Storage](部署到Microsoft Azure Blob Storage.md)
+- 探索 [Milvus 备份](Milvus备份概述.md)，一个用于 Milvus 数据备份的开源工具。
+- 探索 [Birdwatcher](Birdwatcher概述.md)，一个用于调试 Milvus 和动态配置更新的开源工具。
+- 探索 [Attu](https://milvus.io/docs/attu.md)，一个用于直观管理 Milvus 的开源 GUI 工具。
+- [使用 Prometheus 监控 Milvus](监控.md)。

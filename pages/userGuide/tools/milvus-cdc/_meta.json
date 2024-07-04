@@ -1,0 +1,6 @@
+{
+    "cdc-monitoring": "CDC 监控(Cdc-monitoring)",
+    "deploy-cdc-server": "部署 CDC 服务器(Deploy-cdc-server)",
+    "manage-cdc-tasks": "管理 CDC 任务(Manage-cdc-tasks)",
+    "milvus-cdc-overview": "Milvus CDC 概述(Milvus-cdc-overview)"
+}

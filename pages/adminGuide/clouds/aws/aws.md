@@ -1,57 +1,50 @@
----
 
-id: aws.md
-title: 在EC2上部署Milvus集群
-related_key: 集群
-summary: 学习如何在AWS EC2上使用Terraform和Ansible部署Milvus集群。
 
----
+# 在 EC2 上部署 Milvus 集群
 
-# 在EC2上部署Milvus集群
+本主题描述了如何使用 Terraform 和 Ansible 在 [Amazon EC2](https://docs.aws.amazon.com/ec2/) 上部署 Milvus 集群。
 
-本主题描述了如何使用[Terraform](https://www.terraform.io/)和[Ansible](https://www.ansible.com/overview/how-ansible-works)在[Amazon EC2](https://docs.aws.amazon.com/ec2/)上部署Milvus集群。
+## 部署 Milvus 集群
 
-## 准备Milvus集群
+本节介绍如何使用 Terraform 部署 Milvus 集群。
 
-本节描述了如何使用Terraform来准备Milvus集群。
-
-[Terraform](https://www.terraform.io/)是一个基础设施即代码（IaC）软件工具。使用Terraform，您可以通过使用声明式配置文件来提供基础设施。
+[Terraform](https://www.terraform.io/) 是一款基础架构即代码 (IaC) 软件工具。通过 Terraform，你可以使用声明性配置文件来创建基础架构。
 
 ### 先决条件
 
-- 安装并配置[Terraform](https://www.terraform.io/downloads.html)
+- 安装并配置 [Terraform](https://www.terraform.io/downloads.html)
 
-- 安装并配置[AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+- 安装并配置 [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 
 ### 准备配置
 
-您可以在[Google Drive](https://drive.google.com/file/d/1jLQV0YkseOVj5X0exj17x9dWQjLCP7-1/view)下载模板配置文件。
+你可以在 [Google Drive](https://drive.google.com/file/d/1jLQV0YkseOVj5X0exj17x9dWQjLCP7-1/view) 上下载模板配置文件。
 
 - ```main.tf```
 
-  此文件包含提供Milvus集群的配置。
+  此文件包含用于部署 Milvus 集群的配置。
 
 - ```variables.tf```
 
-  此文件允许快速编辑用于设置或更新Milvus集群的变量。
+  此文件允许快速编辑用于设置或更新 Milvus 集群的变量。
 
-- ```output.tf``` 和 ```inventory.tmpl```
+- ```output.tf`` ` 和 ` ``inventory.tmpl```
 
-  这些文件存储Milvus集群的元数据。本主题中使用的元数据是每个节点实例的```public_ip```，每个节点实例的```private_ip```，以及所有EC2实例ID。
+  这些文件存储 Milvus 集群的元数据。本主题中使用的元数据是每个节点实例的 ```public_ip```，每个节点实例的 ```private_ip``` 和所有 EC2 实例 ID。
 
-#### 准备variables.tf
+#### 准备 variables.tf
 
-本节描述了包含在```variables.tf```文件中的配置。
+本节描述了 ``` variables.tf ``` 文件的配置内容。
 
 - 节点数量
 
-  以下模板声明了一个```index_count```变量，用于设置索引节点的数量。
+  下面的模板声明了一个用于设置索引节点数量的变量 ``` index_count ```。
 
-  <div class="alert note"> <code>index_count</code>的值必须大于或等于一。</div>
+  <div class="alert note">``` index_count ``` 的值必须大于或等于1。</div>
 
-  ```variables.tf
+  ``` variables.tf
   variable "index_count" {
-    description = "运行的索引实例数量"
+    description = "要运行的索引实例数量"
     type        = number
     default     = 5
   }
@@ -59,9 +52,9 @@ summary: 学习如何在AWS EC2上使用Terraform和Ansible部署Milvus集群。
 
 - 节点类型的实例类型
 
-  以下模板声明了一个```index_ec2_type```变量，用于设置索引节点的[实例类型](https://aws.amazon.com/ec2/instance-types/)。
+  下面的模板声明了一个用于设置索引节点的 [实例类型](https://aws.amazon.com/ec2/instance-types/) 的变量 ``` index_ec2_type ```。
 
-  ```variables.tf
+  ``` variables.tf
   variable "index_ec2_type" {
     description = "服务器类型"
     type        = string
@@ -71,31 +64,33 @@ summary: 学习如何在AWS EC2上使用Terraform和Ansible部署Milvus集群。
 
 - 访问权限
 
-  以下模板声明了一个```key_name```变量和一个```my_ip```变量。```key_name```变量代表AWS访问密钥。```my_ip```变量代表安全组的IP地址范围。
+  下面的模板声明了一个 ``` key_name ``` 变量和一个 ```my_ip``` 变量。```key_name``` 变量表示 AWS 访问密钥，```my_ip``` 变量表示安全组的 IP 地址范围。
 
-  ```variables.tf
+  ``` variables.tf
   variable "key_name" {
-    description = "用于访问实例的AWS密钥，需要已经上传"
+    description = "用于访问实例的 AWS 密钥名称，需要事先上传"
     type        = string
     default     = ""
   }
   
   variable "my_ip" {
-    description = "安全组的my_ip。用于允许ansible和terraform可以ssh进入"
+    description = "用于安全组的 my_ip。使得 Ansible 和 Terraform 可以进行 SSH 登录"
     type        = string
     default     = "x.x.x.x/32"
   }
   ```
 
-#### 准备main.tf
+#### 准备 main.tf
 
-本节描述了包含在```main.tf```文件中的配置。
 
-- 云提供商和区域
 
-  以下模板使用```us-east-2```区域。有关更多信息，请参见[可用区域](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)。
+这一部分描述了包含``` main.tf ```文件的配置。
 
-  ```main.tf
+- 云服务提供商和区域
+
+  以下模板使用了``` us-east-2 ```区域。更多信息请参考[可用区域（Available Regions）](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)。
+
+  ``` main.tf
   provider "aws" {
     profile = "default"
     region  = "us-east-2"
@@ -104,16 +99,16 @@ summary: 学习如何在AWS EC2上使用Terraform和Ansible部署Milvus集群。
 
 - 安全组
 
-  以下模板声明了一个安全组，允许来自在```variables.tf```中声明的```my_ip```表示的CIDR地址范围的传入流量。
+  以下模板声明了一个安全组，该安全组允许来自``` variables.tf ```中声明的```my_ip```所代表的CIDR地址范围的入站流量。
 
-  ```main.tf
+  ``` main.tf
   resource "aws_security_group" "cluster_sg" {
     name        = "cluster_sg"
-    description = "只允许我访问"
+    description = "Allows only me to access"
     vpc_id      = aws_vpc.cluster_vpc.id
   
     ingress {
-      description      = "所有端口从我的IP"
+      description      = "All ports from my IP"
       from_port        = 0
       to_port          = 65535
       protocol         = "tcp"
@@ -121,11 +116,11 @@ summary: 学习如何在AWS EC2上使用Terraform和Ansible部署Milvus集群。
     }
   
     ingress {
-      description      = "完整的子网通信"
+      description      = "Full subnet communication"
       from_port        = 0
       to_port          = 65535
       protocol         = "all"
-self             = true
+      self             = true
     }
   
     egress {
@@ -142,13 +137,11 @@ self             = true
   }
   ```
 
+- 虚拟私有云（VPC）
 
+  以下模板指定了一个具有10.0.0.0/24 CIDR块的Milvus集群的VPC。
 
-- **VPC**
-
-  以下模板指定了一个在 Milvus 集群上的具有 10.0.0.0/24 CIDR 块的 VPC。
-
-  ```main.tf
+  ``` main.tf
   resource "aws_vpc" "cluster_vpc" {
     cidr_block = "10.0.0.0/24"
     tags = {
@@ -165,11 +158,11 @@ self             = true
   }
   ```
 
-- **子网（可选）**
+- 子网（可选）
 
-  以下模板声明了一个流量被路由到互联网网关的子网。在这种情况下，子网的 CIDR 块的大小与 VPC 的 CIDR 块相同。
+  以下模板声明了一个子网，其流量被路由到一个互联网网关。在本例中，子网的CIDR块大小与VPC的CIDR块大小相同。
 
-  ```main.tf
+  ``` main.tf
   resource "aws_subnet" "cluster_subnet" {
     vpc_id                  = aws_vpc.cluster_vpc.id
     cidr_block              = "10.0.0.0/24"
@@ -192,101 +185,98 @@ self             = true
       Name = "cluster_subnet_gateway_route"
     }
   }
-  
-  resource "aws_route_table_association" "cluster_subnet_add_gateway" {
-    subnet_id      = aws_subnet.cluster_subnet.id
-    route_table_id = aws_route_table.cluster_subnet_gateway_route.id
-  }
-  
-  ```
+ 
 
-- **节点实例（节点）**
 
-  以下模板声明了一个 MinIO 节点实例。`main.tf` 模板文件声明了 11 种节点类型的节点。对于某些节点类型，您需要设置 `root_block_device`。有关更多信息，请参见 [EBS、临时和根块设备](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#ebs-ephemeral-and-root-block-devices)。
-
-  ```main.tf
-  resource "aws_instance" "minio_node" {
-    count         = var.minio_count
-    ami           = "ami-0d8d212151031f51c"
-    instance_type = var.minio_ec2_type
-    key_name      = var.key_name
-    subnet_id     = aws_subnet.cluster_subnet.id 
-    vpc_security_group_ids = [aws_security_group.cluster_sg.id]
-  
-    root_block_device {
-      volume_type = "gp2"
-      volume_size = 1000
-    }
-    
-    tags = {
-      Name = "minio-${count.index + 1}"
-    }
-  }
-  ```
-
-### 应用配置
-
-1. 打开终端，导航到存储 `main.tf` 的文件夹。
-
-2. 为了初始化配置，运行 `terraform init`。
-
-3. 为了应用配置，运行 `terraform apply` 并在提示时输入 `yes`。
-
-您现在已经使用 Terraform 提供了一个 Milvus 集群。
-
-## 启动 Milvus 集群
-
-本节描述了如何使用 Ansible 启动您已经提供的 Milvus 集群。
-
-[Ansible](https://www.ansible.com/overview/how-ansible-works) 是一个配置管理工具，用于自动化云配置和管理。
-
-### 先决条件
-
-- 安装了 [Ansible Controller](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)。
-
-### 下载 Ansible Milvus 节点部署 Playbook
-
-从 GitHub 克隆 Milvus 存储库以下载 Ansible Milvus 节点部署 Playbook。
-
-```
-git clone https://github.com/milvus-io/milvus.git 
+# 
 ```
 
-### 配置安装文件
+### 环境配置
 
-`inventory.ini` 和 `ansible.cfg` 文件用于控制 Ansible playbook 中的环境变量和登录验证方法。在 `inventory.ini` 文件中，`dockernodes` 部分定义了所有 Docker 引擎服务器。`ansible.cfg` 部分定义了所有 Milvus 协调器服务器。`node` 部分定义了所有 Milvus 节点服务器。
+1. 确保已安装Docker和Docker Compose。
 
-输入本地路径到 Playbook 并配置安装文件。
+2. 克隆Milvus GitHub存储库到本地：
 
-```shell
-$ cd ./milvus/deployments/docker/cluster-distributed-deployment
+``` shell
+git clone https://github.com/milvus-io/milvus.git
 ```
 
-#### `inventory.ini`
+3. 切换到`milvus`目录：
 
-配置 `inventory.ini` 以根据它们在 Milvus 系统中的作用将主机分成不同的组。
+``` shell
+cd ./milvus
+```
+
+4. 在终端中导航到`deployments/docker`目录：
+
+``` shell
+cd ./deployments/docker
+```
+
+5. 创建一个环境配置文件`env`，并根据实际需求进行配置。可以使用`env.example`文件作为模板。
+
+``` shell
+cp env.example env
+```
+
+6. 运行以下命令以开始Milvus服务：
+
+``` shell
+docker-compose up -d
+```
+
+Milvus服务将会在Docker容器中启动。你可以使用以下命令检查容器的运行状态：
+
+``` shell
+docker-compose ps
+```
+
+### 示例代码
+
+你可以使用[Github代码示例](https://github.com/milvus-io/bootcamp/tree/master/examples/docker-compose)来运行Milvus。该示例提供了使用Docker Compose进行Milvus部署的步骤。
+
+### 验证部署
+
+可以使用以下命令验证Milvus是否成功部署：
+
+``` shell
+curl -X POST -H "Content-Type: application/json" -d '{"action": "connect", "parameters": {"host": "localhost", "port": 19530}}' http://localhost: 19121/milvus/system
+```
+
+如果返回以下结果，则表示Milvus已成功部署：
+
+```
+{"reply":{"code": "0", "message": "Success", "status": "OK"}}
+```
+
+现在你已成功部署了Milvus服务。
+
+```
+
+
+设置 `inventory.ini` 来根据 Milvus 系统中的角色将主机分组。
 
 添加主机名，并定义 `docker` 组和 `vars`。
 
-```shell
-[dockernodes] # 添加 Docker 主机名。
+```
+[dockernodes] #添加docker主机名。
 dockernode01
 dockernode02
 dockernode03
 
-[admin] # 添加 Ansible 控制器名称。
+[admin] #添加Ansible控制器名称。
 ansible-controller
 
-[coords] # 添加 Milvus 协调器的主机名。
-; 注意这个主机 VM 的 IP，并用它替换 10.170.0.17。
+[coords] #添加Milvus协调器的主机名。
+;请注意此主机的IP，并将10.170.0.17替换为其IP。
 dockernode01
 
-[nodes] # 添加 Milvus 节点的主机名。
+[nodes] #添加Milvus节点的主机名。
 dockernode02
 
-[dependencies] # 添加 Milvus 依赖的主机名。
-; 依赖节点将托管 etcd、minio、pulsar，这 3 个角色是 Milvus 的基础。
-; 注意这个主机 VM 的 IP，并用它替换 10.170.0.19。
+[dependencies] #添加Milvus依赖项的主机名。
+;依赖项节点将托管etcd、minio、pulsar这三个角色，这三个角色是Milvus的基础。
+;请注意此主机的IP，并将10.170.0.19替换为其IP。
 dockernode03
 
 [docker:children]
@@ -296,51 +286,52 @@ nodes
 dependencies
 
 [docker:vars]
-ansible_python_interpreter= /usr/bin/python3
-StrictHostKeyChecking= no
+ansible_python_interpreter=/usr/bin/python3
+StrictHostKeyChecking=no
 
-; 设置变量以控制在创建容器时使用哪种类型的网络。
-dependencies_network= host
-nodes_network= host
+;设置creating containers时要使用的网络类型。
+dependencies_network=host
+nodes_network=host
 
-; 设置变量以控制使用哪个版本的 Milvus 镜像。
-image= milvusdb/milvus-dev:master-20220412-4781db8a
+;设置要使用的Milvus镜像的版本。
+image=milvusdb/milvus-dev:master-20220412-4781db8a
 
-; 设置 Docker 主机的静态 IP 地址作为容器环境变量配置的变量。
-; 在运行 Playbook 之前，下面的 4 个 IP 地址需要替换为您的主机 VM 的 IP，其中将托管 etcd、minio、pulsar、协调器。
-etcd_ip= 10.170.0.19
-minio_ip= 10.170.0.19
-pulsar_ip= 10.170.0.19
-coords_ip= 10.170.0.17
+;将docker主机的静态IP地址设置为容器环境变量配置的变量。
+;在运行playbook之前，需要将下面的4个IP地址替换为你主机的IP
+;在此主机上将托管etcd、minio、pulsar、协调器。
+etcd_ip=10.170.0.19
+minio_ip=10.170.0.19
+pulsar_ip=10.170.0.19
+coords_ip=10.170.0.17
 
-; 设置容器环境，稍后在容器创建中使用。
-ETCD_ENDPOINTS= {{etcd_ip}}:2379 
-MINIO_ADDRESS= {{minio_ip}}:9000
-PULSAR_ADDRESS= pulsar://{{pulsar_ip}}:6650
-QUERY_COORD_ADDRESS= {{coords_ip}}:19531
-DATA_COORD_ADDRESS= {{coords_ip}}:13333
-ROOT_COORD_ADDRESS= {{coords_ip}}:53100
-INDEX_COORD_ADDRESS= {{coords_ip}}:31000
+;设置容器环境，稍后将在容器创建中使用。
+ETCD_ENDPOINTS={{etcd_ip}}:2379
+MINIO_ADDRESS={{minio_ip}}:9000
+PULSAR_ADDRESS=pulsar://{{pulsar_ip}}:6650
+QUERY_COORD_ADDRESS={{coords_ip}}:19531
+DATA_COORD_ADDRESS={{coords_ip}}:13333
+ROOT_COORD_ADDRESS={{coords_ip}}:53100
+INDEX_COORD_ADDRESS={{coords_ip}}:31000
 ```
 
 #### `ansible.cfg`
 
-`ansible.cfg` 控制 playbook 的行为，例如 SSH 密钥等。不要通过 SSH 密钥在 Docker 主机上设置密码短语。否则，Ansible SSH 连接将失败。我们建议在三个主机上设置相同的用户名和 SSH 密钥，并将新用户帐户设置为无需密码即可执行 sudo。否则，在运行 Ansible playbook 时，您将收到用户名与密码不匹配或未获授权提升权限的错误。
+`ansible.cfg` 控制 playbook 的操作，例如 SSH 密钥等。在 docker 主机上不要通过 SSH 密钥设置密码。否则，Ansible SSH 连接将失败。我们建议在三个主机上设置相同的用户名和 SSH 密钥，并设置新的用户帐户以执行无密码 sudo。否则，在运行 Ansible playbook 时，你将收到用户名与密码不匹配或未授予高权限的错误。
 
-```shell
+```
 [defaults]
-host_key_checking = False
-inventory = inventory.ini # 指定清单文件
-private_key_file=~/.my_ssh_keys/gpc_sshkey # 指定 Ansible 用于访问 Docker 主机的 SSH 密钥
+host_key_checking=False
+inventory=inventory.ini #指定Inventory文件
+private_key_file=~/.my_ssh_keys/gpc_sshkey #指定Ansible用于访问Docker主机的SSH密钥
 ```
 
 #### `deploy-docker.yml`
 
-`deploy-docker.yml` 定义了在安装 Docker 期间的任务。有关详细信息，请参见文件中的代码注释。
+`deploy-docker.yml` 定义了安装 Docker 期间的任务。有关详细信息，请参阅文件中的代码注释。
 
 ```yaml
 ---
-- name: setup pre-requisites # 安装先决条件
+- name: setup pre-requisites #安装先决条件
   hosts: all
   become: yes
   become_user: root
@@ -355,38 +346,38 @@ private_key_file=~/.my_ssh_keys/gpc_sshkey # 指定 Ansible 用于访问 Docker 
   roles:
     - docker-installation
 ```
+### 测试 Ansible 连接性
 
-### 测试 Ansible 连接
 
-测试 Ansible 的连接。
+测试 Ansible 的连通性。
 
 ```shell
 $ ansible all -m ping
 ```
 
-如果在 `ansible.cfg` 中没有指定清单文件的路径，可以在命令中添加 `-i` 来指定清单文件的路径，否则 Ansible 使用 `/etc/ansible/hosts`。
+如果在 `ansible.cfg` 中没有指定清单文件的路径，请在命令中添加 `-i` 来指定清单文件的路径，否则 Ansible 将使用 `/etc/ansible/hosts`。
 
 终端返回如下：
 
-```shell
+``` 
 dockernode01 | SUCCESS => {
-"changed": false,
-"ping": "pong"
+  "changed": false,
+  "ping": "pong"
 }
 ansible-controller | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
+  "ansible_facts": {
+    "discovered_interpreter_python": "/usr/bin/python3"
+  },
+  "changed": false,
+  "ping": "pong"
 }
 dockernode03 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
+  "changed": false,
+  "ping": "pong"
 }
 dockernode02 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
+  "changed": false,
+  "ping": "pong"
 }
 ```
 
@@ -398,9 +389,9 @@ dockernode02 | SUCCESS => {
 $ ansible-playbook deploy-docker.yml --syntax-check
 ```
 
-通常情况下，终端返回如下：
+通常，终端返回如下：
 
-```shell
+``` 
 playbook: deploy-docker.yml
 ```
 
@@ -412,10 +403,10 @@ playbook: deploy-docker.yml
 $ ansible-playbook deploy-docker.yml
 ```
 
-如果 Docker 成功安装在三个主机上，终端返回如下：
+如果 Docker 在三个主机上成功安装，终端返回如下：
 
-```shell
-TASK [docker-installation : Install Docker-CE] *******************************************************************
+``` 
+TASK [docker-installation : Install Docker-CE] ************************************************************************
 ok: [dockernode01]
 ok: [dockernode03]
 ok: [dockernode02]
@@ -439,7 +430,7 @@ dockernode03               : ok=10   changed=1    unreachable=0    failed=0    s
 
 ### 验证安装
 
-使用 SSH 密钥登录到三个主机，并在主机上验证安装。
+使用 SSH 密钥登录三个主机，并在主机上验证安装。
 
 - 对于 root 主机：
 
@@ -453,10 +444,10 @@ $ docker -v
 $ sudo docker -v
 ```
 
-通常情况下，终端返回如下：
+通常，终端返回如下：
 
-```shell
-Docker version 20.10.14, build a224086
+``` 
+Docker 版本 20.10.14, 构建 a224086
 ```
 
 检查容器的运行状态。
@@ -473,93 +464,96 @@ $ docker ps
 $ ansible-playbook deploy-milvus.yml --syntax-check
 ```
 
-通常情况下，终端返回如下：
+通常，终端返回如下：
 
-```shell
-playbook: deploy-milvus.yml
+``` 
+剧本: deploy-milvus.yml
 ```
 
 ### 创建 Milvus 容器
 
-`deploy-milvus.yml` 中定义了创建 Milvus 容器的任务。
+
+
+
+在 `deploy-milvus.yml` 中定义了创建 Milvus 容器的任务。
 
 ```shell
 $ ansible-playbook deploy-milvus.yml
 ```
 
-终端返回：
+终端返回如下：
 
-```shell
-PLAY [Create milvus-etcd, minio, pulsar] *****************************************************************
+```
+PLAY [创建 milvus-etcd, minio, pulsar] *****************************************************************
 
-TASK [Gathering Facts] *********************************************************************************************
+TASK [收集信息] ********************************************************************************************
 ok: [dockernode03]
 
-TASK [etcd] *******************************************************************************************************
+TASK [etcd] ************************************************************************************************
 changed: [dockernode03]
 
-TASK [pulsar] *****************************************************************************************************
+TASK [pulsar] **********************************************************************************************
 changed: [dockernode03]
 
-TASK [minio] ********************************************************************************************************
+TASK [minio] ***********************************************************************************************
 changed: [dockernode03]
 
-PLAY [Create milvus nodes] ****************************************************************************************
+PLAY [创建 milvus 节点] **************************************************************************************
 
-TASK [Gathering Facts] *********************************************************************************************
+TASK [收集信息] ********************************************************************************************
 ok: [dockernode02]
 
-TASK [querynode] ****************************************************************************************************
+TASK [querynode] ******************************************************************************************
 changed: [dockernode02]
 
-TASK [datanode] ***************************************************************************************************
+TASK [datanode] *******************************************************************************************
 changed: [dockernode02]
 
-TASK [indexnode] ****************************************************************************************************
+TASK [indexnode] ******************************************************************************************
 changed: [dockernode02]
 
-PLAY [Create milvus coords] ***************************************************************************************
+PLAY [创建 milvus coords] ***********************************************************************************
 
-TASK [Gathering Facts] *********************************************************************************************
+TASK [收集信息] ********************************************************************************************
 ok: [dockernode01]
 
-TASK [rootcoord] ****************************************************************************************************
+TASK [rootcoord] ******************************************************************************************
 changed: [dockernode01]
 
-TASK [datacoord] ****************************************************************************************************
+TASK [datacoord] ******************************************************************************************
 changed: [dockernode01]
 
-TASK [querycoord] *************************************************************************************************
+TASK [querycoord] *****************************************************************************************
 changed: [dockernode01]
 
-TASK [indexcoord] *************************************************************************************************
+TASK [indexcoord] *****************************************************************************************
 changed: [dockernode01]
 
-TASK [proxy] ********************************************************************************************************
+TASK [proxy] ***********************************************************************************************
 changed: [dockernode01]
 
-PLAY RECAP *********************************************************************************************************
+PLAY RECAP **************************************************************************************************
 dockernode01               : ok=6    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 dockernode02               : ok=4    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 dockernode03               : ok=4    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
-现在您已经在三个主机上部署了 Milvus。
+现在你已经在三个主机上部署了 Milvus。
 
 ## 停止节点
 
-当您不再需要 Milvus 集群时，可以停止所有节点。
+在不再需要 Milvus 集群时，可以停止所有节点。
 
-<div class="alert note"> 确保 <code>terraform</code> 二进制文件在您的 <code>PATH</code> 上可用。 </div>
+<div class="alert note"> 确保你的 <code> PATH </code> 上有 <code> terraform </code> 二进制文件。 </div>
 
-1. 运行 `terraform destroy` 并在提示时输入 `yes`。
+1. 运行 ```terraform destroy```，然后在提示时输入```yes```。
 
-2. 如果成功，所有节点实例都将停止。
+2. 如果成功，所有节点实例都会停止。
 
-## 接下来做什么
+## 下一步
+ 
 
-如果您想学习如何在其他云上部署 Milvus：
-- [在 EKS 上部署 Milvus 集群](eks.md)
-- [在 GCP 上使用 Kubernetes 部署 Milvus 集群](gcp.md)
-- [使用 Kubernetes 在 Microsoft Azure 上部署 Milvus 的指南](azure.md)
-
+如果你想学习如何在其他云平台上部署Milvus，请参考以下内容：
+- [在EKS上部署Milvus集群](/adminGuide/clouds/aws/eks.md)
+- [在GCP上使用Kubernetes部署Milvus集群](/adminGuide/clouds/gcp/gcp.md)
+- [使用Kubernetes在Microsoft Azure上部署Milvus的指南](/adminGuide/clouds/azure/azure.md)

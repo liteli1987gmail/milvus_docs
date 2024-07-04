@@ -1,91 +1,90 @@
----
-id: bitset.md
-summary: Learn about bitsets in Milvus.
-title: Bitset
----
 
-# 位集（Bitset）
 
-本文介绍了位集机制，该机制有助于在 Milvus 中实现关键功能，如属性过滤和[删除操作](https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md)。
+
+# Bitset
+
+本主题介绍了在 Milvus 中帮助实现属性过滤和删除操作等关键功能的 bitset 机制。
 
 ## 概述
 
-位集是一组位。位是只有两种可能值的元素，最典型的是 `0` 和 `1`，或者是布尔值 `true` 和 `false`。在 Milvus 中，位集是包含位编号 `0` 和 `1` 的数组，与使用整数、浮点数或字符相比，它可以用来紧凑且高效地表示某些数据。位编号默认为 `0`，只有在满足某些条件时才设置为 `1`。
+bitset 是一组位。位是只有两个可能值的元素，最常见的是 `0` 和 `1`，或者布尔值 `true` 和 `false`。在 Milvus 中，bitset 是由位数 `0` 和 `1` 组成的数组，可以紧凑而高效地表示特定数据，而不是使用 int、float 或 char。默认情况下，位数是 `0`，只有在符合某些条件时才会被设置为 `1`。
 
-位集上的操作是使用[布尔逻辑](boolean.md)进行的，在布尔逻辑中，输出值要么是有效的，要么是无效的，分别用 `1` 和 `0` 表示。例如，可以使用[逻辑运算符](https://milvus.io/docs/v2.1.x/boolean.md#Logical-operators) `AND` 来比较两个位集，基于相同索引位置的项，并生成一个新的位集来显示结果。如果两个位置的项相同，则在新的位集中该位置将写入 `1`；如果它们不同，则写入 `0`。
+对 bitset 的操作是基于 [布尔逻辑](/reference/boolean.md) 进行的，输出值要么有效，要么无效，也分别用 `1` 和 `0` 表示。例如，[逻辑运算符](https://milvus.io/docs/v2.1.x/boolean.md#Logical-operators) `AND` 可用于比较两个 bitset 的同一索引位置上的项，并生成一个以结果为基础的新 bitset。如果两个位置上的项相同，则在新 bitset 中写入 `1`；如果不同，则写入 `0`。
 
 ## 实现
 
-位集是一个简单但强大的机制，有助于 Milvus 执行属性过滤、数据删除和带有时间旅行的查询。
+bitset 是一种简单但强大的机制，可以帮助 Milvus 执行属性过滤、数据删除和时间旅行查询。
 
 ### 属性过滤
 
-由于位集只包含两种可能的值，因此它们非常适合存储[属性过滤](https://milvus.io/docs/v2.1.x/hybridsearch.md)的结果。符合给定属性过滤器要求的数据用 `1` 标记。
+由于 bitset 只包含两个可能的值，因此它们非常适合存储 [属性过滤](https://milvus.io/docs/v2.1.x/hybridsearch.md) 的结果。符合给定属性过滤条件的数据被标记为 `1`。
 
 ### 数据删除
 
-位集是存储段中某行是否已删除的信息的紧凑方式。在搜索或查询期间，用 `1` 标记的已删除实体将[不会被计算](https://milvus.io/blog/deleting-data-in-milvus.md)。
+bitset 可用作一种紧凑的方式来存储关于段中的行是否已删除的信息。已删除的实体在相应的 bitset 中标记为 `1`，在搜索或查询过程中 [不会被计算](https://milvus.io/blog/deleting-data-in-milvus.md)。
 
 ## 示例
 
-这里我们提供三个示例，说明 Milvus 如何使用位集，引用了上面讨论的三个主要位集实现。在所有三个案例中，有一个包含 8 个实体的段，然后按照下面显示的顺序发生一系列数据操作语言（DML）事件。
+下面介绍了三个示例，说明了 bitset 在 Milvus 中的使用方式，并涉及到了上面讨论的三种 bitset 的主要实现。在所有三种情况下，都有一个包含 8 个实体的段，然后按照下面显示的顺序进行一系列数据操作语言（DML）事件。
 
-- 当时间戳 `ts` 等于 100 时，插入了四个实体，它们的 `primary_key` 分别是 [1, 2, 3, 4]。
-- 当时间戳 `ts` 等于 200 时，插入了剩下的四个实体，它们的 `primary_key` 分别是 [5, 6, 7, 8]。
-- 当时间戳 `ts` 等于 300 时，删除了 `primary_key` 为 [7, 8] 的实体。
-- 只有 `primary_key` 为 [1, 3, 5, 7] 的实体满足属性过滤条件。
+- 当时间戳 ``ts`` 等于 100 时，插入了 `primary_key` 为 [1, 2, 3, 4] 的四个实体。
+- 当时间戳 ``ts`` 等于 200 时，插入了 `primary_key` 为 [5, 6, 7, 8] 的其他四个实体。
+- 当时间戳 ``ts`` 等于 300 时，删除了 `primary_key` 为 [7, 8] 的实体。
+- 只有 `primary_key` 为 [1, 3, 5, 7] 的实体满足属性过滤的条件。
 
-![DML 事件的顺序](/public/assets/bitset_0.svg "DML 事件的顺序。")
+![DML 事件的顺序](/assets/bitset_0.svg "DML事件的顺序")。
 
-### 案例一
+### 示例一
 
-在这种情况下，用户将 `time_travel` 设置为 150，这意味着用户对满足 `ts = 150` 的数据进行查询。位集生成过程由图 1 说明。
+在这种情况下，用户将 `time_travel` 设置为 150，这意味着用户对满足 `ts = 150` 的数据进行查询。图 1 说明了 bitset 生成过程。
 
 在初始过滤阶段，`filter_bitset` 应该是 `[1, 0, 1, 0, 1, 0, 1, 0]`，其中实体 [1, 3, 5, 7] 被标记为 `1`，因为它们是有效的过滤结果。
 
-然而，当 `ts` 等于 150 时，实体 [4, 5, 6, 7] 尚未插入向量数据库。因此，无论过滤条件如何，这四个实体都应该被标记为 0。现在位集结果应该是 `[1, 0, 1, 0, 0, 0, 0, 0]`。
+然而，实体 [4, 5, 6, 7] 在 `ts` 等于 150 时未被插入到向量数据库中。因此，这四个实体应该无论过滤条件如何都被标记为 0。现在，bitset 的结果应该是 `[1, 0, 1, 0, 0, 0, 0, 0]`。
 
-如在[数据删除](#data-deletion)中讨论的，用 `1` 标记的实体在搜索或查询期间将被忽略。位集结果现在需要翻转，以便与删除位图结合，这给我们提供了 `[0, 1, 0, 1, 1, 1, 1, 1]`。
+如 [数据删除](#数据删除) 中所讨论的那样，标记为 `1` 的实体在搜索或查询过程中被忽略。现在需要翻转 bitset 的结果，以便与删除位图进行合并，从而得到 `[0, 1, 0, 1, 1, 1, 1, 1]`。
 
-至于删除位集 `del_bitset`，初始值应该是 `[0, 0, 0, 0, 0, 0, 1, 1]`。然而，实体 7 和 8 直到 `ts` 是 300 才被删除。因此，当 `ts` 是 150 时，实体 7 和 8 仍然有效。
+至于删除 bitset `del_bitset`，初始值应该是 `[0, 0, 0, 0, 0, 0, 1, 1]`。然而，实体 7 和 8 直到 `ts` 为 300 才被删除。因此，当 `ts` 为 150 时，实体 7 和 8 仍然有效。结果，经过时间旅行后，`del_bitset` 的值是 `[0, 0, 0, 0, 0, 0, 0, 0]`。
 
-As for the deletion bitset `del_bitset`, the initial value should be `[0, 0, 0, 0, 0, 0, 1, 1]`. However, entities 7 and 8 are not deleted until `ts` is 300. Therefore, when `ts` is 150, entities 7 and 8 are still valid. As a result, the `del_bitset` value after Time Travel is `[0, 0, 0, 0, 0, 0, 0, 0]`.
+现在，我们得到了经过时间旅行和属性过滤后的两个 bitset：`filter_bitset` `[0, 1, 0, 1, 1, 1, 1, 1]` 和 `del_bitset` `[0, 0, 0, 0, 0, 0, 0, 0]`。将这两个 bitset 与 `OR` 二进制逻辑操作符结合起来。`result_bitset` 的最终值是 `[0, 1, 0, 1, 1, 1, 1, 1]`，这意味着只有实体 1 和 3 将在以下搜索或查询阶段中被计算。
 
-Now we have two bitsets after Time Travel and attribute filtering: `filter_bitset` `[0, 1, 0, 1, 1, 1, 1, 1]` and `del_bitset` `[0, 0, 0, 0, 0, 0, 0, 0]`. Combine these two bitsets with the `OR` binary logic operator. The ultimate value of result_bitset is `[0, 1, 0, 1, 1, 1, 1, 1]`, meaning only entities 1 and 3 will be computed in the following search or query stage.
+![图 1. 时间旅行 = 150 的搜索](/assets/bitset_1.jpg "图 1. 时间旅行 = 150 的搜索")。
 
-![Figure 1. Search with Time Travel = 150.](/public/assets/bitset_1.jpg "Figure 1. Search with Time Travel = 150.")
+### 示例二
 
-### Case two
+在这种情况下，用户将 `time_travel` 设置为 250。图 2 说明了 bitset 生成过程。
 
-In this case, the user sets `time_travel` as 250. The bitset generation process is illustrated by Figure 2.
+和示例一一样，初始的 `filter_bitset` 是 `[1, 0, 1, 0, 1, 0, 1, 0]`。
 
-Like in case one, the initial `filter_bitset` is `[1, 0, 1, 0, 1, 0, 1, 0]`.
+当 `ts` 等于 250 时，所有实体都在向量数据库中。因此，在考虑时间戳时，`filter_bitset` 保持不变。再次翻转结果，得到 `[0, 1, 0, 1, 0, 1, 0, 1]`。
 
-All entities are in the vector database when `ts` = 250. Therefore, the `filter_bitset` stays the same when we factor in the timestamp. Again, we need to flip the result and get `[0, 1, 0, 1, 0, 1, 0, 1]`.
+至于删除 bitset `del_bitset`，初始值为 `[0, 0, 0, 0, 0, 0, 1, 1]`。然而，实体 7 和 8 直到 `ts` 为 300 才被删除。因此，当 `ts` 为 250 时，实体 7 和 8 仍然有效。结果，经过时间旅行后，`del_bitset` 的值是 `[0, 0, 0, 0, 0, 0, 0, 0]`。
 
-As for the deletion bitset `del_bitset`, the initial value is `[0, 0, 0, 0, 0, 0, 1, 1]`. However, entities 7 and 8 were not deleted until `ts` is 300. Therefore, when `ts` is 250, entities 7 and 8 are still valid. As a result, the `del_bitset` after Time Travel is `[0, 0, 0, 0, 0, 0, 0, 0]`.
+现在，我们得到了经过时间旅行和属性过滤后的两个 bitset：`filter_bitset` `[0, 1, 0, 1, 0, 1, 0, 1]` 和 `del_bitset` `[0, 0, 0, 0, 0, 0, 0, 0]`。将这两个 bitset 与 `OR` 二进制逻辑操作符结合起来。`result_bitset` 的值是 `[0, 1, 0, 1, 0, 1, 0, 1]`。也就是说，只有实体 [1, 3, 5, 7] 将在以下搜索或查询阶段中被计算。
 
-Now we have two bitsets after Time Travel and attribute filtering: `filter_bitset` `[0, 1, 0, 1, 0, 1, 0, 1]` and `del_bitset` `[0, 0, 0, 0, 0, 0, 0, 0]`. Combine these two bitsets with the `OR` binary logic operator. The result_bitset is `[0, 1, 0, 1, 0, 1, 0, 1]`. That is to say, only entites [1, 3, 5, 7] will be computed in the following search or query stage.
+![图 2. 时间旅行 = 250 的搜索](/assets/bitset_2.jpg "图 2. 时间旅行 = 250 的搜索")。
 
-![Figure 2. Search with Time Travel = 250.](../../../assets/bitset_2.jpg "Figure 2. Search with Time Travel = 250.")
+### 示例三
 
-### Case three
+在这种情况下，用户将 `time_travel` 设置为 350。图 3 说明了 bitset 生成过程。
 
-In this case, the user sets `time_travel` as 350. The bitset generation process is illustrated by Figure 3.
+和之前的案例一样，初始的 `filter_bitset` 是 `[0, 1, 0, 1, 0, 1, 0, 1]`。
 
-As with previous cases, the initial `filter_bitset` is `[0, 1, 0, 1, 0, 1, 0, 1]`.
+当 `ts` = 350 时，所有实体都在向量数据库中。因此，最终的翻转的 `filter_bitset` 仍然是 `[0, 1, 0, 1, 0, 1, 0, 1]`，与案例二相同。
 
-All entities are in the vector database when `ts`= 350. Therefore, the final, flipped `filter_bitset` is `[0, 1, 0, 1, 0, 1, 0, 1]`, the same as in case two.
+至于删除 bitset `del_bitset`，由于实体 7 和 8 在 `ts` = 350 时被删除，因此 `del_bitset` 的结果是 `[0, 0, 0, 0, 0, 0, 1, 1]`。
 
-As for the deletion bitset `del_bitset`, since entities 7 and 8 have already been deleted when `ts = 350`, therefore, the result of `del_bitset` is `[0, 0, 0, 0, 0, 0, 1, 1]`.
+现在，我们得到了经过时间旅行和属性过滤后的两个 bitset：`filter_bitset` `[0, 1, 0, 1, 0, 1, 0, 1]` 和 `del_bitset` `[0, 0, 0, 0, 0, 0, 1, 1]`。将这两个 bitset 与 `OR` 二进制逻辑操作符结合起来。`result_bitset` 的值是 `[0, 1, 0, 1, 0, 1, 1, 1]`。也就是说，只有实体 [1, 3, 5] 将在以下搜索或查询阶段中被计算。
 
-Now we have two bitsets after Time Travel and attribute filtering: `filter_bitset` `[0, 1, 0, 1, 0, 1, 0, 1]` and `del_bitset` `[0, 0, 0, 0, 0, 0, 1, 1]`. Combine these two bitsets with the `OR` binary logic operator. The ultimate `result_bitset` is `[0, 1, 0, 1, 0, 1, 1, 1]`. That is to say, only entities [1, 3, 5] will be computed in the following search or query stage.
+![图 3. 时间旅行 = 350 的搜索](/assets/bitset_3.jpg "图 3. 时间旅行 = 350 的搜索")。
 
-![Figure 3. Search with Time Travel = 350.](/public/assets/bitset_3.jpg "Figure 3. Search with Time Travel = 350.")
+## 下一步
 
-## What's next
 
-Now that you know how bitsets work in Milvus, you might also want to:
 
-- Learn how to [use strings to filter](https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md) your search results, or refer to [Hybrid Search](https://milvus.io/docs/hybridsearch.md) on our docs.
-- Understand [how data are processed](https://milvus.io/docs/v2.1.x/data_processing.md) in Milvus.
+
+现在你已经了解了 Milvus 中位集的工作原理，你可能还想要：
+
+- 学习如何使用字符串来过滤你的搜索结果，或者参考我们文档中的 [混合搜索](https://milvus.io/docs/hybridsearch.md)。
+- 了解在 Milvus 中 [数据是如何处理的](/reference/architecture/data_processing.md)。
+

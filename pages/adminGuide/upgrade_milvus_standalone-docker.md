@@ -1,34 +1,23 @@
----
 
-id: upgrade_milvus_standalone-docker.md
-label: Docker Compose
-order: 1
-group: upgrade_milvus_standalone-operator.md
-related_key: upgrade Milvus Standalone
-summary: 了解如何使用Docker Compose升级Milvus独立部署。
-title: 使用Docker Compose升级Milvus独立部署
 
----
 
-{{tab}}
+# 使用 Docker Compose 升级 Milvus Standalone
 
-# 使用Docker Compose升级Milvus独立部署
+本主题描述了如何使用 Docker Compose 升级 Milvus Standalone。
 
-本主题描述了如何使用Docker Compose升级您的Milvus。
-
-在正常情况下，您可以通过[更改其镜像](#通过更改其镜像升级Milvus)来升级Milvus。但是，您需要在从v2.1.x升级到v{{var.milvus_release_version}}之前的任何升级之前[迁移元数据](#迁移元数据)。
+通常情况下，你可以通过更改镜像来升级 Milvus（[升级 Milvus 的镜像](#Upgrade-Milvus-by-changing-its-image)）。但是，在从 v2.1.x 升级到 v{{var.milvus_release_version}}之前，你需要 [迁移元数据](#Migrate-the-metadata)。
 
 <div class="alter note">
 
-由于安全考虑，Milvus在v2.2.5版本发布时将其MinIO升级到RELEASE.2023-03-20T20-16-18Z。在从使用Docker Compose安装的以前的Milvus独立部署进行任何升级之前，您应该创建一个单节点单驱动器MinIO部署，并将现有的MinIO设置和内容迁移到新部署。有关详细信息，请参阅[此指南](https://min.io/docs/minio/linux/operations/install-deploy-manage/migrate-fs-gateway.html#id2)。
+由于安全考虑，Milvus 在 v2.2.5 版本的发布中将其 MinIO 升级为 RELEASE.2023-03-20T20-16-18Z。在使用 Docker Compose 安装的先前 Milvus Standalone 版本的任何升级之前，你应创建一个单节点单驱动器的 MinIO 部署，并将现有的 MinIO 设置和内容迁移到新部署中。有关详细信息，请参阅 [此指南](https://min.io/docs/minio/linux/operations/install-deploy-manage/migrate-fs-gateway.html#id2)。
 
 </div>
 
-## 通过更改其镜像升级Milvus
+## 通过更改镜像来升级 Milvus
 
-在正常情况下，您可以按照以下步骤升级Milvus：
+通常情况下，你可以按以下方式升级 Milvus：
 
-1. 更改`docker-compose.yaml`中的Milvus镜像标签。
+1. 在 `docker-compose.yaml` 中更改 Milvus 镜像标签。
 
     ```yaml
     ...
@@ -37,7 +26,7 @@ title: 使用Docker Compose升级Milvus独立部署
       image: milvusdb/milvus:v{{var.milvus_release_version}}
     ```
 
-2. 运行以下命令以执行升级。
+2. 执行以下命令进行升级。
 
     ```shell
     docker compose down
@@ -46,22 +35,22 @@ title: 使用Docker Compose升级Milvus独立部署
 
 ## 迁移元数据
 
-1. 停止所有Milvus组件。
+1. 停止所有的 Milvus 组件。
 
     ```
     docker stop <milvus-component-docker-container-name>
     ```
 
-2. 为元数据迁移准备配置文件`migration.yaml`。
+2. 准备用于元数据迁移的配置文件 `migration.yaml`。
 
     ```yaml
     # migration.yaml
     cmd:
-      # 选项：run/backup/rollback
+      # Option: run/backup/rollback
       type: run
       runWithBackup: true
     config:
-      sourceVersion: 2.1.4   # 指定您的milvus版本
+      sourceVersion: 2.1.4   # 指定你的Milvus版本
       targetVersion: {{var.milvus_release_version}}
       backupFilePath: /tmp/migration.bak
     metastore:
@@ -69,7 +58,7 @@ title: 使用Docker Compose升级Milvus独立部署
     etcd:
       endpoints:
         - milvus-etcd:2379  # 使用etcd容器名称
-      rootPath: by-dev # 数据在etcd中存储的根路径
+      rootPath: /dev # 数据存储在etcd中的根路径
       metaSubPath: meta
       kvSubPath: kv
     ```
@@ -77,24 +66,27 @@ title: 使用Docker Compose升级Milvus独立部署
 3. 运行迁移容器。
 
     ```
-    # 假设您的docker-compose使用默认的milvus网络运行，
-    # 并且您将migration.yaml放在与docker-compose.yaml相同的目录中。
+    # 假设你的docker-compose与默认的milvus网络一起运行，并且将migration.yaml放在与docker-compose.yaml相同的目录中。
     docker run --rm -it --network milvus -v $(pwd)/migration.yaml:/milvus/configs/migration.yaml milvusdb/meta-migration:v2.2.0 /milvus/bin/meta-migration -config=/milvus/configs/migration.yaml
     ```
 
-4. 使用新的Milvus镜像再次启动Milvus组件。
+4. 使用新的 Milvus 镜像重新启动 Milvus 组件。
 
     ```shell
-    // 只有在更新了docker-compose.yaml中的milvus镜像标签后运行以下命令
+    // 仅在在docker-compose.yaml中更新milvus镜像标签后才运行以下命令
     docker compose down
     docker compose up -d
     ```
 
-## 接下来
-- 您可能还想了解如何：
-  - [扩展Milvus集群](scaleout.md)
-- 如果您准备在云上部署您的集群：
-  - 学习如何[使用Terraform和Ansible在AWS上部署Milvus](aws.md)
-  - 学习如何[使用Terraform在Amazon EKS上部署Milvus](eks.md)
-  - 学习如何[在GCP上使用Kubernetes部署Milvus集群](gcp.md)
-  - 学习如何[在Microsoft Azure上使用Kubernetes部署Milvus](azure.md)
+## 下一步操作
+
+
+
+- 你可能还想学习以下内容：
+  - [扩展一个 Milvus 集群](/adminGuide/scaleout.md)
+- 如果你准备在云上部署你的集群：
+  - 学习如何使用 Terraform 和 Ansible 在 AWS 上 [部署 Milvus](/adminGuide/clouds/aws/aws.md)
+  - 学习如何使用 Terraform 在 Amazon EKS 上 [部署 Milvus](/adminGuide/clouds/aws/eks.md)
+  - 学习如何使用 Kubernetes 在 GCP 上 [部署 Milvus 集群](/adminGuide/clouds/gcp/gcp.md)
+  - 学习如何使用 Kubernetes 在 Microsoft Azure 上 [部署 Milvus](/adminGuide/clouds/azure/azure.md)
+

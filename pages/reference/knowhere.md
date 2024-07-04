@@ -1,128 +1,131 @@
----
-id: knowhere.md
-summary: Learn about Knowhere in Milvus.
-title: Knowhere
----
+
+
 
 # Knowhere
 
-本文介绍 Milvus 的核心向量执行引擎 Knowhere。
+本主题介绍了 Milvus 的核心向量执行引擎 Knowhere。
 
 ## 概述
 
-Knowhere 是 Milvus 的核心向量执行引擎，它整合了几个向量相似性搜索库，包括[Faiss](https://github.com/facebookresearch/faiss)、[Hnswlib](https://github.com/nmslib/hnswlib)和[Annoy](https://github.com/spotify/annoy)。Knowhere 还被设计为支持异构计算。它控制着索引构建和搜索请求在哪种硬件（CPU 或 GPU）上执行。这就是 Knowhere 得名的原因——知道在哪里执行操作。未来版本将支持更多类型的硬件，包括 DPU 和 TPU。
+Knowhere 是 Milvus 的核心向量执行引擎，它集成了几个向量相似性搜索库，包括 [Faiss](https://github.com/facebookresearch/faiss)、[Hnswlib](https://github.com/nmslib/hnswlib) 和 [Annoy](https://github.com/spotify/annoy)。Knowhere 还支持异构计算。它控制在哪个硬件（CPU 或 GPU）上执行索引构建和搜索请求。这就是 Knowhere 得名的原因 - 知道在哪里执行这些操作。未来的版本将支持更多类型的硬件，包括 DPU 和 TPU。
 
-## Knowhere 在 Milvus 架构中的位置
+## Milvus 架构中的 Knowhere
 
-下图展示了 Knowhere 在 Milvus 架构中的位置。
+下图说明了 Knowhere 在 Milvus 架构中的位置。
 
-![Knowhere](/knowhere_architecture.png "Knowhere在Milvus架构中的位置。")
+![Knowhere](/assets/knowhere_architecture.png "Milvus架构中的Knowhere")
 
-最底层是系统硬件。第三方索引库位于硬件之上。然后 Knowhere 通过 CGO 与顶部的索引节点和查询节点进行交互，CGO 允许 Go 包调用 C 代码。
+最底层是系统硬件。第三方索引库在硬件之上。然后 Knowhere 通过 CGO 与位于顶部的索引节点和查询节点进行交互，这允许 Go 包调用 C 代码。
 
 ## Knowhere 的优势
 
-以下是 Knowhere 相对于 Faiss 的优势：
+以下是 Knowhere 相对于 Faiss 的优势。
 
 #### 支持 BitsetView
 
-Milvus 引入了一个位集机制来实现“软删除”。软删除的向量仍然存在于数据库中，但在进行向量相似性搜索或查询时不会被计算。
+Milvus 引入了位集（bitset）机制来实现“软删除”。软删除的向量仍然存在于数据库中，但在向量相似性搜索或查询过程中将不会计算。
 
-位集中的每个位对应一个索引向量。如果位集中的向量被标记为“1”，则意味着该向量已被软删除，并且在向量搜索期间不会被涉及。位集参数应用于 Knowhere 中所有公开的 Faiss 索引查询 API，包括 CPU 和 GPU 索引。
+位集中的每个位对应一个索引向量。如果位集中的某个位设置为“1”，则表示此向量已软删除，并且在向量搜索过程中不会参与计算。bitset 参数适用于 Knowhere 中公开的所有 Faiss 索引查询 API，包括 CPU 和 GPU 索引。
 
-有关位集机制的更多信息，请查看[位集](bitset.md)。
+有关位集机制的更多信息，请查看 [bitset](/reference/bitset.md)。
 
-#### 支持多种相似性度量标准对二进制向量进行索引
+#### 支持对二进制向量进行多种相似性度量的索引
 
-Knowhere 支持[汉明](metric.md#汉明距离)、[杰卡德](metric.md#杰卡德距离)、[Tanimoto](metric.md#Tanimoto距离)、[超结构](metric.md#超结构)和[子结构](metric.md#子结构)。杰卡德和 Tanimoto 可以用来测量两个样本集之间的相似性，而超结构和子结构可以用来测量化学结构的相似性。
+Knowhere 支持 [Hamming](metric.md#Hamming-distance)、[Jaccard](metric.md#Jaccard-distance)、[Tanimoto](metric.md#Tanimoto-distance)、[Superstructure](metric.md#Superstructure) 和 [Substructure](metric.md#Substructure) 等多种相似性度量。Jaccard 和 Tanimoto 可用于衡量两个样本集之间的相似性，而 Superstructure 和 Substructure 可用于衡量化学结构的相似性。
 
 #### 支持 AVX512 指令集
 
-除了 Faiss 已经支持的[AArch64](https://en.wikipedia.org/wiki/AArch64)、[SSE4.2](https://en.wikipedia.org/wiki/SSE4#SSE4.2)和[AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions)指令集外，Knowhere 还支持[AVX512](https://en.wikipedia.org/wiki/AVX-512)，与 AVX2 相比，可以[提高索引构建和查询性能 20%到 30%](https://milvus.io/blog/milvus-performance-AVX-512-vs-AVX2.md)。
+除了 Faiss 已经支持的 [AArch64](https://en.wikipedia.org/wiki/AArch64)、[SSE4.2](https://en.wikipedia.org/wiki/SSE4#SSE4.2) 和 [AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions) 指令集之外，Knowhere 还支持 [AVX512](https://en.wikipedia.org/wiki/AVX-512) 指令集，相比 AVX2，可以提高索引构建和查询的性能 20%至 30%。
 
 #### 自动 SIMD 指令选择
 
-Knowhere 支持在任何 CPU 处理器（包括本地和云平台）上自动调用合适的 SIMD 指令（例如，SIMD SSE、AVX、AVX2 和 AVX512），因此用户在编译期间不需要手动指定 SIMD 标志（例如，“-msse4”）。
+Knowhere 支持自动调用适合的 SIMD 指令（如 SIMD SSE、AVX、AVX2 和 AVX512）在任何 CPU 处理器上（包括本地和云平台），因此用户无需在编译时手动指定 SIMD 标志（如“-msse4”）。
 
-Knowhere 是通过重构 Faiss 的代码库构建的。依赖于 SIMD 加速的公共函数（例如，相似性计算）被提取出来。然后对于每个函数，实现四个版本（即 SSE、AVX、AVX2、AVX512），并将每个版本放入单独的源文件中。然后进一步单独编译这些源文件，并使用相应的 SIMD 标志。因此，在运行时，Knowhere 可以自动根据当前 CPU 标志选择最适合的 SIMD 指令，然后使用钩子链接正确的函数指针。
+Knowhere 通过重构 Faiss 的代码库构建。基于 SIMD 加速的常见函数（如相似性计算）被拆分到单独的函数中。对于每个函数，实现了四个版本（即 SSE、AVX、AVX2 和 AVX512），并且每个版本都被编译成单独的源文件。然后根据对应的 SIMD 标志单独编译源文件。因此，在运行时，Knowhere 可以根据当前的 CPU 标志自动选择最合适的 SIMD 指令，并使用钩子函数链接正确的函数指针。
 
 #### 其他性能优化
 
-有关 Knowhere 性能优化的更多信息，请阅读[Milvus: A Purpose-Built Vector Data Management System](https://www.cs.purdue.edu/homes/csjgwang/pubs/SIGMOD21_Milvus.pdf)。
+有关 Knowhere 性能优化的更多信息，请阅读 [《Milvus：专为向量数据管理而构建的系统》](https://www.cs.purdue.edu/homes/csjgwang/pubs/SIGMOD21_Milvus.pdf)。
 
 ## Knowhere 代码结构
 
-Computation in Milvus mainly involves vector and scalar operations. Knowhere only handles the operations on vector indexing.
+在 Milvus 中，计算主要涉及向量和标量操作。Knowhere 仅处理向量索引操作。
 
-An index is a data structure independent from the original vector data. Generally, indexing requires four steps: create an index, train data, insert data and build an index. In some AI applications, dataset training is separated from vector search. Data from datasets are first trained and then inserted into a vector database like Milvus for similarity search. For example, open datasets sift1M and sift1B differentiate data for training and data for testing.
+索引是与原始向量数据无关的数据结构。一般情况下，索引需要四个步骤：创建索引、训练数据、插入数据和构建索引。在一些 AI 应用中，数据集的训练与向量搜索是分开的。数据集的数据首先经过训练，然后插入到 Milvus 等向量数据库中进行相似性搜索。例如，开源数据集 sift1M 和 sift1B 区分了用于训练和用于测试的数据。
 
-However, in Knowhere, data for training and for searching are the same. Knowhere trains all the data in a [segment](https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Segments) and then inserts all the trained data and builds an index for them.
+然而，在 Knowhere 中，用于训练和搜索的数据是相同的。Knowhere 会对一个 [段](https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Segments) 中的所有数据进行训练，然后将所有训练数据插入并构建索引。
 
-#### `DataObj`: base class
+#### `DataObj`：基类
 
-`DataObj` is the base class of all data structures in Knowhere. `Size()` is the only virtual method in `DataObj`. The Index class inherits from `DataObj` with a field named "size\_". The Index class also has two virtual methods - `Serialize()` and `Load()`. The `VecIndex` class derived from `Index` is the virtual base class for all vector indexes. `VecIndex` provides methods including `Train()`, `Query()`, `GetStatistics()`, and `ClearStatistics()`.
+`DataObj` 是 Knowhere 中所有数据结构的基类。`Size()` 是 `DataObj` 中唯一的虚方法。`Index` 类继承自 `DataObj`，并具有名为“size_”的字段。`Index` 类还有两个虚方法——`Serialize()` 和 `Load()`。从 `Index` 派生的 `VecIndex` 类是所有向量索引的虚基类。`VecIndex` 提供了 `Train()`、`Query()`、`GetStatistics()` 和 `ClearStatistics()` 等方法。
 
-![base class](../../../assets/Knowhere_base_classes.png "Knowhere base classes.")
+![基类](/assets/Knowhere_base_classes.png "Knowhere基类结构图")
 
-Some other index types are listed on the right in the figure above.
+图上右侧列出了其他一些索引类型。
 
-- The Faiss index has two base classes: `FaissBaseIndex` for all indexes on float point vectors, and `FaissBaseBinaryIndex` for all indexes on binary vectors.
+- Faiss 索引有两个基类：用于浮点向量的 `FaissBaseIndex` 和用于二进制向量的 `FaissBaseBinaryIndex`。
 
-- `GPUIndex` is the base class for all Faiss GPU indexes.
+- `GPUIndex` 是所有 Faiss GPU 索引的基类。
 
-- `OffsetBaseIndex` is the base class for all self-developed indexes. Given that only vector IDs are stored in an index file, the file size for 128-dimensional vectors can be reduced by 2 orders of magnitude.
+- `OffsetBaseIndex` 是所有自定义索引的基类。由于索引文件中仅存储向量 ID，对于 128 维向量，可以将文件大小缩减两个数量级。
 
-#### `IDMAP`: brute-force search
+#### `IDMAP`：暴力搜索
 
-![IDMAP](../../../assets/IDMAP.png "IDMAP code structure.")
+![IDMAP](/assets/IDMAP.png "IDMAP代码结构图")
 
-Technically speaking, `IDMAP` is not an index, but rather used for brute-force search. When vectors are inserted into the database, neither data training nor index building is required. Searches will be conducted directly on the inserted vector data.
+从技术上讲，`IDMAP` 不是一个索引，而是用于暴力搜索。在将向量插入数据库时，不需要进行数据训练或索引构建。搜索将直接在插入的向量数据上进行。
 
-However, for code consistency, `IDMAP` also inherits from the `VecIndex` class with all its virtual interfaces. The usage of `IDMAP` is the same as other indexes.
+但是，为了代码一致性，`IDMAP` 也从 `VecIndex` 类继承，并具有其所有虚接口。使用 `IDMAP` 与使用其他索引相同。
 
-#### IVF indexes
+#### IVF 索引
 
-![IVF](../../../assets/IVF.png "Code structure of IVF indexes.")
+![IVF](/assets/IVF.png "IVF索引代码结构图")
 
-The IVF (inverted file) indexes are the most frequently used. The `IVF` class is derived from `VecIndex` and `FaissBaseIndex`, and further extends to `IVFSQ` and `IVFPQ`. `GPUIVF` is derived from `GPUIndex` and `IVF`. Then `GPUIVF` further extends to `GPUIVFSQ` and `GPUIVFPQ`.
+IVF（倒排文件）索引是最常用的索引之一。`IVF` 类继承自 `VecIndex` 和 `FaissBaseIndex`，并进一步扩展为 `IVFSQ` 和 `IVFPQ`。`GPUIVF` 继承自 `GPUIndex` 和 `IVF`，然后进一步扩展为 `GPUIVFSQ` 和 `GPUIVFPQ`。
 
-`IVFSQHybrid` is a self-developed hybrid index. Coarse quantizer is executed on GPU while search in the bucket on CPU. This type of index can reduce the occurrence of memory copy between CPU and GPU by leveraging the computing power of GPU. `IVFSQHybrid` has the same recall rate as `GPUIVFSQ` but comes with better performance.
+`IVFSQHybrid` 是一种自定义的混合索引。粗量化器在 GPU 上执行，而在桶中进行搜索的操作在 CPU 上执行。这种类型的索引可以通过利用 GPU 的计算能力减少 CPU 和 GPU 之间的内存拷贝次数。`IVFSQHybrid` 具有与 `GPUIVFSQ` 相同的召回率，但性能更好。
 
-The base class structure for binary indexes is relatively simpler. `BinaryIDMAP` and `BinaryIVF` are derived from `FaissBaseBinaryIndex` and `VecIndex`.
+二进制索引的基类结构相对较简单。`BinaryIDMAP` 和 `BinaryIVF` 继承自 `FaissBaseBinaryIndex` 和 `VecIndex`。
 
-#### Third-party indexes
+#### 第三方索引
 
-![third-party indexes](../../../assets/third_party_index.png "Code structure of other third-party indexes.")
+![第三方索引](/assets/third_party_index.png "其他第三方索引的代码结构")
 
-Currently, only two types of third-party indexes are supported apart from Faiss: tree-based index `Annoy`, and graph-based index `HNSW`. These two common and frequently used third-party indexes are both derived from `VecIndex`.
+目前，除了 Faiss 之外，还支持了两种类型的第三方索引：基于树的索引 `Annoy` 和基于图的索引 `HNSW`。这两种常见且经常使用的第三方索引都是从 `VecIndex` 派生的。
 
-## Adding indexes to Knowhere
+## 向 Knowhere 添加索引
 
-If you want to add new indexes to Knowhere, first you can refer to existing indexes:
 
-- To add quantization-based indexes, refer to `IVF_FLAT`.
 
-- To add graph-based indexes, refer to `HNSW`.
 
-- To add tree-based indexes, refer to `Annoy`.
 
-After referring to the existing index, you can follow the steps below to add a new index to Knowhere.
+如果你想要向 Knowhere 添加新的索引，首先可以参考现有的索引：
 
-1. Add the name of the new index in `IndexEnum`. The data type is string.
+- 要添加基于量化的索引，请参考 `IVF_FLAT`。
 
-2. Add data validation check on the new index in the file `ConfAdapter.cpp`. The validation check is mainly to validate the parameters for data training and query.
+- 要添加基于图的索引，请参考 `HNSW`。
 
-3. Create a new file for the new index. The base class of the new index should include `VecIndex`, and the necessary virtual interface of `VecIndex`.
+- 要添加基于树的索引，请参考 `Annoy`。
 
-4. Add the index building logic for new index in `VecIndexFactory::CreateVecIndex()`.
+在参考现有索引之后，你可以按照以下步骤向 Knowhere 中添加一个新的索引。
 
-5. Add unit test under the `unittest` directory.
+1. 在 `IndexEnum` 中添加新索引的名称。数据类型为字符串。
 
-## What's next
+2. 在 `ConfAdapter.cpp` 文件中对新索引进行数据验证检查。验证检查主要是用于验证数据训练和查询的参数。
+
+3. 为新索引创建一个新文件。新索引的基类应该包括 `VecIndex` 和 `VecIndex` 的必要虚接口。
+
+4. 在 `VecIndexFactory::CreateVecIndex()` 中添加新索引的索引构建逻辑。
+
+5. 在 `unittest` 目录下添加单元测试。
+
+## 接下来的步骤
+
+
 
 After learning how Knowhere works in Milvus, you might also want to:
 
-- Learn about [the various types of indexes Milvus supports](index.md).
-- Learn about [the bitset mechanism](bitset.md).
+- Learn about [the various types of indexes Milvus supports](/reference/index.md).
+- Learn about [the bitset mechanism](/reference/bitset.md).
+- Understand [how data are processed](/reference/architecture/data_processing.md) in Milvus.
 
-- Understand [how data are processed](data_processing.md) in Milvus.

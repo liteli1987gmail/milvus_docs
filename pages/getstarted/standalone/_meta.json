@@ -1,0 +1,7 @@
+{
+    "install_standalone-aptyum": "独立版安装 APT/YUM(Install_standalone-aptyum)",
+    "install_standalone-docker-compose": "独立版安装 Docker Compose(Install_standalone-docker-compose)",
+    "install_standalone-docker": "独立版安装 Docker(Install_standalone-docker)",
+    "install_standalone-helm": "独立版安装 Helm(Install_standalone-helm)",
+    "install_standalone-operator": "独立版安装操作员(Install_standalone-operator)"
+}

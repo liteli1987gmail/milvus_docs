@@ -1,114 +1,115 @@
----
-id: glossary.md
-title: 术语表
----
+
 
 # 术语表
 
-本主题解释了 Milvus 向量数据库中的一些核心概念。
+这个主题解释了 Milvus 向量数据库中的一些核心概念。
 
-## Bitset
+## 位集
 
-在 Milvus 中，位集是位数字 `0` 和 `1` 的数组，与使用整数、浮点数或字符相比，它们可以用来紧凑高效地表示某些数据。位数字默认为 `0`，只有满足某些要求时才会设置为 `1`。
+在 Milvus 中，位集是一组由 `0` 和 `1` 组成的位数数组，可以用来紧凑高效地表示特定的数据，而不是使用整数、浮点数或字符。默认情况下，位数为 `0`，只有满足特定要求时才会被设置为 `1`。
 
-## Channel
+## 通道
 
-Milvus 中有两种不同的通道。它们是 [PChannel](#PChannel) 和 [VChannel](#VChannel)。每个 PChannel 对应于日志存储的主题。而每个 VChannel 对应于集合中的一个分片。
+在 Milvus 中有两个不同的通道。它们是 [PChannel](#PChannel) 和 [VChannel](#VChannel)。每个 PChannel 对应一个日志存储的主题。而每个 VChannel 对应一个集合中的一个分片。
 
-## Collection
+## 集合
 
-Milvus 中的集合相当于关系数据库管理系统（RDBMS）中的表。在 Milvus 中，集合用于存储和管理实体。
+在 Milvus 中，集合相当于关系型数据库管理系统（RDBMS）中的表。在 Milvus 中，集合用于存储和管理实体。
 
-## Dependency
+## 依赖
 
-依赖是另一个程序依赖以工作的程序。Milvus 的依赖包括 etcd（存储元数据）、MinIO 或 S3（对象存储）和 Pulsar（管理快照日志）。
+依赖是一个程序依赖于其他程序的工作。Milvus 的依赖包括 etcd（存储元数据）、MinIO 或 S3（对象存储）和 Pulsar（管理快照日志）。
 
-## Entity
+## 实体
 
-实体由一组字段组成，代表现实世界的对象。Milvus 中的每个实体都由一个唯一的主键表示。
-
-<div class="alert note">
-您可以自定义主键。如果您不手动配置，Milvus 会自动为实体分配主键。如果您选择配置自己的自定义主键，请记住，Milvus 目前不支持主键去重。因此，在同一集合中可以有重复的主键。</div>
-
-## Field
-
-字段是构成实体的单元。字段可以是结构化数据（例如，数字、字符串）或向量。
+实体由一组表示现实世界对象的字段组成。在 Milvus 中，每个实体由唯一的主键表示。
 
 <div class="alert note">
-从 Milvus 2.0 开始，支持标量字段过滤！</div>
+你可以自定义主键。如果你没有进行手动配置，Milvus 会自动为实体分配主键。如果你选择配置自定义主键，请注意 Milvus 目前不支持主键去重。因此，相同集合中可能会存在重复的主键。
+</div>
 
-## Log broker
+## 字段
 
-日志代理是一个支持回放的发布-订阅系统。它负责流式数据持久性、执行可靠的异步查询、事件通知和返回查询结果。它还确保在工作节点从系统故障中恢复时增量数据的完整性。
+字段是组成实体的单元。字段可以是结构化数据（例如数字、字符串）或向量。
 
-## Log sequence
+<div class="alert note">
+从 Milvus 2.0 开始，标量字段过滤功能可用！
+</div>
 
-日志序列号记录了在 Milvus 中更改集合状态的所有操作。
+## 日志代理
 
-## Log snapshot
+日志代理是一种支持回放的发布-订阅系统。它负责流式数据持久化、可靠的异步查询执行、事件通知和查询结果返回。它还确保在工作节点从系统故障中恢复时增量数据的完整性。
 
-日志快照是二进制日志，是段中的一个较小单元，记录和处理对 Milvus 向量数据库中数据所做的更新和更改。段的数据在多个 binlog 中持久化。Milvus 中有三种类型的 binlog：InsertBinlog、DeleteBinlog 和 DDLBinlog。
+## 日志序列
 
-## Log subscriber
+日志序列记录了所有改变 Milvus 中集合状态的操作。
 
-日志订阅者订阅日志序列号以更新本地数据，并以只读副本的形式提供服务。
+## 日志快照
 
-## Message storage
+日志快照是一个二进制日志，是段中记录和处理 Milvus 向量数据库中数据更新和更改的较小单位。来自一个段的数据会被持久化到多个 binlog 中。Milvus 中有三种类型的 binlog：InsertBinlog、DeleteBinlog 和 DDLBinlog。
+
+## 日志订阅者
+
+日志订阅者订阅日志序列以更新本地数据，并以只读副本形式提供服务。
+
+## 消息存储
 
 消息存储是 Milvus 的日志存储引擎。
 
-## Milvus cluster
+## Milvus 集群
 
-在 Milvus 的集群部署中，服务由一组节点提供，以实现高可用性和易于扩展。
+在 Milvus 集群部署中，一组节点提供服务，实现高可用性和易扩展性。
 
-## Milvus standalone
+## Milvus 独立部署
 
-在 Milvus 的独立部署中，所有操作，包括数据插入、索引构建和向量相似性搜索，都在一个单独的进程中完成。
+在 Milvus 独立部署中，包括数据插入、索引构建和向量相似性搜索在内的所有操作都在一个单独的进程中完成。
 
-## Normalization
+## 归一化
 
-归一化是指将嵌入（向量）转换为其范数等于一的过程。如果使用内积（IP）来计算嵌入相似性，则所有嵌入都必须归一化。归一化后，内积等于余弦相似性。
+归一化是指将嵌入（向量）转换为其范数等于一的过程。如果使用内积（IP）来计算嵌入的相似性，所有嵌入都必须进行归一化。归一化后，内积等于余弦相似度。
 
-## Partition
+## 分区
 
-分区是对集合的划分。Milvus 支持将集合数据在物理存储上划分为多个部分。这个过程称为分区，每个分区可以包含多个段。
+分区是集合的一个划分。Milvus 支持将集合数据在物理存储上分成多个部分。这个过程称为分区，每个分区可以包含多个段。
 
 ## PChannel
 
-PChannel 代表物理通道。每个 PChannel 对应于日志存储的主题。默认情况下，将分配一组 256 个 PChannels 来存储记录数据插入、删除和更新的日志，当 Milvus 集群启动时。
+PChannel 代表物理通道。每个 PChannel 对应一个日志存储的主题。默认情况下，启动 Milvus 集群时将被分配一组 256 个 PChannel 用于存储记录数据插入、删除和更新的日志。
 
-## Schema
+## 模式
 
-模式是定义数据类型和数据属性的元信息。每个集合都有自己的集合模式，定义了集合的所有字段、自动 ID（主键）分配启用以及集合描述。集合模式中还包括字段模式，定义了字段的名称、数据类型和其他属性。
+模式是定义数据类型和数据属性的元信息。每个集合都有自己的集合模式，定义了集合的所有字段、自动 ID（主键）分配功能和集合描述。集合模式中还包括定义字段名称、数据类型和其他属性的字段模式。
 
-## Segment
+## 段
 
-段是 Milvus 自动创建的用于保存插入数据的数据文件。一个集合可以有多个段，一个段可以有多个实体。在向量相似性搜索期间，Milvus 扫描每个段并返回搜索结果。一个段可以是增长的或封闭的。增长的段不断接收新插入的数据，直到它被封闭。封闭的段不再接收任何新数据，并将被刷新到对象存储中，留下新数据被插入到一个新创建的增长段中。增长的段将被封闭，要么是因为它持有的实体数量达到了预定义的阈值，要么是因为“增长”状态的持续时间超过了指定的限制。
+段是由 Milvus 自动创建用于保存插入数据的数据文件。一个集合可以有多个段，一个段可以有多个实体。在向量相似性搜索过程中，Milvus 会扫描每个段并返回搜索结果。一个段可以是增长或封存状态。增长段保持接收新插入的数据，直到被封存。封存段不再接收任何新数据，并将被刷新到对象存储中，留下新数据插入到一个新创建的增长段。增长段将被封存，要么是因为它所持有的实体数量达到了预定义的阈值，要么是因为“增长”状态的时间跨度达到了指定的限制。
 
-## Sharding
+## 分片
 
-Sharding refers to distributing write operations to different nodes to make the most of the parallel computing potential of a Milvus cluster for writing data. By default, a single collection contains two shards. Milvus adopts a sharding method based on primary key hashing. Milvus' development roadmap includes supporting more flexible sharding methods such as random and custom sharding.
+分片是指将写操作分配给不同节点，以充分利用 Milvus 集群的并行计算能力来写入数据。默认情况下，一个集合包含两个分片。Milvus 采用基于主键哈希的分片方法。Milvus 的开发路线图包括支持更灵活的分片方法，如随机和自定义分片。
 
 <div class="alert note">
-Partitioning works to reduce read load by specifying a partition name, while sharding spreads write load among multiple servers.
+分区通过指定分区名称来减少读负载，而分片则将写负载分散到多个服务器上。
 </div>
 
-## Unstructured data
+## 非结构化数据
 
-Unstructured data, including images, video, audio, and natural language, is information that doesn't follow a predefined model or manner of organization. This data type accounts for around 80% of the world's data, and can be converted into vectors using various artificial intelligence (AI) and machine learning (ML) models.
+非结构化数据，包括图像、视频、音频和自然语言，是不遵循预定义模型或组织方式的信息。这种数据类型占世界数据的约 80%，可以使用各种人工智能（AI）和机器学习（ML）模型转换为向量。
 
 ## VChannel
 
-VChannel stands for logical channel. Each VChannel represents a shard in a collection. Each collection will be assigned a group of VChannels for recording data insertion, deletion, and update. VChannels are logically separated but physically share resources.
+VChannel 代表逻辑通道。每个 VChannel 表示一个集合中的一个分片。每个集合将被分配一组 VChannel 用于记录数据插入、删除和更新。VChannel 在逻辑上是分隔的，但在物理上共享资源。
 
-## Embedding Vector
+## 嵌入向量
 
-An embedding vector is a feature abstraction of unstructured data, such as emails, IoT sensor data, Instagram photos, protein structures, and much more. Mathematically speaking, an embedding vector is an array of floating-point numbers or binaries. Modern embedding techniques are used to convert unstructured data to embedding vectors.
+嵌入向量是非结构化数据（例如电子邮件、IoT 传感器数据、Instagram 照片、蛋白质结构等）的特征抽象。从数学上讲，嵌入向量是一组浮点数或二进制数组。现代嵌入技术用于将非结构化数据转换为嵌入向量。
 
-## Vector index
+## 向量索引
 
-A vector index is a reorganized data structure derived from raw data that can greatly accelerate the process of vector similarity search. Milvus supports several [vector index types](index.md).
+向量索引是从原始数据派生出的重新组织的数据结构，可大大加速向量相似性搜索的过程。Milvus 支持多种 [向量索引类型](/reference/index.md)。
 
-## Vector similarity search
+## 向量相似性搜索
 
-Vector similarity search is the process of comparing a vector to a database to find vectors that are most similar to the target search vector. Approximate nearest neighbor (ANN) search algorithms are used to calculate [similarity](metric.md) between vectors.
+
+
+向量相似性搜索是将一个向量与数据库中的向量进行比较，以找到与目标搜索向量最相似的向量的过程。近似最近邻（ANN）搜索算法被用来计算向量之间的相似度。[/相似性/ 相似度]（metric.md）。

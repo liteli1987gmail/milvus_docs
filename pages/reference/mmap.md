@@ -1,67 +1,64 @@
----
-id: mmap.md
-summary: MMap enables more data in a single node.
-title: MMap-enabled Data Storage
----
 
-# MMap 启用的数据存储
 
-在 Milvus 中，内存映射文件允许将文件内容直接映射到内存中。这个特性增强了内存效率，特别是在可用内存稀缺但完全加载数据不可行的情况下。这种优化机制可以在确保性能达到一定限制的同时增加数据容量；然而，当数据量超过内存太多时，搜索和查询性能可能会严重下降，因此请根据需要选择开启或关闭此特性。
+               
+# MMap-enabled Data Storage
+
+在 Milvus 中，内存映射文件允许直接把文件内容映射到内存中。这个特性提高了内存的效率，特别是在可用内存有限但完整数据加载不可行的情况下。这种优化机制可以增加数据容量，同时保证性能在一定限度内；然而，当数据量超过内存太多时，搜索和查询性能可能会严重降低，因此请根据需要选择是否打开此功能。
 
 ## 配置内存映射
 
-从 Milvus 2.4 开始，您有灵活性在部署前调整静态配置文件，以配置整个集群的默认内存映射设置。此外，您还可以选择动态更改参数，以微调集群和索引级别的内存映射设置。展望未来，未来的更新将扩展内存映射功能，包括字段级配置。
+从 Milvus 2.4 开始，你可以灵活地调整静态配置文件以配置整个集群的默认内存映射设置。此外，你还可以选择在集群和索引级别动态修改参数，以微调内存映射设置。未来的更新将扩展内存映射功能，包括字段级配置。
 
-### 在集群部署前：全局配置
+### 部署集群前：全局配置
 
-在您部署集群之前，_集群级_ 设置将内存映射应用于整个集群。这确保所有新对象将自动遵循这些配置。重要的是要注意，修改这些设置需要重新启动集群才能生效。
+在部署集群之前，集群级别的设置将会应用于整个集群的内存映射。这确保所有新的对象都会自动遵守这些配置。需要注意的是，修改这些设置需要重启集群才能生效。
 
-要调整您的集群内存映射设置，请编辑 `configs/milvus.yaml` 文件。在该文件中，您可以指定是否默认启用内存映射，并确定存储内存映射文件的目录路径。如果路径（`mmapDirPath`）未指定，系统默认将内存映射文件存储在 `{localStorage.path}/mmap` 中。有关更多信息，请参阅 [本地存储相关配置](https://milvus.io/docs/configure_localstorage.md#localStoragepath)。
+要调整集群的内存映射设置，请编辑 `configs/milvus.yaml` 文件。在这个文件中，你可以指定是否默认启用内存映射，并确定存储内存映射文件的目录路径。如果未指定路径（`mmapDirPath`），系统会默认将内存映射文件存储在 `{localStorage.path}/mmap`。更多信息，请参阅 [本地存储相关配置](https://milvus.io/docs/configure_localstorage.md#localStoragepath)。
 
 ```yaml
-# 此参数设置在 configs/milvus.yaml 中
+# This parameter was set in configs/milvus.yaml
 ...
 queryNode:
   mmap:
-    # 为整个集群设置内存映射属性
+    # Set memory mapping property for whole cluster
     mmapEnabled: false | true
-    # 设置内存映射目录路径，如果您离开 mmapDirPath 未指定，默认情况下内存映射文件将存储在 {localStorage.path}/ mmap 中。
-    mmapDirPath: any/valid/path
+    # Set memory-mapped directory path, if you leave mmapDirPath unspecified, the memory-mapped files will be stored in {localStorage.path}/ mmap by default. 
+    mmapDirPath: any/valid/path 
 ....
 ```
 
-### 在集群运行期间：动态配置
+### 集群运行时：动态配置
 
-在集群运行时，您可以在集合或索引级别动态调整内存映射设置。
+在集群运行时，你可以在集合或索引级别动态调整内存映射设置。
 
-在 _集合级别_，内存映射应用于集合中的所有未索引原始数据，不包括主键、时间戳和行 ID。这种方法特别适合于全面管理大型数据集。
+在集合级别，内存映射将应用于集合中的所有未索引的原始数据，不包括主键、时间戳和行 ID。这种方法特别适用于大型数据集的全面管理。
 
-要动态调整集合内的内存映射设置，请使用 `set_properties()` 方法。在这里，您可以根据需要在 `True` 或 `False` 之间切换 `mmap.enabled`。
+要在集合内动态调整内存映射设置，请使用 `set_properties()` 方法。在这里，你可以根据需要将 `mmap.enabled` 切换为 `True` 或 `False`。
 
 ```python
-# 获取现有集合
-collection = Collection("test_collection") # 替换为您的集合名称
+# Get existing collection
+collection = Collection("test_collection") # Replace with your collection name
 
-# 将内存映射属性设置为 True 或 Flase
+# Set memory mapping property to True or Flase
 collection.set_properties({'mmap.enabled': True})
 ```
 
-对于 _索引级别_ 设置，内存映射可以专门应用于向量索引，而不影响其他数据类型。这个特性对于需要为向量搜索优化性能的集合来说非常有价值。
+对于索引级别的设置，可以特定地将内存映射应用于向量索引，而不影响其他数据类型。这个特性对于需要优化向量搜索性能的集合非常有价值。
 
-要启用或禁用集合内索引的内存映射，请调用 `alter_index()` 方法，指定目标索引名称在 `index_name` 中，并将 `mmap.enabled` 设置为 `True` 或 `False`。
+要为集合中的索引启用或禁用内存映射，请调用 `alter_index()` 方法，指定目标索引名称为 `index_name`，并将 `mmap.enabled` 设置为 `True` 或 `False`。
 
 ```python
 collection.alter_index(
-    index_name="vector_index", # 替换为您的向量索引名称
-    extra_params={"mmap.enabled": True} # 为索引启用内存映射
+    index_name="vector_index", # Replace with your vector index name
+    extra_params={"mmap.enabled": True} # Enable memory mapping for index
 )
 ```
 
-## 在不同部署中自定义存储路径
+## 在不同部署中定制存储路径
 
-内存映射文件默认存储在 `localStorage.path` 中的 `/mmap` 目录。以下是如何在不同部署方法中自定义此设置：
+内存映射文件默认存储在 `localStorage.path` 下的 `/mmap` 目录中。以下是如何在各种部署方法中自定义此设置的方式：
 
-- 对于使用 Helm Chart 安装的 Milvus：
+- 使用 Helm Chart 安装的 Milvus：
 
 ```bash
 # new-values.yaml
@@ -71,11 +68,11 @@ extraConfigFiles:
          mmap:
            mmapEnabled: true
            mmapDirPath: any/valid/path
-
+      
 helm upgrade <milvus-release> --reuse-values -f new-values.yaml milvus/milvus
 ```
 
-- 对于使用 Milvus Operator 安装的 Milvus：
+- 使用 Milvus Operator 安装的 Milvus：
 
 ```bash
 # patch.yaml
@@ -85,52 +82,56 @@ spec:
       mmap:
         mmapEnabled: true
         mmapDirPath: any/valid/path
-
+      
  kubectl patch milvus <milvus-name> --patch-file patch.yaml
 ```
 
-- 对于使用 Docker 安装的 Milvus：
+- 使用 Docker 安装的 Milvus：
 
 ```bash
-# 提供了一个新的安装脚本以启用 mmap 相关设置。
+# 提供了一个新的安装脚本以启用与mmap相关的设置。
 ```
 
 ## 限制
+ 
 
-- 不能为已加载的集合启用内存映射，确保在启用内存映射之前已释放集合。
 
-- 不支持为 DiskANN 或 GPU 类索引启用内存映射。
+- 无法为已加载的集合启用内存映射，请在启用内存映射之前确保集合已被释放。
 
-## 常见问题解答
+- DiskANN 或 GPU 级别的索引不支持内存映射。
 
-- **In which scenarios is it recommended to enable memory mapping? What are the trade-offs after enabling this feature?**
+## 常见问题
 
-  Memory mapping is recommended when memory is limited or when performance requirements are moderate. Enabling this feature increases the capacity for data loading. For example, with a configuration of 2 CPUs and 8 GB of memory, enabling memory mapping can allow for up to 4 times more data to be loaded compared to not enabling it. The impact on performance varies:
 
-  - With sufficient memory, the expected performance is similar to that of using only memory.
 
-  - With insufficient memory, the expected performance may degrade.
+- __在哪些场景下建议启用内存映射？启用此功能后有什么权衡之处？__
 
-- **What is the relationship between collection-level and index-level configurations?**
+    当内存有限或性能要求适中时，建议启用内存映射。启用此功能可以增加数据加载的容量。例如，配置为 2 个 CPU 和 8GB 内存，启用内存映射可以使加载的数据量增加到未启用时的 4 倍。对性能的影响因情况而异：
 
-  Collection-level and index-level are not inclusive relationships, collection-level controls whether the original data is mmap-enabled or not, whereas index-level is for vector indexes only.
+    - 在内存充足的情况下，预期性能类似于仅使用内存时的性能。
 
-- **Is there any recommended index type for memory mapping?**
+    - 在内存不足的情况下，预期性能可能会下降。
 
-  Yes, HNSW is recommended for enable mmap. We have tested HNSW, IVF_FLAT, IVF_PQ/SQ series indexes before, the performance of IVF series indexes dropped seriously, while the performance drop of turning on mmap for HNSW indexes is still within expectation.
+- __集合级和索引级配置之间有什么关系？__
 
-- **What kind of local storage is required for memory mapping?**
+    集合级和索引级不是相互包含的关系，集合级配置用于控制原始数据是否启用 mmap，而索引级配置仅适用于向量索引。
 
-  A high-quality disk enhances performance, with NVMe drives being the preferred option.
+- __是否有建议的内存映射索引类型？__
 
-- **Can scalar data be memory-mapped?**
+    是的，推荐使用 HNSW 索引进行内存映射。我们之前测试过 HNSW、IVF_FLAT、IVF_PQ/SQ 系列索引，IVF 系列索引的性能严重下降，而对于 HNSW 索引开启 mmap 的性能下降仍然在预期范围内。
 
-  Memory mapping can be applied to scalar data, but it is not applicable to indexes built on scalar fields.
+- __内存映射需要什么样的本地存储？__
 
-- **How is the priority determined for memory mapping configurations across different levels?**
+    高质量的磁盘可以提高性能，NVMe 驱动器是首选选项。
 
-  In Milvus, when memory mapping configurations are explicitly defined across multiple levels, index-level and collection-level configurations share the highest priority, which is then followed by cluster-level configurations.
+- __标量数据可以进行内存映射吗？__
 
-- **If I upgrade from Milvus 2.3 and have configured the memory mapping directory path, what will happen?**
+    标量数据可以应用内存映射，但对标量字段上建立的索引不适用。
 
-  If you upgrade from Milvus 2.3 and have configured the memory mapping directory path (`mmapDirPath`), your configuration will be retained, and the default setting for memory mapping enabled (`mmapEnabled`) will be `true`. It's important to migrate the metadata to synchronize the configuration of your existing memory-mapped files. For more details, refer to [Migrate the metadata](https://milvus.io/docs/upgrade_milvus_standalone-docker.md#Migrate-the-metadata).
+- __如何确定不同级别内存映射配置的优先级？__
+
+    在 Milvus 中，当显式定义多个级别的内存映射配置时，索引级和集合级配置具有最高优先级，随后是集群级配置。
+
+- __如果我从 Milvus 2.3 升级，而且已经配置了内存映射目录路径，会发生什么？__
+
+    如果你从 Milvus 2.3 升级，并且已经配置了内存映射目录路径（`mmapDirPath`），你的配置将被保留，并且内存映射已启用的默认设置将为 `true`。重要的是要迁移元数据以保持现有内存映射文件的配置同步。有关详细信息，请参阅 [Migrate the metadata](https://milvus.io/docs/upgrade_milvus_standalone-docker.md#Migrate-the-metadata)。

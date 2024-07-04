@@ -42,7 +42,7 @@ title: 使用Docker Compose安装Milvus集群
 - 您已安装了Kubernetes集群，并且`kubectl`命令行工具已配置为与您的集群通信。建议在至少有两个不作为控制平面主机的节点的集群上运行本教程。
 
 - 您已在本地机器上安装了Docker和Docker Compose。
-- 在安装Milvus之前，请检查[硬件和软件要求](prerequisite-docker.md)。
+- 在安装Milvus之前，请检查[硬件和软件要求](/getstarted/prerequisite-docker.md)。
 
   - 对于使用MacOS 10.14或更高版本的用户，将Docker虚拟机(VM)设置为至少使用2个虚拟CPU(vCPU)和8 GB的初始内存。否则，安装可能会失败。
 
@@ -200,7 +200,7 @@ sudo rm -rf  volumes
 ## 接下来是什么
 
 安装Milvus后，您可以：
-- 检查[Hello-Milvus](quickstart.md)，用不同的SDK运行一个示例代码，看看Milvus能做什么。
+- 检查[Hello-Milvus](/getstarted/quickstart.md)，用不同的SDK运行一个示例代码，看看Milvus能做什么。
 - 有关CPU兼容索引类型的详细信息，请查看[In-memory Index](Index.md)。
 - 学习Milvus的基本操作：
   - [管理数据库](Manage_Databases.md)

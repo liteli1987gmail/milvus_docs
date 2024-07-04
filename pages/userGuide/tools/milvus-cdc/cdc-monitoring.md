@@ -1,42 +1,45 @@
----
-id: cdc-monitoring.md
-order: 4
-summary: Milvus-CDC provides comprehensive monitoring capabilities through Grafana dashboards.
-title: Monitoring
----
+
+
 
 # 监控
 
-Milvus-CDC 通过 Grafana 仪表板提供全面的监控功能，让您能够可视化关键指标，确保您的变更数据捕获（CDC）任务和服务器健康顺利运行。
+Milvus-CDC 通过 Grafana 仪表板提供了全面的监控能力，允许你可视化关键指标，确保 Change Data Capture (CDC) 任务和服务器的正常运行。
 
 ### CDC 任务的指标
 
-要开始使用，请将 [cdc-grafana.json](https://github.com/zilliztech/milvus-cdc/blob/main/server/configs/cdc-grafana.json) 文件导入到 Grafana 中。这将添加一个专门设计用于监控 CDC 任务状态的仪表板。
 
-**CDC Grafana 仪表板概览**:
 
-![milvus-cdc-dashboard](/public/assets/milvus-cdc-dashboard.png)
 
-**关键指标解释**:
 
-- **Task**: 不同状态的 CDC 任务数量, 包括 **Initial**, **Running**, and **Paused**.
 
-- **Request Total**: Milvus-CDC 接收到的请求总数
 
-- **Request Success**: Milvus-CDC 接收到的成功请求数量.
+要开始，请将 [cdc-grafana.json](https://github.com/zilliztech/milvus-cdc/blob/main/server/configs/cdc-grafana.json) 文件导入 Grafana。这将添加一个专门用于监视 CDC 任务状态的仪表板。
 
-- **task num**: 随时间变化的 **Initial**, **Paused**, and **Running** 状态的任务数量
+__CDC Grafana 仪表板概述__：
 
-- **task state**: 各个任务的状态.
+![milvus-cdc-dashboard](/assets/milvus-cdc-dashboard.png)
 
-- **request count**: 成功请求和总请求的数量。
+__关键指标说明__：
 
-- **request latency**: 通过 p99、平均值和其他统计数据的请求延迟
+- __任务__：不同状态的 CDC 任务数量，包括 __初始化__、__运行中__ 和 __已暂停__。
 
-- **replicate data rate**: 读写操作的复制数据速率。
+- __请求总数__：Milvus-CDC 接收到的请求数量总计。
 
-- **replicate tt lag**: 读写操作的复制时间延迟。
+- __请求成功__：Milvus-CDC 接收到的成功请求数量。
 
-- **api execute count**: 不同 Milvus-CDC API 被执行的次数。
+- __任务数量__：随时间变化的 __初始化__、__已暂停__ 和 __运行中__ 状态任务的数量。
 
-- **center ts**: 读写任务的时间戳。
+- __任务状态__：各个任务的状态。
+
+- __请求计数__：成功请求和总请求数量。
+
+- __请求延迟__：请求的响应延迟，包括 p99、平均值和其他统计数据。
+
+- __复制数据速率__：读写操作的复制数据速率。
+
+- __复制时间滞后__：读写操作的复制时间滞后。
+
+- __API 执行计数__：不同 Milvus-CDC API 的执行次数。
+
+- __中心时间戳__：读写任务的时间戳。
+

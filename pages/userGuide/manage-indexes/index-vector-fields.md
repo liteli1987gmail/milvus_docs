@@ -1,98 +1,96 @@
----
-id: 索引向量字段.md
-order: 1
-summary: 本指南将指导您完成在集合上创建和管理向量字段索引的基本操作。
-title: 索引向量字段
----
 
-# 索引向量字段
 
-本指南将指导您完成在集合上创建和管理向量字段索引的基本操作。
 
-## 概述
+                # 索引向量字段
 
-利用索引文件中存储的元数据，Milvus 以一种特殊结构组织您的数据，以便在搜索或查询期间快速检索请求的信息。
+                本指南将指导你创建和管理集合中向量字段索引的基本操作。
 
-Milvus 提供了 [几种索引类型](https://milvus.io/docs/index.md) 来对字段值进行排序，以实现高效的相似性搜索。它还提供了三种 [度量类型](https://milvus.io/docs/metric.md#Similarity-Metrics)：**余弦相似度** (COSINE)、**欧几里得距离** (L2) 和 **内积** (IP) 来衡量向量嵌入之间的距离。
+                ## 概述
 
-建议为经常访问的向量字段和标量字段创建索引。
+                借助存储在索引文件中的元数据，Milvus 会将你的数据组织成一种专门的结构，从而在搜索或查询过程中快速检索所请求的信息。
 
-<div class="alert note">
+                Milvus 提供了 [几种索引类型](/reference/index.md)，用于对字段值进行排序，以进行高效的相似性搜索。它还提供了三种 [度量类型](https://milvus.io/docs/metric.md#Similarity-Metrics)：__余弦相似度__（COSINE）、__欧氏距离__（L2）和 __内积__（IP），用于测量向量嵌入之间的距离。
 
-本页上的代码片段使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md">MilvusClient</a> (Python) 与 Milvus 进行交互。其他语言的新 MilvusClient SDK 将在未来的更新中发布。
+                建议为经常访问的向量字段和标量字段都创建索引。
 
-</div>
+                <div class="alert note">
 
-## 准备工作
+                本页上的代码段使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md"> MilvusClient </a>（Python）与 Milvus 进行交互。其他语言的新 MilvusClient SDK 将在以后的更新中发布。
 
-如 [管理集合](manage-collections.md) 中所述，如果在创建集合请求中指定了以下条件之一，Milvus 在创建集合时会自动生成一个索引并将其加载到内存中：
+                </div>
 
-- 向量字段的维度和度量类型，或
+                ## 准备工作
 
-- 架构和索引参数。
+                如 [管理集合](/userGuide/manage-collections.md) 中所述，如果在创建集合时指定了以下任一条件，则 Milvus 会自动生成索引并将其加载到内存中：
 
-下面的代码片段重新利用现有代码，建立与 Milvus 实例的连接，并在未指定其索引参数的情况下创建一个集合。在这种情况下，集合没有索引且未加载。
+                - 向量字段的维数和度量类型，或
+                - 模式和索引参数。
 
-```python
-from pymilvus import MilvusClient, DataType
+                下面的代码片段重用了现有代码，用于建立与 Milvus 实例的连接并创建一个不指定索引参数的集合。在这种情况下，集合缺少索引并且未加载。
 
-# 1. 设置 Milvus 客户端
-client = MilvusClient(
-    uri="http://localhost:19530"
-)
+                ```python
+                from pymilvus import MilvusClient, DataType
 
-# 2. 创建架构
-# 2.1. 创建架构
-schema = MilvusClient.create_schema(
-    auto_id=False,
-    enable_dynamic_field=True,
-)
+                # 1. 设置Milvus客户端
+                client = MilvusClient(
+                    uri="http://localhost:19530"
+                )
 
-# 2.2. 向架构中添加字段
-schema.add_field(field_name="id", datatype=DataType.INT64, is_primary=True)
-schema.add_field(field_name="vector", datatype=DataType.FLOAT_VECTOR, dim=5)
+                # 2. 创建模式
+                # 2.1. 创建模式
+                schema = MilvusClient.create_schema(
+                    auto_id=False,
+                    enable_dynamic_field=True,
+                )
 
-# 3. 创建集合
-client.create_collection(
-    collection_name="customized_setup", 
-    schema=schema, 
-)
-```
+                # 2.2. 向模式中添加字段
+                schema.add_field(field_name="id", datatype=DataType.INT64, is_primary=True)
+                schema.add_field(field_name="vector", datatype=DataType.FLOAT_VECTOR, dim=5)
 
-## 索引集合
+                # 3. 创建集合
+                client.create_collection(
+                    collection_name="customized_setup", 
+                    schema=schema, 
+                )
+                ```
 
-要为集合创建索引或索引集合，您需要设置索引参数并调用 `create_index()`。
+                ## 为集合创建索引
 
-```python
-# 4.1. 设置索引参数
-index_params = MilvusClient.prepare_index_params()
+                要为集合创建索引或为集合创建索引，你需要设置索引参数并调用 `create_index()`。
 
-# 4.2. 在向量字段上添加索引。
-index_params.add_index(
-    field_name="vector",
-    metric_type="COSINE",
-    index_type=,
-    index_name="vector_index"
-)
+                ```python
+                # 4.1. 设置索引参数
+                index_params = MilvusClient.prepare_index_params()
 
-# 4.3. 创建索引文件
-client.create_index(
-    collection_name="customized_setup",
-    index_params=index_params
-)
-```
+                # 4.2. 在向量字段上添加索引。
+                index_params.add_index(
+                    field_name="vector",
+                    metric_type="COSINE",
+                    index_type=,
+                    index_name="vector_index"
+                )
 
-<div class="admonition note">
+                # 4.3. 创建索引文件
+                client.create_index(
+                    collection_name="customized_setup",
+                    index_params=index_params
+                )
+                ```
 
-<p><b>注意</b></p>
+                <div class="admonition note">
 
-<p>目前，您可以为集合中的每个字段创建一个索引文件。</p>
+                <p> <b> 注意 </b> </p>
 
-</div>
+                <p> 目前，你只能为集合中的每个字段创建一个索引文件。</p>
 
-## 检查索引详细信息
+                </div>
 
-创建索引后，您可以检查其详细信息。
+                ## 检查索引详情
+                 
+
+
+
+创建索引后，你可以检查其详细信息。
 
 ```python
 # 5. 描述索引
@@ -125,11 +123,14 @@ print(res)
 # }
 ```
 
-您可以检查在特定字段上创建的索引文件，并收集使用此索引文件索引的行数的统计信息。
+
+你可以检查在特定字段上创建的索引文件，并收集使用此索引文件索引的行数的统计信息。
 
 ## 删除索引
 
-如果不再需要索引，您可以简单地删除它。
+
+# 
+你可以在不再需要索引时直接删除它。
 
 ```python
 # 6. 删除索引

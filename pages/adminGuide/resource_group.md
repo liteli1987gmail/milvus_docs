@@ -1,76 +1,78 @@
----
-title:  管理资源组
----
+
+
+
 # 管理资源组
 
-在 Milvus 中，您可以使用资源组来物理隔离某些查询节点。本指南将指导您如何创建和管理自定义资源组以及在它们之间转移节点。
+在 Milvus 中，你可以使用资源组将某些查询节点与其他节点进行物理隔离。本指南介绍了如何创建和管理自定义的资源组，并在它们之间转移节点。
 
 ## 什么是资源组
 
-资源组可以包含 Milvus 集群中的多个或所有查询节点。您根据最符合您需求的方式来决定如何在资源组之间分配查询节点。例如，在多集合场景中，您可以为每个资源组分配适当数量的查询节点，并将集合加载到不同的资源组中，以便每个集合内的运算在物理上独立于其他集合。
+资源组可以容纳一个或多个 Milvus 集群中的查询节点。你可以根据你的需求决定如何在资源组之间分配查询节点。例如，在多集合场景中，你可以为每个资源组分配适当数量的查询节点，并将集合加载到不同的资源组中，从而使得每个集合内的操作与其他集合相互独立。
 
-请注意，Milvus 实例在启动时维护一个默认资源组来包含所有查询节点，并将其命名为 **__default_resource_group**。您可以将一些节点从默认资源组移动到您创建的资源组。
+请注意，Milvus 实例在启动时会维护一个名为**__default_resource_group**的默认资源组，用于存放所有的查询节点。你可以将一些节点从默认资源组移动到你创建的资源组中。
 
 ## 管理资源组
+ 
+
 
 <div class="alert note">
 
-本页面上的所有代码示例都使用 PyMilvus {{var.milvus_python_sdk_real_version}}。在运行它们之前，请升级您的 PyMilvus 安装。
+此页面上的所有代码示例均为 PyMilvus {{var.milvus_python_sdk_real_version}}。在运行这些代码之前，请升级你的 PyMilvus 安装。
 
 </div>
 
 1. 创建资源组。
 
-    连接到 Milvus 实例后，运行以下代码以创建资源组。以下代码片段假设 `default` 是您的 Milvus 连接别名。
+    若要创建资源组，请在连接到 Milvus 实例后运行以下命令。下面的代码假设 `default` 是 Milvus 连接的别名。
 
     ```Python
     import pymilvus
 
-    # 资源组名称应该是 1 到 255 个字符的字符串，以字母或下划线 (_) 开头，并且只包含数字、字母和下划线 (_)。
+    # 资源组名称应为以字母或下划线(_)开头的1到255个字符长的字符串，并且只能包含数字、字母和下划线(_)
     name = "rg"
 
     try:
         utility.create_resource_group(name, using='default')
-        print(f"Succeeded in creating resource group {name}.")
+        print(f"成功创建资源组{name}。")
     except Exception:
-        print("Failed to create the resource group.")
+        print("创建资源组失败。")
 
-    # 成功创建资源组 rg。
+    # 创建资源组rg成功。
     ```
 
 2. 列出资源组。
 
-    创建资源组后，您可以在资源组列表中看到它。
+    创建资源组后，你可以在资源组列表中查看它。
 
-    要查看 Milvus 实例中的资源组列表，请执行以下操作：
+    要查看 Milvus 实例中的资源组列表，请按以下步骤操作：
 
     ```Python
     rgs = utility.list_resource_groups(using='default')
-    print(f"Resource group list: {rgs}")
+    print(f"资源组列表：{rgs}")
 
-    # 资源组列表: ['__default_resource_group', 'rg']
+    # 资源组列表：['__default_resource_group', 'rg']
     ```
 
 3. 描述资源组。
 
-    您可以按照以下方式让 Milvus 描述您关心的资源组：
+    你可以让 Milvus 按以下方式描述一个特定的资源组：
 
     ```Python
     info = utility.describe_resource_group(name, using="default")
-    print(f"Resource group description: {info}")
+    print(f"资源组描述：{info}")
 
     # 资源组描述：
-    #        <name:"rg">,           // 字符串，rg 名称
-    #        <capacity:1>,            // 整数，已转移到此 rg 的 num_node 数量
-    #        <num_available_node:0>,  // 整数，可用的 node_num，一些节点可能已关闭
-    #        <num_loaded_replica:{}>, // map[string]int，从集合名称到此 rg 中每个集合加载的副本数量
-    #        <num_outgoing_node:{}>,  // map[string]int，从集合名称到此 rg 中加载的副本访问的传出节点数量
-    #        <num_incoming_node:{}>.  // map[string]int，从集合名称到其他 rg 中加载的副本访问的传入节点数量
+    #        <name:"rg">,           // string, rg name
+    #        <capacity:1>,            // int, num_node which has been transfer to this rg
+    #        <num_available_node:0>,  // int, available node_num, some node may shutdown
+    #        <num_loaded_replica:{}>, // map[string]int, from collection_name to loaded replica of each collecion in this rg
+    #        <num_outgoing_node:{}>,  // map[string]int, from collection_name to outgoging accessed node num by replica loaded in this rg 
+    #        <num_incoming_node:{}>.  // map[string]int, from collection_name to incoming accessed node num by replica loaded in other rg
     ```
 
-4. 在资源组之间转移节点。
+4. 在资源组之间迁移节点。
 
-    您可能会注意到所描述的资源组尚未有任何查询节点。按照以下方式将一些节点从默认资源组移动到您创建的资源组：
+    你可能会注意到所描述的资源组还没有任何查询节点。请按以下步骤将一些节点从默认资源组移动到你创建的资源组：
 
     ```Python
     source = '__default_resource_group'
@@ -79,32 +81,92 @@ title:  管理资源组
 
     try:
         utility.transfer_node(source, target, num_nodes, using="default")
-        print(f"Succeeded in moving {num_node} node(s) from {source} to {target}.")
+        print(f"成功将{num_nodes}个节点从{source}移动到{target}。")
     except Exception:
-        print("Something went wrong while moving nodes.")
+        print("移动节点时发生错误。")
 
-    # 成功将 1 个节点从 __default_resource_group 移动到 rg。
+    # 成功将1个节点(s)从__default_resource_group移动到rg。
     ```
 
-5. 将集合和分区加载到资源组。
+5. 将收藏和分区加载到资源组。
 
-    一旦资源组中有查询节点，您就可以将集合加载到该资源组。以下代码片段假设已存在名为 `demo` 的集合。
+    一旦在资源组中有查询节点，你就可以将集合加载到该资源组中。以下代码假设已经存在名为 `demo` 的集合。
 
     ```Python
     from pymilvus import Collection
 
     collection = Collection('demo')
 
-    # Milvus 将集合加载到默认资源组。
+    # Milvus将该集合加载到默认资源组中。
     collection.load(replica_number=2)
 
-    # 或者，您可以要求 Milvus 将集合加载到所需的资源组。
-    # 确保查询节点数量应大于或等于副本数量
+    # 或者，你可以要求Milvus将该集合加载到指定的资源组中。
+    # 确保查询节点数大于等于副本数量
     resource_groups = ['rg']
     collection.load(replica_number=2, _resource_groups=resource_groups) 
     ```
 
-    同样，您也可以只将分区加载到资源组中，并将其副本分布在几个资源组中。以下假设已存在名为 `Books` 的集合，并且它有一个名为 `Novels` 的分区。
+    另外，你可以只将一个分区加载到资源组中，并将其副本分发在多个资源组中。以下代码假设已经存在名为 `Books` 的集合，且该集合有一个名为 `Novels` 的分区。
 
     ```Python
-    collection = Collection("
+    collection = Collection("Books")
+
+    # 使用集合的load方法加载其中一个分区
+    collection.load(["Novels"], replica_number=2, _resource_groups=resource_groups)
+
+
+
+
+
+# Or, 你也可以直接使用分区的加载方法
+partition = Partition(collection, "Novels")
+partition.load(replica_number=2, _resource_groups=resource_groups)
+```
+
+请注意，`_resource_groups` 是一个可选参数，如果未指定，Milvus 将在默认资源组中的查询节点上加载副本。
+
+要让 Milvus 在单独的资源组中加载每个集合的副本，请确保资源组的数量等于副本的数量。
+
+6. 在资源组之间转移副本。
+
+Milvus 使用 [副本](/reference/replica.md) 来实现跨多个查询节点分布的 [段](glossary.md#Segment) 之间的负载平衡。你可以按如下方式将集合的某些副本从一个资源组移动到另一个资源组：
+
+```Python
+source = '__default_resource_group'
+target = 'rg'
+collection_name = 'c'
+num_replicas = 1
+
+try:
+    utility.transfer_replica(source, target, collection_name, num_replicas, using="default")
+    print(f"成功将{num_node}个{name}的副本从{source}移动到{target}。")
+except Exception:
+    print("移动副本时出现了一些问题。")
+
+# 成功将1个c的副本从__default_resource_group移动到rg。
+```
+
+7. 删除一个资源组。
+
+只有在资源组中没有查询节点时，你才能随时删除一个资源组。在本指南中，资源组 `rg` 现在有一个查询节点。在删除此资源组之前，你需要将它移动到另一个资源组中。
+
+```Python
+source = 'rg'
+target = '__default_resource_group'
+num_nodes = 1
+
+try:
+    utility.transfer_node(source, target, num_nodes, using="default")
+    utility.drop_resource_group(source, using="default")
+    print(f"成功删除{source}。")
+except Exception:
+    print(f"删除{source}时出现了一些问题。")
+```
+
+# 接下来做什么
+
+要部署一个多租户的 Milvus 实例，请阅读以下内容：
+
+- [启用 RBAC](/adminGuide/rbac.md)
+- [用户和角色](/reference/users_and_roles.md)
+

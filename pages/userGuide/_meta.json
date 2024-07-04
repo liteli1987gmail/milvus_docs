@@ -1,11 +1,16 @@
-{
-    "manage-indexes":{
-        "title": "索引管理"
-    },
-    "search-query-get":{
-        "title":"查询"
-    },
-    "tools":{
-        "title":"工具"
-    }
+{   
+    "tools":"工具(Tools)",
+    "search-query-get":"搜索/查询/获取(Search/Query/Get)",
+    "manage-indexes":"管理索引(Manage-indexes)",
+    "enable-dynamic-field": "启用动态字段(Enable-dynamic-field)",
+    "import_data": "导入数据(Import_data)",
+    "insert-update-delete": "插入/更新/删除(Insert-update-delete)",
+    "load_balance": "负载均衡(Load_balance)",
+    "manage-collections": "管理集合(Manage-collections)",
+    "manage-partitions": "管理分区(Manage-partitions)",
+    "manage_databases": "管理数据库(Manage_databases)",
+    "tune_consistency": "调整一致性(Tune_consistency)",
+    "use-json-fields": "使用 JSON 字段(Use-json-fields)",
+    "use-partition-key": "使用分区键(Use-partition-key)",
+    "using_milvusclient": "使用 Milvus 客户端(Using_milvusclient)"
 }

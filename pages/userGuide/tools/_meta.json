@@ -1,5 +1,12 @@
 {
-    "milvus-cdc":{
-        "title": "Milvus-CDC 管理"
-    }
+    "birdwatcher_install_guides": "Birdwatcher 安装指南(Birdwatcher_install_guides)",
+    "birdwatcher_overview": "Birdwatcher 概述(Birdwatcher_overview)",
+    "birdwatcher_usage_guides": "Birdwatcher 使用指南(Birdwatcher_usage_guides)",
+    "cli_commands": "命令行接口命令(Cli_commands)",
+    "cli_overview": "命令行接口概述(Cli_overview)",
+    "install_cli": "安装命令行接口(Install_cli)",
+    "milvus_backup_api": "Milvus 备份 API(Milvus_backup_api)",
+    "milvus_backup_cli": "Milvus 备份命令行接口(Milvus_backup_cli)",
+    "milvus_backup_overview": "Milvus 备份概述(Milvus_backup_overview)",
+    "_meta": "元数据(_meta)"
 }

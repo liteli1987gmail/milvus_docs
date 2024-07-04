@@ -1,43 +1,40 @@
----
-id: insert-update-delete.md
-summary: This guide walks you through the data manipulation operations within a collection, including insertion, upsertion, and deletion.
-title: Insert, Upsert & Delete
----
 
-# 插入、上插和删除
 
-本指南将指导您完成集合内的数据操作，包括插入、上插（upsert）和删除。
+
+# 插入、更新和删除
+
+本指南将引导你完成集合中的数据操作，包括插入、更新和删除等操作。
 
 ## 开始之前
 
-- 您已安装了您选择的 SDK。要安装 SDK，请参考 [安装 SDK](https://milvus.io/docs/install-pymilvus.md)。
+- 你已经安装了你选择的 SDK。安装 SDK，请参阅 [安装 SDK](/getstarted/install_SDKs/install-pymilvus.md)。
 
-- 您已创建了一个集合。要创建集合，请参考 [管理集合](manage-collections.md)。
+- 你已经创建了一个集合。创建集合，请参阅 [管理集合](/userGuide/manage-collections.md)。
 
-- 如果要插入大量数据，建议您使用 [数据导入](https://milvus.io/api-reference/pymilvus/v2.4.x/DataImport/LocalBulkWriter/LocalBulkWriter.md)。
+- 若要插入大量数据，请使用 [数据导入](https://milvus.io/api-reference/pymilvus/v2.4.x/DataImport/LocalBulkWriter/LocalBulkWriter.md)。
 
 ## 概述
 
-在 Milvus 集合的上下文中，实体是集合中的一个单一、可识别的实例。它代表一个特定类别的一个独特成员，无论是图书馆中的一本书、基因组中的一个基因，还是任何其他可识别的实体。
+在 Milvus 集合的上下文中，实体是集合中的一个单独的、可识别的实例。它代表着一个特定类别的独特成员，可以是图书馆中的一本书，基因组中的一个基因，或者任何其他可识别的实体。
 
-集合中的实体共享一组称为模式（schema）的共同属性，该模式概述了每个实体必须遵守的结构，包括字段名称、数据类型和任何其他约束。
+集合中的实体共享一组通用的属性，称为 schema，用于描述每个实体必须遵循的结构，包括字段名称、数据类型和任何其他约束。
 
-成功将实体插入集合需要提供的数据应包含目标集合中定义的所有模式字段。此外，如果您已启用动态字段，您还可以包括非模式定义的字段。有关详细信息，请参考 [启用动态字段](enable-dynamic-field.md)。
+成功将实体插入到集合中需要提供的数据应包含目标集合的所有 schema 定义的字段。另外，如果你启用了动态字段，还可以包含非 schema 定义的字段。有关详细信息，请参阅 [启用动态字段](/userGuide/enable-dynamic-field.md)。
 
 <div class="alert note">
 
-本页上的代码片段使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md">MilvusClient</a>（Python）与 Milvus 进行交互。其他语言的新 MilvusClient SDK 将在未来的更新中发布。
+本页上的代码片段使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md"> MilvusClient </a> (Python)与 Milvus 进行交互。其他语言的新 MilvusClient SDK 将在未来的更新中发布。
 
 </div>
 
 ## 准备工作
 
-下面的代码片段重新利用现有代码，建立与 Milvus 集群的连接，并快速设置一个集合。
+下面的代码片段重用了现有代码，用于与 Milvus 集群建立连接并快速设置一个集合。
 
 ```python
 from pymilvus import MilvusClient
 
-# 1. 设置 Milvus 客户端
+# 1. 设置一个 Milvus 客户端
 client = MilvusClient(
     uri="http://localhost:19530"
 )
@@ -52,26 +49,36 @@ client.create_collection(
 
 <div class="admonition note">
 
-<p><b>注意</b></p>
+<p> <b> 注 </b> </p>
 
-<p>上述代码生成的集合仅包含两个字段：<strong>id</strong>（作为主键）和 <code>vector</code>（作为向量字段），<strong>auto<em>id</strong> 和 <strong>enable</em>dynamic_field</strong> 设置默认启用。当插入数据时，</p>
+<p> 上述代码中生成的集合仅包含两个字段：<strong> id </strong>（作为主键）和 <code> vector </code>（作为矢量字段），默认启用了 <strong> auto <em> id </strong> 和 <strong> enable </em> dynamic_field </strong> 设置。在插入数据时：</p>
 <ul>
-<li><p>您不需要在要插入的数据中包含 <strong>id</strong>，因为主键字段在插入数据时会自动递增。</p></li>
-<li><p>非模式定义的字段将作为键值对保存在名为 <strong>$meta</strong> 的保留 JSON 字段中。</p></li>
+<li> <p> 你无需在要插入的数据中包含 <strong> id </strong>，因为随着数据的插入，主字段会自动递增。</p> </li>
+<li> <p> 非 schema 定义的字段将保存在名为 <strong>$meta </strong > 的保留 JSON 字段中，以键值对的形式。</p ></li >
 </ul>
 
 </div>
 
 ## 插入实体
+ 
 
-要插入实体，您需要将数据组织成字典列表，其中每个字典代表一个实体。每个字典包含对应于目标集合中预定义和动态字段的键。
+
+
+要插入实体，你需要将数据组织为一个字典列表，其中每个字典表示一个实体。每个字典都包含与目标集合中的预定义和动态字段相对应的键。
 
 ```python
 # 3. 插入一些数据
 data=[
     {"id": 0, "vector": [0.3580376395471989, -0.6023495712049978, 0.18414012509913835, -0.26286205330961354, 0.9029438446296592], "color": "pink_8682"},
     {"id": 1, "vector": [0.19886812562848388, 0.06023560599112088, 0.6976963061752597, 0.2614474506242501, 0.838729485096104], "color": "red_7025"},
-    # ... 其他数据 ...
+    {"id": 2, "vector": [0.43742130801983836, -0.5597502546264526, 0.6457887650909682, 0.7894058910881185, 0.20785793220625592], "color": "orange_6781"},
+    {"id": 3, "vector": [0.3172005263489739, 0.9719044792798428, -0.36981146090600725, -0.4860894583077995, 0.95791889146345], "color": "pink_9298"},
+    {"id": 4, "vector": [0.4452349528804562, -0.8757026943054742, 0.8220779437047674, 0.46406290649483184, 0.30337481143159106], "color": "red_4794"},
+    {"id": 5, "vector": [0.985825131989184, -0.8144651566660419, 0.6299267002202009, 0.1206906911183383, -0.1446277761879955], "color": "yellow_4222"},
+    {"id": 6, "vector": [0.8371977790571115, -0.015764369584852833, -0.31062937026679327, -0.562666951622192, -0.8984947637863987], "color": "red_9392"},
+    {"id": 7, "vector": [-0.33445148015177995, -0.2567135004164067, 0.8987539745369246, 0.9402995886420709, 0.5378064918413052], "color": "grey_8510"},
+    {"id": 8, "vector": [0.39524717779832685, 0.4000257286739164, -0.5890507376891594, -0.8650502298996872, -0.6140360785406336], "color": "white_9381"},
+    {"id": 9, "vector": [0.5718280481994695, 0.24070317428066512, -0.3737913482606834, -0.06726932177492717, -0.6980531615588608], "color": "purple_4976"}
 ]
 
 res = client.insert(
@@ -82,41 +89,6 @@ res = client.insert(
 print(res)
 
 # 输出
-#
-# {
-#     "insert_count": 10,
-#     "ids": [
-#         0,
-#         1,
-#         ... 其他 ID ...
-#     ]
-# }
-```
-
-### 插入到分区
-
-要将数据插入特定分区，您可以在插入请求中指定分区的名称，如下所示：
-
-```python
-# 4. 向特定分区插入更多数据
-data=[
-    # ... 数据 ...
-]
-
-client.create_partition(
-    collection_name="quick_setup",
-    partition_name="partitionA"
-)
-
-res = client.insert(
-    collection_name="quick_setup",
-    data=data,
-    partition_name="partitionA"
-)
-
-print(res)
-
-# Output
 #
 # {
 #     "insert_count": 10,
@@ -135,12 +107,12 @@ print(res)
 # }
 ```
 
-### Insert into partitions
+### 插入分区
 
-To insert data into a specific partition, you can specify the name of the partition in the insert request as follows:
+要将数据插入到特定分区中，你可以在插入请求中指定分区的名称，示例如下：
 
 ```python
-# 4. Insert some more data into a specific partition
+# 4. 向特定分区插入更多数据
 data=[
     {"id": 10, "vector": [-0.5570353903748935, -0.8997887893201304, -0.7123782431855732, -0.6298990746450119, 0.6699215060604258], "color": "red_1202"},
     {"id": 11, "vector": [0.6319019033373907, 0.6821488267878275, 0.8552303045704168, 0.36929791364943054, -0.14152860714878068], "color": "blue_4150"},
@@ -167,7 +139,7 @@ res = client.insert(
 
 print(res)
 
-# Output
+# 输出
 #
 # {
 #     "insert_count": 10,
@@ -186,15 +158,17 @@ print(res)
 # }
 ```
 
-The output is a dictionary containing the statistics on the affected entities. For details on partition operations, refer to [Manage Partitions](manage-partitions.md).
+输出是一个包含受影响实体统计信息的字典。有关分区操作的详细信息，请参阅 [管理分区](/userGuide/manage-partitions.md)。
 
-## Upsert entities
+## 更新实体
 
-Upserting data is a combination of update and insert operations. In Milvus, an upsert operation performs a data-level action to either insert or update an entity based on whether its primary key already exists in a collection. Specifically:
 
-- If the primary key of the entity already exists in the collection, the existing entity will be overwritten.
+ 
+Upserting data（更新插入数据）是 update（更新）和 insert（插入）操作的组合。在 Milvus 中，upsert 操作根据实体的主键在集合中是否已存在来执行数据级操作，具体如下：
 
-- If the primary key does not exist in the collection, a new entity will be inserted.
+- 如果实体的主键已经存在于集合中，则会覆盖现有实体。
+
+- 如果主键在集合中不存在，则会插入一个新实体。
 
 ```python
 # 5. Upsert some data
@@ -225,9 +199,9 @@ print(res)
 # }
 ```
 
-### Upsert data in partitions
+### Upsert data in partitions（在分区中更新插入数据）
 
-To upsert data into a specific partition, you can specify the name of the partition in the insert request as follows:
+要将数据插入到特定分区中，你可以在插入请求中指定分区的名称，如下所示：
 
 ```python
 # 6. Upsert data in partitions
@@ -259,48 +233,52 @@ print(res)
 # }
 ```
 
-The output is a dictionary containing the statistics on the affected entities. For details on partition operations, refer to [Manage Partitions](manage-partitions.md).
+输出是一个包含受影响实体统计信息的字典。有关分区操作的详细信息，请参考 [管理分区](/userGuide/manage-partitions.md)。
 
-## Delete entities
+## 删除实体
 
-If an entity is no longer needed, you can delete it from the collection. Milvus offers two ways for you to identify the entities to delete.
+
+
+
+### If an entity is no longer needed, you can delete it from the collection. Milvus offers two ways for you to identify the entities to delete.
 
 - **Delete entities by filter.**
 
-  ```python
-  # 7. Delete entities
-  res = client.delete(
-      collection_name="quick_setup",
-      filter="id in [4,5,6]"
-  )
-
-  print(res)
-
-  # Output
-  #
-  # {
-  #     "delete_count": 3
-  # }
-  ```
+    ```python
+    # 7. 删除实体
+    res = client.delete(
+        collection_name="quick_setup",
+        filter="id in [4,5,6]"
+    )
+    
+    print(res)
+    
+    # 输出
+    #
+    # {
+    #     "delete_count": 3
+    # }
+    ```
 
 - **Delete entities by IDs.**
 
-  The following snippets demonstrate how to delete entities by IDs from a specific partition. It also works if you leave the partition name unspecified.
+    The following snippets demonstrate how to delete entities by IDs from a specific partition. It also works if you leave the partition name unspecified.
 
-  ```python
-  res = client.delete(
-      collection_name="quick_setup",
-      ids=[18, 19],
-      partition_name="partitionA"
-  )
+    ```python
+    res = client.delete(
+        collection_name="quick_setup",
+        ids=[18, 19],
+        partition_name="partitionA"
+    )
+    
+    print(res)
+    
+    # 输出
+    #
+    # {
+    #     "delete_count": 2
+    # }
+    ```
 
-  print(res)
-
-  # Output
-  #
-  # {
-  #     "delete_count": 2
-  # }
-  ```
-
-For details on how to use filter expressions, refer to [Get & Scalar Query](get-and-scalar-query.md).
+For details on how to use filter expressions, refer to [获取和标量查询](/userGuide/search-query-get/get-and-scalar-query.md).
+ 

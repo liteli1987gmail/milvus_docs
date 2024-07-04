@@ -1,26 +1,21 @@
 
----
-id: embed-with-bm25.md
-order: 5
-summary: BM25 是一种用于信息检索的排名函数，用于估计文档对给定搜索查询的相关性。
-title: BM25
----
 
-# BM25 嵌入模型
 
-[BM25](https://en.wikipedia.org/wiki/Okapi_BM25) 是一种用于信息检索的排名函数，用于估计文档对给定搜索查询的相关性。它通过引入文档长度归一化和术语频率饱和度来增强基本的术语频率方法。BM25可以通过将文档表示为术语重要性得分的向量来生成稀疏嵌入，从而允许在稀疏向量空间中进行高效的检索和排名。
+# BM25
 
-Milvus 通过 `BM25EmbeddingFunction` 类集成了 BM25 模型。这个类处理嵌入的计算并返回与 Milvus 兼容的格式，以便进行索引和搜索。此过程中至关重要的是构建一个用于分词的分析器。
+[BM25](https://en.wikipedia.org/wiki/Okapi_BM25) 是一种在信息检索中用于估计文档与给定搜索查询的相关性的排序函数。它通过引入文档长度归一化和术语频率饱和度来增强基本的词频方法。BM25 能够生成稀疏嵌入，将文档表示为术语重要性评分的向量，从而实现在稀疏向量空间中的高效检索和排序。
 
-为了轻松创建分词器，Milvus 提供了一个默认分析器，该分析器只需要指定文本的语言。
+Milvus 使用 __BM25EmbeddingFunction__ 类集成了 BM25 模型。该类处理嵌入的计算，并以与 Milvus 兼容的格式返回它们，以便进行索引和搜索。在该过程中，构建一个用于分词的分析器非常重要。
 
-## 示例：
+为了轻松创建一个分词器，Milvus 提供了一个默认分析器，只需要指定文本的语言。
+
+__示例__：
 
 ```python
 from pymilvus.model.sparse.bm25.tokenizers import build_default_analyzer
 from pymilvus.model.sparse import BM25EmbeddingFunction
 
-# 有几个内置的分析器支持几种语言，现在我们使用 'en' 表示英语。
+# 有一些内置的分析器适用于几种语言，现在我们使用英语'en'。
 analyzer = build_default_analyzer(language="en")
 
 corpus = [
@@ -29,16 +24,16 @@ corpus = [
     "Born in Maida Vale, London, Turing was raised in southern England.",
 ]
 
-# 分析器可以将文本分词为 tokens
+# 分析器可以将文本分词为标记
 tokens = analyzer(corpus[0])
 print("tokens:", tokens)
 ```
 
-## 参数：
+__参数__：
 
 - __language__ (_string_)
 
-    要分词的文本的语言。有效选项有 __en__ (英语), __de__ (德语), __fr__ (法语), __ru__ (俄语), __sp__ (西班牙语), __it__ (意大利语), __pt__ (葡萄牙语), __zh__ (中文), __jp__ (日语), __kr__ (韩语)。
+    要进行分词的文本的语言。有效选项为 __en__ (英语), __de__ (德语), __fr__ (法语), __ru__ (俄语), __sp__ (西班牙语), __it__ (意大利语), __pt__ (葡萄牙语), __zh__ (中文), __jp__ (日语), __kr__ (韩语)。
 
 预期输出类似于以下内容：
 
@@ -46,19 +41,19 @@ print("tokens:", tokens)
 tokens: ['artifici', 'intellig', 'found', 'academ', 'disciplin', '1956']
 ```
 
-BM25 算法通过首先使用内置分析器将文本分解为 tokens 来处理文本，如示例中所示的英语语言 tokens 如 __'artifici'__, __'intellig'__, 和 __'academ'__。然后，它收集这些 tokens 的统计信息，评估它们在文档中的频率和分布。BM25 的核心是根据每个 token 的重要性计算其相关性得分，较少见的 tokens 会获得更高的分数。这个简洁的过程使得文档可以有效地根据与查询的相关性进行排名。
+BM25 算法的处理过程首先使用内置分析器将文本分词，如英语语言的标记 __'artifici'__，__'intellig'__ 和 __'academ'__。然后，它会收集关于这些标记的统计信息，评估它们在文档中的频率和分布。BM25 的核心根据其重要性计算每个标记的相关性得分，较稀有的标记得到较高的得分。这个简明的过程能够有效地根据查询的相关性对文档进行排序。
 
-要收集语料库的统计信息，请使用 `fit()` 方法：
+要收集语料库的统计信息，使用 __fit()__ 方法：
 
 ```python
-# 使用分析器实例化 BM25EmbeddingFunction
+# 使用分析器来实例化BM25EmbeddingFunction
 bm25_ef = BM25EmbeddingFunction(analyzer)
 
-# 拟合模型以获取语料库的统计信息
+# 在语料库上拟合模型以获得语料库的统计信息
 bm25_ef.fit(corpus)
 ```
 
-然后，使用 `encode_documents()` 创建文档的嵌入：
+然后，使用 __encode_documents()__ 创建文档的嵌入向量：
 
 ```python
 docs = [
@@ -69,12 +64,12 @@ docs = [
     "Turing, originally from Maida Vale, London, was brought up in the south of England."
 ]
 
-# 为文档创建嵌入
+# 为文档创建嵌入向量
 docs_embeddings = bm25_ef.encode_documents(docs)
 
-# 打印嵌入
+# 打印嵌入向量
 print("Embeddings:", docs_embeddings)
-# 由于输出嵌入是 2D csr_array 格式，我们将其转换为列表以便于操作。
+# 由于输出的嵌入向量是2D csr_array格式，我们将其转换为列表以便于操作。
 print("Sparse dim:", bm25_ef.dim, list(docs_embeddings)[0].shape)
 ```
 
@@ -91,7 +86,7 @@ Embeddings:   (0, 0)        1.0208816705336425
 Sparse dim: 21 (1, 21)
 ```
 
-要为查询创建嵌入，请使用 `encode_queries()` 方法：
+要为查询创建嵌入向量，使用 __encode_queries()__ 方法：
 
 ```python
 queries = ["When was artificial intelligence founded", 
@@ -99,24 +94,28 @@ queries = ["When was artificial intelligence founded",
 
 query_embeddings = bm25_ef.encode_queries(queries)
 
-# Print embeddings
-print("Embeddings:", query_embeddings)
-# Since the output embeddings are in a 2D csr_array format, we convert them to a list for easier manipulation.
-print("Sparse dim:", bm25_ef.dim, list(query_embeddings)[0].shape)
+ 
+
+
+# 打印嵌入向量
+print("嵌入向量:", query_embeddings)
+# 由于输出的嵌入向量是以2D csr_array格式表示的，我们将其转换为列表以便于处理。
+print("稀疏维度:", bm25_ef.dim, list(query_embeddings)[0].shape)
 ```
 
-The expected output is similar to the following:
+期望的输出与以下类似：
 
 ```python
-Embeddings:   (0, 0)        0.5108256237659907
+嵌入向量:   (0, 0)        0.5108256237659907
   (0, 1)        0.5108256237659907
   (0, 2)        0.5108256237659907
   (1, 6)        0.5108256237659907
   (1, 7)        0.11554389108992644
   (1, 14)        0.5108256237659907
-Sparse dim: 21 (1, 21)
+稀疏维度: 21 (1, 21)
 ```
 
-__Notes:__
+__注意：__
 
-When using __BM25EmbeddingFunction__, note that __encoding_queries()__ and __encoding_documents()__ operations cannot be interchanged mathematically. Therefore, there is no implemented __bm25_ef(texts)__ available.
+在使用 __BM25EmbeddingFunction__ 时，请注意 __encoding_queries()__ 和 __encoding_documents()__ 操作不能在数学上互换。因此，没有实现可用于 __bm25_ef(texts)__ 的函数。
+

@@ -1,5 +1,4 @@
 {
-    "home":{
-        "title":"概述（overview）"
-    }
+    "home": "首页(Home)",
+    "_meta": "元数据(_meta)"
 }

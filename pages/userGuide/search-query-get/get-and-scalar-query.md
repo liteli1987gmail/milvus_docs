@@ -1,48 +1,133 @@
----
-id: get-and-scalar-query.md
-order: 3
-summary: This guide demonstrates how to get entities by ID and conduct scalar filtering.
-title: Get & Scalar Query
----
+
+
 
 # 获取和标量查询
 
-本指南演示了如何通过 ID 获取实体以及如何进行标量过滤。标量过滤是根据指定的过滤条件检索实体。
+该指南演示了如何通过 ID 获取实体并进行标量过滤。标量过滤是根据定义的条件使用布尔表达式对集合中的实体进行过滤。查询结果是与定义的条件匹配的实体集合。与矢量搜索不同，查询是根据特定条件对实体进行过滤，而不是识别与给定矢量最接近的矢量。
 
-## 概述
-
-标量查询是基于定义的条件使用布尔表达式对集合中的实体进行过滤。查询结果是一组符合定义条件的实体。与向量搜索不同，后者是识别集合中最接近给定向量的向量，查询则是根据特定标准过滤实体。
-
-在 Milvus 中，**filter 总是一个由操作符连接的字段名组成的字符串**。在本指南中，您将找到各种过滤器示例。要了解更多关于操作符的详细信息，请访问[参考](https://milvus.io/docs/get-and-scalar-query.md#Reference-on-scalar-filters)部分。
+在 Milvus 中，**过滤器始终是由运算符连接的字段名称的字符串**。在本指南中，你将找到各种过滤器示例。要了解有关运算符详细信息，请转到 [参考](https://milvus.io/docs/get-and-scalar-query.md#Reference-on-scalar-filters) 部分。
 
 <div class="alert note">
 
-本页上的代码片段使用新的<a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md">MilvusClient</a>（Python）与 Milvus 进行交互。其他语言的新 MilvusClient SDK 将在未来的更新中发布。
+本页面上的代码片段使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md"> MilvusClient </a>（Python）与 Milvus 进行交互。将来的更新中将发布用于其他语言的新 MilvusClient SDK。
 
 </div>
 
 ## 准备工作
 
-以下步骤重新利用代码连接到 Milvus，快速设置一个集合，并将超过 1,000 个随机生成的实体插入到集合中。
+以下步骤重用代码以连接到 Milvus，快速设置集合，并将 1000 多个随机生成的实体插入集合中。
 
-### 第 1 步：创建一个集合
+### 步骤 1：创建集合
 
 ```python
 from pymilvus import MilvusClient
 
-# 1. 设置一个 Milvus 客户端
+# 1. 设置Milvus客户端
 client = MilvusClient(
     uri="http://localhost:19530"
 )
 
-# 2. 创建一个集合
+# 2. 创建集合
 client.create_collection(
     collection_name="quick_setup",
     dimension=5,
 )
 ```
 
-### 第 2 步：插入随机生成的实体
+### 步骤 2：插入随机生成的实体
+
+```python
+# 3. 插入随机生成的向量 
+colors = ["green", "blue", "yellow", "red", "black", "white", "purple", "pink", "orange", "brown", "grey"]
+data = [ {
+        "id": i, 
+        "vector": [ random.uniform(-1, 1) for _ in range(5) ], 
+        "color": random.choice(colors), 
+        "tag": random.randint(1000, 9999) 
+    } for i in range(1000) ]
+
+for i in data:
+    i["color_tag"] = "{}_{}".format(i["color"], i["tag"])
+
+print(data[0])
+
+# 输出
+#
+# {
+#     "id": 0,
+#     "vector": [
+#         0.5913205104316952,
+#         -0.5474675922381218,
+#         0.9433357315736743,
+#         0.22479148416151284,
+#         0.28294612647978834
+#     ],
+#     "color": "grey",
+#     "tag": 5024,
+#     "color_tag": "grey_5024"
+# }
+
+# 4. 插入实体到集合中
+res = client.insert(
+    collection_name="quick_setup",
+    data=data
+)
+
+print(res)
+
+# 输出
+#
+# {
+#     "insert_count": 1000
+# }
+```
+
+### 步骤 3：创建分区并插入更多实体
+
+
+
+
+---
+
+id: get-and-scalar-query.md
+order: 3
+summary: 本指南演示了如何按 ID 获取实体并进行标量过滤。
+title: 获取和标量查询
+
+# 获取和标量查询
+
+本指南演示了如何按 ID 获取实体并进行标量过滤。标量过滤根据定义的条件使用布尔表达式对集合中的实体进行过滤。查询结果是与定义条件匹配的一组实体。与向量搜索不同，后者用于识别集合中与给定向量最接近的向量，查询根据特定标准过滤实体。
+
+在 Milvus 中，过滤器始终是一个字符串，其中包含由运算符连接的字段名。在本指南中，你将找到各种过滤器示例。要了解有关运算符详细信息，请转到 [参考](https://milvus.io/docs/get-and-scalar-query.md#标量过滤器参考) 部分。
+
+<div class="alert note">
+
+此页面上的代码片段使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md"> MilvusClient </a>（Python）与 Milvus 进行交互。其他语言的新 MilvusClient SDK 将在未来的更新中发布。
+
+</div>
+
+## 准备工作
+
+以下步骤重用代码以连接到 Milvus，快速设置一个集合，并将超过 1000 个随机生成的实体插入到集合中。
+
+### 步骤 1：创建集合
+
+```python
+from pymilvus import MilvusClient
+
+# 1. 设置 Milvus 客户端
+client = MilvusClient(
+    uri="http://localhost:19530"
+)
+
+# 2. 创建集合
+client.create_collection(
+    collection_name="quick_setup",
+    dimension=5,
+)
+```
+
+### 步骤 2：插入随机生成的实体
 
 ```python
 # 3. 插入随机生成的向量
@@ -75,7 +160,7 @@ print(data[0])
 #     "color_tag": "grey_5024"
 # }
 
-# 4. 将实体插入集合
+# 4. 将实体插入到集合中
 res = client.insert(
     collection_name="quick_setup",
     data=data
@@ -90,7 +175,7 @@ print(res)
 # }
 ```
 
-### 第 3 步：创建分区并插入更多实体
+### 步骤 3：创建分区并插入更多实体
 
 ```python
 # 5. 创建两个分区
@@ -98,11 +183,19 @@ client.create_partition(collection_name="quick_setup", partition_name="partition
 client.create_partition(collection_name="quick_setup", partition_name="partitionB")
 
 # 6. 在分区 A 中插入 500 个实体
+  
+
+
+# 5. 创建两个分区
+client.create_partition(collection_name="quick_setup", partition_name="partitionA")
+client.create_partition(collection_name="quick_setup", partition_name="partitionB")
+
+# 6. 在分区A中插入500个实体
 data = [ {
-        "id": i + 1000,
-        "vector": [ random.uniform(-1, 1) for _ in range(5) ],
-        "color": random.choice(colors),
-        "tag": random.randint(1000, 9999)
+        "id": i + 1000, 
+        "vector": [ random.uniform(-1, 1) for _ in range(5) ], 
+        "color": random.choice(colors), 
+        "tag": random.randint(1000, 9999) 
     } for i in range(500) ]
 
 for i in data:
@@ -122,12 +215,12 @@ print(res)
 #     "insert_count": 500
 # }
 
-# 7. 在分区 B 中插入 300 个实体
+# 7. 在分区B中插入300个实体
 data = [ {
-        "id": i + 1500,
-        "vector": [ random.uniform(-1, 1) for _ in range(5) ],
-        "color": random.choice(colors),
-        "tag": random.randint(1000, 9999)
+        "id": i + 1500, 
+        "vector": [ random.uniform(-1, 1) for _ in range(5) ], 
+        "color": random.choice(colors), 
+        "tag": random.randint(1000, 9999) 
     } for i in range(300) ]
 
 for i in data:
@@ -141,28 +234,32 @@ res = client.insert(
 
 print(res)
 
-# Output
+# 输出
 #
 # {
 #     "insert_count": 300
 # }
-```
 
-## Get Entities by ID
 
-If you know the IDs of the entities of your interests, you can use the `get()` method.
+## 通过ID获取实体
 
-```python
-# 4. Get entities by ID
+
+
+
+
+如果你知道感兴趣的实体的ID，可以使用`get()`方法。
+
+``` python
+# 4. 根据 ID 获取实体
 res = client.get(
-    collection_name="quick_setup",
-    ids=[0, 1, 2]
+    collection_name = "quick_setup",
+    ids = [0, 1, 2]
 )
 
 print(res)
 
-# Output
-#
+# 输出
+# 
 # [
 #     {
 #         "id": 0,
@@ -203,21 +300,23 @@ print(res)
 # ]
 ```
 
-### Get entities from partitions
+### 从分区获取实体
 
-You can also get entities from specific partitions.
 
-```python
-# 5. Get entities from partitions
+
+前往特定分区获取实体。
+
+``` python
+# 5. 从分区获取实体
 res = client.get(
-    collection_name="quick_setup",
-    ids=[0, 1, 2],
-    partition_names=["_default"]
+    collection_name = "quick_setup",
+    ids = [0, 1, 2],
+    partition_names =["_default "]
 )
 
 print(res)
 
-# Output
+# 输出
 #
 # [
 #     {
@@ -259,190 +358,200 @@ print(res)
 # ]
 ```
 
-## Use Basic Operators
+## 使用基本运算符
 
-In this section, you will find examples of how to use basic operators in scalar filtering. You can apply these filters to [vector searches](https://milvus.io/docs/single-vector-search.md#Filtered-search) and [data deletions](https://milvus.io/docs/insert-update-delete.md#Delete-entities) too.
 
-- Filter entities with their tag values falling between 1,000 to 1,500.
 
-  ```python
-  res = client.query(
-      collection_name="quick_setup",
-      # highlight-start
-      filter="1000 < tag < 1500",
-      output_fields=["color_tag"],
-      # highlight-end
-      limit=3
-  )
+在本节中，你将找到如何在标量过滤中使用基本运算符的示例。你可以将这些过滤器应用于[向量搜索](https://milvus.io/docs/single-vector-search.md#Filtered-search)和[数据删除](https://milvus.io/docs/insert-update-delete.md#Delete-entities)。
 
-  # Output
-  #
-  #
-  ```
+- 过滤标签值在1,000到1,500之间的实体。
 
-- Filter entities with their **color** values set to **red**.
+    ``` python
+    res = client.query(
+        collection_name = "quick_setup",
+        # highlight-start
+        filter =" 1000 < tag < 1500 ",
+        output_fields = ["color_tag"],
+        # highlight-end
+        limit = 3
+    )
+    
+    # 输出
+    #
+    # 
+    ```
 
-  ```python
-  res = client.query(
-      collection_name="quick_setup",
-      # highlight-start
-      filter='color == "brown"',
-      output_fields=["color_tag"],
-      # highlight-end
-      limit=3
-  )
+- 过滤颜色值设置为红色的实体。
 
-  # Output
-  #
-  #
-  ```
+    ``` python
+    res = client.query(
+        collection_name = "quick_setup",
+        # highlight-start
+        filter ='color == "brown"',
+        output_fields = ["color_tag"],
+        # highlight-end
+        limit = 3
+    )
+    
+    # 输出
+    #
+    # 
+    ```
 
-- Filter entities with their **color** values not set to **green** and **purple**.
+- 过滤颜色值未设置为绿色和紫色的实体。
 
-  ```python
-  res = client.query(
-      collection_name="quick_setup",
-      # highlight-start
-      filter='color not in ["green", "purple"]',
-      output_fields=["color_tag"],
-      # highlight-end
-      limit=3
-  )
+    ``` python
+    res = client.query(
+        collection_name = "quick_setup",
+        # highlight-start
+        filter ='color not in ["green", "purple"]',
+        output_fields = ["color_tag"],
+        # highlight-end
+        limit = 3
+    )
+    
+    # 输出
+    #
+    # 
+    ```
 
-  # Output
-  #
-  #
-  ```
+- 过滤颜色标签以"red"开头的文章。
 
-- Filter articles whose color tags start with **red**.
+    ``` python
+    res = client.query(
+        collection_name = "quick_setup",
+        # highlight-start
+        filter ='color_tag like "red%"',
+        output_fields = ["color_tag"],
+        # highlight-end
+        limit = 3
+    )
+    
+    # 输出
+    #
+    # 
+    ```
 
-  ```python
-  res = client.query(
-      collection_name="quick_setup",
-      # highlight-start
-      filter='color_tag like "red%"',
-      output_fields=["color_tag"],
-      # highlight-end
-      limit=3
-  )
+- 过滤颜色设置为红色且标签值在1,000到1,500之间的实体。
 
-  # Output
-  #
-  #
-  ```
+    ``` python
+    res = client.query(
+        collection_name = "quick_setup",
+        # highlight-start
+        filter ='(color == "red") and (1000 < tag < 1500)',
+        output_fields = ["color_tag"],
+        # highlight-end
+        limit = 3
+    )
+    
+    # 输出
+    #
+    # 
+    ```
 
-- Filter entities with their colors set to red and tag values within the range from 1,000 to 1,500.
+## 使用高级操作符
 
-  ```python
-  res = client.query(
-      collection_name="quick_setup",
-      # highlight-start
-      filter='(color == "red") and (1000 < tag < 1500)',
-      output_fields=["color_tag"],
-      # highlight-end
-      limit=3
-  )
+在本节中，你将找到在标量过滤中如何使用高级操作符的示例。你可以将这些过滤器应用于[向量搜索](https://milvus.io/docs/single-vector-search.md#Filtered-search)和[数据删除](https://milvus.io/docs/insert-update-delete.md#Delete-entities)。
 
-  # Output
-  #
-  #
-  ```
+### 计数实体
 
-## Use Advanced Operators
 
-In this section, you will find examples of how to use advanced operators in scalar filtering. You can apply these filters to [vector searches](https://milvus.io/docs/single-vector-search.md#Filtered-search) and [data deletions](https://milvus.io/docs/insert-update-delete.md#Delete-entities) too.
 
-### Count entities
+        
 
-- Counts the total number of entities in a collection.
+- 统计集合中的实体总数。
 
-  ```python
-  res = client.query(
-      collection_name="quick_setup",
-      # highlight-start
-      output_fields=["count(*)"]
-      # highlight-end
-  )
+    ``` python
+    res = client.query(
+        collection_name = "quick_setup",
+        # highlight-start
+        output_fields =[" count(*)"]
+        # highlight-end
+    )
+    
+    # 输出
+    #
+    # 
+    ```
 
-  # Output
-  #
-  #
-  ```
+- 统计特定分区中的实体总数。
 
-- Counts the total number of entities in specific partitions.
+    ``` python
+    res = client.query(
+        collection_name = "quick_setup",
+        # highlight-start
+        output_fields =[" count(*)"],
+        partition_name = "partitionA"
+        # highlight-end
+    )
+    
+    # 输出
+    #
+    # 
+    
+    res = client.query(
+        collection_name = "quick_setup",
+        # highlight-start
+        output_fields =[" count(*)"],
+        partition_name = "partitionB"
+        # highlight-end
+    )
+    
+    # 输出
+    #
+    # 
+    ```
 
-  ```python
-  res = client.query(
-      collection_name="quick_setup",
-      # highlight-start
-      output_fields=["count(*)"],
-      partition_name="partitionA"
-      # highlight-end
-  )
+- 统计满足过滤条件的实体数
 
-  # Output
-  #
-  #
+    ``` python
+    res = client.query(
+        collection_name = "quick_setup",
+        # highlight-start
+        filter ='(publication == "Towards Data Science") and ((claps > 1500 and responses > 15) or (10 < reading_time < 15))',
+        output_fields =[" count(*)"],
+        # highlight-end
+    )
+    
+    # 输出
+    #
+    # 
+    ```
 
-  res = client.query(
-      collection_name="quick_setup",
-      # highlight-start
-      output_fields=["count(*)"],
-      partition_name="partitionB"
-      # highlight-end
-  )
+## 标量过滤器参考
 
-  # Output
-  #
-  #
-  ```
+### 基本运算符
 
-- Counts the number of entities that match a filtering condition
+__布尔表达式__ 总是 __由操作符连接的字段名称字符串__。在本节中，你将了解更多关于基本运算符的信息。
 
-  ```python
-  res = client.query(
-      collection_name="quick_setup",
-      # highlight-start
-      filter='(publication == "Towards Data Science") and ((claps > 1500 and responses > 15) or (10 < reading_time < 15))',
-      output_fields=["count(*)"],
-      # highlight-end
-  )
+|  __运算符__   |  __描述__                                                                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+|  __add (&&)__   |  当两个操作数都为 true 时，结果为 True                                                                                                    |
+|  __or (\|\|)__  |  当两个操作数中任一操作数为 true 时，结果为 True                                                                                           |
+|  __+, -, *, /__ |  加法、减法、乘法和除法                                                                                                                           |
+|  __**__         |  指数                                                                                                                                   |
+|  __%__          |  取模                                                                                                                                    |
+|  __<, >__       |  小于，大于                                                                                                                    |
+|  __==, !=__     |  等于，不等于                                                                                                                     |
+|  __<=, >=__     |  小于等于，大于等于                                                                                            |
+|  __not__        |  反转给定条件的结果                                                                                                  |
+|  __like__       |  使用通配符操作符将一个值与类似值进行比较。<br/> 例如，like "prefix%" 匹配以 "prefix" 开头的字符串。 |
+|  __in__         |  测试一个表达式是否与值列表中的任何值匹配。                                                                              |
 
-  # Output
-  #
-  #
-  ```
+### 高级运算符
 
-## Reference on scalar filters
 
-### Basic Operators
 
-A **boolean expression** is always **a string comprising field names joined by operators**. In this section, you will learn more about basic operators.
-
-| **Operator**    | **Description**                                                                                                                         |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| **add (&&)**    | True if both operands are true                                                                                                          |
-| **or (\|\|)**   | True if either operand is true                                                                                                          |
-| **+, -, \*, /** | Addition, subtraction, multiplication, and division                                                                                     |
-| **\*\***        | Exponent                                                                                                                                |
-| **%**           | Modulus                                                                                                                                 |
-| **<, >**        | Less than, greater than                                                                                                                 |
-| **==, !=**      | Equal to, not equal to                                                                                                                  |
-| **<=, >=**      | Less than or equal to, greater than or equal to                                                                                         |
-| **not**         | Reverses the result of a given condition.                                                                                               |
-| **like**        | Compares a value to similar values using wildcard operators.<br/> For example, like "prefix%" matches strings that begin with "prefix". |
-| **in**          | Tests if an expression matches any value in a list of values.                                                                           |
-
-### Advanced operators
 
 - `count(*)`
 
-  Counts the exact number of entities in the collection. Use this as an output field to get the exact number of entities in a collection or partition.
+    统计集合中实体的准确数量。将其用作输出字段，以获得集合或分区中实体的准确数量。
 
     <div class="admonition note">
 
-    <p><b>notes</b></p>
+    <p><b>注：</b></p>
 
-    <p>This applies to loaded collections. You should use it as the only output field.</p>
+    <p>此适用于已加载的集合。你应将其作为唯一的输出字段。</p>
 
     </div>
+

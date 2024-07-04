@@ -1,0 +1,6 @@
+{
+    "get-and-scalar-query": "获取和标量查询(Get-and-scalar-query)",
+    "multi-vector-search": "多向量搜索(Multi-vector-search)",
+    "single-vector-search": "单向量搜索(Single-vector-search)",
+    "with-iterators": "使用迭代器(With-iterators)"
+}

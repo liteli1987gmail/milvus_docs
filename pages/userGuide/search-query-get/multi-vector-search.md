@@ -1,51 +1,47 @@
----
-id: multi-vector-search.md
-order: 2
-summary: This guide demonstrates how to perform multi-vector search in Milvus and understand the reranking of results.
-title: Multi-Vector Search
----
 
+                
 # 多向量搜索
 
-## 概述
+自 Milvus 2.4 版本以来，我们引入了多向量支持和混合搜索框架，这意味着用户可以将多个向量字段（最多 10 个）引入单个集合中。不同的向量字段可以表示不同的方面、不同的嵌入模型甚至是表征同一实体的不同的数据形态，这极大地扩展了信息的丰富性。这个特性在综合搜索场景中特别有用，比如基于各种属性（如图片、声音、指纹等）在向量库中识别最相似的人。
 
-自 Milvus 2.4 版本起，我们引入了多向量支持和混合搜索框架，这意味着用户可以将多个向量字段（最多 10 个）带入单个集合中。不同的向量字段可以代表不同的方面、不同的嵌入模型，甚至可以是描述同一实体的不同模态的数据，这极大地扩展了信息的丰富性。此功能在全面搜索场景中特别有用，例如基于图片、声音、指纹等多种属性识别向量库中最相似的人。
+多向量搜索可以对多个向量字段执行搜索请求，并使用重新排序策略（如 Reciprocal Rank Fusion (RRF)和 Weighted Scoring）合并结果。要了解更多关于重新排序策略的信息，请参考 [Reranking](/reference/reranking.md)。
 
-多向量搜索允许在不同的向量字段上执行搜索请求，并使用重新排序策略（如互反排名融合（RRF）和加权评分）结合结果。要了解更多关于重新排序策略的信息，请参考[重新排序](reranking.md)。
+在本教程中，你将学习如何：
 
-在本教程中，您将学习如何：
+- 为不同的向量字段创建多个 `AnnSearchRequest` 实例来进行相似度搜索；
 
-- 为不同向量字段的相似性搜索创建多个 `AnnSearchRequest` 实例；
-- 配置重新排序策略以组合和重新排序来自多个 `AnnSearchRequest` 实例的搜索结果；
+- 配置重新排序策略，从多个 `AnnSearchRequest` 实例中合并和重新排序搜索结果；
+
 - 使用 [`hybrid_search()`](https://milvus.io/api-reference/pymilvus/v2.4.x/ORM/Collection/hybrid_search.md) 方法执行多向量搜索。
 
 <div class="alert note">
 
-本页上的代码片段使用 [PyMilvus ORM 模块](https://milvus.io/api-reference/pymilvus/v2.4.x/ORM/Connections/connect.md) 与 Milvus 交互。使用新的 [MilvusClient SDK](https://milvus.io/api-reference/pymilvus/v2.4.x/About.md) 的代码片段将很快提供。
+本页上的代码片段使用 [PyMilvus ORM 模块](https://milvus.io/api-reference/pymilvus/v2.4.x/ORM/Connections/connect.md) 与 Milvus 进行交互。新的 [MilvusClient SDK](https://milvus.io/api-reference/pymilvus/v2.4.x/About.md) 的代码片段即将推出。
 
 </div>
 
-## 准备工作
 
-在开始多向量搜索之前，请确保您有一个包含多个向量字段的集合。
+# 准备工作
 
-以下是创建一个名为 `test_collection` 的集合的示例，该集合包含两个向量字段 `filmVector` 和 `posterVector`，并将随机实体插入其中。
+在开始多向量搜索之前，请确保你拥有一个具有多个向量字段的集合。
+
+以下是创建一个名为 `test_collection` 的集合，并在其中插入随机实体的示例。
 
 ```python
 from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType
 import random
 
-# 连接到 Milvus
+# 连接到Milvus
 connections.connect(
-    host="10.102.7.3", # 替换为您的 Milvus 服务器 IP
+    host="10.102.7.3", # 用你的Milvus服务器IP替换
     port="19530"
 )
 
-# 创建 schema
+# 创建模式
 fields = [
     FieldSchema(name="film_id", dtype=DataType.INT64, is_primary=True),
-    FieldSchema(name="filmVector", dtype=DataType.FLOAT_VECTOR, dim=5), # 电影向量字段
-    FieldSchema(name="posterVector", dtype=DataType.FLOAT_VECTOR, dim=5)] # 海报向量字段
+    FieldSchema(name="filmVector", dtype=DataType.FLOAT_VECTOR, dim=5), # 用于电影向量的向量字段
+    FieldSchema(name="posterVector", dtype=DataType.FLOAT_VECTOR, dim=5)] # 用于海报向量的向量字段
 
 schema = CollectionSchema(fields=fields,enable_dynamic_field=False)
 
@@ -62,11 +58,11 @@ index_params = {
 collection.create_index("filmVector", index_params)
 collection.create_index("posterVector", index_params)
 
-# 生成随机实体以插入
+# 生成要插入的随机实体
 entities = []
 
 for _ in range(1000):
-    # 为 schema 中的每个字段生成随机值
+    # 为模式中的每个字段生成随机值
     film_id = random.randint(1, 1000)
     film_vector = [ random.random() for _ in range(5) ]
     poster_vector = [ random.random() for _ in range(5) ]
@@ -80,168 +76,178 @@ for _ in range(1000):
 
     # 将实体添加到列表中
     entities.append(entity)
-
+    
 collection.insert(entities)
 ```
 
-## 第 1 步：创建多个 AnnSearchRequest 实例
+## 步骤 1：创建多个 AnnSearchRequest 实例
 
-多向量搜索使用 `hybrid_search()` API 在单个调用中执行多个 ANN 搜索请求。每个 `AnnSearchRequest` 代表对特定向量字段的单个搜索请求。
 
-以下示例创建了两个 `AnnSearchRequest` 实例，以对两个向量字段执行单独的相似性搜索。
+
+# A multi-vector search
+
+使用 `hybrid_search()` API 可以一次性执行多个 ANN 搜索请求。每个 `AnnSearchRequest` 代表一个特定向量字段上的单个搜索请求。
+
+以下示例创建了两个 `AnnSearchRequest` 实例，以在两个向量字段上执行单独的相似性搜索。
 
 ```python
 from pymilvus import AnnSearchRequest
 
-# 创建针对 filmVector 的 ANN 搜索请求 1
+# 为filmVector创建ANN搜索请求1
 query_filmVector = [[0.8896863042430693, 0.370613100114602, 0.23779315077113428, 0.38227915951132996, 0.5997064603128835]]
 
 search_param_1 = {
-    "data": query_filmVector, # 查询向量
-    "anns_field": "filmVector", # 向量字段名称
+    "data": query_filmVector,  # 查询向量
+    "anns_field": "filmVector",  # 向量字段名
     "param": {
-        "metric_type": "L2", # This parameter value must be identical to the one used in the collection schema
+        "metric_type": "L2",  # 此参数值必须与集合模式中使用的参数值相同
         "params": {"nprobe": 10}
     },
-    "limit": 2 # Number of search results to return in this AnnSearchRequest
+    "limit": 2  # 此AnnSearchRequest返回的搜索结果数量
 }
 request_1 = AnnSearchRequest(**search_param_1)
 
-# Create ANN search request 2 for posterVector
+# 为posterVector创建ANN搜索请求2
 query_posterVector = [[0.02550758562349764, 0.006085637357292062, 0.5325251250159071, 0.7676432650114147, 0.5521074424751443]]
 search_param_2 = {
-    "data": query_posterVector, # Query vector
-    "anns_field": "posterVector", # Vector field name
+    "data": query_posterVector,  # 查询向量
+    "anns_field": "posterVector",  # 向量字段名
     "param": {
-        "metric_type": "L2", # This parameter value must be identical to the one used in the collection schema
+        "metric_type": "L2",  # 此参数值必须与集合模式中使用的参数值相同
         "params": {"nprobe": 10}
     },
-    "limit": 2 # Number of search results to return in this AnnSearchRequest
+    "limit": 2  # 此AnnSearchRequest返回的搜索结果数量
 }
 request_2 = AnnSearchRequest(**search_param_2)
 
-# Store these two requests as a list in `reqs`
+# 将这两个请求作为一个列表存储在`reqs`中
 reqs = [request_1, request_2]
 ```
 
-Parameters:
+参数：
 
-- `AnnSearchRequest` (_object_)
+- `AnnSearchRequest`（_object_）
 
-  A class representing an ANN search request. Each hybrid search can contain 1 to 1,024 `ANNSearchRequest` objects at a time.
+    表示 ANN 搜索请求的类。每个混合搜索可以同时包含 1 到 1024 个 `ANNSearchRequest` 对象。
 
-- `data` (_list_)
+- `data`（_list_）
 
-  The query vector to search in a single `AnnSearchRequest`. Currently, this parameter accepts a list containing only a single query vector, for example, `[[0.5791814851218929, 0.5792985702614121, 0.8480776460143558, 0.16098005945243, 0.2842979317256803]]`. In the future, this parameter will be expanded to accept multiple query vectors.
+    要在单个 `AnnSearchRequest` 中搜索的查询向量。目前，该参数只接受包含单个查询向量的列表，例如 `[[0.5791814851218929, 0.5792985702614121, 0.8480776460143558, 0.16098005945243, 0.2842979317256803]]`。将来，该参数将扩展为接受多个查询向量。
 
-- `anns_field` (_string_)
+- `anns_field`（_string_）
 
-  The name of the vector field to use in a single `AnnSearchRequest`.
+    在单个 `AnnSearchRequest` 中使用的向量字段的名称。
 
-- `param` (_dict_)
+- `param`（_dict_）
 
-  A dictionary of search parameters for a single `AnnSearchRequest`. These search parameters are identical to those for a single-vector search. For more information, refer to [Search parameters](https://milvus.io/docs/single-vector-search.md#Search-parameters).
+    单个 `AnnSearchRequest` 的搜索参数字典。这些搜索参数与单向量搜索的参数完全相同。有关更多信息，请参见 [搜索参数](https://milvus.io/docs/single-vector-search.md#Search-parameters)。
 
-- `limit` (_int_)
+- `limit`（_int_）
 
-  The maximum number of search results to include in a single `ANNSearchRequest`.
+    单个 `ANNSearchRequest` 中包含的最大搜索结果数。
 
-  This parameter only affects the number of search results to return within an individual `ANNSearchRequest`, and it does not decide the final results to return for a `hybrid_search` call. In a hybrid search, the final results are determined by combining and reranking the results from multiple `ANNSearchRequest` instances.
+    此参数仅影响单个 `ANNSearchRequest` 内返回的搜索结果数量，并不决定 `hybrid_search` 调用返回的最终结果。在混合搜索中，最终结果是通过合并和重新排名来自多个 `ANNSearchRequest` 实例的结果来确定的。
 
-## Step 2: Configure a Reranking Strategy
+## 步骤 2：配置重新排名策略
 
-After creating `AnnSearchRequest` instances, configure a reranking strategy to combine and rerank the results. Currently, there are two options: `WeightedRanker` and `RRFRanker`. For more information about reranking strategies, refer to [Reranking](reranking.md).
+在创建 `AnnSearchRequest` 实例之后，配置重新排名策略以合并和重新排名结果。目前有两种选项：`WeightedRanker` 和 `RRFRanker`。有关重新排序策略的更多信息，请参见 [重新排序](/reference/reranking.md)。
 
-- Use weighted scoring
+- 使用加权评分
 
-  The `WeightedRanker` is used to assign importance to the results from each vector field search with specified weights. If you prioritize some vector fields over others, `WeightedRanker(value1, value2, ..., valueN)` can reflect this in the combined search results.
+    使用 `WeightedRanker` 为每个向量字段搜索结果分配权重，以对结果进行重要性排序。如果你优先考虑某些向量字段，可以通过 `WeightedRanker(value1, value2, ..., valueN)` 在组合搜索结果中反映出来。
 
-  ```python
-  from pymilvus import WeightedRanker
-  # Use WeightedRanker to combine results with specified weights
-  # Assign weights of 0.8 to text search and 0.2 to image search
-  rerank = WeightedRanker(0.8, 0.2)
-  ```
+    ```python
+    from pymilvus import WeightedRanker
+    # 使用WeightedRanker结合指定的权重来组合结果
+    # 将0.8的权重分配给文本搜索，将0.2的权重分配给图像搜索
+    rerank = WeightedRanker(0.8, 0.2)  
+    ```
 
-  When using `WeightedRanker`, note that:
+    使用 `WeightedRanker` 时，请注意：
 
-  - Each weight value ranges from 0 (least important) to 1 (most important), influencing the final aggregated score.
-  - The total number of weight values provided in `WeightedRanker` should equal the number of `AnnSearchRequest` instances you have created.
+  - 每个权重值的范围是从 0（最不重要）到 1（最重要），会影响最终的聚合评分。
+  - 在 `WeightedRanker` 中提供的权重值的总数应该等于你创建的 `AnnSearchRequest` 实例的数量。
 
-- Use Reciprocal Rank Fusion (RFF)
+- 使用倒数排名融合（RFF）
 
-  ```python
-  # Alternatively, use RRFRanker for reciprocal rank fusion reranking
-  from pymilvus import RRFRanker
+    ```python
+    # 或者，使用RRFRanker进行倒数排名融合重新排序
+    from pymilvus import RRFRanker
+    
+    rerank = RRFRanker()
+    ```
 
-  rerank = RRFRanker()
-  ```
+## 步骤 3：执行混合搜索
 
-## Step 3: Perform a Hybrid Search
 
-With the `AnnSearchRequest` instances and reranking strategy set, use the `hybrid_search()` method to perform the multi-vector search.
+
+## 使用 `hybrid_search()` 方法执行多向量搜索
+
+通过设置 `AnnSearchRequest` 实例和重新排序策略，可以使用 `hybrid_search()` 方法执行多向量搜索。
 
 ```python
-# Before conducting multi-vector search, load the collection into memory.
+# 在进行多向量搜索之前，将集合加载到内存中。
 collection.load()
 
 res = collection.hybrid_search(
-    reqs, # List of AnnSearchRequests created in step 1
-    rerank, # Reranking strategy specified in step 2
-    limit=2 # Number of final search results to return
+    reqs, # 在步骤1中创建的AnnSearchRequest对象的列表
+    rerank, # 在步骤2中指定的重排序策略
+    limit=2 # 返回的最终搜索结果数量
 )
 
 print(res)
 ```
 
-Parameters:
+参数：
 
-- `reqs` (_list_)
+- `reqs`（_list_）
 
-  A list of search requests, where each request is an `ANNSearchRequest` object. Each request can correspond to a different vector field and a different set of search parameters.
+  一个包含搜索请求的列表，每个请求都是一个 `ANNSearchRequest` 对象。每个请求可以对应不同的向量字段和不同的搜索参数集。
 
-- `rerank` (_object_)
+- `rerank`（_object_）
 
-  The reranking strategy to use for hybrid search. Possible values: `WeightedRanker(value1, value2, ..., valueN)` and `RRFRanker()`.
+  用于混合搜索的重新排序策略。可能的值：`WeightedRanker(value1, value2, ..., valueN)` 和 `RRFRanker()`。
 
-  For more information about reranking strategies, refer to [Reranking](reranking.md).
+    有关重新排序策略的更多信息，请参见 [Reranking](/reference/reranking.md)。
 
-- `limit` (_int_)
+- `limit`（_int_）
 
-  The maximum number of final results to return in the hybrid search.
+    混合搜索返回的最终结果的最大数量。
 
-The output is similar to the following:
+输出类似于以下内容：
 
 ```python
 ["['id: 844, distance: 0.006047376897186041, entity: {}', 'id: 876, distance: 0.006422005593776703, entity: {}']"]
 ```
 
-## Limits
+## 限制
 
-- Typically, each collection has a default allowance of up to 4 vector fields. However, you have the option to adjust the `proxy.maxVectorFieldNum` configuration to expand the maximum number of vector fields in a collection, with a maximum limit of 10 vector fields per collection. See [Proxy-related Configurations](https://milvus.io/docs/configure_proxy.md#Proxy-related-Configurations) for more.
+- 通常，每个集合默认允许多达 4 个向量字段。但是，你可以调整 `proxy.maxVectorFieldNum` 配置以扩展集合中的最大向量字段数量，最大限制为每个集合 10 个向量字段。有关更多信息，请参见 [代理相关配置](https://milvus.io/docs/configure_proxy.md#Proxy-related-Configurations)。
 
-- Partially indexed or loaded vector fields in a collection will result in an error.
+- 部分索引或加载的向量字段将导致错误。
 
-- Currently, each `AnnSearchRequest` in a hybrid search can carry one query vector only.
+- 目前，在混合搜索中，每个 `AnnSearchRequest` 只能携带一个查询向量。
 
-## FAQ
+## 常见问题解答
 
-- **In which scenario is multi-vector search recommended?**
 
-  Multi-vector search is ideal for complex situations demanding high accuracy, especially when an entity can be represented by multiple, diverse vectors. This applies to cases where the same data, such as a sentence, is processed through different embedding models or when multimodal information (like images, fingerprints, and voiceprints of an individual) is converted into various vector formats. By assigning weights to these vectors, their combined influence can significantly enrich recall and improve the effectiveness of search results.
 
-- **How does a weighted ranker normalize distances between different vector fields?**
+- **在哪种情况下建议使用多向量搜索？**
 
-  A weighted ranker normalizes the distances between vector fields using assigned weights to each field. It calculates the importance of each vector field according to its weight, prioritizing those with higher weights. It's advised to use the same metric type across ANN search requests to ensure consistency. This method ensures that vectors deemed more significant have a greater influence on the overall ranking.
+    多向量搜索在需要高准确性的复杂情况下是理想的选择，特别是当一个实体可以由多个不同的向量表示时。这适用于同样的数据（比如句子）通过不同的嵌入模型进行处理，或者将多模态信息（如个体的图像、指纹和语音）转换为不同的向量格式的情况。通过为这些向量分配权重，它们的组合影响可以显著丰富召回并改善搜索结果的有效性。
 
-- **Is it possible to use alternative rankers like Cohere Ranker or BGE Ranker?**
+- **加权排序器如何对不同向量字段之间的距离进行归一化？**
 
-  Currently, only the provided rankers are supported. Plans to include additional rankers are underway for future updates.
+    加权排序器使用分配给每个字段的权重对向量字段之间的距离进行归一化。它根据权重计算每个向量字段的重要性，优先考虑那些权重较高的字段。建议在 ANN 搜索请求中使用相同的度量类型以确保一致性。这种方法确保了被认为更重要的向量对整体排序产生更大的影响。
 
-- **Is it possible to conduct multiple hybrid search operations at the same time?**
+- **是否可以使用 Cohere Ranker 或 BGE Ranker 等替代排序器？**
 
-  Yes, simultaneous execution of multiple hybrid search operations is supported.
+    目前，仅支持提供的排序器。计划在未来的更新中加入其他排序器。
 
-- **Can I use the same vector field in multiple AnnSearchRequest objects to perform hybrid searches?**
+- **是否可以同时进行多个混合搜索操作？**
 
-  Technically, it is possible to use the same vector field in multiple AnnSearchRequest objects for hybrid searches. It is not necessary to have multiple vector fields for a hybrid search.
+    是的，支持同时执行多个混合搜索操作。
+
+- **我可以在多个 AnnSearchRequest 对象中使用相同的向量字段进行混合搜索吗？**
+
+    在技术上，可以在多个 AnnSearchRequest 对象中使用相同的向量字段进行混合搜索。对于混合搜索而言，不需要使用多个向量字段。

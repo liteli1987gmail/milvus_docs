@@ -326,7 +326,7 @@ $ minikube delete
 
 安装Milvus后，您可以：
 
-- 检查[Hello-Milvus](quickstart.md)，用不同的SDK运行一个示例代码，看看Milvus能做什么。
+- 检查[Hello-Milvus](/getstarted/quickstart.md)，用不同的SDK运行一个示例代码，看看Milvus能做什么。
 
 - 学习Milvus的基本操作：
   - [管理数据库](Manage_Databases.md)
@@ -337,14 +337,14 @@ $ minikube delete
   - [多矢量搜索](Multi-vvector Search.md)
 
 - [使用Helm Chart升级Milvus](Upgrade_Milvus_cluster-Helm.md)。
-- [缩放Milvus集群](scaleout.md)。
+- [缩放Milvus集群](/adminGuide/scaleout.md)。
 - 在云上部署您的Milvu集群：
-  - [亚马逊EC2](aws.md)
+  - [亚马逊EC2](/adminGuide/clouds/aws/aws.md)
   - [亚马逊EKS](EKS.md)
-  - [谷歌云](gcp.md)
-  - [谷歌云存储](gcs.md)
+  - [谷歌云](/adminGuide/clouds/gcp/gcp.md)
+  - [谷歌云存储](/adminGuide/clouds/gcp/gcs.md)
   - [Microsoft Azure](Azure.md)
-  - [Microsoft Azure Blob存储](abs.md)
+  - [Microsoft Azure Blob存储](/adminGuide/clouds/azure/abs.md)
   
 - 探索[Milvus Backup](Milvus_Backup_overview.md)，一个用于Milvus数据备份的开源工具。
 - 探索[Birdwatcher](Birdwatcher_overview.md)，这是一个用于调试Milvus和动态配置更新的开源工具。

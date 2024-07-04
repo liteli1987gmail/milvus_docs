@@ -1,51 +1,39 @@
 {
-    "index":{
-        "title":"Milvus的概述",
-        "href":"/"
+    "index": {
+        "title": "Milvus的概述",
+        "href": "/"
     },
     "about": {
-      "title": "Milvus介绍"
+        "title": "Milvus介绍"
     },
     "getstarted": {
-      "title": "入门指南 (Get Started)"
+        "title": "入门指南 (Get Started)"
     },
-    "tutorials":{
-        "title": "基础概念 (Concepts)"
+    "tutorials": {
+        "title": "基础教程 (Tutorials)"
     },
     "userGuide": {
-      "title": "用户手册 (User Guide)"
+        "title": "用户手册 (User Guide)"
     },
-    "embeddings":{
+    "embeddings": {
         "title": "向量嵌入 (Embeddings)"
     },
     "adminGuide": {
-      "title": "管理员手册 (Administration Guide)"
+        "title": "管理员手册 (Administration Guide)"
     },
-    "tools": {
-        "title": "工具 （Tools)"
-      },
     "integrations": {
-      "title": "集成 (Integrations)"
+        "title": "集成 (Integrations)"
     },
-    "Example Applications":{
-        "title":"案例应用"
-    },
-    "faq": {
-        "title": "FAQs（FAQs）"
-      },
     "reference": {
         "title": "指引 （Reference)"
     },
-    "fragments":{
+    "fragments": {
         "title": "碎片知识",
         "display": "hidden"
     },
-    "migrate":{
-      "title": "数据迁移",
-      "display": "hidden"
-  },
-  "home":{
-    "title": "回到开始",
-    "display": "hidden"
-  }
+    "migrate": {
+        "title": "数据迁移",
+        "display": "hidden"
+    }
+
 }

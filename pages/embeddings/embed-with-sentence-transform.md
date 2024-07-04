@@ -1,13 +1,9 @@
----
-id: embed-with-sentence-transform.md
-order: 3
-summary: 本文演示了如何在 Milvus 中使用句子转换器将文档和查询编码成密集向量。
-title: 句子转换器
----
 
-# 句子转换器
 
-Milvus 通过 __SentenceTransformerEmbeddingFunction__ 类与 [SentenceTransformer](https://www.sbert.net/docs/pretrained_models.html#model-overview) 预训练模型集成。此类提供了使用预训练的句子转换器模型对文档和查询进行编码的方法，并将嵌入返回为与 Milvus 索引兼容的密集向量。
+
+# Sentence Transformers
+
+Milvus 通过 __SentenceTransformerEmbeddingFunction__ 类集成了 [句子转换器](https://www.sbert.net/docs/pretrained_models.html#model-overview) 预训练模型。这个类提供了使用预训练的句子转换器模型对文档和查询进行编码的方法，并将嵌入作为与 Milvus 索引兼容的密集向量返回。
 
 要安装必要的句子转换器 Python 包，请使用以下命令：
 
@@ -22,7 +18,7 @@ from pymilvus import model
 
 sentence_transformer_ef = model.dense.SentenceTransformerEmbeddingFunction(
     model_name='all-MiniLM-L6-v2', # 指定模型名称
-    device='cpu' # 指定要使用的设备，例如 'cpu' 或 'cuda:0'
+    device='cpu' # 指定设备，例如 'cpu' 或 'cuda:0'
 )
 ```
 
@@ -30,26 +26,26 @@ __参数__：
 
 - __model_name__ (_string_)
 
-    用于编码的 Sentence Transformer 模型的名称。默认值为 __all-MiniLM-L6-v2__。您可以使用句子转换器的任何预训练模型。有关可用模型的列表，请参阅 [预训练模型](https://www.sbert.net/docs/pretrained_models.html)。
+    用于编码的句子转换器模型的名称。默认值为 __all-MiniLM-L6-v2__。你可以使用任何句子转换器的预训练模型。有关可用模型的列表，请参考 [预训练模型](https://www.sbert.net/docs/pretrained_models.html)。
 
 - __device__ (_string_)
 
-    要使用的设备，_cpu_ 表示 CPU，_cuda:n_ 表示第 n 个 GPU 设备。
+    用于设备名称，使用 __cpu__ 表示 CPU，__cuda: n__ 表示第 n 个 GPU 设备。
 
-要为文档创建嵌入，请使用 __encode_documents()__ 方法：
+要为文档创建嵌入，使用 __encode_documents()__ 方法：
 
 ```python
 docs = [
-    "人工智能作为一门学科在1956年成立。",
-    "艾伦·图灵是第一个在 AI 领域进行大量研究的人。",
-    "图灵出生在伦敦的梅达谷，他在英格兰南部长大。",
+    "人工智能是在1956年作为一门学科创建的。",
+    "阿兰·图灵是第一位进行深入研究人工智能的人。",
+    "图灵出生在伦敦的梅达维尔，成长在英格兰南部。",
 ]
 
 docs_embeddings = sentence_transformer_ef.encode_documents(docs)
 
-# 打印嵌入
+# 输出嵌入
 print("嵌入:", docs_embeddings)
-# 打印嵌入的维度和形状
+# 输出嵌入的维度和形状
 print("维度:", sentence_transformer_ef.dim, docs_embeddings[0].shape)
 ```
 
@@ -66,17 +62,17 @@ print("维度:", sentence_transformer_ef.dim, docs_embeddings[0].shape)
 维度: 384 (384,)
 ```
 
-要为查询创建嵌入，请使用 __encode_queries()__ 方法：
+要为查询创建嵌入，使用 __encode_queries()__ 方法：
 
 ```python
-queries = ["人工智能是什么时候成立的",
-           "艾伦·图灵出生在哪里？"]
+queries = ["人工智能是在什么时候创建的？", 
+           "阿兰·图灵出生在哪里？"]
 
 query_embeddings = sentence_transformer_ef.encode_queries(queries)
 
-# 打印嵌入
+# 输出嵌入
 print("嵌入:", query_embeddings)
-# 打印嵌入的维度和形状
+# 输出嵌入的维度和形状
 print("维度:", sentence_transformer_ef.dim, query_embeddings[0].shape)
 ```
 
@@ -92,3 +88,4 @@ print("维度:", sentence_transformer_ef.dim, query_embeddings[0].shape)
       dtype=float32)]
 维度: 384 (384,)
 ```
+

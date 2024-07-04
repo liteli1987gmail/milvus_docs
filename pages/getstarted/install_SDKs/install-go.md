@@ -1,36 +1,33 @@
----
-id: 安装-Go-SDK.md
-label: 安装Go SDK
-related_key: SDK
-summary: 学习如何安装Milvus的Go SDK。
-title: 安装Milvus Go SDK
----
 
-# 安装Milvus Go SDK
+ 
 
-本主题描述了如何为Milvus安装Go SDK。
+# 安装 Milvus Go SDK
 
-当前版本的Milvus支持Python、Node.js、Go和Java的SDK。
+本文介绍如何安装 Milvus 的 Go SDK。
+
+当前版本的 Milvus 支持 Python、Node.js、GO 和 Java 的 SDK。
 
 ## 要求
 
-需要Go（1.15或更高版本）。
+需要 GO（1.15 或更高版本）。
 
-## 安装Milvus Go SDK
+## 安装 Milvus Go SDK
 
-通过`go get`安装Milvus Go SDK及其依赖项。
+通过 `go get` 命令安装 Milvus Go SDK 及其依赖项。
 
 ```bash
 $ go get -u github.com/milvus-io/milvus-sdk-go/v2
 ```
 
-## 接下来做什么
+## 下一步操作
 
-安装了Milvus Go SDK后，您可以：
 
-- 学习Milvus的基本操作：
-  - [管理集合](manage-collections.md)
-  - [管理分区](manage-partitions.md)
-  - [插入、更新和删除](insert-update-delete.md)
-  - [单向量搜索](single-vector-search.md)
-  - [多向量搜索](multi-vector-search.md)
+
+安装了 Milvus GO SDK 之后，你可以：
+
+- Learn the basic operations of Milvus:
+  - [Manage Collections](管理集合.md)
+  - [Manage Partitions](管理分区.md)
+  - [Insert, Upsert & Delete](插入、更新和删除.md)
+  - [Single-Vector Search](单向量搜索.md)
+  - [Multi-Vector Search](多向量搜索.md)

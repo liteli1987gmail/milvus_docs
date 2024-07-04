@@ -1,61 +1,64 @@
 
+
+
+
 ---
 id: embed-with-openai.md
 order: 2
-summary: Milvus 通过 OpenAIEmbeddingFunction 类与 OpenAI 的模型进行集成
-title: OpenAI 嵌入模型
+summary: Milvus通过OpenAIEmbeddingFunction类与OpenAI模型集成。
+title: OpenAI
 ---
 
 # OpenAI
 
-Milvus 通过 `OpenAIEmbeddingFunction` 类与 OpenAI 的模型进行集成。此类提供了使用预训练的 OpenAI 模型对文档和查询进行编码的方法，并将嵌入返回为与 Milvus 索引兼容的密集向量。要使用此功能，请通过在他们的平台上创建账户，从 [OpenAI](https://openai.com/api/) 获取 API 密钥。
+Milvus 通过 __OpenAIEmbeddingFunction__ 类与 OpenAI 模型集成。该类提供了使用预训练的 OpenAI 模型对文档和查询进行编码的方法，并将嵌入作为与 Milvus 索引兼容的稠密向量返回。要使用此功能，请在 [OpenAI](https://openai.com/api/) 上创建帐户，获取 API 密钥。
 
-要安装必要的 OpenAI Python 包，请使用以下命令：
+要安装所需的 OpenAI Python 包，请使用以下命令:
 
-```python
+---python
 pip install openai
 ```
 
-然后，实例化 `OpenAIEmbeddingFunction`：
+然后，实例化__OpenAIEmbeddingFunction__：
 
 ```python
 from pymilvus import model
 
 openai_ef = model.dense.OpenAIEmbeddingFunction(
-    model_name='text-embedding-3-large',  # 指定模型名称
-    api_key='YOUR_API_KEY',  # 提供你的 OpenAI API 密钥
-    dimensions=512  # 设置嵌入的维度
+    model_name='text-embedding-3-large', # 指定模型名称
+    api_key='YOUR_API_KEY', # 提供你的OpenAI API密钥
+    dimensions=512 # 设置嵌入的维度
 )
 ```
 
-**参数**：
+__参数__:
 
-- `model_name` (_string_)
+- __model_name__ (_string_)
 
-  用于编码的 OpenAI 模型的名称。有效选项包括 `text-embedding-3-small`、`text-embedding-3-large` 和 `text-embedding-ada-002`（默认）。
+    要使用的OpenAI模型的名称。有效选项为__text-embedding-3-small__、__text-embedding-3-large__和__text-embedding-ada-002__（默认）。
 
-- `api_key` (_string_)
+- __api_key__ (_string_)
 
-  用于访问 OpenAI API 的 API 密钥。
+    访问OpenAI API的API密钥。
 
-- `dimensions` (_int_)
+- __dimensions__ (_int_)
 
-  生成的输出嵌入应具有的维度数。仅在 `text-embedding-3` 及以后的模型中支持。
+    输出嵌入应具有的维度数。仅适用于__text-embedding-3__及更高版本的模型。
 
-要为文档创建嵌入，请使用 `encode_documents()` 方法：
+要为文档创建嵌入，请使用__encode_documents()__方法：
 
 ```python
 docs = [
-    "人工智能于1956年作为一门学科被创立。",
-    "艾伦·图灵是第一个进行大量人工智能研究的人。",
-    "图灵出生于伦敦的梅达维尔，在英格兰南部长大。",
+    "Artificial intelligence was founded as an academic discipline in 1956.",
+    "Alan Turing was the first person to conduct substantial research in AI.",
+    "Born in Maida Vale, London, Turing was raised in southern England.",
 ]
 
 docs_embeddings = openai_ef.encode_documents(docs)
 
-# 打印嵌入
+# 打印嵌入结果
 print("嵌入:", docs_embeddings)
-# 打印嵌入的维度和形状
+# 打印嵌入结果的维度和形状
 print("维度:", openai_ef.dim, docs_embeddings[0].shape)
 ```
 
@@ -71,23 +74,22 @@ print("维度:", openai_ef.dim, docs_embeddings[0].shape)
        -5.76633997e-02,  9.68257990e-03,  4.62721288e-02, -4.33261096e-02])]
 维度: 512 (512,)
 ```
-
-要为查询创建嵌入，请使用 `encode_queries()` 方法：
+ 
+要为查询创建嵌入，请使用__encode_queries()__方法：
 
 ```python
-queries = ["人工智能是在什么时候创立的",
-           "艾伦·图灵是在哪里出生的？"]
+queries = ["When was artificial intelligence founded", 
+           "Where was Alan Turing born?"]
 
 query_embeddings = openai_ef.encode_queries(queries)
 
-# 打印嵌入
+# 打印嵌入结果
 print("嵌入:", query_embeddings)
-# 打印嵌入的维度和形状
+# 打印嵌入结果的维度和形状
 print("维度", openai_ef.dim, query_embeddings[0].shape)
 ```
 
 预期的输出类似于以下内容：
-
 
 ```python
 嵌入: [array([ 0.00530251, -0.01907905, -0.01672608, -0.05030033,  0.01635982,
@@ -99,3 +101,4 @@ print("维度", openai_ef.dim, query_embeddings[0].shape)
        -6.21757433e-02,  7.88027793e-02,  4.91846527e-04, -1.51633881e-02])]
 维度 512 (512,)
 ```
+

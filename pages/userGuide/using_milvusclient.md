@@ -1,37 +1,32 @@
----
-id: using_milvusclient.md
-related_key: Milvus Client Python
-summary: Learn how to use the MilvusClient Python API.
-title: Use the MilvusClient
----
+
+
 
 # 使用 MilvusClient
 
-本页面介绍了如何在 Pymilvus 中使用 MilvusClient。MilvusClient 是 Pymilvus 的简化包装器，更易于使用，并且隐藏了使用原始 SDK 时发现的大部分复杂性。
+本页面介绍如何使用 Pymilvus 中的 MilvusClient。MilvusClient 是 Pymilvus 中的一个简化封装，使用起来更方便，隐藏了使用原始 SDK 中的大部分复杂性。
 
 <div class="alert note">
-    确保 Milvus 正在运行。
+    请确保 Milvus 正在运行。
 </div>
 
-MilvusClient 支持通过 URI 使用单一统一的方式来连接服务。以下是一些有效的 URI 示例：
+MilvusClient 通过使用 URI 支持一种单一的连接服务的方式。一些有效的 URI 示例包括:
+1. "http://localhost: 19530"
+2. "https://user: password@mysite: 19530"
+2. "https://username: password@in01-12a.aws-us-west-2.vectordb.zillizcloud.com: 19538"
 
-1. "http://localhost:19530"
-2. "https://user:password@mysite:19530"
-3. "https://username:password@in01-12a.aws-us-west-2.vectordb.zillizcloud.com:19538"
+当使用 HTTPS 连接时，我们希望提供用户名和密码。
 
-当使用 HTTPS 连接时，我们期望提供用户名和密码。
+现在让我们通过一个快速示例来了解如何使用 MilvusClient。
 
-现在让我们来看看使用 MilvusClient 的一个快速示例。
-
-## 基础
+## 基础知识
 
 ### 创建客户端
 
-使用客户端所需的大部分信息都在构造调用中提供。客户端有两个主要用例，创建一个新的 Milvus 集合或使用之前创建的集合。
+大部分使用客户端所需的信息都在构造调用中提供。客户端有两个主要用例，创建新的 Milvus 集合或使用之前创建的集合。
 
-如果要创建新集合，则必须指定 vector_field 名称，因为这无法从插入的数据中解析。如果您想手动处理此集合的主字段键，则还必须指定 pk_field，否则将使用自动生成的 int 字段。如果在 Milvus 实例中存在同名的集合，则必须将 overwrite 设置为 `True` 以删除之前的集合。
+如果要创建新集合，则必须指定 vector_field 名称，因为它不能从插入的数据中解析。如果要手动处理该集合的主字段键，则还必须指定 pk_field；否则，将使用自动生成的 int 字段。如果 Milvus 实例中存在同名集合，则必须将 overwrite 设置为 `True`，以删除先前的集合。
 
-如果您想连接到之前创建的集合，则只需要提供 uri 和 collection_name，其余信息将从集合本身推断出来。
+如果要连接到之前创建的集合，则只需提供 uri 和 collection_name，其余信息将从集合本身推断出。
 
 ```python
 from pymilvus import MilvusClient
@@ -39,17 +34,17 @@ from pymilvus import MilvusClient
 client = MilvusClient(
     collection_name="qux",
     uri="http://localhost:19530",
-    vector_field="float_vector",
-    # pk_field= "id", # 如果您想提供自己的 PK
+    vector_field="float_vector", 
+    # pk_field= "id", # 如果要提供自己的 PK
     overwrite=True,
 )
 ```
 
 ### 插入数据
 
-创建了 MilvusClient 后，我们可以开始插入数据。数据以字典列表的形式插入，其中每个字典对应集合中的一行。每个字典必须包含集合中所有列的值，否则插入将抛出异常。
+创建了 MilvusClient 后，就可以开始插入数据了。数据以字典列表的形式插入，其中每个字典对应集合中的一行。每个字典必须包含集合中所有列的值，否则插入操作将抛出异常。
 
-如果客户端是在不存在的集合上创建的，或者将 overwrite 设置为 True，则字典列表中的第一个条目将用于构建集合的模式。所有后续插入都需要包含与第一个字典相同的字段。如果在构造时没有提供索引参数，则将使用默认的 HNSW 索引来索引数据。
+如果客户端是在一个不存在的集合上创建的，或者 overwrite 设置为 True，则将使用字典列表中的第一个条目来构造集合的模式。所有后续的插入都需要包含与第一个字典相同的字段。如果在构造时未提供索引参数，则将使用默认的 HNSW 索引对数据进行索引。
 
 ```python
 data = [
@@ -74,7 +69,7 @@ client.insert_data(data)
 
 ### 搜索数据
 
-将数据插入 Milvus 后，我们可以开始搜索集合。搜索需要输入搜索向量/s 和我们想要的搜索结果数量（top_k）。此外，如果您愿意，您还可以提供搜索参数。这些搜索参数应与构造时提供的索引参数相对应。如果没有提供，MilvusClient 将使用默认的搜索参数。
+一旦数据被插入到 Milvus 中，我们就可以开始搜索集合了。搜索函数接受搜索向量，以及我们想要的搜索结果数（top_k）。此外，如果需要，还可以提供搜索参数。搜索参数应与在构造时提供的 index_parameters 对应。如果未提供参数，则 MilvusClient 将使用默认搜索参数。
 
 ```python
 res = client.search_data(
@@ -91,24 +86,25 @@ res = client.search_data(
 # ]]
 ```
 
-搜索结果将以列表列表的形式返回。对于每个搜索向量，您将收到一个包含距离和相应结果数据的字典列表。如果不需要所有数据，您可以使用 return_fields 参数调整返回的数据。
+搜索结果将以列表列表的形式呈现。对于每个搜索向量，你将收到一个字典列表，其中每个字典包含距离和对应的结果数据。如果不需要所有数据，可以使用 return_fields 参数调整返回哪些数据。
 
-## 高级
+## 高级功能
 
 ### 分区
 
-MilvusClient 在当前版本中支持分区。分区可以在 MilvusClient 构造时和之后指定。以下是使用分区功能的快速示例。
+
+
+The MilvusClient 在当前版本中支持分区。分区可以在 MilvusClient 的构建和之后指定。以下是使用分区功能的快速示例。
 
 ```python
 from pymilvus import MilvusClient
-
 
 
 client = MilvusClient(
     collection_name="qux",
     uri="http://localhost:19530",
     vector_field="float_vector",
-    partitions = ["zaz"],
+    partitions=["zaz"],
     overwrite=True,
 )
 
@@ -133,8 +129,8 @@ data = [
 client.insert_data(data, partition="zoo")
 
 res = client.search_data(
-    data = [1,3,5],
-    top_k = 2,
+    data=[1,3,5],
+    top_k=2,
 )
 
 # [[
@@ -142,10 +138,9 @@ res = client.search_data(
 #     {'data': {'id': 2, 'internal_pk_3bd4': 441363276234227866, 'text': 'bar'}, 'score': 14.0}
 # ]]
 
-
 res = client.search_data(
-    data = [1,3,5],
-    top_k = 2,
+    data=[1,3,5],
+    top_k=2,
     partitions=["zaz"]
 )
 
@@ -154,8 +149,8 @@ res = client.search_data(
 # ]]
 
 res = client.search_data(
-    data = [1,3,5],
-    top_k = 2,
+    data=[1,3,5],
+    top_k=2,
     partitions=["zoo"]
 )
 
@@ -164,9 +159,13 @@ res = client.search_data(
 # ]]
 ```
 
+
 ### Filtering
 
-Filtering can be used to narrow down results to match metadata or to query data based on metadata.
+
+
+# 
+过滤可以用于根据元数据缩小结果范围或根据元数据查询数据。
 
 ```python
 from pymilvus import MilvusClient
@@ -174,8 +173,8 @@ from pymilvus import MilvusClient
 client = MilvusClient(
     collection_name="qux",
     uri="http://localhost:19530",
-    vector_field="float_vector",
-    # pk_field= "id", # If you wanted to provide your own PK
+    vector_field="float_vector", 
+    # pk_field= "id", # 如果你想提供自己的主键
     overwrite=True,
 )
 
@@ -218,9 +217,11 @@ res = client.query_data(
 # ]
 ```
 
-### Vector Retrieval and Deletion
+### 向量检索和删除
 
-As a vector database we have the ability to return the actual vectors and delete their entries. In order to do these two functions we need to first get the pks corresponding to the entry we are trying to act on. Here is an example below.
+
+
+作为向量数据库，我们有能力返回实际的向量并删除它们的条目。为了执行这两个功能，我们首先需要获取与我们尝试操作的条目相对应的主键（pks）。以下是一个示例。
 
 ```python
 from pymilvus import MilvusClient
@@ -228,8 +229,8 @@ from pymilvus import MilvusClient
 client = MilvusClient(
     collection_name="qux",
     uri="http://localhost:19530",
-    vector_field="float_vector",
-    pk_field= "text",
+    vector_field="float_vector", 
+    pk_field= "text", 
     overwrite=True,
 )
 

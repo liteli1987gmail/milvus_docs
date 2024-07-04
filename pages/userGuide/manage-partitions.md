@@ -1,87 +1,90 @@
----
-id: 管理分区.md
-title: 管理分区
----
 
-# 管理分区
 
-本指南将指导您如何在集合中创建和管理分区。
 
-## 概述
+                # 管理分区
 
-在 Milvus 中，分区代表集合的一个子分区。此功能允许将集合的物理存储划分为多个部分，通过将焦点缩小到较小的数据子集而不是整个集合，从而提高查询性能。
+                本指南将指导你如何在集合中创建和管理分区。
 
-创建集合时，至少会自动创建一个名为 **default** 的默认分区。您可以在集合中创建最多 4,096 个分区。
+                ## 概述
 
-<div class="admonition note">
+                Milvus 中的分区表示集合的子分区。此功能允许将集合的物理存储划分为多个部分，通过将焦点缩小到较小的数据子集而不是整个集合，有助于改进查询性能。
 
-<p><b>注意</b></p>
+                在创建集合时，至少会自动创建一个名为 ___default__ 的默认分区。一个集合内最多可以创建 4,096 个分区。
 
-<p>Milvus 引入了一个名为 <strong>分区键</strong> 的功能，利用底层分区根据特定字段的哈希值存储实体。此功能有助于实现多租户，提高搜索性能。详情请阅读 <a href="https://milvus.io/docs/use-partition-key.md">使用分区键</a>。</p>
-<p>如果在集合中启用了 <strong>分区键</strong> 功能，Milvus 将负责管理所有分区，免除您的这一责任。</p>
-<p>本页上的代码片段使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md">MilvusClient</a>（Python）与 Milvus 交互。未来更新中将发布其他语言的新 MilvusClient SDK。</p>
+                <div class="admonition note">
 
-</div>
+                <p> <b> 注意 </b> </p>
 
-## 准备工作
+                <p> Milvus 引入了称为 <strong> Partition Key </strong> 的功能，利用底层分区来根据特定字段的散列值存储实体。此功能有助于实现多租户，提高搜索性能。详情请阅读 <a href="https://milvus.io/docs/use-partition-key.md"> 使用 Partition Key </a>。</p>
+                <p> 如果集合中启用了 <strong> Partition Key </strong> 功能，Milvus 会负责管理所有分区，解放你的责任。</p>
+                <p> 本页面中的代码段使用新版 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md"> MilvusClient </a>（Python）与 Milvus 进行交互。未来的更新中将发布适用于其他语言的新版 MilvusClient SDK。</p>
 
-以下代码片段重新利用现有代码，快速设置模式下建立与 Milvus 的连接并创建集合，表明集合在创建时已加载。
+                </div>
+
+                ## 准备工作
+
+                下面的代码段重用现有代码，以快速设置方式建立与 Milvus 的连接并创建一个集合，表明该集合在创建时即被加载。
+
+                ```python
+                from pymilvus import MilvusClient, DataType
+
+                # 1. 建立 Milvus 客户端
+                client = MilvusClient(
+                    uri="http://localhost:19530"
+                )
+
+                # 2. 创建集合
+                client.create_collection(
+                    collection_name="quick_setup",
+                    dimension=5,
+                )
+
+                ```
+
+                <div class="admonition note">
+
+                <p> <b> 注意 </b> </p>
+
+                <p> 在上述代码片段中，索引已在创建集合时创建，表明该集合在创建时即被加载。</p>
+
+                </div>
+
+                ## 列出分区
+
+                集合准备好后，你可以列出其分区。
+
+                ```python
+                # 3. 列出分区
+                res = client.list_partitions(collection_name="quick_setup")
+                print(res)
+
+                # 输出
+                #
+                # ["_default"]
+                ```
+
+                上述代码片段的输出包括指定集合内分区的名称。
+
+                <div class="admonition note">
+
+                <p> <b> 注意 </b> </p>
+
+                <p> 如果你在集合中设置了字段作为分区键，Milvus 会创建至少 <strong> 64 </strong> 个与其集合一起的分区。列出分区时，结果可能与上述代码片段的输出不同。</p>
+                <p> 有关详细信息，请参阅 <a href="https://milvus.io/docs/use-partition-key.md"> 使用 Partition Key </a>。</p>
+
+                </div>
+
+                ## 创建分区
+                
+
+
+
+
+
+你可以向集合中添加更多的分区。一个集合最多可以有 64 个分区。
 
 ```python
-from pymilvus import MilvusClient, DataType
-
-# 1. 设置 Milvus 客户端
-client = MilvusClient(
-    uri="http://localhost:19530"
-)
-
-# 2. 创建集合
-client.create_collection(
-    collection_name="quick_setup",
-    dimension=5,
-)
-
-```
-
-<div class="admonition note">
-
-<p><b>注意</b></p>
-
-<p>在上面的代码片段中，集合的索引已随集合一起创建，表明集合在创建时已加载。</p>
-
-</div>
-
-## 列出分区
-
-一旦集合准备好，您可以列出其分区。
-
-```python
-# 3. 列出分区
-res = client.list_partitions(collection_name="quick_setup")
-print(res)
-
-# 输出
-#
-# ["_default"]
-```
-
-上述代码片段的输出包括指定集合内分区的名称。
-
-<div class="admonition note">
-
-<p><b>注意</b></p>
-
-<p>如果您在集合中将某个字段设置为分区键，Milvus 会随着集合的创建至少创建 <strong>64</strong> 个分区。当列出分区时，结果可能与上述代码片段的输出不同。</p>
-<p>详情请参考 <a href="https://milvus.io/docs/use-partition-key.md">使用分区键</a>。</p>
-
-</div>
-
-## 创建分区
-
-您可以向集合中添加更多分区。一个集合最多可以有 64 个分区。
-
-```python
-# 4. 创建更多分区
+# 4. 创建更多的分区
 client.create_partition(
     collection_name="quick_setup",
     partition_name="partitionA"
@@ -100,20 +103,20 @@ print(res)
 # ["_default", "partitionA", "partitionB"]
 ```
 
-上述代码片段在集合中创建了一个分区，并列出了集合的分区。
+上述代码片段创建了一个分区，并列出了该集合的分区。
 
 <div class="admonition note">
 
-<p><b>注意</b></p>
+<p> <b> 注意 </b> </p>
 
-<p>如果您在集合中将某个字段设置为分区键，Milvus 将负责管理集合中的分区。因此，在尝试创建分区时，您可能会遇到提示的错误。</p>
-<p>详情请参考 <a href="https://milvus.io/docs/use-partition-key.md">使用分区键</a>。</p>
+<p> 如果在集合中将字段设置为分区键，则 Milvus 负责管理集合中的分区。因此，在尝试创建分区时可能会出现提示的错误。</p>
+<p> 详细信息请参考 <a href="https://milvus.io/docs/use-partition-key.md"> 使用分区键 </a>。</p>
 
 </div>
 
 ## 检查特定分区
 
-您还可以检查特定分区的存在性。
+你还可以检查特定分区是否存在。
 
 ```python
 # 5. 检查分区是否存在
@@ -138,20 +141,21 @@ print(res)
 # False
 ```
 
-上述代码片段检查集合是否具有名为 `partitionA` 和 `partitionC` 的分区。
+上述代码片段检查了集合是否存在名为 `partitionA` 和 `partitionC` 的分区。
 
-## 加载与释放分区
+## 加载和释放分区
 
-您可以加载和释放特定分区，使它们可用于或不可用于搜索和查询。
+你可以加载和释放特定的分区，使它们可用或不可用于搜索和查询。
 
 ### 获取加载状态
 
-要检查集合及其分区的加载状态，请执行以下操作：
+
+    
+To check the load status of a collection and its partitions, follow these steps:
 
 ```python
-# 释放集合
+# Release the collection
 client.release_collection(collection_name="quick_setup")
-
 
 # Check the load status
 res = client.get_load_state(collection_name="quick_setup")
@@ -164,7 +168,7 @@ print(res)
 # }
 
 res = client.get_load_state(
-    collection_name="quick_setup",
+    collection_name="quick_setup", 
     partition_name="partitionA"
 )
 
@@ -177,7 +181,7 @@ print(res)
 # }
 
 res = client.get_load_state(
-    collection_name="quick_setup",
+    collection_name="quick_setup", 
     partition_name="partitionB"
 )
 
@@ -191,21 +195,26 @@ print(res)
 
 ```
 
-Possible load status may be either of the following
+Possible load status may be either of the following:
 
-- **Loaded**
+- __Loaded__
 
-  A collection is marked as `Loaded` if at least one of its partitions has been loaded.
+    A collection is marked as `Loaded` if at least one of its partitions has been loaded.
 
-- **NotLoad**
+- __NotLoad__
 
-  A collection is marked as `NotLoad` if none of its partitions has been loaded.
+    A collection is marked as `NotLoad` if none of its partitions has been loaded.
 
-- **Loading**
+- __Loading__
 
 ### Load Partitions
 
-To load all partitions of a collection, you can just call `load_collection()`. To load specific partitions of a collection, do as follows:
+
+
+
+
+
+加载集合的所有分区，只需调用 `load_collection()`。要加载集合的特定分区，请按以下步骤操作：
 
 ```python
 client.load_partitions(
@@ -216,14 +225,14 @@ client.load_partitions(
 res = client.get_load_state(collection_name="quick_setup")
 print(res)
 
-# Output
+# 输出结果
 #
 # {
 #     "state": "<LoadState: Loaded>"
 # }
 ```
 
-To load multiple partitions at a time, do as follows:
+要同时加载多个分区，请按如下方式操作：
 
 ```python
 client.load_partitions(
@@ -236,7 +245,7 @@ res = client.get_load_status(
     partition_name="partitionA"
 )
 
-# Output
+# 输出结果
 #
 # {
 #     "state": "<LoadState: Loaded>"
@@ -247,16 +256,16 @@ res = client.get_load_status(
     partition_name="partitionB"
 )
 
-# Output
+# 输出结果
 #
 # {
 #     "state": "<LoadState: Loaded>"
 # }
 ```
 
-### Release Partitions
+### 释放分区
 
-To release all partitions of a collection, you can just call `release_collection`. To release specific partitions of a collection, do as follows:
+要释放集合的所有分区，只需调用 `release_collection`。要释放集合的特定分区，请按以下步骤操作：
 
 ```python
 # 7. Release a partition
@@ -266,13 +275,13 @@ client.release_partitions(
 )
 
 res = client.get_load_state(
-    collection_name="quick_setup",
+    collection_name="quick_setup", 
     partition_name="partitionA"
 )
 
 print(res)
 
-# Output
+# 输出结果
 #
 # {
 #     "state": "<LoadState: NotLoad>"
@@ -280,7 +289,7 @@ print(res)
 
 ```
 
-To release multiple partitions at a time, do as follows:
+要同时释放多个分区，请按如下方式操作：
 
 ```python
 client.release_partitions(
@@ -292,19 +301,23 @@ res = client.get_load_status(
     collection_name="quick_setup",
 )
 
-# Output
+# 输出结果
 #
 # {
 #     "state": "<LoadState: NotLoad>"
 # }
 ```
 
-## Drop Partitions
+## 删除分区
 
-Once you release a partition, you can drop it if it is no longer needed.
+
+
+
+
+一旦释放分区，如果不再需要，就可以删除它。
 
 ```python
-# 8. Drop a partition
+# 8. 删除一个分区
 client.drop_partition(
     collection_name="quick_setup",
     partition_name="partitionB"
@@ -313,35 +326,39 @@ client.drop_partition(
 res = client.list_partitions(collection_name="quick_setup")
 print(res)
 
-# Output
+# 输出
 #
 # ["_default", "partitionA"]
 ```
 
 <div class="admonition note">
 
-<p><b>notes</b></p>
+<p> <b> 注意：</b> </p>
 
-<p>Before dropping a partition, you need to release it from memory.</p>
+<p> 在删除分区之前，需要从内存中释放它。</p>
 
 </div>
 
-## FAQ
+## 常见问题
 
-- **How much data can be stored in a partition?**
 
-  It is recommended to store less than 1B of data in a partition.
 
-- **What is the maximum number of partitions that can be created?**
 
-  By default, Milvus allows a maximum of 4,096 partitions to be created. You can adjust the maximum number of partitions by configuring `rootCoord.maxPartitionNum`. For details, refer to [System Configurations](https://milvus.io/docs/configure_rootcoord.md#rootCoordmaxPartitionNum).
+- __一个分区可以存储多少数据？__
 
-- **How can I differentiate between partitions and partition keys?**
+    建议在一个分区中存储少于 1B 的数据。
 
-  Partitions are physical storage units, whereas partition keys are logical concepts that automatically assign data to specific partitions based on a designated column.
+- __最多可以创建多少个分区？__
 
-  For instance, in Milvus, if you have a collection with a partition key defined as the `color` field, the system automatically assigns data to partitions based on the hashed values of the `color` field for each entity. This automated process relieves the user of the responsibility to manually specify the partition when inserting or searching data.
+    默认情况下，Milvus 允许最多创建 4,096 个分区。你可以通过配置 `rootCoord.maxPartitionNum` 来调整最大分区数。详细信息请参阅 [系统配置](https://milvus.io/docs/configure_rootcoord.md#rootCoordmaxPartitionNum)。
 
-  On the other hand, when manually creating partitions, you need to assign data to each partition based on the criteria of the partition key. If you have a collection with a `color` field, you would manually assign entities with a `color` value of `red` to `partition A`, and entities with a `color` value of `blue` to `partition B`. This manual management requires more effort.
+- __如何区分分区和分区键？__
 
-  In summary, both partitions and partition keys are utilized to optimize data computation and enhance query efficiency. It is essential to recognize that enabling a partition key means surrendering control over the manual management of partition data insertion and loading, as these processes are fully automated and handled by Milvus.
+    分区是物理存储单元，而分区键是基于指定列自动将数据分配到特定分区的逻辑概念。
+
+    例如，在 Milvus 中，如果你有一个以 `color` 字段定义为分区键的集合，系统会根据每个实体的 `color` 字段的散列值自动将数据分配到分区。这个自动化过程使用户不需要在插入或搜索数据时手动指定分区。
+
+    另一方面，当手动创建分区时，你需要根据分区键的条件将数据分配给每个分区。如果你有一个带有 `color` 字段的集合，你需要手动将具有 `color` 值为 `red` 的实体分配给 `分区A`，将具有 `color` 值为 `blue` 的实体分配给 `分区B`。这种手动管理需要更多的努力。
+
+    总之，分区和分区键都用于优化数据计算和提高查询效率。重要的是要认识到启用分区键意味着放弃对分区数据插入和加载的手动管理控制，因为这些过程完全由 Milvus 自动化处理。
+

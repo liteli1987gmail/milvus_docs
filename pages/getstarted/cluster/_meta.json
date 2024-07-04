@@ -1,0 +1,4 @@
+{
+    "install_cluster-helm": "安装集群 Helm(Install_cluster-helm)",
+    "install_cluster-milvusoperator": "安装集群 Milvus 操作员(Install_cluster-milvusoperator)"
+}

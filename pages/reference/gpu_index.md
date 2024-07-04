@@ -1,118 +1,120 @@
----
-id: gpu_index.md
-related_key: gpu_index
-summary: GPU index mechanism in Milvus.
-title: GPU Index
----
+
+
 
 # GPU 索引
 
-Milvus 支持多种 GPU 索引类型，以加速搜索性能和效率，特别是在高吞吐量、低延迟和高召回率的场景中。本主题提供了 Milvus 支持的 GPU 索引类型的概述，它们的适用用例以及性能特性。有关使用 GPU 构建索引的信息，请参考[Index with GPU](index-with-gpu.md)。
+Milvus 支持多种 GPU 索引类型，以加速搜索性能和效率，尤其适用于高吞吐量、低延迟和高召回率的场景。本主题概述了 Milvus 支持的 GPU 索引类型，它们适用的用例以及性能特点。有关使用 GPU 构建索引的信息，请参考 [使用 GPU 建立索引](/userGuide/manage-indexes/index-with-gpu.md)。
 
-GPU 加速可以大大提高 Milvus 的搜索性能和效率，特别是在高吞吐量、低延迟和高召回率的场景中，并且对大型 nq 批处理搜索场景也非常友好。
+GPU 加速可以显著提高 Milvus 的搜索性能和效率，尤其是对于高吞吐量、低延迟和高召回率的场景，并且对于大规模 nq 批量搜索场景也非常友好。
 
-![performance](/public/assets/gpu_index.png)
+![performance](/assets/gpu_index.png)
 
-Milvus 的 GPU 支持由 Nvidia [RAPIDS](https://rapids.ai/)团队提供。以下是 Milvus 当前支持的 GPU 索引类型。
+Milvus 的 GPU 支持是由 Nvidia 的 [RAPIDS](https://rapids.ai/) 团队提供的。以下是目前由 Milvus 支持的 GPU 索引类型。
 
 ## GPU_CAGRA
 
-GPU_CAGRA 是基于图的索引，针对 GPU 进行了优化，在推理 GPU 上表现良好。它最适合查询数量较少的情况，在这种情况下，使用较低内存频率训练 GPU 可能无法获得最佳结果。
+GPU_CAGRA 是一种针对 GPU 进行优化的基于图的索引，在推理 GPU 上表现良好。它最适合查询数量较少、使用低内存频率的训练 GPU 可能无法产生最佳结果的情况。
 
-- 索引构建参数
+- 构建索引参数
 
-  | 参数                        | 描述                                                                                                                                                                          | 默认值               |
-  | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
-  | `intermediate_graph_degree` | 通过确定修剪前图的度数，影响召回率和构建时间。推荐值是`32`或`64`。                                                                                                            | <code>128</code>     |
-  | `graph_degree`              | 通过设置修剪后图的度数，影响搜索性能和召回率。这两个度数之间的差异越大，构建时间越长。它的值必须小于**intermediate_graph_degree**的值。                                       | <code>64</code>      |
-  | `build_algo`                | 选择修剪前图生成算法。可能的值：</br><code>IVF_PQ</code>：提供更高的质量，但构建时间更慢。</br> <code>NN_DESCENT</code>：提供更快的构建，但可能召回率较低。                   | <code>IVF_PQ</code>  |
-  | `cache_dataset_on_device`   | 决定是否在 GPU 内存中缓存原始数据集。可能的值：</br><code>"true"</code>：缓存原始数据集以通过细化搜索结果提高召回率。</br> <code>"false"</code>：不缓存原始数据集以节省内存。 | <code>"false"</code> |
+  | 参数名                     | 描述                                                                                                                                                                                                                                                         | 默认值                 |
+  |-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|
+  | `intermediate_graph_degree` | 通过确定修剪之前的图的度数，影响召回率和构建时间。推荐的值为 `32` 或 `64`。                                                                                                                                                                                 | <code> 128 </code>     |
+  | `graph_degree`              | 通过设置修剪后的图的度数来影响搜索性能和召回率。这两个度数之间的差异越大，构建时间越长。其值必须小于 __intermediate_graph_degree__ 的值。                                                                                                            | <code> 64 </code>      |
+  | `build_algo`                | 选择修剪之前的图生成算法。可选值：</br> <code> IVF_PQ </code>：提供更高质量但更慢的构建时间。</br> <code> NN_DESCENT </code>：提供更快的构建速度，但可能会降低召回率。                                                                                            | <code> IVF_PQ </code>  |
+  | `cache_dataset_on_device`   | 是否将原始数据集缓存在 GPU 内存中。可选值：</br> <code> "true" </code>：将原始数据集缓存到 GPU 内存中，通过改进搜索结果来提高召回率。</br> <code> "false" </code>：不将原始数据集缓存到内存中，以节省内存空间。                                                                 | <code> "false" </code> |
 
 - 搜索参数
 
-  | 参数                                | 描述                                                                                                                                                                               | 默认值 |
-  | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-  | `itopk_size`                        | 确定搜索期间保留的中间结果的大小。较大的值可能会提高召回率，但可能会影响搜索性能。它应该至少等于最终的 top-k（限制）值，并且通常是 2 的幂（例如，16, 32, 64, 128）。               | Empty  |
-  | `search_width`                      | 指定搜索期间进入 CAGRA 图的入口点数量。增加此值可以提高召回率，但可能会影响搜索性能。                                                                                              | Empty  |
-  | `min_iterations` / `max_iterations` | 控制搜索迭代过程。默认情况下，它们设置为`0`，并且 CAGRA 根据`itopk_size`和`search_width`自动确定迭代次数。手动调整这些值可以帮助平衡性能和准确性。                                 | `0`    |
-  | `team_size`                         | 指定用于在 GPU 上计算度量距离的 CUDA 线程数量。常见值是 2 的幂，最高可达 32（例如 2, 4, 8, 16, 32）。它对搜索性能有轻微影响。默认值是`0`，Milvus 根据向量维度自动选择`team_size`。 | `0`    |
+    | 参数名                           | 描述                                                                                                                        | 默认值 |
+    |---------------------------------|----------------------------------------------------------------------------------------------------------------------------|-------|
+    | `itopk_size`                    | 确定搜索过程中保留的中间结果的大小。较大的值可以提高召回率，但会影响搜索性能。它应至少等于最终的 top-k（限制）值，并且通常为 2 的幂次方（例如，16、32、64、128）。                   | 空     |
+    | `search_width`                  | 指定搜索过程中进入 CAGRA 图的入口点数。增加这个值可以提高召回率，但可能会影响搜索性能。                                            | 空     |
+    | `min_iterations` / `max_iterations` | 控制搜索迭代过程。默认情况下，它们被设置为 `0`，CAGRA 会根据 `itopk_size` 和 `search_width` 自动确定迭代次数。手动调整这些值可以帮助平衡性能和准确性。 | `0`      |
+    | `team_size`                       | 指定在 GPU 上计算度量距离时使用的 CUDA 线程数。常见的值是 2 的幂次方，最高为 32（例如 2、4、8、16、32）。它对搜索性能影响较小。默认值为 `0`，Milvus 会根据向量维度自动选择 `team_size`。 | `0`      |
+
 
 ## GPU_IVF_FLAT
 
-与[IVF_FLAT](https://milvus.io/docs/index.md#IVF_FLAT)类似，GPU_IVF_FLAT 也将向量数据分成`nlist`个簇单元，然后比较目标输入向量和每个簇的中心之间的距离。根据系统设置的要查询的簇数量（`nprobe`），仅基于目标输入和最相似簇中的向量之间的比较返回相似性搜索结果，从而大大减少了查询时间。
+与 [IVF_FLAT](https://milvus.io/docs/index.md#IVF_FLAT) 类似，GPU_IVF_FLAT 也将向量数据分成 `nlist` 个聚类单元，然后计算目标输入向量与每个聚类中心之间的距离。根据系统设置的查询聚类数（`nprobe`），只对与目标输入向量在最相似的聚类中的向量进行比较，并返回相似度搜索结果，从而大幅减少查询时间。
 
-通过调整`nprobe`，可以在给定场景中找到准确性和速度之间的理想平衡。来自[IVF_FLAT 性能测试](https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing)的结果表明，随着目标输入向量（`nq`）的数量和要搜索的簇（`nprobe`）的数量的增加，查询时间急剧增加。
+通过调整 `nprobe`，可以在给定场景下找到准确性和速度之间的理想平衡。[IVF_FLAT 性能测试的结果](https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing) 显示，随着目标输入向量数量（`nq`）和要搜索的聚类数（`nprobe`）的增加，查询时间会急剧增加。
 
-GPU_IVF_FLAT is the most basic IVF index, and the encoded data stored in each unit is consistent with the original data.
+GPU_IVF_FLAT 是最基本的 IVF 索引，每个单元中存储的编码数据与原始数据一致。
 
-When conducting searches, note that you can set the top-K up to 256 for any search against a GPU_IVF_FLAT-indexed collection.
+在进行搜索时，请注意你可以为任何针对 GPU_IVF_FLAT 索引的集合设置最多 256 个 top-K。
 
-- Index building parameters
+- 构建索引参数
 
-  | Parameter | Description             | Range      | Default Value |
-  | --------- | ----------------------- | ---------- | ------------- |
-  | `nlist`   | Number of cluster units | [1, 65536] | 128           |
+   | 参数名 | 描述             | 范围         | 默认值 |
+   | ------- | ----------------------- | ---------- | ------------- |
+   | `nlist`   | 聚类单元数 | [1, 65536] | 128 |
 
-- Search parameters
+- 搜索参数
 
-  - Common search
+  - 常规搜索
 
-    | Parameter | Description              | Range      | Default Value |
-    | --------- | ------------------------ | ---------- | ------------- |
-    | `nprobe`  | Number of units to query | [1, nlist] | 8             |
+    | 参数名 | 描述              | 范围           | 默认值 |
+    | ------- | ------------------------ | --------------- | ------------- |
+    | `nprobe`  | 要查询的单元数 | [1, nlist]      | 8 |
 
-- Limits on search
+- 搜索限制
 
-  | Parameter | Range  |
-  | --------- | ------ |
+  | 参数名 | 范围  |
+  | ----- | ------ |
   | `top-K`   | <= 256 |
 
 ## GPU_IVF_PQ
+ 
 
-`PQ` (Product Quantization) uniformly decomposes the original high-dimensional vector space into Cartesian products of `m` low-dimensional vector spaces, and then quantizes the decomposed low-dimensional vector spaces. Instead of calculating the distances between the target vector and the center of all the units, product quantization enables the calculation of distances between the target vector and the clustering center of each low-dimensional space and greatly reduces the time complexity and space complexity of the algorithm.
 
-IVF_PQ performs IVF index clustering before quantizing the product of vectors. Its index file is even smaller than IVF_SQ8, but it also causes a loss of accuracy during searching vectors.
+`PQ`（Product Quantization）将原始高维向量空间均匀分解为 `m` 个低维向量空间的笛卡尔积，然后对分解后的低维向量空间进行量化。相比于计算目标向量与所有单元的中心之间的距离，产品量化使得可以计算目标向量与每个低维空间的聚类中心之间的距离，大大降低了算法的时间复杂度和空间复杂度。
+
+IVF\_PQ 在量化向量的乘积之前执行了 IVF 索引聚类。它的索引文件比 IVF\_SQ8 还要小，但在搜索向量时也会造成精度损失。
 
 <div class="alert note">
 
-Index building parameters and search parameters vary with Milvus distribution. Select your Milvus distribution first.
+索引构建参数和搜索参数随着 Milvus 的发布版本而有所不同，请先选择对应的 Milvus 发布版本。
 
-When conducting searches, note that you can set the top-K up to 8192 for any search against a GPU_IVF_FLAT-indexed collection.
+在进行搜索时，注意对于针对 GPU_IVF_FLAT 索引集合的任何搜索，可以将 top-K 设置为最多 8192。
 
 </div>
 
-- Index building parameters
+- 索引构建参数
 
-  | Parameter | Description                                                               | Range            | Default Value |
-  | --------- | ------------------------------------------------------------------------- | ---------------- | ------------- |
-  | `nlist`   | Number of cluster units                                                   | [1, 65536]       | 128           |
-  | `m`       | Number of factors of product quantization                                 | `dim mod m == 0` | 4             |
-  | `nbits`   | [Optional] Number of bits in which each low-dimensional vector is stored. | [1, 16]          | 8             |
+  | 参数        | 描述                                                         | 范围            | 默认值     |
+  | ----------- | ------------------------------------------------------------ | --------------- | ---------- |
+  | `nlist`     | 聚类单元的数量                                               | [1, 65536]      | 128        |
+  | `m`         | 乘积量化的因子数量                                           | `dim mod m == 0` | 4          |
+  | `nbits`     | [可选] 每个低维向量存储的比特数                               | [1, 16]         | 8          |
 
-- Search parameters
+- 搜索参数
 
-  - Common search
+  - 普通搜索
 
-    | Parameter | Description              | Range      | Default Value |
-    | --------- | ------------------------ | ---------- | ------------- |
-    | `nprobe`  | Number of units to query | [1, nlist] | 8             |
+    | 参数        | 描述                                                         | 范围            | 默认值     |
+    | ----------- | ------------------------------------------------------------ | --------------- | ---------- |
+    | `nprobe`    | 查询的聚类单元数量                                           | [1, nlist]      | 8          |
 
-- Limits on search
+- 搜索限制
 
-  | Parameter | Range   |
-  | --------- | ------- |
-  | `top-K`   | <= 1024 |
+  | 参数        | 范围    |
+  | ----------- | ------- |
+  | `top-K`     | <= 1024 |
 
 ## GPU_BRUTE_FORCE
 
-GPU_BRUTE_FORCE is tailored for cases where extremely high recall is crucial, guaranteeing a recall of 1 by comparing each query with all vectors in the dataset. It only requires the metric type (`metric_type`) and top-k (`limit`) as index building and search parameters.
+GPU_BRUTE_FORCE 适用于极高的召回率至关重要的情况，通过将每个查询与数据集中的所有向量进行比较，可以保证召回率为 1。它只需要指定距离度量类型（`metric_type`）和 top-k（`limit`）作为索引构建和搜索参数。
 
-For GPU_BRUTE_FORCE, no addition index building parameters or search parameters are required.
+对于 GPU_BRUTE_FORCE，不需要额外的索引构建参数或搜索参数。
 
-## Conclusion
+## 结论
 
-Currently, Milvus loads all indexes into GPU memory for efficient search operations. The amount of data that can be loaded depends on the size of the GPU memory:
 
-- **GPU_CAGRA**: Memory usage is approximately 1.8 times that of the original vector data.
-- **GPU_IVF_FLAT** and **GPU_BRUTE_FORCE**: Requires memory equal to the size of the original data.
-- **GPU_IVF_PQ**: Utilizes a smaller memory footprint, which depends on the compression parameter settings.
+
+当前，Milvus 将所有索引加载到 GPU 内存中以进行高效的搜索操作。可以加载的数据量取决于 GPU 内存的大小：
+
+- **GPU_CAGRA**：内存使用量大约是原始向量数据的 1.8 倍。
+- **GPU_IVF_FLAT** 和 **GPU_BRUTE_FORCE**：需要和原始数据大小相等的内存。
+- **GPU_IVF_PQ**：利用较小的内存占用，具体取决于压缩参数的设置。
+

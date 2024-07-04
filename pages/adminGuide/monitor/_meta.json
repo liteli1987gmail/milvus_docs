@@ -1,0 +1,8 @@
+{
+    "alert": "警报(Alert)",
+    "configure_grafana_loki": "配置 Grafana Loki(Configure_grafana_loki)",
+    "metrics_dashboard": "指标仪表板(Metrics_dashboard)",
+    "monitor": "监控(Monitor)",
+    "monitor_overview": "监控概述(Monitor_overview)",
+    "visualize": "可视化(Visualize)"
+}

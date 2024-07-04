@@ -1,34 +1,33 @@
----
-title: 开始使用 Milvus Lite
----
 
-# 开始使用 Milvus Lite
+
+
+# 使用 Milvus Lite 入门
 
 本指南介绍了如何安装、配置和使用 [Milvus Lite](https://github.com/milvus-io/milvus-lite)。
 
 <div class="alert caution">
 
-不要在任何生产环境或需要高性能的情况下使用 Milvus Lite。对于生产目的，考虑使用 Milvus 集群或在 Zilliz Cloud 上全面管理的 Milvus。
+请勿在任何生产环境中使用 Milvus Lite，或者如果你需要高性能，请考虑使用 Milvus 集群或在 Zilliz Cloud 上完全托管的 Milvus。
 
 </div>
 
 ## 概述
 
-Milvus Lite 是 Milvus 的轻量级版本，可以与 Google Colab 和 Jupyter Notebook 无缝协作。
+Milvus Lite 是 Milvus 的轻量级版本，与 Google Colab 和 Jupyter Notebook 无缝配合使用。
 
-由于 Milvus 独立部署能够运行嵌入式 etcd 和本地存储，Milvus Lite 附带了一个单一的二进制文件，无需其他依赖项，您可以轻松地在您的机器上安装和运行，或嵌入到您的任何 Python 应用程序中。
+由于 Milvus 独立版能够嵌入式运行并具有本地存储和嵌入式 etcd 的能力，Milvus Lite 只包含一个单独的二进制文件，没有其他依赖项，可以轻松安装和在你的计算机上运行，或者嵌入到你的任何 Python 应用程序中。
 
-您使用 Milvus Lite 所做的任何事情，以及为 Milvus Lite 编写的任何代码都可以安全地迁移到以其他方式安装的 Milvus 实例。
+使用 Milvus Lite 所做的任何操作以及为 Milvus Lite 编写的任何代码都可以安全地迁移到以其他方式安装的 Milvus 实例中。
 
-它还带有一个基于 CLI 的 Milvus 独立服务器，可以在您的机器上运行。将其嵌入到您的 Python 代码中或将其作为独立服务器使用，取决于您的选择。
+它还配有基于命令行界面的 Milvus 独立服务器，可在你的计算机上运行。将其嵌入到你的 Python 代码中或将其用作独立服务器由你自己选择。
 
 ## 应用场景
 
 Milvus Lite 适用于以下场景：
 
-- 您想直接使用 Milvus，而无需使用 [Milvus Operator](https://milvus.io/docs/install_standalone-operator.md)、[Helm](https://milvus.io/docs/install_standalone-helm.md) 或 [Docker Compose](https://milvus.io/docs/install_standalone-docker.md) 等进行安装。
-- 您在使用 Milvus 时不想启动任何虚拟机或容器。
-- 您想在 Python 应用程序中嵌入 Milvus 功能。
+- 你想直接使用 Milvus，而无需使用 [Milvus Operator](/getstarted/standalone/install_standalone-operator.md)、[Helm](/getstarted/standalone/install_standalone-helm.md) 或者 [Docker Compose](/getstarted/standalone/install_standalone-docker.md) 等进行安装。
+- 在使用 Milvus 时，你不希望启动任何虚拟机或容器。
+- 你想将 Milvus 的功能嵌入到你的 Python 应用程序中。
 
 ## 先决条件
 
@@ -41,123 +40,125 @@ Milvus Lite 适用于以下场景：
 
 <div class="alert note">  
 
-- 对于 Linux 用户，Milvus Lite 使用 **manylinux2014** 作为基础镜像。它应该能够在大多数 Linux 发行版上运行。
-- Milvus Lite 也可以在 Windows 上运行。但这一点尚未得到严格验证。
+- 对于 Linux 用户，Milvus Lite 使用 **manylinux2014** 作为基本镜像。它应该能够在大多数 Linux 发行版上运行。
+- Milvus Lite 也可以在 Windows 上运行。但是，这没有严格验证。
 
 </div>
 
 ## 安装 Milvus Lite
 
-Milvus Lite 可在 PyPI 上获取，您可以通过 `pip` 安装。
+Milvus Lite 可以在 PyPI 上获得，你可以通过 `pip` 安装它。
 
 ```shell
 $ python3 -m pip install milvus
 ```
 
-或者，按照以下方式安装 PyMilvus：
+或者，你可以使用 PyMilvus 来安装它，具体操作如下：
 
 ```shell
 $ python3 -m pip install milvus[client]
 ```
 
-## 开始使用
+## 入门指南
 
-您可以从我们项目存储库的 [example](https://github.com/milvus-io/milvus-lite/tree/main/examples) 文件夹下载示例笔记本来开始使用。
+你可以从我们项目仓库的 [example](https://github.com/milvus-io/milvus-lite/tree/main/examples) 文件夹中下载示例笔记本，以开始使用。
 
 ## 使用 Milvus Lite
 
-您可以将 Milvus Lite 作为 Python 库导入，或将其作为基于 CLI 的 Milvus 独立服务器在您的机器上运行。
+你可以将 Milvus Lite 作为 Python 库导入，或者使用它作为基于命令行界面的 Milvus 独立服务器在你的计算机上运行。
 
 ### 启动 Milvus Lite
 
-- 作为 Python 模块启动 Milvus Lite，请按照以下步骤操作：
 
-  ```python
-  from milvus import default_server
-  from pymilvus import connections, utility
+* 作为 Python 模块启动 Milvus Lite，按照以下步骤操作：
 
-  # (可选) 如果您想将所有相关数据存储在特定位置
-  # 默认位置：
-  #   windows 上的 %APPDATA%/milvus-io/milvus-server
-  #   linux 上的 ~/.milvus-io/milvus-server
-  # default_server.set_base_dir('milvus_data')
+```python
+from milvus import default_server
+from pymilvus import connections, utility
 
-  # (可选) 如果您想清理之前的数据
-  # default_server.cleanup()
+# （可选）如果你想将所有相关数据存储到特定位置
+# 默认位置：
+#   在Windows上是 %APPDATA%/milvus-io/milvus-server
+#   在Linux上是 ~/.milvus-io/milvus-server
+# default_server.set_base_dir('milvus_data')
 
-  # 启动您的 milvus 服务器
-  default_server.start()
+# （可选）如果你想清理以前的数据
+# default_server.cleanup()
 
-  # 现在您可以使用 localhost 和给定的端口连接
-  # 端口由 default_server.listen_port 定义
+# 启动milvus服务器
+default_server.start()
+
+# 现在，你可以通过localhost和给定的端口连接
+# 端口由default_server.listen_port定义
+connections.connect(host='127.0.0.1', port=default_server.listen_port)
+
+# 检查服务器是否就绪。
+print(utility.get_server_version())
+
+# 停止milvus服务器
+default_server.stop()
+```
+
+你还可以使用 `with` 语句，在不需要时自动停止 Milvus Lite。
+
+```python
+from milvus import default_server
+
+with default_server:
+  # Milvus Lite已经启动，可以在此处使用default_server。
   connections.connect(host='127.0.0.1', port=default_server.listen_port)
+```
 
-  # 检查服务器是否准备好了。
-  print(utility.get_server_version())
+* 要以 CLI 为基础的独立服务器启动 Milvus Lite，请运行：
 
-  # 停止您的 milvus 服务器
-  default_server.stop()
-  ```
+```shell
+$ milvus-server
+```
 
-  您还可以使用 `with` 语句，在不需要时自动停止 Milvus Lite。
+然后，你可以使用 PyMilvus 或其他适合你的方式连接到独立服务器。
 
-  ```python
-  from milvus import default_server
+### 在调试模式下启动 Milvus Lite
 
-  with default_server:
-    # Milvus Lite 已经启动，这里使用 default_server。
-    connections.connect(host='127.0.0.1', port=default_server.listen_port)
-  ```
-  
-- 作为基于 CLI 的独立服务器启动 Milvus Lite，请运行
+* 要将 Milvus Lite 作为 Python 模块在调试模式下运行，按照以下步骤操作：
 
-  ```shell
-  $ milvus-server
-  ```
+```python
+from milvus import debug_server, MilvusServer
 
-  然后您可以使用 PyMilvus 或其他适合您的方式连接到独立服务器。
+debug_server.run()
 
-### 以调试模式启动 Milvus Lite
+# 或者你可以自行创建MilvusServer实例
+# server = MilvusServer(debug=True)
+```
 
-- 作为 Python 模块以调试模式运行 Milvus Lite，请按照以下步骤操作：
+* 要在调试模式下运行独立服务器，按照以下步骤操作：
 
-  ```python
-  from milvus import debug_server, MilvusServer
+```shell
+$ milvus-server --debug
+```
 
-  debug_server.run()
+### 持久化数据和日志
 
-  # Or you can create a MilvusServer by yourself
-  # server = MilvusServer(debug=True)
-  ```
+* 要设置一个本地目录供 Milvus Lite 存储所有相关数据和日志，请按照以下步骤操作：
 
-- To run the standalone server in debug mode, do as follows:
+```python
+from milvus import default_server
 
-  ```shell
-  $ milvus-server --debug
-  ```
+with default_server:
+  default_server.set_base_dir('milvus_data')
+```
 
-### Persist data and logs
+* 要在本地驱动器上持久化独立服务器生成的所有数据和日志，请运行：
 
-- To set a local directory for Milvus Lite to store all related data and logs in a local directory, do as follows:
+```shell
+$ milvus-server --data milvus_data
+```
 
-  ```python
-  from milvus import default_server
+## 配置 Milvus Lite
 
-  with default_server:
-    default_server.set_base_dir('milvus_data')
-  ```
 
-- To persist all data and logs generated by the standalone server on your local drive, run
+你可以像配置 Milvus 实例一样通过 Python API 和 CLI 来配置 Milvus Lite。
 
-  ```shell
-  $ milvus-server --data milvus_data
-  ```
-
-## Configure Milvus Lite
-
-You can configure Milvus Lite in the same way as you do Milvus instances through both Python APIs and CLI.
-
-- To configure Milvus Lite using Python APIs, you can use the `config.set` API of a `MilvusServer` instance for both basic and extra configuration items as follows:
+- 使用 Python API 配置 Milvus Lite，你可以使用 `MilvusServer` 实例的 `config.set` API 来设置基础和额外的配置项，如下所示：
 
   ```python
   from milvus import default_server
@@ -168,23 +169,26 @@ You can configure Milvus Lite in the same way as you do Milvus instances through
     default_server.config.set('dataCoord.segment.maxSize', 1024)
   ```
 
-- To configure Milvus Lite using CLI, run the following for basic configurations.
+- 使用 CLI 配置 Milvus Lite，运行以下命令进行基础配置。
 
   ```shell
   $ milvus-server --system-log-level info
   $ milvus-server --proxy-port 19531
   ```
 
-  Or, run the following for extra configurations.
+  或者，运行以下命令进行额外配置。
 
   ```shell
   $ milvus-server --extra-config dataCoord.segment.maxSize=1024
   ```
 
-You can find all configurable configuration items in `config.yaml` template shipped with the Milvus package. You can also find [the template in our project repository](https://github.com/milvus-io/milvus-lite/blob/main/src/milvus/data/config.yaml.template).
+你可以在 Milvus 包中附带的 `config.yaml` 模板中找到所有可配置的配置项。你也可以在我们的项目仓库中 [找到模板](https://github.com/milvus-io/milvus-lite/blob/main/src/milvus/data/config.yaml.template)。
 
-## What's next
+## 接下来做什么
 
-If you have new ideas and want to contribute to Milvus Lite, please read the [Contributing Guide](https://github.com/milvus-io/milvus-lite/blob/main/CONTRIBUTING.md) first.
 
-If you encounter any problems when installing or using Milvus Lite, [file an issue here](https://github.com/milvus-io/milvus-lite/issues/new).
+
+如果你有新的想法，并且想为 Milvus Lite 做出贡献，请先阅读 [贡献指南](https://github.com/milvus-io/milvus-lite/blob/main/CONTRIBUTING.md)。
+
+如果在安装或使用 Milvus Lite 的过程中遇到任何问题，请在此处 [提出问题](https://github.com/milvus-io/milvus-lite/issues/new)。
+

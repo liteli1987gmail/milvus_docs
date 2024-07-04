@@ -1,41 +1,35 @@
----
 
-id: gcp_layer7.md
-title: 在GCP上为Milvus设置第7层负载均衡器
-related_key: 集群
-summary: 学习如何在GCP上为Milvus集群部署第7层负载均衡器。
 
----
 
-## 在GCP上为Milvus设置第7层负载均衡器
+# 在 GCP 上为 Milvus 设置 Layer-7 负载均衡器
 
-与第4层负载均衡器相比，第7层负载均衡器提供了智能负载均衡和缓存能力，是云原生服务的绝佳选择。
+与第 4 层负载均衡器相比，第 7 层负载均衡器具有智能负载均衡和缓存功能，是云原生服务的理想选择。
 
-本指南将指导您为已经在GCP上的第4层负载均衡器后运行的Milvus集群设置第7层负载均衡器。
+本指南将指导你在第 4 层负载均衡器后为 Milvus 集群设置第 7 层负载均衡器。
 
 ### 开始之前
 
-- 您的GCP账户中已经存在一个项目。
+- 在你的 GCP 账户中已经存在一个项目。
 
-  要创建项目，请参考[创建和管理项目](https://cloud.google.com/resource-manager/docs/creating-managing-projects)。本指南中使用的项目名为**milvus-testing-nonprod**。
+  要创建一个项目，请参阅 [创建和管理项目](https://cloud.google.com/resource-manager/docs/creating-managing-projects)。本指南中使用的项目名称为 **milvus-testing-nonprod**。
 
-- 您已在本地安装了[gcloud CLI](https://cloud.google.com/sdk/docs/quickstart#installing_the_latest_version)、[kubectl](https://kubernetes.io/docs/tasks/tools/)和[Helm](https://helm.sh/docs/intro/install/)，或者决定使用基于浏览器的[Cloud Shell](https://cloud.google.com/shell)。
+- 你已经本地安装了 [gcloud CLI](https://cloud.google.com/sdk/docs/quickstart#installing_the_latest_version)，[kubectl](https://kubernetes.io/docs/tasks/tools/) 和 [Helm](https://helm.sh/docs/intro/install/)，或者决定使用基于浏览器的 [Cloud Shell](https://cloud.google.com/shell)。
 
-- 您已使用GCP账户凭证[初始化了gcloud CLI](https://cloud.google.com/sdk/docs/install-sdk#initializing_the)。
+- 你已经使用你的 GCP 账户凭据 [初始化了 gcloud CLI](https://cloud.google.com/sdk/docs/install-sdk#initializing_the)。
 
-- 您已在GCP上[部署了一个第4层负载均衡器后的Milvus集群](gcp.md)。
+- 你已经在 GCP 上部署了一个 Milvus 集群，并将其放置在一个第 4 层负载均衡器后面。
 
-### 调整Milvus配置
+### 调整 Milvus 配置
 
-本指南假设您已经[在GCP上为Milvus集群部署了一个第4层负载均衡器](gcp.md)。
+本指南假设你已经在 GCP 上部署了一个 Milvus 集群，并将其放置在一个第 4 层负载均衡器后面。
 
-在为这个Milvus集群设置第7层负载均衡器之前，运行以下命令以移除第4层负载均衡器。
+在为该 Milvus 集群设置第 7 层负载均衡器之前，运行以下命令来删除第 4 层负载均衡器。
 
 ```bash
 helm upgrade my-release milvus/milvus --set service.type=ClusterIP
 ```
 
-作为第7层负载均衡器的后端服务，Milvus必须满足[某些加密要求](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-http2)，以便它能够理解负载均衡器的HTTP/2请求。因此，您需要按照以下方式在您的Milvus集群上启用TLS。
+作为第 7 层负载均衡器的后端服务，Milvus 必须满足 [某些加密要求](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-http2)，以便能够理解来自负载均衡器的 HTTP/2 请求。因此，你需要按照以下方式在 Milvus 集群上启用 TLS。
 
 ```bash
 helm upgrade my-release milvus/milvus --set common.security.tlsMode=1
@@ -43,9 +37,9 @@ helm upgrade my-release milvus/milvus --set common.security.tlsMode=1
 
 ### 设置健康检查端点
 
-为确保服务可用性，GCP上的第7层负载均衡需要探测后端服务的健康状况。因此，我们需要设置一个BackendConfig来包装健康检查端点，并通过注释将BackendConfig与Milvus服务关联。
+为了确保服务的可用性，GCP 上的第 7 层负载均衡需要探测后端服务的健康状况。因此，我们需要设置一个 BackendConfig 来包装健康检查端点，并通过注释将 BackendConfig 与 Milvus 服务关联起来。
 
-以下是一个BackendConfig设置的片段。将其保存为`backendconfig.yaml`以备后用。
+以下是 BackendConfig 的配置。将其保存为 `backendconfig.yaml` 以供稍后使用。
 
 ```yaml
 apiVersion: cloud.google.com/v1
@@ -60,13 +54,13 @@ spec:
     type: HTTP
 ```
 
-然后运行以下命令以创建健康检查端点。
+然后运行以下命令来创建健康检查端点。
 
 ```bash
 kubectl apply -f backendconfig.yaml
 ```
 
-最后，更新Milvus服务的注释，以请求我们稍后将创建的第7层负载均衡器使用刚刚创建的端点进行健康检查。
+最后，更新 Milvus 服务的注释，要求稍后创建的第 7 层负载均衡器使用刚刚创建的端点进行健康检查。
 
 ```bash
 kubectl annotate service my-release-milvus \
@@ -78,34 +72,39 @@ kubectl annotate service my-release-milvus \
 <div class="alert note">
 
 - 对于第一个注释，
-  
-  Milvus原生支持gRPC，它是建立在HTTP/2之上的。因此，我们可以使用HTTP/2作为第7层负载均衡器和Milvus之间的通信协议。
+
+  Milvus 原生支持 gRPC，而 gRPC 基于 HTTP/2。因此，我们可以使用 HTTP/2 作为第 7 层负载均衡器和 Milvus 之间的通信协议。
 
 - 对于第二个注释，
 
-  Milvus仅通过gRPC和HTTP/1提供健康检查端点。我们需要设置一个BackendConfig来包装健康检查端点，并将其与Milvus服务关联，以便第7层负载均衡器探测此端点以了解Milvus的健康状况。
+  Milvus 只能通过 gRPC 和 HTTP/1 提供健康检查端点。我们需要设置一个 BackendConfig 来包装健康检查端点，并将其与 Milvus 服务关联起来，以便第 7 层负载均衡器探测 Milvus 的健康状况。
 
 - 对于第三个注释，
 
-  它请求在创建Ingress后创建一个网络端点组（NEG）。当NEG与GKE Ingress一起使用时，Ingress控制器将促进负载均衡器的所有方面的创建。这包括创建虚拟IP地址、转发规则、健康检查、防火墙规则等。有关详细信息，请参考[Google Cloud文档](https://cloud.google.com/kubernetes-engine/docs/how-to/container-native-load-balancing)。
+  它要求在创建 Ingress 后创建一个网络终节点组（NEG）。使用 NEGs 与 GKE Ingress 时，Ingress 控制器会自动创建所有负载均衡器的相关配置，包括创建虚拟 IP 地址、转发规则、健康检查、防火墙规则等。详细信息请参阅 [Google Cloud 文档](https://cloud.google.com/kubernetes-engine/docs/how-to/container-native-load-balancing)。
 
 </div>
 
 ### 准备 TLS 证书
 
-TLS 需要证书才能工作。有两种创建证书的方法，即自管理的和 Google 管理的。
+TLS 需要证书才能工作。有两种方法可以创建证书，即自管理和 Google 管理。
 
-本指南使用 **my-release.milvus.io** 作为域名来访问我们的 Milvus 服务。
+本指南使用 **my-release.milvus.io** 作为访问 Milvus 服务的域名。
 
 #### 创建自管理证书
 
-运行以下命令来创建一个证书。
+
+
+
+
+
+运行以下命令创建证书。
 
 ```bash
-# 生成 tls.key。
+# 生成tls.key。
 openssl genrsa -out tls.key 2048
 
-# 创建一个证书并用前面的密钥签名。
+# 使用上述密钥创建证书并进行签名。
 openssl req -new -key tls.key -out tls.csr \
     -subj "/CN=my-release.milvus.io"
 
@@ -113,15 +112,15 @@ openssl x509 -req -days 99999 -in tls.csr -signkey tls.key \
     -out tls.crt
 ```
 
-然后在您的 GKE 集群中使用这些文件创建一个密钥，以便稍后使用。
+然后在你的 GKE 集群中创建一个包含这些文件的密钥。
 
 ```bash
 kubectl create secret tls my-release-milvus-tls --cert=./tls.crt --key=./tls.key
 ```
 
-#### 创建 Google 管理的证书
+#### 创建 Google 托管证书
 
-以下是一个 ManagedCertificate 设置的片段。将其保存为 `managed-crt.yaml` 以供稍后使用。
+以下代码段是 ManagedCertificate 设置。将其保存为 `managed-crt.yaml` 以备后用。
 
 ```yaml
 apiVersion: networking.gke.io/v1
@@ -133,19 +132,19 @@ spec:
     - my-release.milvus.io
 ```
 
-通过将设置应用到您的 GKE 集群，如下创建一个管理证书：
+通过将该设置应用于你的 GKE 集群来创建托管证书，方法如下：
 
 ```bash
 kubectl apply -f ./managed-crt.yaml
 ```
 
-这可能需要一段时间。您可以通过运行以下命令来检查进度：
+这可能需要一段时间。你可以通过运行以下命令来查看进度
 
 ```bash
 kubectl get -f ./managed-crt.yaml -o yaml -w
 ```
 
-输出应该类似于以下内容：
+输出应类似于以下内容：
 
 ```shell
 status:
@@ -156,11 +155,14 @@ status:
     status: Provisioning
 ```
 
-一旦 **certificateStatus** 变为 **Active**，您就准备好设置负载均衡器了。
+一旦 **certificateStatus** 变为 **Active**，你就可以准备设置负载均衡器了。
 
-### 创建一个入口来生成第 7 层负载均衡器
+### 创建 Ingress 以生成 Layer-7 负载均衡器
+ 
 
-使用以下代码段之一创建一个 YAML 文件。
+
+# 
+使用以下代码片段之一创建一个 YAML 文件：
 
 - 使用自管理证书
 
@@ -168,77 +170,78 @@ status:
   apiVersion: networking.k8s.io/v1
   kind: Ingress
   metadata:
-  name: my-release-milvus
-  namespace: default
+    name: my-release-milvus
+    namespace: default
   spec:
-  tls:
-  - hosts:
-      - my-release.milvus.io
+    tls:
+    - hosts:
+        - my-release.milvus.io
       secretName: my-release-milvus-tls
-  rules:
-  - host: my-release.milvus.io
+    rules:
+    - host: my-release.milvus.io
       http:
-      paths:
-      - path: /
+        paths:
+        - path: /
           pathType: Prefix
           backend:
-          service:
+            service:
               name: my-release-milvus
               port:
-              number: 19530
+                number: 19530
   ```
-
 - 使用 Google 管理的证书
 
   ```yaml
   apiVersion: networking.k8s.io/v1
   kind: Ingress
   metadata:
-  name: my-release-milvus
-  namespace: default
-  annotations:
+    name: my-release-milvus
+    namespace: default
+    annotations:
       networking.gke.io/managed-certificates: "my-release-milvus-tls"
   spec:
-  rules:
-  - host: my-release.milvus.io
+    rules:
+    - host: my-release.milvus.io
       http:
-      paths:
-      - path: /
+        paths:
+        - path: /
           pathType: Prefix
           backend:
-          service:
+            service:
               name: my-release-milvus
               port:
-              number: 19530
+                number: 19530
   ```
 
-然后，您可以通过将文件应用到您的 GKE 集群来创建入口。
+然后，你可以将该文件应用于你的 GKE 集群以创建 Ingress。
 
 ```bash
 kubectl apply -f ingress.yaml
 ```
 
-现在，等待 Google 设置第 7 层负载均衡器。您可以通过运行以下命令来检查进度：
+现在，等待 Google 设置 Layer-7 负载均衡器。你可以通过运行以下命令来检查进度：
 
 ```bash
-kubectl  -f ./config/samples/ingress.yaml get -w
+kubectl -f ./config/samples/ingress.yaml get -w
 ```
 
-输出应该类似于以下内容：
+输出应类似于以下内容：
 
 ```shell
-NAME                CLASS    HOSTS                  ADDRESS   PORTS   AGE
-my-release-milvus   <none>   my-release.milvus.io             80      4s
+NAME                CLASS    HOSTS                  ADDRESS   PORTS       AGE
+my-release-milvus   <none>   my-release.milvus.io             80          4s
 my-release-milvus   <none>   my-release.milvus.io   34.111.144.65   80, 443   41m
 ```
 
-一旦在 **ADDRESS** 字段中显示了 IP 地址，第 7 层负载均衡器就准备好使用了。上述输出中显示了端口 80 和端口 443。请记住，出于您自己的考虑，您应该始终使用端口 443。
+一旦在 **ADDRESS** 字段中显示了 IP 地址，Layer-7 负载均衡器就可以使用了。上述输出中显示了端口 80 和端口 443。请记住，为了你的安全，你应该始终使用端口 443。
 
-## 通过第 7 层负载均衡器验证连接
+## 通过 Layer-7 负载均衡器验证连接
 
-本指南使用 PyMilvus 来验证我们刚刚创建的第 7 层负载均衡器后面的 Milvus 服务的连接。有关详细步骤，[请阅读此文](example_code)。
 
-请注意，连接参数会根据您选择的在 [准备 TLS 证书](#prepare-tls-certificates) 中管理证书的方式而变化。
+
+本指南使用 PyMilvus 验证与我们刚刚创建的 Layer-7 负载均衡器背后的 Milvus 服务的连接。详细步骤，请 [阅读此文](example_code)。
+
+请注意，连接参数会根据你在 [准备 TLS 证书](#prepare-tls-certificates) 中选择的证书管理方式而有所不同。
 
 ```python
 from pymilvus import (
@@ -250,16 +253,16 @@ from pymilvus import (
     Collection,
 )
 
-# 对于自管理证书，您需要在用于设置连接的参数中包含证书。
+# 对于自行管理的证书，你需要在设置连接时使用的参数中包含证书。
 connections.connect("default", host="34.111.144.65", port="443", server_pem_path="tls.crt", secure=True, server_name="my-release.milvus.io")
 
-# 对于 Google 管理的证书，无需这样做。
+# 对于Google管理的证书，则无需这样做。
 connections.connect("default", host="34.111.144.65", port="443", secure=True, server_name="my-release.milvus.io")
 ```
 
 <div class="alert note">
 
-- **host** 和 **port** 中的 IP 地址和端口号应与 [创建一个入口来生成第 7 层负载均衡器](#create-an-ingress-to-generate-a-layer-7-load-balancer) 最后列出的相匹配。
-- 如果您已经设置了 DNS 记录将域名映射到主机 IP 地址，请将 **host** 中的 IP 地址替换为域名，并省略 **server_name**。
+- **host** 和 **port** 中的 IP 地址和端口号应与 [创建 Ingress 以生成 Layer-7 负载均衡器](#create-an-ingress-to-generate-a-layer-7-load-balancer) 末尾列出的相匹配。
+- 如果你已设置 DNS 记录将域名映射到主机 IP 地址，请用域名替换 **host** 中的 IP 地址，并省略 **server_name**。
 
 </div>

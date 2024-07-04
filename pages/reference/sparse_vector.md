@@ -1,68 +1,69 @@
----
-id: sparse_vector.md
-summary: Learn how to use sparse vectors in Milvus.
-title: Sparse Vector
----
+
+
 
 # 稀疏向量
 
-稀疏向量使用向量嵌入来表示单词或短语，其中大部分元素为零，只有一个非零元素表示特定单词的存在。稀疏向量模型，如 [SPLADEv2](https://arxiv.org/abs/2109.10086)，在跨领域知识搜索、关键词感知和可解释性方面优于密集模型。它们特别适用于信息检索、自然语言处理和推荐系统，其中将稀疏向量用于召回与大型模型用于排名相结合可以显著提高检索结果。
+稀疏向量使用向量嵌入表示单词或短语，其中大多数元素为零，只有一个非零元素表示特定单词的存在。稀疏向量模型，例如 [SPLADEv2](https://arxiv.org/abs/2109.10086)，在领域外的知识搜索、关键词感知和可解释性方面优于稠密模型。它们在信息检索、自然语言处理和推荐系统中特别有用，通过将稀疏向量用于召回并使用大型模型进行排名，可以显著改善召回结果。
 
-在 Milvus 中，稀疏向量的使用流程与密集向量类似。它涉及创建一个带有稀疏向量列的集合，插入数据，创建索引，以及进行相似性搜索和标量查询。
+在 Milvus 中，使用稀疏向量的方式与使用稠密向量的方式类似。它涉及创建带有稀疏向量列的集合，插入数据，创建索引，并进行相似性搜索和标量查询。
 
-在本教程中，您将学习如何：
+在本教程中，你将学习以下内容：
 
 - 准备稀疏向量嵌入；
 - 创建带有稀疏向量字段的集合；
 - 插入带有稀疏向量嵌入的实体；
-- 索引集合并在稀疏向量上执行近似最近邻（ANN）搜索。
+- 对集合进行索引并在稀疏向量上执行 ANN 搜索。
 
-要查看稀疏向量的实际应用，请参考 [hello_sparse.py](https://github.com/milvus-io/pymilvus/blob/master/examples/milvus_client/sparse.py)。
+要查看稀疏向量的实际使用，请参阅 [hello_sparse.py](https://github.com/milvus-io/pymilvus/blob/master/examples/milvus_client/sparse.py)。
 
 <div class="admonition note">
-    <p><b>注意</b></p>
+    <p> <b> 注意 </b> </p>
     <ul>
-        <li>目前，稀疏向量的支持是 2.4.0 版本中的一个测试功能，计划在 3.0.0 版本中正式发布。</li>
-        <li>本页上的代码片段使用 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/ORM/Connections/connect.md">PyMilvus ORM 模块</a> 与 Milvus 进行交互。使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md">MilvusClient SDK</a> 的代码片段将很快提供。</li>
+        <li> 目前，在 2.4.0 版本中，对稀疏向量的支持是一个 beta 功能，并计划在 3.0.0 版本中正式提供。</li>
+        <li> 本页面上的代码片段使用 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/ORM/Connections/connect.md"> PyMilvus ORM 模块 </a> 与 Milvus 进行交互。将很快提供使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md"> MilvusClient SDK </a> 的代码片段。</li>
     </ul>
 </div>
 
 ## 准备稀疏向量嵌入
 
-要在 Milvus 中使用稀疏向量，请使用支持的格式之一准备向量嵌入：
 
-- **稀疏矩阵**：使用 [scipy.sparse](https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse) 类族表示您的稀疏嵌入。这种方法对于处理大规模、高维数据非常高效。
 
-- **字典列表**：将每个稀疏嵌入表示为一个字典，结构为 `{dimension_index: value, ...}`，其中每个键值对表示维度索引及其相应的值。
+\## 使用稀疏向量
 
-  示例：
+在 Milvus 中使用稀疏向量时，需要准备支持的格式之一的向量嵌入：
 
-  ```python
-  {2: 0.33, 98: 0.72, ...}
-  ```
+- 稀疏矩阵：使用 [scipy.sparse](https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse) 类族来表示稀疏嵌入。该方法适用于处理大规模、高维数据。
 
-- **可迭代的元组列表**：类似于字典列表，但使用元组的可迭代列表 `(dimension_index, value)` 来指定非零维度及其值。
+- 字典列表：将每个稀疏嵌入表示为字典，结构为 `{dimension_index: value, ...}`，其中每个键值对表示维度索引及其对应的值。
 
-  示例：
+    示例：
 
-  ```python
-  [(2, 0.33), (98, 0.72), ...]
-  ```
+    ```python
+    {2: 0.33, 98: 0.72, ...}
+    ```
 
-以下示例通过为 10,000 个实体生成随机稀疏矩阵来准备稀疏嵌入，每个实体具有 10,000 个维度，稀疏度为 0.005。
+- 元组迭代器列表：类似于字典列表，但使用元组迭代器 `(dimension_index, value)` 来指定非零维度及其值。
+
+    示例：
+
+    ```python
+    [(2, 0.33), (98, 0.72), ...]
+    ```
+
+下面的示例通过生成包含 10,000 个实体的随机稀疏矩阵来准备稀疏嵌入，每个实体有 10,000 个维度，稀疏度为 0.005。
 
 ```python
-# 准备具有稀疏向量表示的实体
+# 准备稀疏向量表示的实体
 rng = np.random.default_rng()
 
 num_entities, dim = 10000, 10000
 
-# 生成每行平均有 25 个非零元素的随机稀疏行
+# 生成具有平均每行25个非零元素的随机稀疏行
 entities = [
     {
         "scalar_field": rng.random(),
-        # 要表示单个稀疏向量行，您可以使用：
-        # - scipy.sparse 稀疏矩阵类族中的任何一种，且 shape[0] == 1
+        # 要表示单个稀疏向量行，可以使用：
+        # - 任何shape[0] == 1的scipy.sparse稀疏矩阵类族
         # - Dict[int, float]
         # - Iterable[Tuple[int, float]]
         "sparse_vector": {
@@ -72,7 +73,7 @@ entities = [
     for _ in range(num_entities)
 ]
 
-# 打印第一个实体以检查表示
+# 打印第一个实体以检查表示形式
 print(entities[0])
 
 # 输出：
@@ -106,27 +107,29 @@ print(entities[0])
 
 <div class="admonition note">
 
-<p><b>notes</b></p>
+<p> <b> 注意 </b> </p>
 
-<p>The vector dimensions must be of Python <code>int</code> or <code>numpy.integer</code> type, and the values must be of Python <code>float</code> or <code>numpy.floating</code> type.</p>
+<p> 向量维度必须为 Python <code> int </code> 或 <code> numpy.integer </code> 类型，值必须为 Python <code> float </code> 或 <code> numpy.floating </code> 类型。</p>
 
 </div>
 
-To generate embeddings, you can also use the `model` package built in the PyMilvus library, which offers a range of embedding functions. For details, refer to [Embeddings](embeddings.md).
+要生成嵌入，还可以使用在 PyMilvus 库中内置的 `model` 包，该包提供了一系列的嵌入函数。详细信息请参考 [嵌入](/embeddings/embeddings.md)。
 
-## Create a collection with a sparse vector field
+## 创建包含稀疏向量字段的集合
+ 
 
-To create a collection with a sparse vector field, set the **datatype** of the sparse vector field to **DataType.SPARSE_FLOAT_VECTOR**. Unlike dense vectors, there is no need to specify a dimension for sparse vectors.
+
+为了创建一个包含稀疏向量字段的集合，将稀疏向量字段的 __datatype__ 设置为 __DataType.SPARSE_FLOAT_VECTOR__。与密集向量不同，对于稀疏向量，无需指定维度。
 
 ```python
 import numpy as np
 import random
 from pymilvus import MilvusClient, DataType
 
-# Create a MilvusClient instance
+# 创建一个MilvusClient实例
 client = MilvusClient(uri="http://localhost:19530")
 
-# Create a collection with a sparse vector field
+# 创建一个包含稀疏向量字段的集合
 schema = client.create_schema(
     auto_id=True,
     enable_dynamic_fields=True,
@@ -134,76 +137,80 @@ schema = client.create_schema(
 
 schema.add_field(field_name="pk", datatype=DataType.VARCHAR, is_primary=True, max_length=100)
 schema.add_field(field_name="scalar_field", datatype=DataType.DOUBLE)
-# For sparse vector, no need to specify dimension
-schema.add_field(field_name="sparse_vector", datatype=DataType.SPARSE_FLOAT_VECTOR) # set `datatype` to `SPARSE_FLOAT_VECTOR`
+# 对于稀疏向量，无需指定维度
+schema.add_field(field_name="sparse_vector", datatype=DataType.SPARSE_FLOAT_VECTOR) # 将`datatype`设置为`SPARSE_FLOAT_VECTOR`
 
 client.create_collection(collection_name="test_sparse_vector", schema=schema)
 ```
 
-For details on common collection parameters, refer to [create_collection()
-](https://milvus.io/api-reference/pymilvus/v2.4.x/MilvusClient/Collections/create_collection.md).
+有关常见集合参数的详细信息，请参阅[create_collection()
+](https://milvus.io/api-reference/pymilvus/v2.4.x/MilvusClient/Collections/create_collection.md)。
 
-## Insert entities with sparse vector embeddings
+## 使用稀疏向量嵌入插入实体
 
-To insert entities with sparse vector embeddings, simply pass the list of entities to the `insert()` method.
+要插入具有稀疏向量嵌入的实体，只需将实体列表传递给 `insert()` 方法。
 
 ```python
-# Insert entities
+# 插入实体
 client.insert(collection_name="test_sparse_vector", data=entities)
 ```
 
-## Index the collection
+## 为集合创建索引
 
-Before performing similarity searches, create an index for the collection.
+在执行相似度搜索之前，为集合创建索引。
 
 ```python
-# Index the collection
+# 为集合创建索引
 
-# Prepare index params
+# 准备索引参数
 index_params = client.prepare_index_params()
 
 index_params.add_index(
     field_name="sparse_vector",
     index_name="sparse_inverted_index",
-    index_type="SPARSE_INVERTED_INDEX", # the type of index to be created. set to `SPARSE_INVERTED_INDEX` or `SPARSE_WAND`.
-    metric_type="IP", # the metric type to be used for the index. Currently, only `IP` (Inner Product) is supported.
-    params={"drop_ratio_build": 0.2}, # the ratio of small vector values to be dropped during indexing.
+    index_type="SPARSE_INVERTED_INDEX", # 要创建的索引类型。设置为`SPARSE_INVERTED_INDEX`或`SPARSE_WAND`。
+    metric_type="IP", # 用于索引的度量类型。目前，只支持`IP`（内积）。
+    params={"drop_ratio_build": 0.2}, # 在索引过程中要删除的小向量值的比例。
 )
 
-# Create index
+# 创建索引
 client.create_index(collection_name="test_sparse_vector", index_params=index_params)
+
 ```
 
-For index building on sparse vectors, take note of the following:
+在构建稀疏向量的索引时，请注意以下事项：
 
-- `index_type`: The type of index to be built. Possible options for sparse vectors:
+- `index_type`：要构建的索引类型。稀疏向量的可能选项有：
 
-  - `SPARSE_INVERTED_INDEX`: An inverted index that maps each dimension to its non-zero vectors, facilitating direct access to relevant data during searches. Ideal for datasets with sparse but high-dimensional data.
+  - `SPARSE_INVERTED_INDEX`：倒排索引，将每个维度映射到其非零向量，便于在搜索期间直接访问相关数据。适用于稀疏但高维数据的数据集。
 
-  - `SPARSE_WAND`: Utilizes the Weak-AND (WAND) algorithm to quickly bypass unlikely candidates, focusing evaluation on those with higher ranking potential. Treats dimensions as terms and vectors as documents, speeding up searches in large, sparse datasets.
+  - `SPARSE_WAND`：利用 Weak-AND (WAND) 算法，快速绕过不太可能的候选项，并聚焦评估那些具有更高排名潜力的候选项。将维度视为术语，将向量视为文档，加速在大型稀疏数据集中的搜索。
 
-- `metric_type`: Only `IP` (Inner Product) distance metric is supported for sparse vectors.
+- `metric_type`：只支持稀疏向量的 `IP`（内积）距离度量。
 
-- `params.drop_ratio_build`: The index parameter used specifically for sparse vectors. It controls the proportion of small vector values that are excluded during the indexing process. This parameter enables fine-tuning of the trade-off between efficiency and accuracy by disregarding small values when constructing the index. For instance, if `drop_ratio_build = 0.3`, during the index construction, all values from all sparse vectors are gathered and sorted. The smallest 30% of these values are not included in the index, thereby reducing the computational workload during search.
+- `params.drop_ratio_build`：专门用于稀疏向量的索引参数。它控制索引过程中要排除的小向量值的比例。该参数通过在构建索引时忽略小值来在效率和准确性之间进行微调。例如，如果 `drop_ratio_build = 0.3`，在构建索引过程中，将收集和排序所有稀疏向量的所有值。这些值中的最小 30 ％不包括在索引中，从而在搜索期间减少计算工作量。
 
-For more information, refer to [In-memory Index](index.md).
+有关更多信息，请参阅 [内存中的索引](/reference/index.md)。
 
-## Perform ANN search
+## 执行相似度搜索
 
-After the collection is indexed and loaded into memory, use the `search()` method to retrieve the relevant documents based on the query.
+
+
+
+索引收集并加载到内存后，使用 `search()` 方法根据查询检索相关文档。
 
 ```python
-# Load the collection into memory
+# 将收集加载到内存中
 client.load_collection(collection_name="test_sparse_vector")
 
-# Perform ANN search on sparse vectors
+# 在稀疏向量上执行ANN搜索
 
-# for demo purpose we search for the last inserted vector
+# 为了演示目的，我们搜索最后插入的向量
 query_vector = entities[-1]["sparse_vector"]
 
 search_params = {
     "metric_type": "IP",
-    "params": {"drop_ratio_search": 0.2}, # the ratio of small vector values to be dropped during search.
+    "params": {"drop_ratio_search": 0.2}, # 查询向量中要忽略的最小值的比例。
 }
 
 search_res = client.search(
@@ -217,25 +224,25 @@ search_res = client.search(
 for hits in search_res:
     for hit in hits:
         print(f"hit: {hit}")
-
-# Output:
+        
+# 输出:
 # hit: {'id': '448458373272710786', 'distance': 7.220192909240723, 'entity': {'pk': '448458373272710786', 'scalar_field': 0.46767865218233806}}
 # hit: {'id': '448458373272708317', 'distance': 1.2287548780441284, 'entity': {'pk': '448458373272708317', 'scalar_field': 0.7315987515699472}}
 # hit: {'id': '448458373272702005', 'distance': 0.9848432540893555, 'entity': {'pk': '448458373272702005', 'scalar_field': 0.9871869181562156}}
 ```
 
-When configuring search parameters, take note of the following:
+在配置搜索参数时，请注意以下内容：
 
-- `params.drop_ratio_search`: The search parameter used specifically for sparse vectors. This option allows fine-tuning of the search process by specifying the ratio of the smallest values in the query vector to ignore. It helps balance search precision and performance. The smaller the value set for `drop_ratio_search`, the less these small values contribute to the final score. By ignoring some small values, search performance can be improved with minimal impact on accuracy.
+- `params.drop_ratio_search`：仅供稀疏向量使用的搜索参数。此选项通过指定查询向量中要忽略的最小值的比例来微调搜索过程。它有助于平衡搜索准确性和性能。将 `drop_ratio_search` 设置为较小的值，这些较小值对最终得分的贡献较小。通过忽略一些较小的值，可以提高搜索性能，对准确性的影响很小。
 
-## Perform scalar queries
+## 执行标量查询
 
-In addition to ANN search, Milvus also supports scalar queries on sparse vectors. These queries allow you to retrieve documents based on a scalar value associated with the sparse vector.
+除了 ANN 搜索，Milvus 还支持对稀疏向量进行标量查询。这些查询允许你基于稀疏向量关联的标量值检索文档。
 
-Filter entities with **scalar_field** greater than 3:
+过滤标量字段大于 3 的实体：
 
 ```python
-# Perform a query by specifying filter expr
+# 通过指定过滤器表达式执行查询
 filter_query_res = client.query(
     collection_name="test_sparse_vector",
     filter="scalar_field > 0.999",
@@ -243,67 +250,68 @@ filter_query_res = client.query(
 
 print(filter_query_res[:2])
 
-# Output:
+# 输出:
 # [{'pk': '448458373272701862', 'scalar_field': 0.9994093623822689, 'sparse_vector': {173: 0.35266244411468506, 400: 0.49995484948158264, 480: 0.8757831454277039, 661: 0.9931875467300415, 1040: 0.0965644046664238, 1728: 0.7478245496749878, 2365: 0.4351981580257416, 2923: 0.5505295395851135, 3181: 0.7396837472915649, 3848: 0.4428485333919525, 4701: 0.39119353890419006, 5199: 0.790219783782959, 5798: 0.9623121619224548, 6213: 0.453134149312973, 6341: 0.745091438293457, 6775: 0.27766478061676025, 6875: 0.017947908490896225, 8093: 0.11834774166345596, 8617: 0.2289179265499115, 8991: 0.36600416898727417, 9346: 0.5502803921699524}}, {'pk': '448458373272702421', 'scalar_field': 0.9990218525410719, 'sparse_vector': {448: 0.587817907333374, 1866: 0.0994109958410263, 2438: 0.8672442436218262, 2533: 0.8063794374465942, 2595: 0.02122959867119789, 2828: 0.33827054500579834, 2871: 0.1984412521123886, 2938: 0.09674275666475296, 3154: 0.21552987396717072, 3662: 0.5236313343048096, 3711: 0.6463911533355713, 4029: 0.4041993021965027, 7143: 0.7370485663414001, 7589: 0.37588241696357727, 7776: 0.436136394739151, 7962: 0.06377989053726196, 8385: 0.5808192491531372, 8592: 0.8865005970001221, 8648: 0.05727503448724747, 9071: 0.9450633525848389, 9161: 0.146037295460701, 9358: 0.1903032660484314, 9679: 0.3146636486053467, 9974: 0.8561339378356934, 9991: 0.15841573476791382}}]
 ```
 
-Filter entities by primary key:
+通过主键过滤实体：
 
 ```python
-# primary keys of entities that satisfy the filter
+# 满足过滤器的实体的主键
 pks = [ret["pk"] for ret in filter_query_res]
 
-# Perform a query by primary key
+# 通过主键执行查询
 pk_query_res = client.query(
     collection_name="test_sparse_vector", filter=f"pk == '{pks[0]}'"
 )
 
 print(pk_query_res)
 
-# Output:
+# 输出:
 # [{'scalar_field': 0.9994093623822689, 'sparse_vector': {173: 0.35266244411468506, 400: 0.49995484948158264, 480: 0.8757831454277039, 661: 0.9931875467300415, 1040: 0.0965644046664238, 1728: 0.7478245496749878, 2365: 0.4351981580257416, 2923: 0.5505295395851135, 3181: 0.7396837472915649, 3848: 0.4428485333919525, 4701: 0.39119353890419006, 5199: 0.790219783782959, 5798: 0.9623121619224548, 6213: 0.453134149312973, 6341: 0.745091438293457, 6775: 0.27766478061676025, 6875: 0.017947908490896225, 8093: 0.11834774166345596, 8617: 0.2289179265499115, 8991: 0.36600416898727417, 9346: 0.5502803921699524}, 'pk': '448458373272701862'}]
 ```
 
-## Limits
+## 限制
 
-When using sparse vectors in Milvus, consider the following limits:
+在使用 Milvus 中的稀疏向量时，请考虑以下限制：
 
-- Currently, only the **IP** distance metric is supported for sparse vectors.
+- 目前，稀疏向量仅支持 __IP__ 距离度量。
 
-- For sparse vector fields, only the **SPARSE_INVERTED_INDEX** and **SPARSE_WAND** index types are supported.
+- 对于稀疏向量字段，仅支持 __SPARSE_INVERTED_INDEX__ 和 __SPARSE_WAND__ 索引类型。
 
-- Currently, [range search](https://milvus.io/docs/single-vector-search.md#Range-search), [grouping search](https://milvus.io/docs/single-vector-search.md#Grouping-search), and [search iterator](https://milvus.io/docs/with-iterators.md#Search-with-iterator) are not supported for sparse vectors.
+- 目前，不支持稀疏向量的 [范围搜索](https://milvus.io/docs/single-vector-search.md#Range-search)、[分组搜索](https://milvus.io/docs/single-vector-search.md#Grouping-search) 和 [搜索迭代器](https://milvus.io/docs/with-iterators.md#Search-with-iterator)。
 
-## FAQ
+## 常见问题解答
+ 
 
-- **What distance metric is supported for sparse vectors?**
+- __稀疏向量支持哪些距离度量方法？__
 
-  Sparse vectors only support the Inner Product (IP) distance metric due to the high dimensionality of sparse vectors, which makes L2 distance and cosine distance impractical.
+    由于稀疏向量的高维度特性，仅支持内积（Inner Product，IP）距离度量方法，L2 距离和余弦距离不可行。
 
-- **Can you explain the difference between SPARSE_INVERTED_INDEX and SPARSE_WAND, and how do I choose between them?**
+- __请解释一下 SPARSE_INVERTED_INDEX 和 SPARSE_WAND 之间的区别，并且我如何选择它们？__
 
-  **SPARSE_INVERTED_INDEX** is a traditional inverted index, while **SPARSE_WAND** uses the [Weak-AND](https://dl.acm.org/doi/10.1145/956863.956944) algorithm to reduce the number of full IP distance evaluations during search. **SPARSE_WAND** is typically faster, but its performance can decline with increasing vector density. To choose between them, conduct experiments and benchmarks based on your specific dataset and use case.
+    __SPARSE_INVERTED_INDEX__ 是传统的倒排索引，而 __SPARSE_WAND__ 则使用了 [Weak-AND 算法](https://dl.acm.org/doi/10.1145/956863.956944) 在搜索过程中减少了完整的 IP 距离计算次数。通常情况下，__SPARSE_WAND__ 速度更快，但当向量密度增加时性能可能会下降。选择使用哪种方法取决于具体的数据集和使用场景，建议开展实验和基准测试。
 
-- **How should I choose the drop_ratio_build and drop_ratio_search parameters?**
+- __如何选择 drop_ratio_build 和 drop_ratio_search 参数？__
 
-  The choice of **drop_ratio_build** and **drop_ratio_search** depends on the characteristics of your data and your requirements for search latency/throughput and accuracy.
+    选择 __drop_ratio_build__ 和 __drop_ratio_search__ 参数取决于数据的特征以及对搜索延迟/吞吐量和准确性的要求。
 
-- **What data types are supported for sparse embeddings?**
+- __稀疏嵌入支持哪些数据类型？__
 
-  The dimension part must be an unsigned 32-bit integer, and the value part can be any 32-bit float.
+    维度部分必须是 32 位无符号整数，值部分可以是任意 32 位浮点数。
 
-- **Can the dimension of a sparse embedding be any discrete value within the uint32 space?**
+- __稀疏嵌入的维度是否可以是 uint32 范围内的任何离散值？__
 
-  Yes, the dimension of a sparse embedding can be any value from 0 to 4.2 billion (maximum of **uint32** - 1).
+    是的，稀疏嵌入的维度可以是 0 到 42 亿（__uint32__ 的最大值减 1）之间的任何值。
 
-- **Are searches on growing segments conducted through an index or by brute force?**
+- __在增量段上的搜索是通过索引还是通过蛮力进行的？__
 
-  Searches on growing segments are conducted through an index of the same type as the sealed segment index. For new growing segments before the index is built, a brute force search is used.
+    对于增长中的段，使用与封闭段索引相同类型的索引进行搜索。对于构建索引之前的新增长段，使用蛮力搜索。
 
-- **Is it possible to have both sparse and dense vectors in a single collection?**
+- __是否可以在单个集合中同时使用稀疏向量和密集向量？__
 
-  Yes, with multiple vector type support, you can create collections with both sparse and dense vector columns and perform hybrid searches on them.
+    是的，有了多向量类型支持，你可以创建包含稀疏和密集向量列的集合，并对它们进行混合搜索。
 
-- **What are the requirements for sparse embeddings to be inserted or searched?**
+- __对于稀疏嵌入进行插入或搜索的要求是什么？__
 
-  Sparse embeddings must have at least one non-zero value, and vector indices must be non-negative.
+    稀疏嵌入必须至少具有一个非零值，并且向量索引必须是非负的。

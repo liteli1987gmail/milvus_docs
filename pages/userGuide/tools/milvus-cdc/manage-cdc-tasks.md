@@ -1,24 +1,20 @@
----
-id: manage-cdc-tasks.md
-order: 3
-summary: A Capture Data Change (CDC) task enables the synchronization of data from a source Milvus instance to a target Milvus instance.
-title: Manage CDC Tasks
----
+
+
 
 # 管理 CDC 任务
 
-捕获数据变更（CDC）任务允许将数据从源 Milvus 实例同步到目标 Milvus 实例。它监控源的操作日志，并实时将数据变更（如插入、删除和索引操作）复制到目标。这有助于实现 Milvus 部署之间的实时灾难恢复或主动-主动负载均衡。
+捕获数据更改（CDC）任务使得从源 Milvus 实例到目标 Milvus 实例的数据同步成为可能。它监视源 Milvus 的操作日志，并实时地复制插入、删除和索引操作等数据更改到目标实例。这有助于实时的灾难恢复或者在 Milvus 部署之间进行主动-主动负载均衡。
 
-本指南介绍了如何通过 HTTP 请求管理 CDC 任务，包括创建、暂停、恢复、检索详细信息、列出和删除。
+本指南介绍如何管理 CDC 任务，包括创建、暂停、恢复、获取详情、列出和删除等操作，可以通过 HTTP 请求实现。
 
 ## 创建任务
 
-创建 CDC 任务允许将源 Milvus 中的数据变更操作同步到目标 Milvus。
+创建 CDC 任务允许将源 Milvus 中的数据更改操作同步到目标 Milvus 中。
 
-要创建 CDC 任务，请执行以下操作：
+要创建 CDC 任务，请执行以下步骤：
 
 ```bash
-curl -X POST http://localhost:8444/cdc \
+curl -X POST http:_//localhost:8444/cdc \
 -H "Content-Type: application/json" \
 -d '{
   "request_type": "create",
@@ -43,42 +39,45 @@ curl -X POST http://localhost:8444/cdc \
 }'
 ```
 
-将 **localhost** 替换为目标 Milvus 服务器的 IP 地址。
+将 __localhost__ 替换为目标 Milvus 服务器的 IP 地址。
 
-**参数**：
+__参数__：
 
-- **milvus_connect_param**: 目标 Milvus 的连接参数。
+- __milvus_connect_param__：目标 Milvus 的连接参数。
 
-  - **host**: Milvus 服务器的主机名或 IP 地址。
+    - __host__：Milvus 服务器的主机名或 IP 地址。
 
-  - **port**: Milvus 服务器监听的端口号。
+    - __port__：Milvus 服务器监听的端口号。
 
-  - **username**: 用于与 Milvus 服务器进行身份验证的用户名。
+    - __username__：与 Milvus 服务器进行身份验证的用户名。
 
-  - **password**: 用于与 Milvus 服务器进行身份验证的密码。
+    - __password__：与 Milvus 服务器进行身份验证的密码。
 
-  - **enable_tls**: 是否使用 TLS/SSL 加密连接。
+    - __enable_tls__：是否对连接使用 TLS/SSL 加密。
 
-  - **connect_timeout**: 建立连接的超时时间（秒）。
+    - __connect_timeout__：建立连接的超时时间（以秒为单位）。
 
-- **collection_infos**: 要同步的集合。目前仅支持星号（\*），因为 Milvus-CDC 在集群级别同步，而不是单个集合。
+- __collection_infos__：要同步的集合。目前只支持使用星号（__*__），因为 Milvus-CDC 在集群级别上进行同步，而不是在单个集合上。
 
-- **rpc_channel_info**: 同步的 RPC 通道名称，由源 Milvus 配置中的 **common.chanNamePrefix.cluster** 和 **common.chanNamePrefix.replicateMsg** 的值连接而成，中间用连字符（-）分隔。
+- __rpc_channel_info__：用于同步的 RPC 通道名称，由源 Milvus 配置中 __common.chanNamePrefix.cluster__ 和 __common.chanNamePrefix.replicateMsg__ 的值连接而成，用连字符（__-__）分隔。
 
-预期响应：
+预期的响应结果：
 
 ```json
 {
   "code": 200,
   "data": {
-    "task_id": "xxxx"
+    "task_id":"xxxx"
   }
 }
 ```
 
 ## 列出任务
 
-要列出所有已创建的 CDC 任务：
+
+
+
+要列出所有创建的 CDC 任务：
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
@@ -86,9 +85,9 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://localhost:8444/cdc
 ```
 
-将 **localhost** 替换为目标 Milvus 服务器的 IP 地址。
+将 __localhost__ 替换为目标 Milvus 服务器的 IP 地址。
 
-预期响应：
+期望的响应：
 
 ```json
 {
@@ -116,7 +115,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
 
 ## 暂停任务
 
-要暂停 CDC 任务：
+要暂停一个 CDC 任务：
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
@@ -127,11 +126,11 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://localhost:8444/cdc
 ```
 
-将 **localhost** 替换为目标 Milvus 服务器的 IP 地址。
+将 __localhost__ 替换为目标 Milvus 服务器的 IP 地址。
 
-**参数**：
+__参数__：
 
-- **task_id**: 要暂停的 CDC 任务的 ID。
+- __task_id__：要暂停的 CDC 任务的 ID。
 
 预期响应：
 
@@ -144,7 +143,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
 
 ## 恢复任务
 
-要恢复已暂停的 CDC 任务：
+要恢复暂停的 CDC 任务：
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
@@ -155,11 +154,11 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://localhost:8444/cdc
 ```
 
-将 **localhost** 替换为目标 Milvus 服务器的 IP 地址。
+将 __localhost__ 替换为目标 Milvus 服务器的 IP 地址。
 
-**参数**：
+__参数__：
 
-- **task_id**: 要恢复的 CDC 任务的 ID。
+- __task_id__：要恢复的 CDC 任务的 ID。
 
 预期响应：
 
@@ -170,9 +169,11 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }
 ```
 
-## 检索任务详细信息
+## 检索任务详情
 
-要检索特定 CDC 任务的详细信息：
+
+
+检索特定 CDC 任务的详细信息：
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
@@ -183,13 +184,13 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://localhost:8444/cdc
 ```
 
-Replace **localhost** with the IP address of the target Milvus server.
+将 __localhost__ 替换为目标 Milvus 服务器的 IP 地址。
 
-**Parameters**:
+**参数**：
 
-- **task_id**: ID of the CDC task to query.
+- __task_id__: 要查询的 CDC 任务的 ID。
 
-Expected response:
+预期响应：
 
 ```bash
 {
@@ -214,9 +215,9 @@ Expected response:
 }
 ```
 
-## Delete a task
+## 删除任务
 
-To delete a CDC task:
+删除 CDC 任务：
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
@@ -227,13 +228,13 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://localhost:8444/cdc
 ```
 
-Replace **localhost** with the IP address of the target Milvus server.
+将 __localhost__ 替换为目标 Milvus 服务器的 IP 地址。
 
-**Parameters**:
+**参数**：
 
-- **task_id**: ID of the CDC task to delete.
+- __task_id__: 要删除的 CDC 任务的 ID。
 
-Expected response:
+预期响应：
 
 ```json
 {

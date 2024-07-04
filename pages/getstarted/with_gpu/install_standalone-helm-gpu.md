@@ -308,7 +308,7 @@ $ minikube delete
 
 安装Milvus后，您可以：
 
-- 检查[Hello-Milvus](quickstart.md)，用不同的SDK运行一个示例代码，看看Milvus能做什么。
+- 检查[Hello-Milvus](/getstarted/quickstart.md)，用不同的SDK运行一个示例代码，看看Milvus能做什么。
 
 - 学习Milvus的基本操作：
   - [管理数据库](Manage_Databases.md)

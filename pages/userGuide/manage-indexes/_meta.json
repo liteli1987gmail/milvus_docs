@@ -1,0 +1,5 @@
+{
+    "index-scalar-fields": "索引标量字段(Index-scalar-fields)",
+    "index-vector-fields": "索引向量字段(Index-vector-fields)",
+    "index-with-gpu": "使用 GPU 索引(Index-with-gpu)"
+}

@@ -1,0 +1,17 @@
+{
+    "api_reference": "API 参考(Api_reference)",
+    "cpu_support": "CPU 支持(Cpu_support)",
+    "create_a_k8s_cluster_using_minikube": "使用 Minikube 创建 Kubernetes 集群(Create_a_k8s_cluster_using_minikube)",
+    "faq_euclidean_ip_different_results": "常见问题：欧几里得和内积不同结果(Faq_euclidean_ip_different_results)",
+    "faq_flat_ivfflat": "常见问题：Flat 和 IVFFlat(Faq_flat_ivfflat)",
+    "faq_normalize_embeddings": "常见问题：归一化嵌入(Faq_normalize_embeddings)",
+    "faq_recall_rate_sq8_sq8h": "常见问题：SQ8 和 SQ8H 召回率(Faq_recall_rate_sq8_sq8h)",
+    "faq_top1_not_target": "常见问题：Top1 不是目标(Faq_top1_not_target)",
+    "head": "头(Head)",
+    "installation_guide": "安装指南(Installation_guide)",
+    "installation_guide_cluster": "集群安装指南(Installation_guide_cluster)",
+    "multiple_code": "多代码(Multiple_code)",
+    "multiple_sdk": "多 SDK(Multiple_sdk)",
+    "sdk_restful": "RESTful SDK(Sdk_restful)",
+    "tail": "尾(Tail)"
+}

@@ -1,0 +1,5 @@
+{
+    "install_cluster-helm-gpu": "安装集群 Helm GPU(Install_cluster-helm-gpu)",
+    "install_standalone-docker-compose-gpu": "独立版安装 Docker Compose GPU(Install_standalone-docker-compose-gpu)",
+    "install_standalone-helm-gpu": "独立版安装 Helm GPU(Install_standalone-helm-gpu)"
+}

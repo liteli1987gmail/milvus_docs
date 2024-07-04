@@ -1,0 +1,11 @@
+{
+    "audio_similarity_search": "音频相似性搜索(Audio_similarity_search)",
+    "dna_sequence_classification": "DNA 序列分类(Dna_sequence_classification)",
+    "image_deduplication_system": "图像去重系统(Image_deduplication_system)",
+    "image_similarity_search": "图像相似性搜索(Image_similarity_search)",
+    "question_answering_system": "问答系统(Question_answering_system)",
+    "recommendation_system": "推荐系统(Recommendation_system)",
+    "text_image_search": "文本图像搜索(Text_image_search)",
+    "text_search_engine": "文本搜索引擎(Text_search_engine)",
+    "video_similarity_search": "视频相似性搜索(Video_similarity_search)"
+}

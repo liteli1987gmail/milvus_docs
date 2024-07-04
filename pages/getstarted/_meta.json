@@ -1,17 +1,11 @@
 {
-    "cluster":{
-        "title":"集群管理"
-    },
-    "install_SDKs":{
-        "title":"安装SDK"
-    },
-    "offline":{
-        "title":"离线安装"
-    },
-    "standalone":{
-        "title":"单机部署"
-    },
-    "with_gpu":{
-        "title":"支持GPU部署"
-    }
+    "cluster": "集群(Cluster)",
+    "install_SDKs":"安装SDK(Install SDKs)",
+    "offline":"离线部署(Offline)",
+    "standalone":"单机部署(Standalone)",
+    "with_gpu":"GPU部署(With GPU)",
+    "milvus_lite": "Milvus Lite",
+    "prerequisite-docker": "先决条件 Docker(Prerequisite-docker)",
+    "prerequisite-helm": "先决条件 Helm(Prerequisite-helm)",
+    "quickstart": "快速入门(Quickstart)"
 }

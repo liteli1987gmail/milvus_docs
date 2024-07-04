@@ -1,27 +1,23 @@
----
-id: index.md
-related_key: index
-summary: Index mechanism in Milvus.
-title: In-memory Index
----
 
-# 内存索引
 
-本文列出了 Milvus 支持的各种内存索引类型，它们最适合的场景，以及用户可以配置的参数，以实现更好的搜索性能。有关磁盘索引的信息，请参见 **[磁盘索引](disk_index.md)**。
 
-索引是有效组织数据的过程，在通过大幅加速大型数据集上的耗时查询，使相似性搜索变得有用方面起着重要作用。
+# 内存中的索引
 
-为了提高查询性能，你可以为每个向量字段 [指定索引类型](index-vector-fields.md)。
+本主题列出了 Milvus 支持的各种类型的内存索引，以及它们最适合的场景和用户可以配置的参数，以实现更好的搜索性能。有关磁盘上的索引，请参阅 [磁盘上的索引](/reference/disk_index.md)。
+
+索引是高效组织数据的过程，在大型数据集上极大地加速耗时查询，在使相似性搜索有用方面起着重要作用。
+
+为了提高查询性能，你可以为每个向量字段 [指定索引类型](/userGuide/manage-indexes/index-vector-fields.md)。
 
 <div class="alert note">
-目前，一个向量字段只支持一种索引类型。在切换索引类型时，Milvus 会自动删除旧索引。
+目前，一个向量字段仅支持一种索引类型。在切换索引类型时，Milvus 会自动删除旧的索引。
 </div>
 
-## ANNS 向量索引
+## ANNS（近似最近邻搜索）向量索引
 
-Milvus 支持的大多数向量索引类型使用近似最近邻搜索（ANNS）算法。与通常非常耗时的精确检索相比，ANNS 的核心思想不再局限于返回最准确的结果，而是只搜索目标的邻居。ANNS 通过在可接受的准确度范围内牺牲准确性来提高检索效率。
+Milvus 支持的大多数向量索引类型使用近似最近邻搜索（ANNS）算法。与通常非常耗时的精确检索相比，ANNS 的核心思想不再限于返回最准确的结果，而是仅搜索目标的邻居。ANNS 通过在可接受的范围内牺牲准确性来提高检索效率。
 
-根据实现方法，ANNS 向量索引可以分为四类：
+根据实现方法，ANNS 向量索引可分为四类：
 
 - 基于树的索引
 - 基于图的索引
@@ -30,32 +26,35 @@ Milvus 支持的大多数向量索引类型使用近似最近邻搜索（ANNS）
 
 ## Milvus 支持的索引
 
-根据适用的数据类型，Milvus 支持的索引可以分为两类：
 
-- 用于浮点嵌入的索引
 
-  - 对于 128 维的浮点嵌入，它们占用的存储空间为 128 \* float 的大小 = 512 字节。用于浮点嵌入的 [距离度量](metric.md) 是欧几里得距离（L2）和内积。
 
-  - 这些类型的索引包括 FLAT、IVF_FLAT、IVF_PQ、IVF_SQ8、HNSW 和 SCANN<sup>(beta)</sup>，适用于基于 CPU 的 ANN 搜索。
+根据适当的数据类型，Milvus 支持的索引可以分为两类：
 
-- 用于二进制嵌入的索引
+- 浮点型嵌入的索引
 
-  - 对于 128 维的二进制嵌入，它们占用的存储空间为 128 / 8 = 16 字节。用于二进制嵌入的距离度量是杰卡德和汉明距离。
+  - 对于 128 维浮点型嵌入，其占用的存储空间为 128 * float 的大小 = 512 字节。用于浮点型嵌入的距离度量标准为欧几里德距离（L2 范数）和内积。
 
-  - 这类索引包括 BIN_FLAT 和 BIN_IVF_FLAT。
+  - 这些类型的索引包括 FLAT、IVF_FLAT、IVF_PQ、IVF_SQ8、HNSW 和 SCANN（beta 版），用于基于 CPU 的近似最近邻搜索。
 
-- 用于稀疏嵌入的索引
+- 二进制嵌入的索引
 
-  - 支持稀疏嵌入的距离度量仅为 `IP`（内积）。
+  - 对于 128 维二进制嵌入，其占用的存储空间为 128 / 8 = 16 字节。用于二进制嵌入的距离度量标准为 Jaccard 距离和 Hamming 距离。
 
-  - 索引类型包括 `SPARSE_INVERTED_INDEX` 和 `SPARSE_WAND`。
+  - 这种类型的索引包括 BIN_FLAT 和 BIN_IVF_FLAT。
 
-以下表格对 Milvus 支持的索引进行了分类：
+- 稀疏嵌入的索引
+
+  - 仅支持稀疏嵌入的 `IP`（内积）距离度量标准。
+
+  - 稀疏嵌入的索引类型包括 `SPARSE_INVERTED_INDEX` 和 `SPARSE_WAND`。
+
+下表对 Milvus 支持的索引进行了分类：
 
 <div class="filter">
-  <a href="#floating">Floating-point embeddings</a>
-  <a href="#binary">Binary embeddings</a>
-  <a href="#sparse">Sparse embeddings</a>
+  <a href="#floating"> 浮点型嵌入 </a>
+  <a href="#binary"> 二进制嵌入 </a>
+  <a href="#sparse"> 稀疏嵌入 </a>
 </div>
 
 <div class="filter-floating table-wrapper">
@@ -63,160 +62,93 @@ Milvus 支持的大多数向量索引类型使用近似最近邻搜索（ANNS）
 <table id="floating">
 <thead>
   <tr>
-    <th>Supported index</th>
-    <th>Classification</th>
-    <th>Scenario</th>
+    <th> 支持的索引 </th>
+    <th> 分类 </th>
+    <th> 应用场景 </th>
   </tr>
 </thead>
 <tbody>
   <tr>
-    <td>FLAT</td>
-    <td>N/A</td>
+    <td> FLAT </td>
+    <td> N/A </td>
     <td>
       <ul>
-        <li>Relatively small dataset</li>
-        <li>Requires a 100% recall rate</li>
+        <li> 数据集较小 </li>
+        <li> 需要 100%的召回率 </li>
       </ul>
     </td>
   </tr>
   <tr>
-    <td>IVF_FLAT</td>
-    <td>Quantization-based index</td>
+    <td> IVF_FLAT </td>
+    <td> 基于量化的索引 </td>
     <td>
       <ul>
-        <li>High-speed query</li>
-        <li>Requires a recall rate as high as possible</li>
+        <li> 高速查询 </li>
+        <li> 要求尽可能高的召回率 </li>
       </ul>
     </td>
   </tr>
   <tr>
-    <td>IVF_SQ8</td>
-    <td>Quantization-based index</td>
+    <td> IVF_SQ8 </td>
+    <td> 基于量化的索引 </td>
     <td>
       <ul>
-        <li>High-speed query</li>
-        <li>Limited memory resources</li>
-        <li>Accepts minor compromise in recall rate</li>
+        <li> 高速查询 </li>
+        <li> 受限内存资源 </li>
+        <li> 在召回率上有一定妥协 </li>
       </ul>
     </td>
   </tr>  
   <tr>
-    <td>IVF_PQ</td>
-    <td>Quantization-based index</td>
+    <td> IVF_PQ </td>
+    <td> 基于量化的索引 </td>
     <td>
       <ul>
-        <li>Very high-speed query</li>
-        <li>Limited memory resources</li>
-        <li>Accepts substantial compromise in recall rate</li>
+        <li> 非常高速的查询 </li>
+        <li> 受限内存资源 </li>
+        <li> 在召回率上有较大妥协 </li>
       </ul>
     </td>
   </tr>
   <tr>
-    <td>HNSW</td>
-    <td>Graph-based index</td>
+    <td> HNSW </td>
+    <td> 基于图的索引 </td>
     <td>
       <ul>
-        <li>Very high-speed query</li>
-        <li>Requires a recall rate as high as possible</li>
-        <li>Large memory resources</li>
+        <li> 非常高速的查询 </li>
+        <li> 要求尽可能高的召回率 </li>
+        <li> 较大的内存资源 </li>
       </ul>
     </td>
   </tr>
   <tr>
-    <td>SCANN</td>
-    <td>Quantization-based index</td>
+    <td> SCANN </td>
+    <td> 基于量化的索引 </td>
     <td>
       <ul>
-        <li>Very high-speed query</li>
-        <li>Requires a recall rate as high as possible</li>
-        <li>Large memory resources</li>
-      </ul>
-    </td>
-  </tr>
-</tbody>
-</table>
+        <li> 非常高速的查询 </li>
+        <li> 要求尽可能高的召回率 </li>
+ 
 
-</div>
 
-<div class="filter-binary table-wrapper">
+# FLAT
 
-<table id="binary">
-<thead>
-  <tr>
-    <th>Supported index</th>
-    <th>Classification</th>
-    <th>Scenario</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td>BIN_FLAT</td>
-    <td>Quantization-based index</td>
-    <td><ul>
-      <li>Depends on relatively small datasets.</li>
-      <li>Requires perfect accuracy.</li>
-      <li>No compression applies.</li>
-      <li>Guarantee exact search results.</li>
-    </ul></td>
-  </tr>
-  <tr>
-    <td>BIN_IVF_FLAT</td>
-    <td>Quantization-based index</td>
-    <td><ul>
-      <li>High-speed query</li>
-      <li>Requires a recall rate as high as possible</li>
-    </ul></td>
-  </tr>
-</tbody>
-</table>
+FLAT 是一种适用于需要完美准确度且依赖相对较小（百万级）数据集的向量相似度搜索应用的索引。FLAT 不对向量进行压缩，并且是唯一能够保证搜索结果完全准确的索引。FLAT 的结果也可以用作与其他召回率不到 100%的索引产生的结果进行比较的基准。
 
-</div>
+FLAT 之所以准确是因为它采用了一种详尽的搜索方法，也就是说，对于每个查询，目标输入都要与数据集中的每组向量进行比较。这使得 FLAT 成为我们列表中最慢的索引，并且不适合查询大规模向量数据。在 Milvus 中，FLAT 索引不需要任何参数，使用它也不需要数据训练。
 
-<div class="filter-sparse table-wrapper">
+- 搜索参数
 
-<table id="sparse">
-<thead>
-  <tr>
-    <th>Supported index</th>
-    <th>Classification</th>
-    <th>Scenario</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td>SPARSE_INVERTED_INDEX</td>
-    <td>Inverted index</td>
-    <td><ul>
-      <li>Depends on relatively small datasets.</li>
-      <li>Requires a 100% recall rate.</li>
-    </ul></td>
-  </tr>
-  <tr>
-    <td>SPARSE_WAND</td>
-    <td>Inverted index</td>
-    <td><ul>
-      <li><a href="https://dl.acm.org/doi/10.1145/956863.956944">Weak-AND</a> algorithm accelerated</li>
-      <li>Can get a significant speed improvement while only sacrificing a small amount of recall.</li>
-    </ul></td>
-  </tr>
-</tbody>
-</table>
-
-</div>
-
-### FLAT
-
-For vector similarity search applications that require perfect accuracy and depend on relatively small (million-scale) datasets, the FLAT index is a good choice. FLAT does not compress vectors, and is the only index that can guarantee exact search results. Results from FLAT can also be used as a point of comparison for results produced by other indexes that have less than 100% recall.
-
-FLAT is accurate because it takes an exhaustive approach to search, which means for each query the target input is compared to every set of vectors in a dataset. This makes FLAT the slowest index on our list, and poorly suited for querying massive vector data. There are no parameters required for the FLAT index in Milvus, and using it does not need data training.
-
-- Search parameters
-
-  | Parameter     | Description                            | Range                               |
-  | ------------- | -------------------------------------- | ----------------------------------- |
-  | `metric_type` | [Optional] The chosen distance metric. | See [Supported Metrics](metric.md). |
+  | 参数          | 描述                                | 范围                                |
+  | ------------- | ----------------------------------- | ----------------------------------- |
+  | `metric_type` | [可选] 所选择的距离度量方式。 | 参见 [Supported Metrics](/reference/metric.md)。 |
 
 ### IVF_FLAT
+
+
+
+
+I provide markdown document translation services. I will only translate the titles, paragraphs, and list contents in the markdown syntax. Camel case and underscore words do not need to be translated. Please retain the markdown syntax punctuation. After translating, I will replace the original content with the result and return it to you.
 
 IVF_FLAT divides vector data into `nlist` cluster units, and then compares distances between the target input vector and the center of each cluster. Depending on the number of clusters the system is set to query (`nprobe`), similarity search results are returned based on comparisons between the target input and the vectors in the most similar cluster(s) only — drastically reducing query time.
 
@@ -226,23 +158,23 @@ IVF_FLAT is the most basic IVF index, and the encoded data stored in each unit i
 
 - Index building parameters
 
-  | Parameter | Description             | Range      | Default Value |
-  | --------- | ----------------------- | ---------- | ------------- |
-  | `nlist`   | Number of cluster units | [1, 65536] | 128           |
+   | Parameter | Description             | Range      | Default Value |
+   | --------- | ----------------------- | ---------- | ------------- |
+   | `nlist`   | Number of cluster units | [1, 65536] | 128 |
 
 - Search parameters
 
   - Common search
 
-    | Parameter | Description              | Range      | Default Value |
-    | --------- | ------------------------ | ---------- | ------------- |
-    | `nprobe`  | Number of units to query | [1, nlist] | 8             |
+    | Parameter                  | Description                                             | Range      | Default Value |
+    |----------------------------|---------------------------------------------------------|------------|---------------|
+    | `nprobe`                   | Number of units to query                                | [1, nlist] | 8             |
 
   - Range search
 
-    | Parameter                  | Description                                                                                                                                                                                                                                                                                            | Range      | Default Value |
-    | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------------- |
-    | `max_empty_result_buckets` | Maximum number of buckets not returning any search results.<br/>This is a range-search parameter and terminates the search process whilst the number of consecutive empty buckets reaches the specified value.<br/>Increasing this value can improve recall rate at the cost of increased search time. | [1, 65535] | 2             |
+    | Parameter                  | Description                                             | Range      | Default Value |
+    |----------------------------|---------------------------------------------------------|------------|---------------|
+    | `max_empty_result_buckets` | Maximum number of buckets not returning any search results.<br/> This is a range-search parameter and terminates the search process whilst the number of consecutive empty buckets reaches the specified value.<br/> Increasing this value can improve recall rate at the cost of increased search time. | [1, 65535] | 2  |
 
 ### IVF_SQ8
 
@@ -252,29 +184,29 @@ When disk, CPU, or GPU memory resources are limited, IVF_SQ8 is a better option 
 
 - Index building parameters
 
-  | Parameter | Description             | Range      |
-  | --------- | ----------------------- | ---------- |
-  | `nlist`   | Number of cluster units | [1, 65536] |
+   | Parameter | Description             | Range      |
+   | --------- | ----------------------- | ---------- |
+   | `nlist`   | Number of cluster units | [1, 65536] |
 
 - Search parameters
 
   - Common search
 
-    | Parameter | Description              | Range      | Default Value |
-    | --------- | ------------------------ | ---------- | ------------- |
-    | `nprobe`  | Number of units to query | [1, nlist] | 8             |
+    | Parameter | Description              | Range           | Default Value |
+    | --------- | ------------------------ | --------------- | ------------- |
+    | `nprobe`  | Number of units to query | [1, nlist]      | 8 |
 
   - Range search
 
-    | Parameter                  | Description                                                                                                                                                                                                                                                                                            | Range      | Default Value |
-    | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------------- |
-    | `max_empty_result_buckets` | Maximum number of buckets not returning any search results.<br/>This is a range-search parameter and terminates the search process whilst the number of consecutive empty buckets reaches the specified value.<br/>Increasing this value can improve recall rate at the cost of increased search time. | [1, 65535] | 2             |
+    | Parameter                  | Description                                             | Range      | Default Value |
+    |----------------------------|---------------------------------------------------------|------------|---------------|
+    | `max_empty_result_buckets` | Maximum number of buckets not returning any search results.<br/> This is a range-search parameter and terminates the search process whilst the number of consecutive empty buckets reaches the specified value.<br/> Increasing this value can improve recall rate at the cost of increased search time. | [1, 65535] | 2  |
 
 ### IVF_PQ
 
 `PQ` (Product Quantization) uniformly decomposes the original high-dimensional vector space into Cartesian products of `m` low-dimensional vector spaces, and then quantizes the decomposed low-dimensional vector spaces. Instead of calculating the distances between the target vector and the center of all the units, product quantization enables the calculation of distances between the target vector and the clustering center of each low-dimensional space and greatly reduces the time complexity and space complexity of the algorithm.
 
-IVF_PQ performs IVF index clustering before quantizing the product of vectors. Its index file is even smaller than IVF_SQ8, but it also causes a loss of accuracy during searching vectors.
+IVF\_PQ performs IVF index clustering before quantizing the product of vectors. Its index file is even smaller than IVF\_SQ8, but it also causes a loss of accuracy during searching vectors.
 
 <div class="alert note">
 
@@ -284,162 +216,167 @@ Index building parameters and search parameters vary with Milvus distribution. S
 
 - Index building parameters
 
-  | Parameter | Description                                                               | Range                  |
-  | --------- | ------------------------------------------------------------------------- | ---------------------- |
-  | `nlist`   | Number of cluster units                                                   | [1, 65536]             |
-  | `m`       | Number of factors of product quantization                                 | `dim mod m == 0`       |
+  | Parameter | Description                               | Range               |
+  | --------- | ----------------------------------------- | ------------------- |
+  | `nlist`   | Number of cluster units                   | [1, 65536]          |
+  | `m`       | Number of factors of product quantization | `dim mod m == 0` |
   | `nbits`   | [Optional] Number of bits in which each low-dimensional vector is stored. | [1, 16] (8 by default) |
 
 - Search parameters
 
   - Common search
 
-    | Parameter | Description              | Range      | Default Value |
-    | --------- | ------------------------ | ---------- | ------------- |
-    | `nprobe`  | Number of units to query | [1, nlist] | 8             |
+    | Parameter | Description              | Range           | Default Value |
+    | --------- | ------------------------ | --------------- | ------------- |
+    | `nprobe`  | Number of units to query | [1, nlist]      | 8 |
 
   - Range search
 
-    | Parameter                  | Description                                                                                                                                                                                                                                                                                            | Range      | Default Value |
-    | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------------- |
-    | `max_empty_result_buckets` | Maximum number of buckets not returning any search results.<br/>This is a range-search parameter and terminates the search process whilst the number of consecutive empty buckets reaches the specified value.<br/>Increasing this value can improve recall rate at the cost of increased search time. | [1, 65535] | 2             |
+    | Parameter                  | Description                                             | Range      | Default Value |
+    |----------------------------|---------------------------------------------------------|------------|---------------|
+    | `max_empty_result_buckets` | Maximum number of buckets not returning any search results.<br/> This is a range-search parameter and terminates the search process whilst the number of consecutive empty buckets reaches the specified value.<br/> Increasing this value can improve recall rate at the cost of increased search time. | [1, 65535] | 2  |
 
 ### SCANN
+ 
 
-SCANN (Score-aware quantization loss) is similar to IVF_PQ in terms of vector clustering and product quantization. What makes them different lies in the implementation details of product quantization and the use of SIMD (Single-Instruction / Multi-data) for efficient calculation.
+        
+  SCANN（Score-aware quantization loss）在向量聚类和产品量化方面与 IVF_PQ 类似。它们之间的区别在于产品量化的实现细节和 SIMD（单指令/多数据）的使用以实现高效计算。
 
-- Index building parameters
+- 索引构建参数
 
-  | Parameter       | Description                                  | Range                                  |
-  | --------------- | -------------------------------------------- | -------------------------------------- |
-  | `nlist`         | Number of cluster units                      | [1, 65536]                             |
-  | `with_raw_data` | Whether to include the raw data in the index | `True` or `False`. Defaults to `True`. |
+  | 参数             | 描述                                              | 范围                     |
+  |-----------------|------------------------------------------------|-------------------------|
+  | `nlist`         | 聚类单元的数量                                      | [1, 65536]              |
+  | `with_raw_data` | 是否在索引中包含原始数据                                | `True` 或 `False`，默认为 `True` |
 
   <div class="alert note">
 
-  Unlike IVF_PQ, default values apply to `m` and `nbits` for optimized performance.
+  与 IVF_PQ 不同，默认值适用于 `m` 和 `nbits` 以优化性能。
 
   </div>
 
-- Search parameters
+- 搜索参数
 
-  - Common search
+  - 常规搜索
 
-    | Parameter   | Description                        | Range        | Default value |
-    | ----------- | ---------------------------------- | ------------ | ------------- |
-    | `nprobe`    | Number of units to query           | [1, nlist]   |               |
-    | `reorder_k` | Number of candidate units to query | [`top_k`, ∞] |               |
+    | 参数         | 描述                                                     | 范围             | 默认值       |
+    | --------- | ------------------------------------------------------- | --------------- | ----------- |
+    | `nprobe`  | 要查询的单元数量                                           | [1, nlist] |               |
+    | `reorder_k` | 要查询的候选单元数量                                         | [`top_k`, ∞] | |
 
-  - Range search
+  - 范围搜索
 
-    | Parameter                  | Description                                                                                                                                                                                                                                                                                            | Range      | Default Value |
-    | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------------- |
-    | `max_empty_result_buckets` | Maximum number of buckets not returning any search results.<br/>This is a range-search parameter and terminates the search process whilst the number of consecutive empty buckets reaches the specified value.<br/>Increasing this value can improve recall rate at the cost of increased search time. | [1, 65535] | 2             |
+    | 参数                     | 描述                                                                 | 范围             | 默认值         |
+    |------------------------|--------------------------------------------------------------------|-----------------|----------------|
+    | `max_empty_result_buckets` | 不返回任何搜索结果的最大桶的数量。<br/> 这是一个用于范围搜索的参数，当连续空桶的数量达到指定值时，搜索过程会终止。<br/> 增加此值可以提高召回率，但会增加搜索时间。 | [1, 65535] | 2                  |
 
 ### HNSW
 
-HNSW (Hierarchical Navigable Small World Graph) is a graph-based indexing algorithm. It builds a multi-layer navigation structure for an image according to certain rules. In this structure, the upper layers are more sparse and the distances between nodes are farther; the lower layers are denser and the distances between nodes are closer. The search starts from the uppermost layer, finds the node closest to the target in this layer, and then enters the next layer to begin another search. After multiple iterations, it can quickly approach the target position.
+HNSW（Hierarchical Navigable Small World Graph）是一种基于图的索引算法。它根据一定的规则为图像构建了一个多层导航结构。在这个结构中，上层更稀疏，节点之间的距离更远；下层更密集，节点之间的距离更近。搜索从最上层开始，在该层找到距离目标最近的节点，然后进入下一层开始另一次搜索。经过多次迭代，可以快速接近目标位置。
 
-In order to improve performance, HNSW limits the maximum degree of nodes on each layer of the graph to `M`. In addition, you can use `efConstruction` (when building index) or `ef` (when searching targets) to specify a search range.
+为了提高性能，HNSW 限制了图每一层节点的最大度数为 `M`。此外，你可以使用 `efConstruction`（在构建索引时）或 `ef`（在搜索目标时）来指定搜索范围。
 
-- Index building parameters
+- 索引构建参数
 
-  | Parameter        | Description                                                                                                                                                                    | Range        |
-  | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
-  | `M`              | Maximum degree of the node                                                                                                                                                     | (2, 2048)    |
-  | `efConstruction` | Size of the dynamic list for the nearest neighbors during the index time. Higher `efConstruction` leads to a may improve index quality at the cost of increased indexing time. | (1, int_max) |
+  | 参数            | 描述                                           | 范围             |
+  |----------------|------------------------------------------------|-----------------|
+  | `M`              | 节点的最大度数                                     | (2, 2048)        |
+  | `efConstruction` | 在索引时间内用于最近邻居的动态列表的大小。越高的 `efConstruction` 可以提高索引质量，但会增加索引时间。| (1, int_max) |
 
-- Search parameters
+- 搜索参数
 
-  | Parameter | Description                                                                                                                      | Range        |
-  | --------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-  | `ef`      | Size of the dynamic list for the nearest neighbors during the search time. Higher `ef` leads to more accurate but slower search. | [1, int_max] |
+  | 参数      | 描述                                     | 范围           |
+  | --------- | --------------------------------------- | --------------- |
+  | `ef`      | 在搜索时间内用于最近邻居的动态列表的大小。越高的 `ef` 可以获得更准确但更慢的搜索结果。 | [1, int_max] |
 
 ### BIN_FLAT
 
-This index is exactly the same as FLAT except that this can only be used for binary embeddings.
+该索引与 FLAT 完全相同，只是它只适用于二进制嵌入。
 
-For vector similarity search applications that require perfect accuracy and depend on relatively small (million-scale) datasets, the BIN_FLAT index is a good choice. BIN_FLAT does not compress vectors, and is the only index that can guarantee exact search results. Results from BIN_FLAT can also be used as a point of comparison for results produced by other indexes that have less than 100% recall.
+对于需要完全准确性并依赖相对较小（百万级）数据集的向量相似性搜索应用程序，BIN_FLAT 索引是一个很好的选择。BIN_FLAT 不会压缩向量，并且是唯一可以保证精确搜索结果的索引。BIN_FLAT 的结果还可以用作与其他召回率低于 100%的索引生成的结果进行比较的基准。
 
-BIN_FLAT is accurate because it takes an exhaustive approach to search, which means for each query the target input is compared to vectors in a dataset. This makes BIN_FLAT the slowest index on our list, and poorly suited for querying massive vector data. There are no parameters for the BIN_FLAT index in Milvus, and using it does not require data training or additional storage.
+BIN_FLAT 之所以准确，是因为它采用了穷举搜索的方法，这意味着对于每个查询，将目标输入与数据集中的向量进行比较。这使得 BIN_FLAT 成为我们列表中最慢的索引，并且不适用于查询大规模向量数据。在 Milvus 中，BIN_FLAT 索引没有参数，并且使用它不需要数据训练或额外存储。
 
-- Search parameters
+- 搜索参数
 
-  | Parameter     | Description                            | Range                               |
-  | ------------- | -------------------------------------- | ----------------------------------- |
-  | `metric_type` | [Optional] The chosen distance metric. | See [Supported Metrics](metric.md). |
+  | 参数          | 描述                                                 | 范围                                  |
+  | ------------- | --------------------------------------------------- | -------------------------------------- |
+  | `metric_type` | [可选] 所选距离度量。                                 | 查看 [支持的度量](/reference/metric.md)。                     |
 
 ### BIN_IVF_FLAT
 
-This index is exactly the same as IVF_FLAT except that this can only be used for binary embeddings.
+该索引与 IVF_FLAT 完全相同，只是它只适用于二进制嵌入。
 
-BIN_IVF_FLAT divides vector data into `nlist` cluster units, and then compares distances between the target input vector and the center of each cluster. Depending on the number of clusters the system is set to query (`nprobe`), similarity search results are returned based on comparisons between the target input and the vectors in the most similar cluster(s) only — drastically reducing query time.
+BIN_IVF_FLAT 将向量数据划分为 `nlist` 个聚类单元，然后比较目标输入向量与每个聚类中心之间的距离。根据系统设置的要查询的聚类数（`nprobe`），基于目标输入与最相似的聚类中的向量的比较返回相似性搜索结果，从而大大减少了查询时间。
 
-By adjusting `nprobe`, an ideal balance between accuracy and speed can be found for a given scenario. Query time increases sharply as both the number of target input vectors (`nq`), and the number of clusters to search (`nprobe`), increase.
+通过调整 `nprobe`，可以在给定的场景中找到准确性和速度之间的理想平衡。随着目标输入向量的数量（`nq`）和要搜索的聚类数（`nprobe`）的增加，查询时间急剧增加。
 
-BIN_IVF_FLAT is the most basic BIN_IVF index, and the encoded data stored in each unit is consistent with the original data.
+BIN_IVF_FLAT 是最基本的 BIN_IVF 索引，每个单元存储的编码数据与原始数据一致。
 
-- Index building parameters
+- 索引构建参数
 
-  | Parameter | Description             | Range      |
-  | --------- | ----------------------- | ---------- |
-  | `nlist`   | Number of cluster units | [1, 65536] |
+  | 参数      | 描述                                     | 范围           |
+  | --------- | --------------------------------------- | ----------------- |
+  | `nlist`   | 聚类单元的数量                             | [1, 65536]        |
 
-- Search parameters
+- 搜索参数
 
-  - Common search
+  - 常规搜索
 
-    | Parameter | Description              | Range      | Default Value |
-    | --------- | ------------------------ | ---------- | ------------- |
-    | `nprobe`  | Number of units to query | [1, nlist] | 8             |
+    | 参数       | 描述                                      | 范围                  | 默认值           |
+    | --------- | ---------------------------------------- | --------------------- | ---------------- |
+    | `nprobe`  | 要查询的单元数量                            | [1, nlist]    | 8           |
 
-  - Range search
+  - 范围搜索
 
-    | Parameter                  | Description                                                                                                                                                                                                                                                                                            | Range      | Default Value |
-    | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------------- |
-    | `max_empty_result_buckets` | Maximum number of buckets not returning any search results.<br/>This is a range-search parameter and terminates the search process whilst the number of consecutive empty buckets reaches the specified value.<br/>Increasing this value can improve recall rate at the cost of increased search time. | [1, 65535] | 2             |
-
+    | 参数                     | 描述                                                                 | 范围                  | 默认值         |
+    |----------------------------|--------------------------------------------------------------------|------------|---------------|
+    | `max_empty_result_buckets` | 不返回任何搜索结果的最大桶的数量。<br/> 这是一个用于范围搜索的参数，当连续空桶的数量达到指定值时，搜索过程会终止。<br/> 增加此值可以提高召回率，但会增加搜索时间。 | [1, 65535]        | 2              |
+  
 ### SPARSE_INVERTED_INDEX
 
-Each dimension maintains a list of vectors that have a non-zero value at that dimension. During search, Milvus iterates through each dimension of the query vector and computes scores for vectors that have non-zero values in those dimensions.
+每个维度维护一个具有非零值的向量列表。在搜索过程中，Milvus 遍历查询向量的每个维度，并为在这些维度上具有非零值的向量计算得分。
 
-- Index building parameters
+- 索引构建参数
 
-  | Parameter          | Description                                                                                                                                                                                                                                           | Range  |
-  | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-  | `drop_ratio_build` | The proportion of small vector values that are excluded during the indexing process. This option allows fine-tuning of the indexing process, making a trade-off between efficiency and accuracy by disregarding small values when building the index. | [0, 1] |
+  | 参数                 | 描述                                                         | 范围       |
+  | -------------------- | ------------------------------------------------------------ | ---------- |
+  | `drop_ratio_build`   | 在构建索引过程中排除的小向量值的比例。此选项可以通过在构建索引时忽略小值来微调索引过程，以在效率和准确性之间进行权衡。 | [0, 1]     |
 
-- Search parameters
+- 搜索参数
 
-  | Parameter           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Range  |
-  | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-  | `drop_ratio_search` | The proportion of small vector values that are excluded during the search process. This option allows fine-tuning of the search process by specifying the ratio of the smallest values in the query vector to ignore. It helps balance search precision and performance. The smaller the value set for `drop_ratio_search`, the less these small values contribute to the final score. By ignoring some small values, search performance can be improved with minimal impact on accuracy. | [0, 1] |
+  | 参数                 | 描述                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | 范围     |
+  | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+  | `drop_ratio_search`  | 在搜索过程中排除的小向量值的比例。此选项允许通过指定查询向量中最小值的比例来微调搜索过程，以平衡搜索精度和性能。对于设置较小的 `drop_ratio_search` 值，这些小值对最终得分的贡献较小。通过忽略一些小值，可以提高搜索性能，对准确性的影响很小。 | [0, 1]   |
 
 ### SPARSE_WAND
 
-This index shares similarities with `SPARSE_INVERTED_INDEX`, while it utilizes the [Weak-AND](https://dl.acm.org/doi/10.1145/956863.956944) algorithm to further reduce the number of full IP distance evaluations during the search process.
+此索引与 `SPARSE_INVERTED_INDEX` 类似，但在搜索过程中利用了 [Weak-AND](https://dl.acm.org/doi/10.1145/956863.956944) 算法，进一步减少了完整 IP 距离计算的次数。
 
-Based on our testing, `SPARSE_WAND` generally outperforms other methods in terms of speed. However, its performance can deteriorate rapidly as the density of the vectors increases. To address this issue, introducing a non-zero `drop_ratio_search` can significantly enhance performance while only incurring minimal accuracy loss. For more information, refer to [Sparse Vector](sparse_vector.md).
+根据我们的测试，`SPARSE_WAND` 在速度方面通常优于其他方法。然而，随着向量密度的增加，其性能可能会迅速下降。为了解决这个问题，引入一个非零的 `drop_ratio_search` 可以显著提高性能，同时只带来很小的精度损失。有关更多信息，请参阅 [稀疏向量](/reference/sparse_vector.md)。
 
-- Index building parameters
+- 索引构建参数
 
-  | Parameter          | Description                                                                                                                                                                                                                                           | Range  |
-  | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-  | `drop_ratio_build` | The proportion of small vector values that are excluded during the indexing process. This option allows fine-tuning of the indexing process, making a trade-off between efficiency and accuracy by disregarding small values when building the index. | [0, 1] |
+  | 参数                 | 描述                                                         | 范围       |
+  | -------------------- | ------------------------------------------------------------ | ---------- |
+  | `drop_ratio_build`   | 在构建索引过程中排除的小向量值的比例。此选项可以通过在构建索引时忽略小值来微调索引过程，以在效率和准确性之间进行权衡。 | [0, 1]     |
 
-- Search parameters
+- 搜索参数
 
-  | Parameter           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Range  |
-  | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-  | `drop_ratio_search` | The proportion of small vector values that are excluded during the search process. This option allows fine-tuning of the search process by specifying the ratio of the smallest values in the query vector to ignore. It helps balance search precision and performance. The smaller the value set for `drop_ratio_search`, the less these small values contribute to the final score. By ignoring some small values, search performance can be improved with minimal impact on accuracy. | [0, 1] |
+  | 参数                 | 描述                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | 范围     |
+  | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+  | `drop_ratio_search`  | 在搜索过程中排除的小向量值的比例。此选项允许通过指定查询向量中最小值的比例来微调搜索过程，以平衡搜索精度和性能。对于设置较小的 `drop_ratio_search` 值，这些小值对最终得分的贡献较小。通过忽略一些小值，可以提高搜索性能，对准确性的影响很小。 | [0, 1]   |
 
-## FAQ
+## 常见问题
 
 <details>
-<summary><font color="#4fc4f9">What is the difference between FLAT index and IVF_FLAT index?</font></summary>
+<summary> <font color="#4fc4f9"> FLAT 索引和 IVF_FLAT 索引之间有什么区别？</font> </summary>
 {{fragments/faq_flat_ivfflat.md}}
 </details>
 
-## What's next
+## 接下来是什么
 
-- Learn more about the [Similarity Metrics](metric.md) supported in Milvus.
+
+# 
+- 了解更多关于 Milvus 支持的 [相似度度量](/reference/metric.md)。
+

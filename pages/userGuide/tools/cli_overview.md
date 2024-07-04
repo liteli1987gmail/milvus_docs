@@ -1,16 +1,13 @@
----
-id: cli_overview.md
-summary: Milvus 命令行界面（CLI）是一个支持数据库连接、数据操作以及数据导入导出的命令行工具。
-title: Milvus 命令行界面
----
+
+
 
 # Milvus 命令行界面
 
-Milvus 命令行界面（CLI）是一个支持数据库连接、数据操作以及数据导入导出的命令行工具。它基于 [Milvus Python SDK](https://github.com/milvus-io/pymilvus)，允许您通过终端使用交互式命令行提示执行命令。
+Milvus 命令行界面（CLI）是一个支持数据库连接、数据操作以及数据导入和导出的命令行工具。基于 [Milvus Python SDK](https://github.com/milvus-io/pymilvus)，它允许通过终端使用交互式命令行提示执行命令。
 
 ## 推荐版本
 
-在下面的表格中，您可以根据您使用的 Milvus 版本找到推荐的 PyMilvus 和 Milvus_CLI 版本。
+在下表中，你可以根据使用的 Milvus 版本找到推荐的 PyMilvus 和 Milvus_CLI 版本。
 
 |  Milvus   | PyMilvus | Milvus_CLI |
 | :-------: | :------: | :--------: |
@@ -28,9 +25,11 @@ Milvus 命令行界面（CLI）是一个支持数据库连接、数据操作以�
 |   2.2.x   |  2.2.x   |   0.4.0    |
 |   2.3.x   |  2.3.x   |   0.4.2    |
 
-<div class="alert note">由于存储格式的更改，Milvus 2.0.0-RC7 及以后的版本与 2.0.0-RC6 及以前的版本不向后兼容。</div>
+<div class="alert note"> Milvus 2.0.0-RC7 及以上版本与 2.0.0-RC6 及更早版本不兼容，因为对存储格式进行了更改。</div>
 
 ## 当前版本
 
+
+
 Milvus_CLI 的当前版本是 0.4.2。
-要查找您已安装的版本并查看是否需要更新，请运行 `milvus_cli --version`。
+要查找你安装的版本并查看是否需要更新，请运行 `milvus_cli --version`。

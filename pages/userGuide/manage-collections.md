@@ -1,55 +1,53 @@
----
-id: 管理集合.md
-title: 管理集合
----
+
+
 
 # 管理集合
 
-本指南将引导您使用您选择的 SDK 创建和管理集合。
+本指南将指导你使用所选的 SDK 创建和管理集合。
 
 ## 开始之前
 
-- 您已安装了[Milvus 独立部署](https://milvus.io/docs/install_standalone-docker.md)或[Milvus 集群](https://milvus.io/docs/install_cluster-milvusoperator.md)。
+- 你已经安装了 [Milvus 单机版](/getstarted/standalone/install_standalone-docker.md) 或 [Milvus 集群版](/getstarted/cluster/install_cluster-milvusoperator.md)。
 
-- 您已安装了首选的 SDK。您可以选择多种语言，包括[Python](https://milvus.io/docs/install-pymilvus.md)、[Java](https://milvus.io/docs/install-java.md)、[Go](https://milvus.io/docs/install-go.md)和[Node.js](https://milvus.io/docs/install-node.md)。
+- 你已经安装了所需的 SDK。你可以选择多种语言，包括 [Python](/getstarted/install_SDKs/install-pymilvus.md)、[Java](/getstarted/install_SDKs/install-java.md)、[Go](/getstarted/install_SDKs/install-go.md) 和 [Node.js](/getstarted/install_SDKs/install-node.md)。
 
 ## 概述
 
-在 Milvus 中，您将向量嵌入存储在集合中。集合内的所有向量嵌入共享相同的维度和距离度量以测量相似性。
+在 Milvus 中，你可以将向量嵌入存储在集合中。集合中的所有向量嵌入共享相同的维度和用于衡量相似性的距离度量。
 
-Milvus 集合支持动态字段（即，未在模式中预定义的字段）和主键的自动递增。
+Milvus 集合支持动态字段（即模式中未预定义的字段）和主键的自动递增。
 
-为了适应不同的偏好，Milvus 提供了两种创建集合的方法。一种提供快速设置，另一种允许详细定制集合模式和索引参数。
+为了适应不同的偏好，Milvus 提供了两种创建集合的方法。一种提供快速设置，而另一种允许详细定制集合的模式和索引参数。
 
-此外，您可以在需要时查看、加载、释放和删除集合。
+此外，你可以在需要时查看、加载、释放和删除集合。
 
 <div class="alert note">
 
-本页上的代码片段使用新的<a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md">MilvusClient</a>（Python）与 Milvus 交互。其他语言的新 MilvusClient SDK 将在未来的更新中发布。
+此页面上的代码片段使用的是新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md"> MilvusClient </a>（Python）与 Milvus 进行交互。其他语言的新 MilvusClient SDK 将在未来的更新中发布。
 
 </div>
 
 ## 创建集合
 
-您可以以以下任一方式创建集合：
+你可以通过以下两种方式之一创建集合：
 
-- **快速设置**
+- __快速设置__
 
-  通过这种方式，您可以通过简单地给集合命名并指定要存储在该集合中的向量嵌入的维度数来创建集合。有关详细信息，请参阅[快速设置](manage-collections.md)。
+    在此方式中，你可以通过仅提供名称和要存储在该集合中的向量嵌入的维度数量来创建集合。详情请参阅 [快速设置](/userGuide/manage-collections.md)。
 
-- **自定义设置**
+- __自定义设置__
 
-  而不是让 Milvus 为您的集合决定几乎所有事情，您可以自己确定集合的**schema**和**index parameters**。有关详细信息，请参阅[自定义设置](manage-collections.md)。
+    你可以根据自己的需求确定集合的 __模式__ 和 __索引参数__，而不是让 Milvus 为集合几乎决定一切。详情请参阅 [自定义设置](/userGuide/manage-collections.md)。
 
 ### 快速设置
 
-在 AI 行业的巨大飞跃背景下，大多数开发人员只需要一个简单且动态的集合来开始。Milvus 允许使用仅三个参数快速设置这样的集合：
+在人工智能领域取得巨大进展的背景下，大多数开发人员只需要一个简单而动态的集合即可开始。Milvus 允许使用仅三个参数快速设置此类集合：
 
-- 要创建的集合的名称，
+- 要创建的集合名称，
 
-- 要插入的向量嵌入的维度，
+- 要插入的向量嵌入的维度，以及
 
-- 用于测量向量嵌入之间相似性的度量类型。
+- 用于衡量向量嵌入之间相似性的度量类型。
 
 ```python
 from pymilvus import MilvusClient, DataType
@@ -59,7 +57,7 @@ client = MilvusClient(
     uri="http://localhost:19530"
 )
 
-# 2. 在快速设置模式下创建集合
+# 2. 以快速设置模式创建集合
 client.create_collection(
     collection_name="quick_setup",
     dimension=5
@@ -78,43 +76,48 @@ print(res)
 # }
 ```
 
-上述代码中生成的集合仅包含两个字段：`id`（作为主键）和`vector`（作为向量字段），`auto_id`和`enable_dynamic_field`设置默认启用。
+上述代码中生成的集合仅包含两个字段：`id`（作为主键）和 `vector`（作为向量字段），默认启用了 `auto_id` 和 `enable_dynamic_field` 设置。
 
 - `auto_id`
 
-  启用此设置确保主键自动递增。在数据插入期间不需要手动提供主键。
+    启用此设置可确保主键自动递增。在数据插入过程中无需手动提供主键。
 
 - `enable_dynamic_field`
 
-  启用时，除了要插入的数据中的`id`和`vector`之外的所有字段都被视为动态字段。这些额外的字段被保存为一个名为`$meta`的特殊字段中的键值对。此功能允许在数据插入期间包含额外的字段。
+    启用后，将把要插入的数据中除 `id` 和 `vector` 之外的所有字段视为动态字段。这些额外的字段将保存在一个名为 `$meta` 的特殊字段中，以键值对的形式存储。这个功能允许在数据插入过程中包含额外的字段。
 
-从提供的代码自动索引和加载的集合已准备好立即进行数据插入。
+提供的代码自动生成的、具有自动索引和加载状态的集合已准备好进行数据插入。
 
 ### 自定义设置
 
-而不是让 Milvus 为您的集合决定几乎所有事情，您可以自己确定集合的**schema**和**index parameters**。
+你可以根据自己的需求确定集合的 __模式__ 和 __索引参数__，而不是让 Milvus 为集合几乎决定一切。
 
-#### 第 1 步：设置模式
+#### 步骤 1：设置模式
 
-模式定义了集合的结构。在模式中，您可以选择启用或禁用`enable_dynamic_field`，添加预定义字段，并为每个字段设置属性。有关概念和可用数据类型的详细解释，请参阅[模式解释](schema.md)。
+
+
+
+# A schema defines the structure of a collection. 
+
+The schema allows you to enable or disable `enable_dynamic_field`, add pre-defined fields, and set attributes for each field. For a detailed explanation of the concept and available data types, refer to [Schema Explained](/reference/schema.md).
 
 ```python
-# 3. 在自定义设置模式下创建集合
+# 3. Create a collection in customized setup mode
 
-# 3.1. 创建模式
+# 3.1. Create schema
 schema = MilvusClient.create_schema(
     auto_id=False,
     enable_dynamic_field=True,
 )
 
-# 3.2. 向模式中添加字段
+# 3.2. Add fields to schema
 schema.add_field(field_name="my_id", datatype=DataType.INT64, is_primary=True)
 schema.add_field(field_name="my_vector", datatype=DataType.FLOAT_VECTOR, dim=5)
 ```
 
 In the provided code snippet for Python, the `enable_dynamic_field` is set to `True`, and `auto_id` is enabled for the primary key. Additionally, a `vector` field is introduced, configured with a dimensionality of 768, along with the inclusion of four scalar fields, each with its respective attributes.
 
-#### Step 2: Set up index parameters
+### Step 2: Set up index parameters
 
 Index parameters dictate how Milvus organizes your data within a collection. You can tailor the indexing process for specific fields by adjusting their `metric_type` and `index_type`. For the vector field, you have the flexibility to select `COSINE`, `L2`, or `IP` as the `metric_type`.
 
@@ -129,7 +132,7 @@ index_params.add_index(
 )
 
 index_params.add_index(
-    field_name="my_vector",
+    field_name="my_vector", 
     index_type="IVF_FLAT",
     metric_type="IP",
     params={ "nlist": 128 }
@@ -138,94 +141,102 @@ index_params.add_index(
 
 The code snippet above demonstrates how to set up index parameters for the vector field and a scalar field, respectively. For the vector field, set both the metric type and the index type. For a scalar field, set only the index type. It is recommended to create an index for the vector field and any scalar fields that are frequently used for filtering.
 
-#### Step 3: Create the collection
+### Step 3: Create the collection
 
-You have the option to create a collection and an index file separately or to create a collection with the index loaded simultaneously upon creation.
 
-- **Create a collection with the index loaded simultaneously upon creation.**
 
-  ```python
-  # 3.5. Create a collection with the index loaded simultaneously
-  client.create_collection(
-      collection_name="customized_setup_1",
-      schema=schema,
-      index_params=index_params
-  )
 
-  time.sleep(5)
 
-  res = client.get_load_state(
-      collection_name="customized_setup_1"
-  )
 
-  print(res)
 
-  # Output
-  #
-  # {
-  #     "state": "<LoadState: Loaded>"
-  # }
-  ```
+你有两种选项，分别是单独创建一个集合和索引文件，或者在创建集合的同时加载索引。
 
-  The collection created above is loaded automatically. To learn more about loading and releasing a collection, refer to [Load & Release Collection](manage-collections.md).
+- __在创建集合的同时加载索引__
 
-- **Create a collection and an index file separately.**
+    ```python
+    # 3.5. 在创建集合的同时加载索引
+    client.create_collection(
+        collection_name="customized_setup_1",
+        schema=schema,
+        index_params=index_params
+    )
+    
+    time.sleep(5)
+    
+    res = client.get_load_state(
+        collection_name="customized_setup_1"
+    )
+    
+    print(res)
+    
+    # 输出
+    #
+    # {
+    #     "state": "<LoadState: Loaded>"
+    # }
+    ```
 
-  ```python
-  # 3.6. Create a collection and index it separately
-  client.create_collection(
-      collection_name="customized_setup_2",
-      schema=schema,
-  )
+    上面创建的集合会自动加载。要了解更多关于加载和释放集合的信息，请参考 [加载和释放集合](/userGuide/manage-collections.md)。
 
-  res = client.get_load_state(
-      collection_name="customized_setup_2"
-  )
+- __单独创建一个集合和索引文件__
 
-  print(res)
+    ```python
+    # 3.6. 单独创建一个集合和索引文件
+    client.create_collection(
+        collection_name="customized_setup_2",
+        schema=schema,
+    )
+    
+    res = client.get_load_state(
+        collection_name="customized_setup_2"
+    )
+    
+    print(res)
+    
+    # 输出
+    #
+    # {
+    #     "state": "<LoadState: NotLoad>"
+    # }
+    ```
 
-  # Output
-  #
-  # {
-  #     "state": "<LoadState: NotLoad>"
-  # }
-  ```
+    上面创建的集合不会自动加载。你可以按照下面的方式为集合创建索引。单独创建集合索引不会自动加载集合。详细信息请参考 [加载和释放集合](/userGuide/manage-collections.md)。
 
-  The collection created above is not loaded automatically. You can create an index for the collection as follows. Creating an index for the collection in a separate manner does not automatically load the collection. For details, refer to [Load & Release Collection](manage-collections.md).
+    ```python
+    # 3.6. 创建索引
+    client.create_index(
+        collection_name="customized_setup_2",
+        index_params=index_params
+    )
+    
+    res = client.get_load_state(
+        collection_name="customized_setup_2"
+    )
+    
+    print(res)
+    
+    # 输出
+    #
+    # {
+    #     "state": "<LoadState: NotLoad>"
+    # }
+    ```
 
-  ```python
-  # 3.6 Create index
-  client.create_index(
-      collection_name="customized_setup_2",
-      index_params=index_params
-  )
+## 查看集合
 
-  res = client.get_load_state(
-      collection_name="customized_setup_2"
-  )
 
-  print(res)
-
-  # Output
-  #
-  # {
-  #     "state": "<LoadState: NotLoad>"
-  # }
-  ```
-
-## View Collections
 
 You can check the details of an existing collection as follows:
 
 ```python
-# 5. View Collections
+# 5. 查看集合详情
 res = client.describe_collection(
     collection_name="customized_setup_2"
 )
 
 print(res)
 
-# Output
+# 输出
 #
 # {
 #     "collection_name": "customized_setup_2",
@@ -266,12 +277,12 @@ print(res)
 To list all existing collections, you can do as follows:
 
 ```python
-# 6. List all collection names
+# 6. 列出所有集合名称
 res = client.list_collections()
 
 print(res)
 
-# Output
+# 输出
 #
 # [
 #     "customized_setup_2",
@@ -280,14 +291,14 @@ print(res)
 # ]
 ```
 
-## Load & Release Collection
+## 加载和释放集合
 
-During the loading process of a collection, Milvus loads the collection's index file into memory. Conversely, when releasing a collection, Milvus unloads the index file from memory. Before conducting searches in a collection, ensure that the collection is loaded.
+在加载集合过程中，Milvus 会将集合的索引文件加载到内存中。相反，在释放集合时，Milvus 会从内存中卸载索引文件。在进行集合搜索之前，请确保集合已加载。
 
-### Load a collection
+### 加载集合
 
 ```python
-# 7. Load the collection
+# 7. 加载集合
 client.load_collection(
     collection_name="customized_setup_2"
 )
@@ -298,42 +309,25 @@ res = client.get_load_state(
 
 print(res)
 
-# Output
+# 输出
 #
 # {
 #     "state": "<LoadState: Loaded>"
 # }
 ```
 
-### Release a collection
+### 释放集合
+
+
+
+## 设置别名
+
+你可以为集合分配别名，使其在特定的上下文中更具意义。你可以为一个集合分配多个别名，但多个集合不能共用一个别名。
+
+### 创建别名
 
 ```python
-# 8. Release the collection
-client.release_collection(
-    collection_name="customized_setup_2"
-)
-
-res = client.get_load_state(
-    collection_name="customized_setup_2"
-)
-
-print(res)
-
-# Output
-#
-# {
-#     "state": "<LoadState: NotLoad>"
-# }
-```
-
-## Set up aliases
-
-You can assign aliases for collections to make them more meaningful in a specific context. You can assign multiple aliases for a collection, but multiple collections cannot share an alias.
-
-### Create aliases
-
-```python
-# 9.1. Create aliases
+# 9.1. 创建别名
 client.create_alias(
     collection_name="customized_setup_2",
     alias="bob"
@@ -345,17 +339,17 @@ client.create_alias(
 )
 ```
 
-### List aliases
+### 列出别名
 
 ```python
-# 9.2. List aliases
+# 9.2. 列出别名
 res = client.list_aliases(
     collection_name="customized_setup_2"
 )
 
 print(res)
 
-# Output
+# 输出
 #
 # {
 #     "aliases": [
@@ -367,17 +361,17 @@ print(res)
 # }
 ```
 
-### Describe aliases
+### 描述别名
 
 ```python
-# 9.3. Describe aliases
+# 9.3. 描述别名
 res = client.describe_alias(
     alias="bob"
 )
 
 print(res)
 
-# Output
+# 输出
 #
 # {
 #     "alias": "bob",
@@ -386,7 +380,12 @@ print(res)
 # }
 ```
 
-### Reassign aliases
+### 重新分配别名
+
+
+
+
+# 9.4 将别名重新分配给其他集合
 
 ```python
 # 9.4 Reassign aliases to other collections
@@ -401,7 +400,7 @@ res = client.list_aliases(
 
 print(res)
 
-# Output
+# 输出
 #
 # {
 #     "aliases": [
@@ -417,7 +416,7 @@ res = client.list_aliases(
 
 print(res)
 
-# Output
+# 输出
 #
 # {
 #     "aliases": [
@@ -428,7 +427,7 @@ print(res)
 # }
 ```
 
-### Drop aliases
+### 删除别名
 
 ```python
 # 9.5 Drop aliases
@@ -441,12 +440,14 @@ client.drop_alias(
 )
 ```
 
-## Drop a Collection
+## 删除集合
 
-If a collection is no longer needed, you can drop the collection.
+
+
+如果不再需要某个集合，可以删除该集合。
 
 ```python
-# 10. Drop the collections
+# 10. 删除集合
 client.drop_collection(
     collection_name="quick_setup"
 )
@@ -459,3 +460,5 @@ client.drop_collection(
     collection_name="customized_setup_2"
 )
 ```
+
+ 

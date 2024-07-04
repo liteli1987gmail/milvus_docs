@@ -1,52 +1,51 @@
----
-title:  启用基于角色的访问控制（RBAC）
----
 
-# 启用基于角色的访问控制（RBAC）
 
-通过启用基于角色的访问控制（RBAC），您可以根据用户角色和权限控制对特定 Milvus 资源（例如集合或分区）或权限的访问。目前，此功能仅在 Python 和 Java 中可用。
 
-本主题描述了如何启用 RBAC 并管理[用户和角色](users_and_roles.md)。
+# 启用 RBAC
+
+通过启用 RBAC，你可以基于用户角色和权限控制对特定的 Milvus 资源（如集合或分区）或权限的访问。目前，此功能仅适用于 Python 和 Java。
+
+本主题描述了如何启用 RBAC 并管理 [用户和角色](/reference/users_and_roles.md)。
 
 ## 1. 创建用户
 
-```python
+```
 from pymilvus import utility
 
 utility.create_user(user, password, using="default")
 ```
 
-创建用户后，您可以：
+创建用户后，你可以进行以下操作：
 
-- 更新用户密码。您需要提供原始密码和新密码。
+- 更新用户密码。你需要同时提供原密码和新密码。
 
-```python
+```
 utility.update_password(user, old_password, new_password, using="default")
 ```
 
 - 列出所有用户。
 
-```python
+```
 utility.list_usernames(using="default")
 ```
 
 - 检查特定用户的角色。
 
-```python
+```
 utility.list_user(username, include_role_info, using="default")
 ```
 
 - 检查所有用户的角色。
 
-```python
+```
 utility.list_users(include_role_info, using="default")
 ```
 
 ## 2. 创建角色
 
-以下示例创建了一个名为 `roleA` 的角色。
+下面的示例创建了一个名为 `roleA` 的角色。
 
-```python
+```
 from pymilvus import Role, utility
 
 role_name = "roleA"
@@ -54,57 +53,60 @@ role = Role(role_name, using=_CONNECTION)
 role.create()
 ```
 
-创建角色后，您可以：
+创建角色后，你可以进行以下操作：
 
 - 检查角色是否存在。
 
-```python
+```
 role.is_exist()
 ```
 
 - 列出所有角色。
 
-```python
+```
 utility.list_roles(include_user_info, using="default")
 ```
 
-## 3. 授予角色权限
+## 3. 为角色授予权限
 
-以下示例演示了如何授予名为 `roleA` 的角色搜索所有集合的权限。有关您可以授予的其他类型的权限，请参阅[用户和角色](users_and_roles.md)。
+下面的示例演示了如何将搜索所有集合的权限授予名为 `roleA` 的角色。有关其他类型的权限授予，请参见 [用户和角色](/reference/users_and_roles.md)。
 
-在授予角色在其他数据库中操作集合的权限之前，使用 `db.using_database()` 或直接连接到所需的数据库，将默认数据库更改为所需的数据库。有关详细信息，请参阅[管理数据库](manage_databases.md)。
+在为角色授予权限以操纵其他数据库中的集合之前，请使用 `db.using_database()` 或直接连接到所需的数据库以将默认数据库更改为所需的数据库。详细信息请参考 [管理数据库](/userGuide/manage_databases.md)。
 
-```python
+```
 role.grant("Collection", "*", "Search")
 ```
 
-授予角色权限后，您可以：
+为角色授予权限后，你可以进行以下操作：
 
-- 列出授予角色的某个对象的特定权限。
+- 列出授予角色的对象的特定权限。
 
-```python
+```
 role.list_grant("Collection","CollectionA")
 ```
 
 - 列出授予角色的所有权限。
 
-```python
+```
 role.list_grants()
 ```
 
+
 ## 4. 将角色绑定到用户
+
+
 
 将角色绑定到用户，以便该用户可以继承角色的所有权限。
 
-```python
+```
 role.add_user(username)
 ```
 
-将角色绑定到用户后，您可以：
+将角色绑定到用户后，你可以：
 
 - 列出绑定到角色的所有用户
 
-```python
+```
 role.get_users()
 ```
 
@@ -118,30 +120,32 @@ role.get_users()
 
 - 从角色中移除权限。
 
-```python
+```
 role.revoke("Collection","*","Search")
 ```
 
 - 从角色中移除用户
 
-```python
+```
 role.remove_user(username)
 ```
 
 - 删除角色
 
-```python
+```
 role.drop("roleA"):
 ```
 
 - 删除用户
 
-```python
+```
 utility.delete_user(user, using="default")
 ```
 
-## 接下来做什么
+## 接下来是什么
 
-- 学习如何管理[用户认证](authenticate.md)。
 
-- 学习如何在 Milvus 中启用[TLS 代理](tls.md)。
+- 学习如何管理 [用户身份验证](/adminGuide/authenticate.md)。
+ 
+- 学习如何在 Milvus 中启用 [TLS 代理](/adminGuide/tls.md)。
+ 

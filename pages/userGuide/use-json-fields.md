@@ -1,33 +1,31 @@
----
-id: 使用-json字段.md
-title: 使用 JSON 字段
----
+
+
 
 # 使用 JSON 字段
 
-本指南解释了如何使用 JSON 字段，例如插入 JSON 值以及使用基本和高级运算符在 JSON 字段中进行搜索和查询。
+本指南将说明如何使用 JSON 字段，包括插入 JSON 值以及使用基本和高级运算符在 JSON 字段中进行搜索和查询。
 
 <div class="admonition note">
 
-本页面上的代码片段使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md">MilvusClient</a>（Python）与 Milvus 进行交互。其他语言的新 MilvusClient SDK 将在未来的更新中发布。
+本页上的代码片段使用新的 <a href="https://milvus.io/api-reference/pymilvus/v2.4.x/About.md"> MilvusClient </a>（Python）与 Milvus 进行交互。将来更新将发布适用于其他语言的新 MilvusClient SDK。
 
 </div>
 
 ## 概述
 
-JSON 是 Javascript Object Notation 的缩写。它是一种简单、轻量级的基于文本的数据格式。JSON 中的数据以键值对的形式结构化。每个键都是一个字符串，它对应一个可以是数字、字符串、布尔值、列表或数组的值。在 Milvus 中，您可以将字典作为字段值存储在集合中。
+JSON 是 JavaScript 对象表示法的缩写。它是一种简单且轻量级的基于文本的数据格式。JSON 中的数据以键值对的形式进行结构化。每个键都是一个字符串，对应一个可以是数字、字符串、布尔值、列表或数组的值。在 Milvus 中，你可以将字典作为文档集合中的字段值存储。
 
-例如，以下是一个存储发表文章的元数据的 JSON 字段示例。
+例如，以下是存储发布文章的元数据的 JSON 字段示例：
 
 ```python
 {
-    'title': 'The Reported Mortality Rate of Coronavirus Is Not Important',
-    'title_vector': [0.041732933, 0.013779674, -0.027564144, ..., 0.030096486],
+    'title': 'The Reported Mortality Rate of Coronavirus Is Not Important', 
+    'title_vector': [0.041732933, 0.013779674, -0.027564144, ..., 0.030096486], 
     'article_meta': {
-        'link': 'https://medium.com/swlh/the-reported-mortality-rate-of-coronavirus-is-not-important-369989c8d912',
-        'reading_time': 13,
-        'publication': 'The Startup',
-        'claps': 1100,
+        'link': 'https://medium.com/swlh/the-reported-mortality-rate-of-coronavirus-is-not-important-369989c8d912', 
+        'reading_time': 13, 
+        'publication': 'The Startup', 
+        'claps': 1100, 
         'responses': 18,
         'tag_1': [4, 15, 6, 7, 9],
         'tag_2': [[2, 3, 4], [7, 8, 9], [5, 6, 1]]
@@ -37,34 +35,34 @@ JSON 是 Javascript Object Notation 的缩写。它是一种简单、轻量级�
 
 <div class="admonition note">
 
-<p><b>注意事项</b></p>
+<p> <b> 注意事项 </b> </p>
 
 <ul>
-<li><p>确保列表或数组中的所有值都是相同的数据类型。</p></li>
-<li><p>JSON 字段值中的任何嵌套字典都将被视为字符串。</p></li>
-<li><p>使用仅包含字母数字字符和下划线的字符来命名 JSON 键，因为其他字符可能会导致过滤或搜索时出现问题。</p></li>
-<li>目前，JSON 字段的索引尚不可用，这可能会使过滤过程变得耗时。然而，这个限制将在即将发布的版本中得到解决。</li>
+<li> <p> 确保列表或数组中的所有值具有相同的数据类型。</p> </li>
+<li> <p> JSON 字段值中的任何嵌套字典都将被视为字符串。</p> </li>
+<li> <p> 仅使用字母数字字符和下划线来命名 JSON 键，因为其他字符可能导致过滤或搜索时出现问题。</p> </li>
+<li> 目前，不支持对 JSON 字段进行索引，这可能导致过滤操作耗时。但是，这个限制将在未来的发布中解决。</li>
 </ul>
 
 </div>
 
 ## 定义 JSON 字段
 
-要定义一个 JSON 字段，只需按照定义其他类型字段的相同程序进行。
+要定义 JSON 字段，只需按照定义其他类型字段的相同步骤进行操作。
 
 ```python
 import os, json, time
 from pymilvus import MilvusClient, DataType
 
-COLLECTION_NAME="medium_articles_2020" # 设置您的集合名称
-DATASET_PATH="{}/../medium_articles_2020_dpr.json".format(os.path.dirname(__file__)) # 设置您的数据集路径
+COLLECTION_NAME="medium_articles_2020" # 设置你的集合名称
+DATASET_PATH="{}/../medium_articles_2020_dpr.json".format(os.path.dirname(__file__)) # 设置你的数据集路径
 
 # 1. 连接到集群
 client = MilvusClient(
     uri="http://localhost:19530"
 )
 
-# 2. 定义集合架构
+# 2. 定义集合模式
 schema = MilvusClient.create_schema(
     auto_id=False,
     enable_dynamic_field=True
@@ -84,7 +82,7 @@ index_params.add_index(
     metric_type="L2"
 )
 
-# 4. 创建一个集合
+# 4. 创建集合
 client.create_collection(
     collection_name=COLLECTION_NAME,
     schema=schema,
@@ -94,7 +92,13 @@ client.create_collection(
 
 ## 插入字段值
 
-从 `CollectionSchema` 对象创建集合后，可以将上述字典等数据插入其中。
+
+
+
+
+
+
+在使用 `CollectionSchema` 对象创建集合之后，可以将上面的字典插入其中。
 
 ```python
 # 6. 准备数据
@@ -106,23 +110,22 @@ with open(DATASET_PATH) as f:
 
     data_rows = []
     for row in list_of_rows:
-        # 因为为主键启用了自动 ID，所以删除 id 字段
+        # 移除id字段，因为对于主键启用了自动id
         del row['id']
-        # 创建 article_meta 字段并
+        # 创建article_meta字段
         row['article_meta'] = {}
-        # 将以下键移动到 article_meta 字段
+        # 将以下键移入article_meta字段中
         row['article_meta']['link'] = row.pop('link')
         row['article_meta']['reading_time'] = row.pop('reading_time')
-       row['article_meta']['reading_time'] = row.pop('reading_time')
         row['article_meta']['publication'] = row.pop('publication')
         row['article_meta']['claps'] = row.pop('claps')
         row['article_meta']['responses'] = row.pop('responses')
         row['article_meta']['tag_1'] = [ random.randint(0, 40) for _ in range(5)],
         row['article_meta']['tag_2'] = [ [ random.randint(0, 10) for _ in range(3) ] for _ in range(3)]
-        # Append this row to the data_rows list
+        # 将此行添加到data_rows列表中
         data_rows.append(row)
 
-# 7. Insert data
+# 7. 插入数据
 
 res = client.insert(
     collection_name=COLLECTION_NAME,
@@ -131,236 +134,243 @@ res = client.insert(
 
 print(res)
 
-# Output
+# 输出
 #
-# Data inserted successfully! Inserted counts: 5979
+# 数据插入成功！已插入数量：5979
 ```
 
-## Search within JSON field
+## 在 JSON 字段内搜索
 
-Once all of your data has been added, you can conduct searches using the keys in the JSON field in the same manner as you would with a standard scalar field. Simply follow these steps:
+
+
+# 
+一旦你添加了所有的数据，你可以使用 JSON 字段中的键进行搜索，就像使用标准标量字段一样。只需按照以下步骤进行操作：
 
 ```python
-# 8. Search data
+＃ 8.搜索数据
 result = collection.search(
     data=[data_rows[0]['title_vector']],
     anns_field="title_vector",
     param={"metric_type": "L2", "params": {"nprobe": 10}},
     limit=3,
-    # Access the keys in the JSON field
+    ＃ 访问JSON字段中的键
     expr='article_meta["claps"] > 30 and article_meta["reading_time"] < 10',
-    # Include the JSON field in the output to return
+    ＃ 包含在输出中返回JSON字段
     output_fields=["title", "article_meta"],
 )
 
-print([ list(map(lambda y: y.entity.to_dict(),  x)) for x in result ])
+print([list(map(lambda y: y.entity.to_dict(), x)) for x in result])
 
-# Output
-#
-# [
-#     [
-#         {
-#             "id": 443943328732940369,
-#             "distance": 0.36103835701942444,
-#             "entity": {
-#                 "title": "The Hidden Side Effect of the Coronavirus",
-#                 "article_meta": {
-#                     "link": "https://medium.com/swlh/the-hidden-side-effect-of-the-coronavirus-b6a7a5ee9586",
-#                     "reading_time": 8,
-#                     "publication": "The Startup",
-#                     "claps": 83,
-#                     "responses": 0
-#                 }
-#             }
-#         },
-#         {
-#             "id": 443943328732940403,
-#             "distance": 0.37674015760421753,
-#             "entity": {
-#                 "title": "Why The Coronavirus Mortality Rate is Misleading",
-#                 "article_meta": {
-#                     "link": "https://towardsdatascience.com/why-the-coronavirus-mortality-rate-is-misleading-cc63f571b6a6",
-#                     "reading_time": 9,
-#                     "publication": "Towards Data Science",
-#                     "claps": 2900,
-#                     "responses": 47
-#                 }
-#             }
-#         },
-#         {
-#             "id": 443943328732938203,
-#             "distance": 0.4162980318069458,
-#             "entity": {
-#                 "title": "Coronavirus shows what ethical Amazon could look like",
-#                 "article_meta": {
-#                     "link": "https://medium.com/swlh/coronavirus-shows-what-ethical-amazon-could-look-like-7c80baf2c663",
-#                     "reading_time": 4,
-#                     "publication": "The Startup",
-#                     "claps": 51,
-#                     "responses": 0
-#                 }
-#             }
-#         }
-#     ]
-# ]
+＃ 输出
+＃
+＃ [
+＃   [
+＃     {
+＃         "id": 443943328732940369,
+＃         "distance": 0.36103835701942444,
+＃         "entity": {
+＃             "title": "The Hidden Side Effect of the Coronavirus",
+＃             "article_meta": {
+＃                 "link": "https://medium.com/swlh/the-hidden-side-effect-of-the-coronavirus-b6a7a5ee9586",
+＃                 "reading_time": 8,
+＃                 "publication": "The Startup",
+＃                 "claps": 83,
+＃                 "responses": 0
+＃             }
+＃         }
+＃     },
+＃     {
+＃         "id": 443943328732940403,
+＃         "distance": 0.37674015760421753,
+＃         "entity": {
+＃             "title": "Why The Coronavirus Mortality Rate is Misleading",
+＃             "article_meta": {
+＃                 "link": "https://towardsdatascience.com/why-the-coronavirus-mortality-rate-is-misleading-cc63f571b6a6",
+＃                 "reading_time": 9,
+＃                 "publication": "Towards Data Science",
+＃                 "claps": 2900,
+＃                 "responses": 47
+＃             }
+＃         }
+＃     },
+＃     {
+＃         "id": 443943328732938203,
+＃         "distance": 0.4162980318069458,
+＃         "entity": {
+＃             "title": "Coronavirus shows what ethical Amazon could look like",
+＃             "article_meta": {
+＃                 "link": "https://medium.com/swlh/coronavirus-shows-what-ethical-amazon-could-look-like-7c80baf2c663",
+＃                 "reading_time": 4,
+＃                 "publication": "The Startup",
+＃                 "claps": 51,
+＃                 "responses": 0
+＃             }
+＃         }
+＃     }
+＃   ]
+＃ ]
 
-# get collection info
+# 获取集合信息
 print("Entity counts: ", collection.num_entities)
 
-# Output
-#
-# Entity counts:  5979
+# 输出
+# Entity counts: 5979
 ```
 
-## Query with JSON keys
+## 使用 JSON 键查询
+ 
 
-To access a particular key within a JSON field, you can reference the key name by including the JSON field name (such as `article_meta["claps"]`) in `expr` and include the name of the JSON field in `output_fields`. Then you can access the keys in the returned JSON value as normal dictionaries.
+访问 JSON 字段中的特定键，你可以通过在 `expr` 中包含 JSON 字段名称（例如 `article_meta["claps"]`）并把 JSON 字段名称包含在 `output_fields` 中来引用键名。然后你可以像访问普通字典一样访问返回的 JSON 值中的键。
 
-- Filters articles whose `tag_1` contains `4` and `14`.
+- 筛选 `tag_1` 中包含 `4` 和 `14` 的文章。
 
-  ```python
-  # Solution 1
-  res = client.query(
-      collection_name="medium_articles_2020",
-      # highlight-start
-      filter='json_contains(tag_1, 4) and json_contains(tag_1, 14)',
-      output_fields=["title", "tag_1"],
-      # highlight-end
-      limit=3
-  )
+    ```python
+    # 解决方案 1
+    res = client.query(
+        collection_name="medium_articles_2020",
+        # 突出开始
+        filter='json_contains(tag_1, 4) and json_contains(tag_1, 14)',
+        output_fields=["title", "tag_1"],
+        # 突出结束
+        limit=3
+    )
+    
+    # 输出
+    # 
+    # 
+    
+    # 解决方案 2
+    res = client.query(
+        collection_name="medium_articles_2020",
+        # 突出开始
+        filter='json_contains_all(tag_1, [4, 14])',
+        output_fields=["title", "tag_1"],
+        # 突出结束
+        limit=3
+    )
+    
+    # 输出
+    # 
+    # 
+    ```
 
-  # Output
-  #
-  #
+- 筛选 `tag_2` 中包含 `[2, 12]` 的文章。
 
-  # Solution 2
-  res = client.query(
-      collection_name="medium_articles_2020",
-      # highlight-start
-      filter='json_contains_all(tag_1, [4, 14])',
-      output_fields=["title", "tag_1"],
-      # highlight-end
-      limit=3
-  )
+    ```python
+    res = client.query(
+        collection_name="medium_articles_2020",
+        # 突出开始
+        filter='json_contains(tag_2, [2, 12])',
+        output_fields=["title", "tag_2"],
+        # 突出结束
+        limit=3
+    )
+    
+    # 输出
+    # 
+    # 
+    ```
 
-  # Output
-  #
-  #
-  ```
+- 筛选 `tag_1` 中包含 `5`、`7` 或 `9` 任一的文章。
 
-- Filters articles whose `tag_2` contains `[2, 12]`.
+    ```python
+    res = client.query(
+        collection_name="medium_articles_2020",
+        # 突出开始
+        filter='json_contains_any(tag_1, [5, 7, 9])',
+        output_fields=["title", "tag_1"],
+        # 突出结束
+        limit=3
+    )
+    
+    # 输出
+    # 
+    # 
+    ```
 
-  ```python
-  res = client.query(
-      collection_name="medium_articles_2020",
-      # highlight-start
-      filter='json_contains(tag_2, [2, 12])',
-      output_fields=["title", "tag_2"],
-      # highlight-end
-      limit=3
-  )
+## JSON 过滤器参考
 
-  # Output
-  #
-  #
-  ```
-
-- Filters articles whose `tag_1` contains any of `5`, `7`, and `9`.
-
-  ```python
-  res = client.query(
-      collection_name="medium_articles_2020",
-      # highlight-start
-      filter='json_contains_any(tag_1, [5, 7, 9])',
-      output_fields=["title", "tag_1"],
-      # highlight-end
-      limit=3
-  )
-
-  # Output
-  #
-  #
-  ```
-
-## Reference on JSON filters
-
-When working with JSON fields, you can either use the JSON fields as filters or some of its specific keys.
+使用 JSON 字段时，你可以直接使用 JSON 字段作为过滤器，或者使用其特定键。
 
 <div class="admonition note">
 
-<p><b>notes</b></p>
+<p> <b> 注意 </b> </p>
 
 <ul>
-<li>Milvus stores string values in the JSON field as is without performing semantic escape or conversion. </li>
+<li> Milvus 将字符串值存储在 JSON 字段中，不执行语义转义或转换。 </li>
 </ul>
-<p>For instance, <code>'a"b'</code>, <code>"a'b"</code>, <code>'a\\\\'b'</code>, and <code>"a\\\\"b"</code> will be saved as is, while <code>'a'b'</code> and <code>"a"b"</code> will be treated as invalid values.</p>
+<p> 例如，<code>'a "b'</code>、<code>" a'b "</code>、<code>'a\\\\'b'</code> 和 <code>" a\\\\"b" </code> 将原样保存，而 <code>'a'b'</code> 和 <code> "a" b " </code> 将被视为无效值。</p>
 <ul>
-<li><p>To build filter expressions using a JSON field, you can utilize the keys within the field. </p></li>
-<li><p>If a key's value is an integer or a float, you can compare it with another integer or float key or an INT32/64 or FLOAT32/64 field.</p></li>
-<li><p>If a key's value is a string, you can compare it only with another string key or a VARCHAR field.</p></li>
+<li> <p> 使用 JSON 字段构建过滤器表达式时，你可以利用字段内的键。 </p> </li>
+<li> <p> 如果键的值是一个整数或浮点数，你可以将其与另一个整数或浮点数键或 INT32/64 或 FLOAT32/64 字段进行比较。</p> </li>
+<li> <p> 如果键的值是一个字符串，你只能将其与另一个字符串键或 VARCHAR 字段进行比较。</p> </li>
 </ul>
 
 </div>
 
-### Basic Operators in JSON Fields
+### JSON 字段中的基本操作符
 
-The following table assumes that the value of a JSON field named `json_key` has a key named `A`. Use it as a reference when constructing boolean expressions using JSON field keys.
 
-| **Operator**  | **Examples**                                     | **Remarks**                                                                                                                                                                                                                                                                                      |
-| ------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **<**         | `'json_field["A"] < 3'`                          | This expression evaluates to true if the value of `json_field["A"]` is less than `3`.                                                                                                                                                                                                            |
-| **>**         | `'json_field["A"] > 1'`                          | This expression evaluates to true if the value of `json_field["A"]` is greater than `1`.                                                                                                                                                                                                         |
-| **==**        | `'json_field["A"] == 1'`                         | This expression evaluates to true if the value of `json_field["A"]` is equal to `1`.                                                                                                                                                                                                             |
-| **!=**        | `'json_field["A"][0]' != "abc"'`                 | This expression evaluates to true if<br/> - `json_field` does not have a key named `A`.<br/> - `json_field` has a key named `A` but `json_field["A"]` is not an array.<br/> - `json_field["A"]` is an empty array.<br/> - `json_field["A"]` is an array but the first element is not `abc`.<br/> |
-| **<=**        | `'json_field["A"] <= 5'`                         | This expression evaluates to true if the value of `json_field["A"]` is less than or equal to `5`.                                                                                                                                                                                                |
-| **>=**        | `'json_field["A"] >= 1'`                         | This expression evaluates to true if the value of `json_field["A"]` is greater than or equal to `1`.                                                                                                                                                                                             |
-| **not**       | `'not json_field["A"] == 1'`                     | This expression evaluates to true if<br/> - `json_field` does not have a key named `A`.<br/> - `json_field["A"]` is not equal to `1`.<br/>                                                                                                                                                       |
-| **in**        | `'json_field["A"] in [1, 2, 3]'`                 | This expression evaluates to true if the value of `json_field["A"]` is `1`, `2`, or `3`.                                                                                                                                                                                                         |
-| **and (&&)**  | `'json_field["A"] > 1 && json_field["A"] < 3'`   | This expression evaluates to true if the value of `json_field["A"]` is greater than 1 and less than `3`.                                                                                                                                                                                         |
-| **or (\|\|)** | `'json_field["A"] > 1 \|\| json_field["A"] < 3'` | This expression evaluates to true if the value of `json_field["A"]` is greater than `1` or less than `3`.                                                                                                                                                                                        |
-| **exists**    | `'exists json_field["A"]'`                       | This expression evaluates to true if `json_field` has a key named `A`.                                                                                                                                                                                                                           |
+下表假设一个名为 `json_key` 的 JSON 字段的值有一个名为 `A` 的键。在构建使用 JSON 字段键的布尔表达式时，请将其用作参考。
 
-### Advanced Operators
+| 运算符  | 示例                                                         | 备注                                                                                                                     |
+| ------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+|  <      |  `'json_field[" A "] < 3'`                                     | 如果`json_field[" A "]`的值小于`3`，则此表达式求值为 true。                                                                   |
+|  >      |  `'json_field["A"] > 1'`                                     | 如果 `json_field["A"]` 的值大于 `1`，则此表达式求值为 true。                                                                   |
+|  ==     |  `'json_field["A"] == 1'`                                    | 如果 `json_field["A"]` 的值等于 `1`，则此表达式求值为 true。                                                                   |
+|  !=     |  `'json_field["A"][0]' != "abc"'`                            | 如果：<br/> - `json_field` 没有名为 `A` 的键。<br/> - `json_field` 具有名为 `A` 的键，但 `json_field["A"]` 不是数组。<br/> - `json_field["A"]` 是一个空数组。<br/> - `json_field["A"]` 是一个数组，但第一个元素不是 `abc`。则此表达式求值为 true。 |
+|  <=     |  `'json_field[" A "] <= 5'`                                    | 如果`json_field[" A "]`的值小于或等于`5`，则此表达式求值为 true。                                                             |
+|  >=     |  `'json_field["A"] >= 1'`                                    | 如果 `json_field["A"]` 的值大于或等于 `1`，则此表达式求值为 true。                                                             |
+|  not    |  `'not json_field["A"] == 1'`                                | 如果：<br/> - `json_field` 没有名为 `A` 的键。<br/> - `json_field["A"]` 不等于 `1`。则此表达式求值为 true。                     |
+|  in     |  `'json_field["A"] in [1, 2, 3]'`                            | 如果 `json_field["A"]` 的值是 `1`、`2` 或 `3`，则此表达式求值为 true。                                                           |
+|  and    |  `'json_field["A"] > 1 && json_field["A"] < 3'`              | 如果 `json_field["A"]` 的值大于 `1` 且小于 `3`，则此表达式求值为 true。                                                           |
+|  or     |  `'json_field["A"] > 1 \|\| json_field["A"] < 3'`            | 如果 `json_field["A"]` 的值大于 `1` 或小于 `3`，则此表达式求值为 true。                                                           |
+|  exists |  `'exists json_field["A"]'`                                  | 如果 `json_field` 有一个名为 `A` 的键，则此表达式求值为 true。                                                                    |
 
-The following operators are specific to JSON fields:
+### 高级运算符
+
+
+
+以下操作符仅适用于 JSON 字段：
 
 - `json_contains(identifier, jsonExpr)`
 
-  This operator filters entities whose identifier contains the specified JSON expression.
+    此操作符用于过滤包含指定 JSON 表达式的实体。
 
-  - Example 1: `{"x": [1,2,3]}`
+    - 示例 1：`{"x": [1,2,3]}`
 
-    ```python
-    json_contains(x, 1) # => True (x contains 1.)
-    json_contains(x, "a") # => False (x does not contain a member "a".)
-    ```
+        ```python
+        json_contains(x, 1) # => True (x包含1)
+        json_contains(x, "a") # => False (x不包含成员"a")
+        ```
 
-  - Example 2: `{"x", [[1,2,3], [4,5,6], [7,8,9]]}`
+    - 示例 2：`{"x", [[1,2,3], [4,5,6], [7,8,9]]}`
 
-    ```python
-    json_contains(x, [1,2,3]) # => True (x contains [1,2,3].)
-    json_contains(x, [3,2,1]) # => False (x does contain a member [3,2,1].)
-    ```
+        ```python
+        json_contains(x, [1,2,3]) # => True (x包含[1,2,3])
+        json_contains(x, [3,2,1]) # => False (x不包含成员[3,2,1])
+        ```
 
 - `json_contains_all(identifier, jsonExpr)`
 
-  This operator filters entities whose identifier contains all the members of the JSON expression.
+    此操作符用于过滤包含 JSON 表达式的所有成员的实体。
 
-  Example: `{"x": [1,2,3,4,5,7,8]}`
+    示例：`{"x": [1,2,3,4,5,7,8]}`
 
-  ```python
-  json_contains_all(x, [1,2,8]) # => True (x contains 1, 2, and 8.)
-  json_contains_all(x, [4,5,6]) # => False (x does not has a member 6.)
-  ```
+    ```python
+    json_contains_all(x, [1,2,8]) # => True (x包含1、2和8)
+    json_contains_all(x, [4,5,6]) # => False (x不包含成员6)
+    ```
 
 - `json_contains_any(identifier, jsonExpr)`
 
-  This operator filters entities whose identifier contains any members of the JSON expression.
+    此操作符用于过滤包含 JSON 表达式中任意成员的实体。
 
-  Example: `{"x": [1,2,3,4,5,7,8]}`
+    示例：`{"x": [1,2,3,4,5,7,8]}`
 
-  ```python
-  json_contains_any(x, [1,2,8]) # => True (x contains 1, 2, and 8.)
-  json_contains_any(x, [4,5,6]) # => True (x contains 4 and 5.)
-  json_contains_any(x, [6,9]) # => False (x contains none of 6 and 9.)
-  ```
+    ```python
+    json_contains_any(x, [1,2,8]) # => True (x包含1、2和8)
+    json_contains_any(x, [4,5,6]) # => True (x包含4和5)
+    json_contains_any(x, [6,9]) # => False (x不包含6和9中的任何一个)
+    ```
+    

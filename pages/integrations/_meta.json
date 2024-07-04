@@ -1,0 +1,12 @@
+{
+    "integrate_with_cohere": "集成 Cohere(Integrate_with_cohere)",
+    "integrate_with_haystack": "集成 Haystack(Integrate_with_haystack)",
+    "integrate_with_hugging-face": "集成 Hugging Face(Integrate_with_hugging-face)",
+    "integrate_with_langchain": "集成 LangChain(Integrate_with_langchain)",
+    "integrate_with_llamaindex": "集成 LlamaIndex(Integrate_with_llamaindex)",
+    "integrate_with_openai": "集成 OpenAI(Integrate_with_openai)",
+    "integrate_with_pytorch": "集成 PyTorch(Integrate_with_pytorch)",
+    "integrate_with_sentencetransformers": "集成 Sentence Transformers(Integrate_with_sentencetransformers)",
+    "integrate_with_spark": "集成 Spark(Integrate_with_spark)",
+    "integrate_with_voxel51": "集成 Voxel51(Integrate_with_voxel51)"
+}

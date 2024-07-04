@@ -1,11 +1,37 @@
 {
-    "backup":{
-        "title":"备份"
-    },
-    "clouds":{
-        "title":"云备份"
-    },
-    "monitor":{
-        "title":"监控"
-    }
+    "backup": "备份(Backup)",
+    "clouds":"云(Clouds)",
+    "monitor":"监控(Monitor)",
+    "allocate": "分配(Allocate)",
+    "authenticate": "认证(Authenticate)",
+    "chunk_cache": "块缓存(Chunk_cache)",
+    "configure-docker": "配置 Docker(Configure-docker)",
+    "configure-helm": "配置 Helm(Configure-helm)",
+    "configure_access_logs": "配置访问日志(Configure_access_logs)",
+    "configure_operator": "配置操作员(Configure_operator)",
+    "deploy_etcd": "部署 etcd(Deploy_etcd)",
+    "deploy_pulsar": "部署 Pulsar(Deploy_pulsar)",
+    "deploy_s3": "部署 S3(Deploy_s3)",
+    "dynamic_config": "动态配置(Dynamic_config)",
+    "limit_collection_counts": "限制集合计数(Limit_collection_counts)",
+    "m2m": "M2M",
+    "manage_dependencies": "管理依赖(Manage_dependencies)",
+    "message_storage_operator": "消息存储操作员(Message_storage_operator)",
+    "meta_storage_operator": "元数据存储操作员(Meta_storage_operator)",
+    "object_storage_operator": "对象存储操作员(Object_storage_operator)",
+    "operator": "操作员(Operator)",
+    "rbac": "基于角色的访问控制(Rbac)",
+    "resource_group": "资源组(Resource_group)",
+    "scale-dependencies": "扩展依赖(Scale-dependencies)",
+    "scaleout": "横向扩展(Scaleout)",
+    "security": "安全(Security)",
+    "tls": "传输层安全协议(Tls)",
+    "upgrade_milvus_cluster-docker": "升级 Milvus 集群 Docker(Upgrade_milvus_cluster-docker)",
+    "upgrade_milvus_cluster-helm": "升级 Milvus 集群 Helm(Upgrade_milvus_cluster-helm)",
+    "upgrade_milvus_cluster-operator": "升级 Milvus 集群操作员(Upgrade_milvus_cluster-operator)",
+    "upgrade_milvus_embedded": "升级嵌入式 Milvus(Upgrade_milvus_embedded)",
+    "upgrade_milvus_standalone-docker": "升级 Milvus 独立版 Docker(Upgrade_milvus_standalone-docker)",
+    "upgrade_milvus_standalone-helm": "升级 Milvus 独立版 Helm(Upgrade_milvus_standalone-helm)",
+    "upgrade_milvus_standalone-operator": "升级 Milvus 独立版操作员(Upgrade_milvus_standalone-operator)",
+    "_meta": "元数据(_meta)"
 }

@@ -1,43 +1,41 @@
----
-title: 使用 Docker Compose 或 Helm 配置消息存储
----
 
-# 使用 Docker Compose 或 Helm 配置消息存储
 
-Milvus 使用 Pulsar 或 Kafka 来管理最近更改的日志、输出流日志，并提供日志订阅。Pulsar 是默认的消息存储系统。本主题介绍如何使用 Docker Compose 或 Helm 配置消息存储。
+## 使用 Docker Compose 或 Helm 配置消息存储
 
-您可以在 K8s 上使用 Docker Compose 配置 Pulsar，并在 K8s 上配置 Kafka。
+Milvus 使用 Pulsar 或 Kafka 来管理最近更改的日志、输出流日志和提供日志订阅。Pulsar 是默认的消息存储系统。本文介绍如何使用 Docker Compose 或 Helm 配置消息存储。
+
+可以使用 [Docker Compose](https://docs.docker.com/get-started/overview/) 或 K8s 来配置 Pulsar，并在 K8s 上配置 Kafka。
 
 ## 使用 Docker Compose 配置 Pulsar
 
 ### 1. 配置 Pulsar
 
-要使用 Docker Compose 配置 Pulsar，请在 milvus/configs 路径下的 `milvus.yaml` 文件的 `pulsar` 部分提供您的值。
+要使用 Docker Compose 配置 Pulsar，请在 milvus/configs 路径下的 `milvus.yaml` 文件中为 `pulsar` 部分提供你的值。
 
 ```
 pulsar:
-  address: localhost # Pulsar 的地址
-  port: 6650 # Pulsar 的端口
-  maxMessageSize: 5242880 # 5 * 1024 * 1024 字节，Pulsar 中每条消息的最大大小
+  address: localhost # Pulsar的地址
+  port: 6650 # Pulsar的端口
+  maxMessageSize: 5242880 # 5 * 1024 * 1024 字节，Pulsar中每个消息的最大大小。
 ```
 
-有关更多信息，请参见 [Pulsar 相关配置](configure_pulsar.md)。
+更多信息请参考 [Pulsar 相关配置](/reference/sys_config/configure_pulsar.md)。
 
 ### 2. 运行 Milvus
 
-运行以下命令以启动使用 Pulsar 配置的 Milvus。
+运行以下命令启动使用 Pulsar 配置的 Milvus。
 
 ```
 docker compose up
 ```
 
-<div class="alert note">配置仅在 Milvus 启动后生效。有关更多信息，请参见 <a href=https://milvus.io/docs/install_standalone-docker.md#Start-Milvus>启动 Milvus</a>。</div>
+<div class="alert note"> 只有在 Milvus 启动后配置才会生效。更多信息请参考 <a href=https://milvus.io/docs/install_standalone-docker.md#Start-Milvus> 启动 Milvus </a>。</div>
 
 ## 使用 Helm 配置 Pulsar
 
-对于 K8s 上的 Milvus 集群，您可以在启动 Milvus 的相同命令中配置 Pulsar。或者，在启动 Milvus 之前，您可以使用 [milvus-helm](https://github.com/milvus-io/milvus-helm) 仓库中 /charts/milvus 路径上的 `values.yml` 文件进行配置。
+对于在 K8s 上的 Milvus 集群，可以在启动 Milvus 时使用相同的命令配置 Pulsar。此外，还可以在 [milvus-helm](https://github.com/milvus-io/milvus-helm) 仓库的/charts/milvus 路径下使用 `values.yml` 文件配置 Pulsar，然后再启动 Milvus。
 
-有关如何使用 Helm 图表配置 Milvus 的详细信息，请参阅 [使用 Helm 图表配置 Milvus](configure-helm.md)。有关 Pulsar 相关配置项的详细信息，请参阅 [Pulsar 相关配置](configure_pulsar.md)。
+有关使用 Helm 配置 Milvus 的详细信息，请参考 [使用 Helm Charts 配置 Milvus](/adminGuide/configure-helm.md)。有关 Pulsar 相关配置项的详细信息，请参考 [Pulsar 相关配置](/reference/sys_config/configure_pulsar.md)。
 
 ### 使用 YAML 文件
 
@@ -46,10 +44,16 @@ docker compose up
 ```yaml
 extraConfigFiles:
   user.yaml: |+
-    pulsar:  address: localhost # Pulsar 的地址  port: 6650 # Pulsar 的端口  webport: 80 # Pulsar 的 Web 端口，如果直接连接而不需要代理，则应使用 8080  maxMessageSize: 5242880 # 5 * 1024 * 1024 字节，Pulsar 中每条消息的最大大小  tenant: public  namespace: default
+    pulsar:
+      address: localhost # Pulsar的地址
+      port: 6650 # Pulsar的端口
+      webport: 80 # Pulsar的Web端口，如果直接连接而不使用代理，应使用8080
+      maxMessageSize: 5242880 # 5 * 1024 * 1024 字节，Pulsar中每个消息的最大大小。
+      tenant: public
+      namespace: default    
 ```
 
-2. 配置上述部分并保存 `values.yaml` 文件后，运行以下命令以安装使用 Pulsar 配置的 Milvus。
+2. 在配置了上述部分并保存了 `values.yaml` 文件后，运行以下命令来安装使用 Pulsar 配置的 Milvus。
 
 ```shell
 helm install <your_release_name> milvus/milvus -f values.yaml
@@ -57,21 +61,27 @@ helm install <your_release_name> milvus/milvus -f values.yaml
 
 ## 使用 Helm 配置 Kafka
 
-对于 K8s 上的 Milvus 集群，您可以在启动 Milvus 的相同命令中配置 Kafka。或者，在启动 Milvus 之前，您可以使用 [milvus-helm](https://github.com/milvus-io/milvus-helm) 仓库中 /charts/milvus 路径上的 `values.yml` 文件进行配置。
+对于在 K8s 上的 Milvus 集群，可以在启动 Milvus 时使用相同的命令配置 Kafka。此外，还可以在 [milvus-helm](https://github.com/milvus-io/milvus-helm) 仓库的/charts/milvus 路径下使用 `values.yml` 文件配置 Kafka，然后再启动 Milvus。
 
-有关如何使用 Helm 图表配置 Milvus 的详细信息，请参阅 [使用 Helm 图表配置 Milvus](configure-helm.md)。有关 Pulsar 相关配置项的详细信息，请参阅 [Kafka 相关配置](configure_kafka.md)。
+有关使用 Helm 配置 Milvus 的详细信息，请参考 [使用 Helm Charts 配置 Milvus](/adminGuide/configure-helm.md)。有关 Kafka 相关配置项的详细信息，请参考 [Kafka 相关配置](/reference/sys_config/configure_kafka.md)。
 
 ### 使用 YAML 文件
 
-1. 如果您想使用 Kafka 作为消息存储系统，请在 `values.yaml` 文件中配置 `externalConfigFiles` 部分。
+1. 如果要将 Kafka 作为消息存储系统，请在 `values.yaml` 文件中配置 `externalConfigFiles` 部分。
 
 ```yaml
 extraConfigFiles:
   user.yaml: |+
-    kafka:  brokerList:    -  <your_kafka_address>:<your_kafka_port>  saslUsername:  saslPassword:  saslMechanisms: PLAIN  securityProtocol: SASL_SSL
+    kafka:
+      brokerList:
+        -  <your_kafka_address>:<your_kafka_port>
+      saslUsername:
+      saslPassword:
+      saslMechanisms: PLAIN
+      securityProtocol: SASL_SSL    
 ```
 
-2. 配置上述部分并保存 `values.yaml` 文件后，运行以下命令以安装使用 Kafka 配置的 Milvus。
+2. 在配置了上述部分并保存了 `values.yaml` 文件后，运行以下命令来安装使用 Kafka 配置的 Milvus。
 
 ```shell
 helm install <your_release_name> milvus/milvus -f values.yaml
@@ -79,31 +89,45 @@ helm install <your_release_name> milvus/milvus -f values.yaml
 
 ## 使用 Helm 配置 RocksMQ
 
-Milvus 独立模式使用 RocksMQ 作为默认消息存储。有关如何使用 Helm 配置 Milvus 的详细步骤，请参阅 [使用 Helm 图表配置 Milvus](configure-helm.md)。有关 RocksMQ 相关配置项的详细信息，请参阅 [RocksMQ 相关配置](configure_rocksmq.md).
 
-- 如果你用 RocksMQ 启动 Milvus 并想更改它的设置，你可以运行 `helm upgrade -f ` 并在下面的 YAML 文件中修改设置。
 
-- 如果你使用 Helm 独立安装了 Milvus，并使用了 RocksMQ 以外的消息存储空间，但想把它改回 RocksMQ，可以在刷新所有集合并停止 Milvus 后，使用下面的 YAML 文件运行 `helm upgrade -f `。
+Milvus standalone 使用 RocksMQ 作为默认的消息存储。有关如何使用 Helm 配置 Milvus 的详细步骤，请参阅 [使用 Helm Charts 配置 Milvus](/adminGuide/configure-helm.md)。有关 RocksMQ 相关的配置项的详细信息，请参阅 [RocksMQ 相关配置](/reference/sys_config/configure_rocksmq.md)。
+
+- 如果你使用 RocksMQ 启动 Milvus 并希望更改其设置，请在下面的 YAML 文件中使用更改后的设置运行 `helm upgrade -f`。
+
+- 如果你已经使用 Helm 将 Milvus standalone 安装为除 RocksMQ 之外的消息存储并希望将其更改回 RocksMQ，请在清空所有集合并停止 Milvus 后，使用以下 YAML 文件运行 `helm upgrade -f`。
 
 ```yaml
-extraConfigFiles：
-user.yaml： |+
-rocksmq：  # 在 rocksmq 中存储信息的路径 # 请在嵌入式中调整 Milvus: /tmp/milvus/rdb_data path： /var/lib/milvus/rdb_data lrucacheratio: 0.06 # rocksdb 缓存内存比率 rocksmqPageSize: 67108864 # 64 MB，64 * 1024 * 1024 字节，rocksmq 中每页邮件的大小 retentionTimeInMinutes： retentionSizeInMB: 8192 # 8 GB, 8 * 1024 MB, 在 rocksmq 中保存邮件的大小。 compactionInterval: 86400 # 1 day, 每天触发 rocksdb 压缩，删除已删除的数据 # 压缩类型，只支持使用 0、7。 # 压缩类型： [0, 0, 7, 7, 7]
+extraConfigFiles:
+  user.yaml: |+
+    rocksmq:
+      # 消息在rocksmq中存储的路径
+      # 在embedded Milvus中调整路径：/tmp/milvus/rdb_data
+      path: /var/lib/milvus/rdb_data
+      lrucacheratio: 0.06 # rocksdb缓存内存比例
+      rocksmqPageSize: 67108864 # 64 MB, 64 * 1024 * 1024字节，rocksmq中每个消息页的大小
+      retentionTimeInMinutes: 4320 # 3天，3 * 24 * 60分钟，rocksmq中消息的保留时间。
+      retentionSizeInMB: 8192 # 8 GB，8 * 1024 MB，rocksmq中消息的保留大小。
+      compactionInterval: 86400 # 1天，每天触发rocksdb压缩，删除已删除的数据
+      # 压缩类型，仅支持使用0、7。
+      # 0表示不压缩，7表示使用zstd
+      # types的长度表示rocksdb级别的数量。
+      compressionTypes: [0, 0, 7, 7, 7]    
 ```
 
 <div class="alert warning">
 
-Changing the message store is not recommended. If this is you want to do this, stop all DDL operations, then call the FlushAll API to flush all collections, and finally stop Milvus in the end before you actually change the message store.
+不建议更改消息存储。如果你确实要更改，请停止所有 DDL 操作，然后调用 FlushAll API 来清空所有集合，在实际更改消息存储之前最后停止 Milvus。
 
 </div>
 
 ## 使用 Helm 配置 NATS
 
-NATS 是 RocksMQ 的实验性消息存储替代品。关于如何用 Helm 配置 Milvus 的详细步骤，请参阅 [Configure Milvus with Helm Charts](configure-helm.md)。有关 RocksMQ 相关配置项的详情，请参阅 [NATS 相关配置](configure_nats.md)。
+NATS 是 RocksMQ 的实验性消息存储替代方案。有关使用 Helm 配置 Milvus 的详细步骤，请参阅 [使用 Helm Charts 配置 Milvus](/adminGuide/configure-helm.md)。有关 NATS 相关的配置项的详细信息，请参阅 [NATS 相关配置](/reference/sys_config/configure_nats.md)。
 
-- 如果你用 NATS 启动 Milvus 并想更改它的设置，你可以运行 `helm upgrade -f ` 并在下面的 YAML 文件中修改设置。
+- 如果你使用 NATS 启动 Milvus 并希望更改其设置，请在下面的 YAML 文件中使用更改后的设置运行 `helm upgrade -f`。
 
-- 如果使用 NATS 以外的消息存储安装了 Milvus 单机版，并希望将其更改为 NATS，可在刷新所有集合并停止 Milvus 后，使用以下 YAML 文件运行 `helm upgrade -f `。
+- 如果你已经使用不同于 NATS 的消息存储单独安装了 Milvus 并希望将其更改为 NATS，请在清空所有集合并停止 Milvus 后，使用以下 YAML 文件运行 `helm upgrade -f`。
 
 ```yaml
 extraConfigFiles:
@@ -111,54 +135,54 @@ extraConfigFiles:
     mq:
       type: natsmq
     natsmq:
-      # server side configuration for natsmq.
+      # natsmq的服务器端配置。
       server: 
-        # 4222 by default, Port for nats server listening.
+        # 默认为4222，nats服务器监听的端口。
         port: 4222 
-        # /var/lib/milvus/nats by default, directory to use for JetStream storage of nats.
+        # 默认为/var/lib/milvus/nats，用于nats的JetStream存储目录。
         storeDir: /var/lib/milvus/nats 
-        # (B) 16GB by default, Maximum size of the 'file' storage.
+        # (B) 默认为16GB，'文件'存储的最大大小。
         maxFileStore: 17179869184 
-        # (B) 8MB by default, Maximum number of bytes in a message payload.
+        # (B) 默认为8MB，消息负载中的最大字节数。
         maxPayload: 8388608 
-        # (B) 64MB by default, Maximum number of bytes buffered for a connection applies to client connections.
+        # (B) 默认为64MB，连接应用于客户端连接的最大字节数缓冲。
         maxPending: 67108864 
-        # (√ms) 4s by default, waiting for initialization of natsmq finished.
+        # (√ms) 默认为4s，等待natsmq初始化完成。
         initializeTimeout: 4000 
         monitor:
-          # false by default, If true enable debug log messages.
+          # 默认为false，如果为true，则启用调试日志消息。
           debug: false 
-          # true by default, If set to false, log without timestamps.
+          # 默认为true，如果设置为false，则记录时没有时间戳。
           logTime: true 
-          # no log file by default, Log file path relative to.. .
+          # 默认没有日志文件，相对于..的日志文件路径。。
           logFile: 
-          # (B) 0, unlimited by default, Size in bytes after the log file rolls over to a new one.
+          # (B) 默认为0，没有限制，日志文件达到此大小后将滚动到新文件。
           logSizeLimit: 0 
         retention:
-          # (min) 3 days by default, Maximum age of any message in the P-channel.
+          # (min) 默认为3天，P通道中任何消息的最大年龄。
           maxAge: 4320 
-          # (B) None by default, How many bytes the single P-channel may contain. Removing oldest messages if the P-channel exceeds this size.
+          # (B) 默认为无，单个P通道可以包含多少字节。如果P通道超过此大小，则删除最旧的消息。
           maxBytes:
-          # None by default, How many message the single P-channel may contain. Removing oldest messages if the P-channel exceeds this limit.    
+          # 默认为无，单个P通道可能包含多少个消息。如果P通道超过此限制，则删除最旧的消息。    
           maxMsgs: 
 ```
 
-
 <div class="alert note">
 
-**Choose between RocksMQ and NATS?**
+**在 RocksMQ 和 NATS 之间选择？**
 
-RockMQ uses CGO to interact with RocksDB and manages the memory by itself, while the pure-GO NATS embedded in the Milvus installation delegates its memory management to Go's garbage collector (GC).
+RockMQ 使用 CGO 与 RocksDB 进行交互，并通过自身管理内存，而 Milvus 安装中的纯 Go NATS 将其内存管理委托给 Go 的垃圾收集器（GC）。
 
-In the scenario where the data packet is smaller than 64 kb, RocksDB outperforms in terms of memory usage, CPU usage, and response time. On the other hand, if the data packet is greater than 64 kb, NATS excels in terms of response time with sufficient memory and ideal GC scheduling.
+在数据包小于 64 KB 的情况下，RocksDB 在内存使用、CPU 使用和响应时间方面优于 NATS。另一方面，如果数据包大于 64 KB，则在具有足够内存和理想 GC 调度的情况下，NATS 在响应时间方面表现出色。
 
-Currently, you are advised to use NATS only for experiments.
+目前，建议仅将 NATS 用于实验。
 
 </div>
 
-## What's next
+## 下一步
 
-Learn how to configure other Milvus dependencies with Docker Compose or Helm:
 
-- [Configure Object Storage with Docker Compose or Helm](deploy_s3.md)
-- [Configure Meta Storage with Docker Compose or Helm](deploy_etcd.md)
+
+了解如何使用 Docker Compose 或 Helm 配置其他 Milvus 依赖项：
+- [使用 Docker Compose 或 Helm 配置对象存储](/adminGuide/deploy_s3.md)
+- [使用 Docker Compose 或 Helm 配置元数据存储](/adminGuide/deploy_etcd.md)

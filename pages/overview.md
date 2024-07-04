@@ -62,7 +62,7 @@ Milvus workflow.
 
 - **ANNOY**：ANNOY 是一种基于树形结构的索引，最适合于寻求高召回率的场景。
 
-请参阅[向量索引](index.md)以了解更多详细信息。
+请参阅[向量索引](/reference/index.md)以了解更多详细信息。
 
 ### 相似度度量
 
@@ -92,21 +92,21 @@ Milvus workflow.
 
 Milvus 使得向应用中添加相似性搜索变得容易。Milvus 的示例应用包括：
 
-- [图像相似性搜索](image_similarity_search.md)：使图像可搜索，并即时返回来自大型数据库中最相似的图像。
+- [图像相似性搜索](/tutorials/image_similarity_search.md)：使图像可搜索，并即时返回来自大型数据库中最相似的图像。
 
-- [视频相似性搜索](video_similarity_search.md)：通过将关键帧转换为向量，然后将结果输入 Milvus，可以在几乎实时的时间内搜索和推荐数十亿个视频。
+- [视频相似性搜索](/tutorials/video_similarity_search.md)：通过将关键帧转换为向量，然后将结果输入 Milvus，可以在几乎实时的时间内搜索和推荐数十亿个视频。
 
-- [音频相似性搜索](audio_similarity_search.md)：快速查询大量音频数据，如语音、音乐、音效和表面相似的声音。
+- [音频相似性搜索](/tutorials/audio_similarity_search.md)：快速查询大量音频数据，如语音、音乐、音效和表面相似的声音。
 
 - [分子相似性搜索](molecular_similarity_search.md)：针对指定分子进行极快的相似性搜索、子结构搜索或超结构搜索。
 
-- [推荐系统](recommendation_system.md)：根据用户行为和需求推荐信息或产品。
+- [推荐系统](/tutorials/recommendation_system.md)：根据用户行为和需求推荐信息或产品。
 
-- [问答系统](question_answering_system.md)：交互式数字问答聊天机器人，自动回答用户的问题。
+- [问答系统](/tutorials/question_answering_system.md)：交互式数字问答聊天机器人，自动回答用户的问题。
 
-- [DNA 序列分类](dna_sequence_classification.md)：通过比较相似的 DNA 序列，在毫秒级别准确地分类一个基因。
+- [DNA 序列分类](/tutorials/dna_sequence_classification.md)：通过比较相似的 DNA 序列，在毫秒级别准确地分类一个基因。
 
-- [文本搜索引擎](text_search_engine.md)：通过将关键字与文本数据库进行比较，帮助用户找到他们正在寻找的信息。
+- [文本搜索引擎](/tutorials/text_search_engine.md)：通过将关键字与文本数据库进行比较，帮助用户找到他们正在寻找的信息。
 
 请查看[Milvus 教程](https://github.com/milvus-io/bootcamp/tree/master/solutions)和[Milvus 采用者](milvus_adopters.md)，了解更多 Milvus 应用场景。
 
@@ -124,7 +124,7 @@ Milvus 使得向应用中添加相似性搜索变得容易。Milvus 的示例应
 
 - 存储：存储是系统的骨头，负责数据持久化。它包括元数据存储、日志代理和对象存储。
 
-有关更多信息，请参见[架构概述](architecture_overview.md)。
+有关更多信息，请参见[架构概述](/reference/architecture/architecture_overview.md)。
 
 [![Architecture](https://milvus.io/static/7a0dfbdf7722f8e63278244f984d353f/0a251/architecture_02.jpg "Milvus architecure.")](https://milvus.io/static/7a0dfbdf7722f8e63278244f984d353f/52173/architecture_02.jpg)
 
@@ -156,7 +156,7 @@ Milvus 生态系统提供了一些有用的工具，包括：
 
 - [Attu](https://github.com/zilliztech/attu)，一个用于 Milvus 的图形化管理系统。
 
-- [MilvusDM](migrate_overview.md)（Milvus 数据迁移），一个专门设计用于与 Milvus 导入和导出数据的开源工具。
+- [MilvusDM](/migrate/migrate_overview.md)（Milvus 数据迁移），一个专门设计用于与 Milvus 导入和导出数据的开源工具。
 
 - [Milvus 大小估算工具](https://milvus.io/tools/sizing/)，它可以帮助您估算各种索引类型下所需向量数量的原始文件大小、内存大小和稳定磁盘大小。
 
@@ -168,8 +168,8 @@ Milvus 生态系统提供了一些有用的工具，包括：
 
 - 为您的测试或生产环境安装 Milvus：
 
-  - [安装前提条件](prerequisite-docker.md)
-  - [安装 Milvus Standalone](install_standalone-docker.md)
+  - [安装前提条件](/getstarted/prerequisite-docker.md)
+  - [安装 Milvus Standalone](/getstarted/standalone/install_standalone-docker.md)
 
 - 如果您对 Milvus 的设计细节感兴趣：
-  - 阅读有关[Milvus 架构](architecture_overview.md)的内容
+  - 阅读有关[Milvus 架构](/reference/architecture/architecture_overview.md)的内容

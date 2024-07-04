@@ -1,0 +1,22 @@
+{
+    "configure_common": "配置通用(Configure_common)",
+    "configure_datacoord": "配置数据协调器(Configure_datacoord)",
+    "configure_datanode": "配置数据节点(Configure_datanode)",
+    "configure_etcd": "配置 etcd(Configure_etcd)",
+    "configure_indexnode": "配置索引节点(Configure_indexnode)",
+    "configure_kafka": "配置 Kafka(Configure_kafka)",
+    "configure_knowhere": "配置 Knowhere(Configure_knowhere)",
+    "configure_localstorage": "配置本地存储(Configure_localstorage)",
+    "configure_log": "配置日志(Configure_log)",
+    "configure_messagechannel": "配置消息通道(Configure_messagechannel)",
+    "configure_minio": "配置 MinIO(Configure_minio)",
+    "configure_nats": "配置 NATS(Configure_nats)",
+    "configure_proxy": "配置代理(Configure_proxy)",
+    "configure_pulsar": "配置 Pulsar(Configure_pulsar)",
+    "configure_querycoord": "配置查询协调器(Configure_querycoord)",
+    "configure_querynode": "配置查询节点(Configure_querynode)",
+    "configure_quota_limits": "配置配额限制(Configure_quota_limits)",
+    "configure_rocksmq": "配置 RocksMQ(Configure_rocksmq)",
+    "configure_rootcoord": "配置根协调器(Configure_rootcoord)",
+    "system_configuration": "系统配置(System_configuration)"
+}

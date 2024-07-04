@@ -1,105 +1,101 @@
----
 
-id: azure.md
-title: 在 Microsoft Azure 上使用 Kubernetes 部署 Milvus
-related_key: 集群
-summary: 了解如何在 Azure 上部署 Milvus 集群。
 
----
 
-# 在 Azure 上使用 AKS 部署 Milvus
+# 在 Microsoft Azure 上使用 Kubernetes 部署 Milvus
 
-本主题描述了如何使用 [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/#overview) (AKS) 和 [Azure 门户](https://portal.azure.com) 来配置和创建集群。
+本主题描述了如何使用 [Azure Kubernetes 服务](https://azure.microsoft.com/en-us/services/kubernetes-service/#overview) (AKS) 和 [Azure 门户](https://portal.azure.com) 创建和配置集群。
 
-## 前提条件
+## 先决条件
 
-确保你的 Azure 项目已经正确设置，并且你可以访问你想要使用的资源。如果你不确定你的访问权限，请联系你的管理员。
+确保正确设置了 Azure 项目，并且你有权限访问要使用的资源。如果你不确定自己的访问权限，请联系管理员。
 
 ## 软件要求
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli#install)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [Helm](https://helm.sh/docs/intro/install/)
 
-或者，你可以使用已经预装了 Azure CLI、kubectl 和 Helm 的 [Cloud Shell](https://learn.microsoft.com/en-us/azure/cloud-shell/overview)。
+或者，你可以使用预安装了 Azure CLI、kubectl 和 Helm 的 [Cloud Shell](https://learn.microsoft.com/en-us/azure/cloud-shell/overview)。
 
-<div class="alert note">安装 Azure CLI 后，请确保你已经正确进行了身份验证。</div>
+<div class="alert note"> 在安装 Azure CLI 后，请确保已正确进行身份验证。</div>
 
 ## 配置 Kubernetes 集群
 
 1. 登录到 Azure 门户。
-2. 在 Azure 门户菜单或从 **首页** 选择 **创建资源**。
+2. 在 Azure 门户菜单或 **主页** 上，选择 **创建资源**。
 3. 选择 **容器** > **Kubernetes 服务**。
-4. 在 **基本信息** 页面，配置以下选项：
+4. 在 **基本信息** 页面上，配置以下选项：
 
-- **项目详情**：
-  - **订阅**：联系你的组织的 Azure 管理员，确定你应该使用哪个订阅。
+- **项目详细信息**:
+  - **订阅**: 请联系你组织的 Azure 管理员确定应使用哪个订阅。
 
-    - **资源组**：联系你的组织的 Azure 管理员，确定你应该使用哪个资源组。
+    - **资源组**: 请联系你组织的 Azure 管理员确定应使用哪个资源组。
 
-- **集群详情**：
-  - **Kubernetes 集群名称**：输入一个集群名称。
+- **集群详细信息**:
+  - **Kubernetes 集群名称**: 输入集群名称。
 
-  - **区域**：选择一个区域。
+  - **区域**: 选择一个区域。
 
-  - **可用区**：根据需要选择 [可用区](https://docs.microsoft.com/en-us/azure/aks/availability-zones#overview-of-availability-zones-for-aks-clusters)。对于生产集群，我们建议你选择多个可用区。
+  - **可用区**: 根据需要选择 [可用区](https://docs.microsoft.com/zh-cn/azure/aks/availability-zones#overview-of-availability-zones-for-aks-clusters)。对于生产集群，我们建议选择多个可用区。
 
-- **主节点池**：
+- **主节点池**:
 
-  - **节点大小**：我们建议你选择至少有 16 GB 内存的 VM，但你也可以根据需要选择虚拟机大小。
+  - **节点大小**: 我们建议选择至少具有 16 GB RAM 的 VM，但你可以根据需要选择虚拟机大小。
 
-  - **缩放方法**：选择一个缩放方法。
+  - **缩放方法**: 选择一种缩放方法。
 
-  - **节点数量范围**：为节点数量选择一个范围。
+  - **节点计数范围**: 选择节点数量的范围。
 
-- **节点池**：
+- **节点池**:
 
-  - **启用虚拟节点**：选择复选框以启用虚拟节点。
+  - **启用虚拟节点**: 选择复选框以启用虚拟节点。
 
-  - **启用虚拟机规模集**：我们建议你选择 `启用`。
+  - **启用虚拟机规模集**: 我们建议选择 `enabled`。
 
-- **网络**：
+- **网络**:
 
-  - **网络配置**：我们建议你选择 `Kubenet`。
+  - **网络配置**: 我们建议选择 `Kubenet`。
 
-  - **DNS 名称前缀**：输入一个 DNS 名称前缀。
+  - **DNS 名称前缀**: 输入 DNS 名称前缀。
 
-  - **流量路由**：
+  - **流量路由**:
 
-    - **负载均衡器**：`标准`。
+    - **负载均衡器**: `标准`。
 
-    - **HTTP 应用程序路由**：不需要。
+    - **HTTP 应用程序路由**: 不需要。
 
-5. 配置选项后，点击 **审查 + 创建**，然后在验证完成后点击 **创建**。创建集群需要几分钟时间。
+
+5. 配置完选项后，单击 **查看 + 创建**，然后在验证完成后单击 **创建**。创建集群需要几分钟时间。
 
 ## 连接到集群
 
-1. 导航到你在 Kubernetes 服务中创建的集群并点击它。
-2. 在左侧导航窗格中，点击 `概览`。
-3. 出现的 **概览** 页面上，点击 **连接** 以查看资源组和订阅。
+1. 转到你在 Kubernetes 服务中创建的集群，并单击它。
+2. 在左侧导航窗格上，单击 `概述`。
+3. 在显示的 **概述** 页面上，单击 **连接** 来查看资源组和订阅。
 
 ## 设置订阅和凭据
 
-<div class="alert note">你可以使用 Azure Cloud Shell 来执行以下操作。</div>
+<div class="alert note"> 你可以使用 Azure Cloud Shell 执行以下过程。</div>
 
-1. 运行以下命令设置你的订阅。
+1. 运行以下命令来设置你的订阅。
 
 ```shell
 az account set --subscription EXAMPLE-SUBSCRIPTION-ID
 ```
-2. 运行以下命令下载凭据并配置 Kubernetes CLI 使用它们。
-   
+2. 运行以下命令来下载凭证并配置 Kubernetes CLI 来使用它们。
+
 ```shell
 az aks get-credentials --resource-group YOUR-RESOURCE-GROUP --name YOUR-CLUSTER-NAME
 ```
 
 <div class="alert note">
-使用相同的 shell 进行以下操作。如果你切换到另一个 shell，请再次运行前面的命令。
+使用相同的 shell 来执行接下来的过程。如果切换到另一个 shell，请重新运行上述命令。
 </div>
 
 
-## 使用 Azure Blob Storage 作为外部对象存储
+## 将 Azure Blob 存储用作外部对象存储
 
-Azure Blob Storage 是 Azure 的 AWS Simple Storage Service (S3) 版本。
+
+Azure Blob Storage 是 Azure 的版本 AWS Simple Storage Service（S3）。
 
 - 创建存储帐户和容器
 ```bash
@@ -133,42 +129,50 @@ externalS3:
   host: core.windows.net
   port: 443
   rootPath: my-release
-  bucketName: testmilvus # the storage account container name
+  bucketName: testmilvus # 存储帐户容器名称
   cloudProvider: azure
   useSSL: true
-  accessKey: "milvustesting1" # the storage account name
+  accessKey: "milvustesting1" # 存储帐户名称
   secretKey: "<secret-key>" 
 ```
 
 ## 部署 Milvus
 
-现在 Kubernetes 集群已经准备好了。让我们立即部署 Milvus。
+现在 Kubernetes 集群已经准备好了。让我们马上部署 Milvus。
 
 ```bash
-helm repo add milvus https://zilliztech.github.io/milvus-helm/ 
+helm repo add milvus https://zilliztech.github.io/milvus-helm/
 helm repo update
 helm install -f values.yaml my-release milvus/milvus
 ```
 
-在上述命令中，我们本地添加了 Milvus Helm charts 的仓库，并更新了仓库以获取最新的 charts。然后我们安装了一个 Milvus 实例，并将其命名为 **my-release**。
+在上述命令中，我们将 Milvus Helm 图表的仓库添加到本地，并更新仓库以获取最新图表。然后我们安装了一个 Milvus 实例，并将其命名为 **my-release**。
 
-请注意配置 `service.type` 的值，这表明我们希望通过第 4 层负载均衡器公开 Milvus 实例。
+注意 `service.type` 配置的值，它表示我们希望通过 Layer-4 负载均衡器公开 Milvus 实例。
+
 
 ## 验证部署
 
-一旦所有 pod 都在运行，运行以下命令以获取外部 IP 地址。
+一旦所有的 pod 都在运行，运行以下命令获取外部 IP 地址。
 
 ```bash
 kubectl get services|grep my-release-milvus|grep LoadBalancer|awk '{print $4}'
 ```
 
+
 ## Hello Milvus
 
-请参阅 [Hello Milvus](https://milvus.io/docs/example_code.md)，将主机值更改为外部 IP 地址，然后运行代码。
+请参考 [Hello Milvus](https://milvus.io/docs/example_code.md)，将主机值更改为外部 IP 地址，然后运行代码。
 
-## 接下来做什么
 
-如果您想学习如何在其他云上部署 Milvus：
-- [在 EC2 上部署 Milvus 集群](aws.md)
-- [在 EKS 上部署 Milvus 集群](eks.md)
-- [在 GCP 上部署 Milvus 集群](gcp.md)
+## 接下来的步骤
+
+
+
+
+
+
+如果你想要了解如何在其他云平台上部署 Milvus：
+- [在 EC2 上部署 Milvus 集群](/adminGuide/clouds/aws/aws.md)
+- [在 EKS 上部署 Milvus 集群](/adminGuide/clouds/aws/eks.md)
+- [在 GCP 上部署 Milvus 集群](/adminGuide/clouds/gcp/gcp.md)

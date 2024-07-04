@@ -1,44 +1,42 @@
----
-id: array_data_type.md
-related_key: array_data_type
-summary: Array data type in Milvus.
-title: Array
----
 
+
+                
 # 数组
 
-在 Milvus 中，数组数据类型是一个有序的元素集合，其中每个元素可以是特定的数据类型：INT、VARCHAR、BOOL、FLOAT 或 DOUBLE。当你需要在单个字段中存储多个值时，数组特别有用。
+在 Milvus 中，数组（Array）是一个有序的元素集合，每个元素可以是特定的数据类型：INT、VARCHAR、BOOL、FLOAT 或 DOUBLE。当你需要在单个字段中存储多个值时，数组特别有用。
 
 <div class="alert note">
 
-单个数组中的所有元素必须具有相同的数据类型。
+单个数组内的所有元素必须是相同的数据类型。
 
 </div>
 
-为了演示数组字段的使用，我们准备了一份来自 Kaggle 的 [数据集](https://www.kaggle.com/datasets/shiyu22chen/cleaned-medium-articles-dataset)，其中包含了 2020 年 1 月至 2020 年 8 月在 Medium.com 上发布的 articles。
+为了演示使用数组字段，我们准备了一个包含 Medium.com 从 2020 年 1 月到 2020 年 8 月发布的文章的数据集 [a dataset from Kaggle](https://www.kaggle.com/datasets/shiyu22chen/cleaned-medium-articles-dataset)。
 
-在本主题中，我们加载了数据集中的前 100 个实体，并将 `link` 和 `publication` 字段的值组织到一个名为 `var_array` 的数组字段中，将 `reading_time`、`claps` 和 `responses` 的值组织到一个名为 `int_array` 的数组字段中。
+在这个主题中，我们加载数据集中的前 100 个实体，并将 `link` 和 `publication` 字段的值组织成一个名为 `var_array` 的数组字段，将 `reading_time`、`claps` 和 `responses` 的值组织成一个名为 `int_array` 的数组字段。
 
-数据结构如下所示：
+数据结构类似于以下示例：
 
 ```json
 {
-    'title': 'The Reported Mortality Rate of Coronavirus Is Not Important',
-    'title_vector': [0.041732933, 0.013779674, -0.027564144, ..., 0.030096486],
-    'var_array': ['https://medium.com/swlh/the-reported-mortality-rate-of-coronavirus-is-not-important-369989c8d912', 'The Startup'],
-    'int_array': [13, 1100, 18]
+
+		'title': 'The Reported Mortality Rate of Coronavirus Is Not Important',
+		'title_vector': [0.041732933, 0.013779674, -0.027564144, ..., 0.030096486],
+		'var_array': ['https://medium.com/swlh/the-reported-mortality-rate-of-coronavirus-is-not-important-369989c8d912', 'The Startup'],
+		'int_array': [13, 1100, 18]
+
 }
 ```
 
-供你参考，以下是可以用来处理示例数据集的代码：
+供参考，以下代码可用于处理示例数据集：
 
 ```python
 import pandas as pd
 
-# 加载下载的数据集的前 100 个实体
+# 加载下载的数据集的前100个实体
 df = pd.read_csv('New_Medium_Data.csv', nrows=100)
 for i in range(100):
-    df['title_vector'][i] = eval(df['title_vector'][i])
+	df['title_vector'][i] = eval(df['title_vector'][i])
 
 # 将指定字段转换为数组
 df['var_array'] = df[['link', 'publication']].values.tolist()
@@ -47,95 +45,103 @@ df['int_array'] = df[['reading_time', 'claps', 'responses']].values.tolist()
 # 删除原始列
 df = df.drop(columns=['link', 'publication', 'reading_time', 'claps', 'responses'])
 
-# 将 DataFrame 转换为字典列表
+# 将DataFrame转换为字典列表
 data = df.to_dict('records')
 ```
 
 ## 定义数组字段
 
-在定义数组字段时，为数组字段中的元素指定以下参数：
 
-- `element_type`: (必需) 数组中元素的数据类型。有效值：`DataType.Int8`, `DataType.Int16`, `DataType.Int32`, `DataType.Int64`, `DataType.VARCHAR`, `DataType.BOOL`, `DataType.FLOAT`, 和 `DataType.DOUBLE`。
-- `max_capacity`: (必需) 数组字段可以包含的元素的最大数量。值范围：[1, 4,096]。
-- `max_length`: 数组字段中每个 VARCHAR 元素的最大长度。当 `element_type` 设置为 `DataType.VARCHAR` 时，此参数是必需的。值范围：[1, 65,535]。
+
+        I provide the content of the markdown document that needs to be translated. Only the headings, paragraphs, and list content in markdown syntax need to be translated. Words in camel case and underscore do not need to be translated. Please retain the punctuations of md syntax. After you finish translating, replace the original content and return the result to me.
+        
+        When defining an array field, specify the following arguments for elements in the array field:
+
+        - `element_type`: (Required) Data type of elements in an array. Valid values: `DataType.Int8`, `DataType.Int16`, `DataType.Int32`, `DataType.Int64`, `DataType.VARCHAR`, `DataType.BOOL`, `DataType.FLOAT`, and `DataType.DOUBLE`.
+        - `max_capacity`: (Required) Maximum number of elements that an array field can contain. Value range: [1, 4,096].
+        - `max_length`: Maximum length of strings for each VARCHAR element in an array field. This argument is required when `element_type` is set to `DataType.VARCHAR`. Value range: [1, 65,535].
+
+        ```python
+        # Define array fields
+
+        from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType
+
+        connections.connect(host='localhost', port='19530')
+
+        # 1. define fields
+        fields = [
+            FieldSchema(name='id', dtype=DataType.INT64, is_primary=True, auto_id=False, max_length=100),
+            FieldSchema(name='title', dtype=DataType.VARCHAR, max_length=512),
+            FieldSchema(name='title_vector', dtype=DataType.FLOAT_VECTOR, dim=768),
+            # define ARRAY field with VARCHAR elements
+            FieldSchema(name='var_array', dtype=DataType.ARRAY, element_type=DataType.VARCHAR, max_capacity=900, max_length=1000),
+            # define ARRAY field with INT64 elements
+            FieldSchema(name='int_array', dtype=DataType.ARRAY, element_type=DataType.INT64, max_capacity=900)
+        ]
+
+        # 2. enable dynamic schema in schema definition
+        schema = CollectionSchema(
+                fields, 
+                "The schema for a medium news collection", 
+                enable_dynamic_field=True # Optional, defaults to 'False'.
+        )
+
+        # 3. reference the schema in a collection
+        collection = Collection("medium_articles_with_array", schema)
+
+        # 4. index the vector field
+        index_params = {
+            "index_type": "AUTOINDEX",
+            "metric_type": "L2",
+            "params": {}
+        }
+
+        collection.create_index(
+          field_name="title_vector", 
+          index_params=index_params
+        )
+
+        # 5. load the collection
+        collection.load()
+        ```
+
+        ## Insert field values
+
+        Once the collection is created, you can insert the processed data into it.
+
+        <div class="alert note">
+
+        If `auto_id` is set to `True` for a collection, insert data without the primary key field. Otherwise, an error can occur during data insert.
+
+        </div>
+
+        ```python
+        # Insert field values
+
+        # 1. insert data
+        collection.insert(data)
+
+        # 2. call the flush API to make inserted data immediately available for search
+        collection.flush()
+
+        print("Entity counts: ", collection.num_entities)
+
+        # Output
+        # Entity counts:  100
+        ```
+
+        ## Search or query with array fields
+
+
+
+## Limits
+
+使用相同的方式搜索或查询数组字段，就像使用标量字段一样。
+
+使用 `int_array` 进行搜索，过滤 `reading_time` 在 10 与 20 之间（不包括 10 和 20）的实体。
 
 ```python
-# 定义数组字段
-
-from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType
-
-connections.connect(host='localhost', port='19530')
-
-# 1. 定义字段
-fields = [
-    FieldSchema(name='id', dtype=DataType.INT64, is_primary=True, auto_id=False, max_length=100),
-    FieldSchema(name='title', dtype=DataType.VARCHAR, max_length=512),
-    FieldSchema(name='title_vector', dtype=DataType.FLOAT_VECTOR, dim=768),
-    # 定义 VARCHAR 元素的 ARRAY 字段
-    FieldSchema(name='var_array', dtype=DataType.ARRAY, element_type=DataType.VARCHAR, max_capacity=900, max_length=1000),
-    # 定义 INT64 元素的 ARRAY 字段
-    FieldSchema(name='int_array', dtype=DataType.ARRAY, element_type=DataType.INT64, max_capacity=900)
-]
-
-# 2. 在模式定义中启用动态模式
-schema = CollectionSchema(
-    fields,
-    "The schema for a medium news collection",
-    enable_dynamic_field=True # 可选，默认为 'False'。
-)
-
-# 3. 在集合中引用模式
-collection = Collection("medium_articles_with_array", schema)
-
-# 4. 索引向量字段
-index_params = {
-    "index_type": "AUTOINDEX",
-    "metric_type": "L2",
-    "params": {}
-}
-
-collection.create_index(
-    field_name="title_vector",
-    index_params=index_params
-)
-
-# 5. 加载集合
-collection.load()
-```
-
-## Insert field values
-
-Once the collection is created, you can insert the processed data into it.
-
-<div class="alert note">
-
-If `auto_id` is set to `True` for a collection, insert data without the primary key field. Otherwise, an error can occur during data insert.
-
-</div>
-
-```python
-# Insert field values
-
-# 1. insert data
-collection.insert(data)
-
-# 2. call the flush API to make inserted data immediately available for search
-collection.flush()
-
-print("Entity counts: ", collection.num_entities)
-
-# Output
-# Entity counts:  100
-```
-
-## Search or query with array fields
-
-Then, you can search or query with array fields in the same manner as you would with a standard scalar field.
-
-Search data with `int_array` to filter entities whose `reading_time` is between 10 and 20 (exclusive).
-
-```python
-# 1. search data with `int_array`
+# 1. 使用 `int_array` 进行搜索
 result = collection.search(
     data=data[0]['title_vector'],
     anns_field='title_vector',
@@ -146,43 +152,43 @@ result = collection.search(
 )
 
 for hits in result:
-    print("Matched IDs: ", hits.ids)
-    print("Distance to the query vector: ", hits.distances)
-    print("Matched articles: ")
+    print("匹配的 ID：", hits.ids)
+    print("与查询向量的距离：", hits.distances)
+    print("匹配的文章：")
     for hit in hits:
         print(
-            "Title: ",
-            hit.entity.get("title"),
-            ", Reading time: ",
+            "标题：", 
+            hit.entity.get("title"), 
+            "，阅读时间：", 
             hit.entity.get("int_array")[0]
         )
 ```
 
-Query data with `var_array` to filter entities whose `publication` is `'The Startup'`.
+使用 `var_array` 进行查询，过滤 `publication` 为 `'The Startup'` 的实体。
 
 ```python
-# 2. query data with `var_array`
+# 2. 使用 `var_array` 进行查询
 result = collection.query(
     expr='var_array[1] == "The Startup"',
     output_fields=['title','var_array']
 )
 
 for hits in result:
-    print("Matched IDs: ", hits.id)
-    print("Matched articles: ")
+    print("匹配的 ID：", hits.id)
+    print("匹配的文章：")
     for hit in hits:
         print(
-            "Title: ",
+            "标题：",
             hit.entity.get("title"),
-            ", Publication: ",
+            "，出版物：",
             hit.entity.get("var_array")[1]
         )
 ```
 
-Check whether `int_array` contains element `10`.
+检查 `int_array` 是否包含元素 `10`。
 
 ```python
-# 3. use array_contains to check whether an array contains a specific element
+# 3. 使用 array_contains 检查数组是否包含特定元素
 
 collection.query(
     expr='array_contains(int_array, 10)',
@@ -190,32 +196,39 @@ collection.query(
 )
 ```
 
-## Limits
+## 限制
 
-When working with array fields, you can enclose a string value with either double quotation marks ("") or single quotation marks (''). It's important to note that Milvus stores string values in the array field as is without performing semantic escape or conversion. For instance, **'a"b'**, **"a'b"**, **'a\'b'**, and **"a\"b"** will be saved as is, while **'a'b'** and **"a"b"** will be treated as invalid values.
+在使用数组字段时，可以使用双引号（""）或单引号（''）将字符串值括起来。需要注意的是，Milvus 将字符串值存储在数组字段中时，不会执行语义转义或转换。例如，**'a "b'**、**" a'b "**、**'a\'b'** 和 **" a\"b"** 会原样保存，而 **'a'b'** 和 **"a" b " ** 会被视为无效值。
 
-Assume that two array fields `int_array` and `var_array` have been defined. The following table describes the supported boolean expressions that you can use in `expr` when searching with array fields.
+假设已经定义了两个数组字段 `int_array` 和 `var_array`。以下表格描述了在使用数组字段进行搜索时，在 `expr` 中支持的布尔表达式。
 
-| Operator                                | Examples                                                                    | Remarks                                                                                                                                                                                         |
-| --------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <                                       | <code>'int_array[0] < 3'</code>                                             | This expression evaluates to true if the value of <code>int_array[0]</code> is less than 3.                                                                                                     |
-| >                                       | <code>'int_array[0] > 5'</code>                                             | This expression evaluates to true if the value of <code>int_array[0]</code> is greater than 5.                                                                                                  |
-| ==                                      | <code>'int_array[0] == 0'</code>                                            | This expression evaluates to true if the value of <code>int_array[0]</code> is equal to 0.                                                                                                      |
-| !=                                      | <code>'var_array[0] != "a"'</code>                                          | This expression evaluates to true if the value of <code>var_array[0]</code> is not equal to <code>"a"</code>.                                                                                   |
-| <=                                      | <code>'int_array[0] <= 3'</code>                                            | This expression evaluates to true if the value of <code>int_array[0]</code> is smaller than or equal to 3.                                                                                      |
-| >=                                      | <code>'int_array[0] >= 10'</code>                                           | This expression evaluates to true if the value of <code>int_array[0]</code> is greater than or equal to 10.                                                                                     |
-| in                                      | <code>'var_array[0] in ["str1", "str2"]'</code>                             | This expression evaluates to true if the value of <code>var_array[0]</code> is <code>"str1"</code> or <code>"str2"</code>.                                                                      |
-| not in                                  | <code>'int_array[0] not in [1, 2, 3]'</code>                                | This expression evaluates to true if the value of <code>int_array[0]</code> is not 1, 2, or 3.                                                                                                  |
-| +, -, \*, /, %, \*\*                    | <code>'int_array[0] + 100 > 200'</code>                                     | This expression evaluates to true if the value of <code>int_array[0] + 100</code> is greater than 200.                                                                                          |
-| like (LIKE)                             | <code>'var_array[0] like "prefix%"'</code>                                  | This expression evaluates to true if the value of <code>var_array[0]</code> is prefixed with <code>"prefix"</code>.                                                                             |
-| and (&&)                                | <code>'var_array[0] like "prefix%" && int_array[0] <= 100'</code>           | This expression evaluates to true if the value of <code>var_array[0]</code> is prefixed with <code>"prefix"</code>, and the value of <code>int_array[0]</code> is smaller than or equal to 100. |
-| or (&#124;&#124;)                       | <code>'var_array[0] like "prefix%" &#124;&#124; int_array[0] <= 100'</code> | This expression evaluates to true if the value of <code>var_array[0]</code> is prefixed with <code>"prefix"</code>, or the value of <code>int_array[0]</code> is smaller than or equal to 100.  |
-| array_contains (ARRAY_CONTAINS)         | <code>'array_contains(int_array, 100)'</code>                               | This expression evaluates to true if <code>int_array</code> contains element <code>100</code>.                                                                                                  |
-| array_contains_all (ARRAY_CONTAINS_ALL) | <code>'array_contains_all(int_array, [1, 2, 3])'</code>                     | This expression evaluates to true if <code>int_array</code> contains all elements <code>1</code>, <code>2</code>, and <code>3</code>.                                                           |
-| array_contains_any (ARRAY_CONTAINS_ANY) | <code>'array_contains_any(var_array, ["a", "b", "c"])'</code>               | This expression evaluates to true if <code>var_array</code> contains any element of <code>"a"</code>, <code>"b"</code>, and <code>"c"</code>.                                                   |
-| array_length                            | <code>'array_length(int_array) == 10'</code>                                | This expression evaluates to true if <code>int_array</code> contains exactly 10 elements.                                                                                                       |
+| 运算符          | 示例                                                          | 备注                                                                                                                                                                           |
+|-------------------|-------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <                 | <code>'int_array [0] < 3'</code>                                   | 当 <code> int_array [0] </code> 的值小于 3 时，该表达式为真。                                                                                                    |
+| >                 | <code>'int_array [0] > 5'</code>                                   | 当 <code> int_array [0] </code> 的值大于 5 时，该表达式为真。                                                                                                 |
+| ==                | <code>'int_array [0] == 0'</code>                                  | 当 <code> int_array [0] </code> 的值等于 0 时，该表达式为真。                                                                                                     |
+| !=                | <code>'var_array [0] != "a"'</code>                                | 当 <code> var_array [0] </code> 的值不等于 <code> "a" </code> 时，该表达式为真。                                                                                                   |
+| <=                | <code>'int_array [0] <= 3'</code>                                  | 当 <code> int_array [0] </code> 的值小于或等于 3 时，该表达式为真。                                                                                     |
+| >=                | <code>'int_array [0] >= 10'</code>                                 | 当 <code> int_array [0] </code> 的值大于或等于 10 时，该表达式为真。                                                                                    |
+| in                | <code>'var_array [0] in ["str1", "str2"]'</code>                   | 当 <code> var_array [0] </code> 的值为 <code> "str1" </code> 或 <code> "str2" </code> 时，该表达式为真。                                                                                               |
+| not in            | <code>'int_array [0] not in [1, 2, 3]'</code>                      | 当 <code> int_array [0] </code> 的值不为 1、2 或 3 时，该表达式为真。                                                                                                 |
+| +, -, *, /, %, ** | <code>'int_array [0] + 100 > 200'</code>                           | 当 <code> int_array [0] + 100 </code> 的值大于 200 时，该表达式为真。                                                                                         |
+| like (LIKE)       | <code>'var_array [0] like "prefix%"'</code>                        | 当 <code> var_array [0] </code> 的值以 <code> "prefix" </code> 开头时，该表达式为真。                                                                                         |
+| and (&&)          | <code>'var_array [0] like "prefix%" && int_array [0] <= 100'</code> | 当 <code> var_array [0] </code> 的值以 <code> "prefix" </code> 开头，并且 <code> int_array [0] </code> 的值小于或等于 100 时，该表达式为真。 |
+| or (&#124;&#124;) | <code>'var_array [0] like "prefix%" &#124;&#124; int_array [0] <= 100'</code> | 当 <code> var_array [0] </code> 的值以 <code> "prefix" </code> 开头，或者 <code> int_array [0] </code> 的值小于或等于 100 时，该表达式为真。 |
+| array_contains (ARRAY_CONTAINS) | <code>'array_contains(int_array, 100)'</code> | 当 <code> int_array </code> 包含元素 <code> 100 </code> 时，该表达式为真。 |
+| array_contains_all (ARRAY_CONTAINS_ALL) | <code>'array_contains_all(int_array, [1, 2, 3])'</code> | 当 <code> int_array </code> 包含所有元素 <code> 1 </code>、<code> 2 </code> 和 <code> 3 </code> 时，该表达式为真。 |
+| array_contains_any (ARRAY_CONTAINS_ANY) | <code>'array_contains_any(var_array, ["a", "b", "c"])'</code> | 当 <code> var_array </code> 包含任意元素 <code> "a" </code>、<code> "b" </code> 和 <code> "c" </code> 时，该表达式为真。 |
+| array_length | <code>'array_length(int_array) == 10'</code> | 当 <code> int_array </code> 包含恰好 10 个元素时，该表达式为真。 |
 
-## What’s next
+## 下一步操作
 
-- [Dynamic Schema](enable-dynamic-field.md)
-- [JSON](use-json-fields.md)
+
+
+# 
+
+
+- [动态模式](/userGuide/enable-dynamic-field.md)
+- [JSON](/userGuide/use-json-fields.md)
+
+ 

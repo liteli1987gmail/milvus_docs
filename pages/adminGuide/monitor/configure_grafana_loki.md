@@ -1,14 +1,11 @@
----
-id: configure_grafana_loki.md
-title: 配置 Grafana Loki
-summary: 本主题介绍如何使用 Loki 收集日志，并使用 Grafana 查询 Milvus 集群的日志。
----
+
+
 
 # 配置 Grafana Loki
 
-本指南提供了如何配置 Loki 来收集日志，以及如何使用 Grafana 查询和显示 Milvus 集群的日志的说明。
+本指南说明了如何使用 Loki 收集日志，并使用 Grafana 查询 Milvus 集群的日志。
 
-在本指南中，您将学习如何：
+在本指南中，你将学习如何：
 
 - 使用 Helm 在 Milvus 集群上部署 [Loki](https://grafana.com/docs/loki/latest/get-started/overview/) 和 [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/)。
 - 为 Loki 配置对象存储。
@@ -16,25 +13,25 @@ summary: 本主题介绍如何使用 Loki 收集日志，并使用 Grafana 查�
 
 ## 先决条件
 
-- 您已经 [在 K8s 上安装了 Milvus 集群](install_cluster-helm.md)。
-- 您已经安装了必要的工具，包括 [Helm](https://helm.sh/docs/intro/install/) 和 [Kubectl](https://kubernetes.io/docs/tasks/tools/)。
+- 你已经 [在 K8s 上安装了 Milvus 集群](/getstarted/cluster/install_cluster-helm.md)。
+- 你已经安装了必要的工具，包括 [Helm](https://helm.sh/docs/intro/install/) 和 [Kubectl](https://kubernetes.io/docs/tasks/tools/)。
 
 ## 部署 Loki
 
-Loki 是一个受 Prometheus 启发的日志聚合系统。使用 Helm 部署 Loki 以收集您的 Milvus 集群的日志。
+Loki 是受 Prometheus 启发的日志聚合系统。使用 Helm 部署 Loki，从 Milvus 集群收集日志。
 
 ### 1. 添加 Grafana 的 Helm Chart 仓库
 
-向 Helm 添加 Grafana 的图表仓库并更新它：
+将 Grafana 的 Chart 仓库添加到 Helm，并进行更新：
 
-```bash
+```
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 ```
 
 ### 2. 为 Loki 配置对象存储
 
-选择以下存储选项之一，并创建一个 `loki.yaml` 配置文件：
+选择以下其中一种存储选项并创建 `loki.yaml` 配置文件：
 
 - 选项 1：使用 MinIO 进行存储
 
@@ -50,7 +47,7 @@ helm repo update
 
 - 选项 2：使用 AWS S3 进行存储
 
-  在以下示例中，将 `<accessKey>` 和 `<keyId>` 替换为您自己的 S3 访问密钥和 ID，将 `s3.endpoint` 替换为 S3 端点，将 `s3.region` 替换为 S3 区域。
+  在下面的示例中，将 `<accessKey>` 和 `<keyId>` 替换为你自己的 S3 访问密钥和 ID，将 `s3.endpoint` 替换为 S3 端点，将 `s3.region` 替换为 S3 区域。
 
   ```yaml
   loki:
@@ -81,7 +78,7 @@ helm install --values loki.yaml loki grafana/loki -n loki
 
 ## 部署 Promtail
 
-Promtail 是 Loki 的日志收集代理。它从 Milvus pods 读取日志并将它们发送到 Loki。
+Promtail 是 Loki 的日志收集代理。它从 Milvus Pod 中读取日志并将其发送到 Loki。
 
 ### 1. 创建 Promtail 配置
 
@@ -94,16 +91,18 @@ config:
 ```
 
 ### 2. 安装 Promtail
+ 
 
-使用 Helm 安装 Promtail：
+
+Deploy: 使用 Helm 安装 Promtail：
 
 ```shell
-helm install  --values promtail.yaml promtail grafana/promtail -n loki
+helm install --values promtail.yaml promtail grafana/promtail -n loki
 ```
 
 ## 使用 Grafana 查询日志
 
-部署 Grafana 并配置它以连接到 Loki 查询日志。
+部署 Grafana 并配置连接到 Loki 以查询日志。
 
 ### 1. 部署 Grafana
 
@@ -114,13 +113,13 @@ kubectl create ns monitoring
 helm install my-grafana grafana/grafana --namespace monitoring
 ```
 
-在您能够访问 Grafana 之前，您需要检索 `admin` 密码：
+在访问 Grafana 之前，你需要获取 `admin` 密码：
 
 ```shell
 kubectl get secret --namespace monitoring my-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
 
-然后，将 Grafana 端口转发到您的本地机器：
+然后，将 Grafana 端口转发到本地机器：
 
 ```shell
 export POD_NAME=$(kubectl get pods --namespace monitoring -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=my-grafana" -o jsonpath="{.items[0].metadata.name}")
@@ -129,21 +128,23 @@ kubectl --namespace monitoring port-forward $POD_NAME 3000
 
 ### 2. 在 Grafana 中添加 Loki 作为数据源
 
-一旦 Grafana 运行，您需要将 Loki 添加为数据源以查询日志。
+Grafana 运行后，你需要添加 Loki 作为数据源来查询日志。
 
-1. 打开一个 web 浏览器，导航到 `127.0.0.1:3000`。使用用户名 `admin` 和之前获得的密码登录。
+1. 打开 Web 浏览器并导航到 `127.0.0.1:3000`。使用之前获取到的用户名 `admin` 和密码进行登录。
 2. 在左侧菜单中，选择 __Connections__ > __Add new connection__。
-3. 在出现的页面中，选择__Loki__作为数据源类型。您可以在搜索栏中输入__loki__查找数据源。
-4. 在Loki数据源的设置中, 指定 __Name__ 和 __URL__, 然后点击 __Save & test__.
+3. 在出现的页面上，选择 __Loki__ 作为数据源类型。你可以在搜索栏中输入 __loki__ 来查找该数据源。
+4. 在 Loki 数据源设置中，指定 __Name__ 和 __URL__，然后点击 __Save & test__。
 
-![DataSource](/public/assets/datasource.jpg "The data source config.")
+![DataSource](/assets/datasource.jpg "数据源配置。")
 
-### 3. 筛选 Milvus 日志
+### 3. 查询 Milvus 日志
 
-在添加 Loki 作为数据源之后，在 Grafana 中筛选 Milvus 日志
 
-1. 在菜单的左侧, 点击 __Explore__。
-2. 在页面左上角，选择 Loki 数据源。
-3. 使用 __Label browser__ 来选择标签和筛选日志。
 
-![Query](/public/assets/milvuslog.jpg "在 Grafana 中筛选 Milvus 日志")
+在 Grafana 中将 Loki 添加为数据源后，查询 Milvus 日志：
+
+1. 在左侧菜单中，点击 **Explore**。
+2. 在页面左上角，选择 loki 数据源。
+3. 使用 **Label browser** 选择标签并查询日志。
+
+![查询](/assets/milvuslog.jpg "在Grafana中查询Milvus日志。")

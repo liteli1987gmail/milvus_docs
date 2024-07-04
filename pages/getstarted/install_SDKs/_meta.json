@@ -1,0 +1,6 @@
+{
+    "install-go": "安装 Go(Install-go)",
+    "install-java": "安装 Java(Install-java)",
+    "install-node": "安装 Node.js(Install-node)",
+    "install-pymilvus": "安装 Pymilvus(Install-pymilvus)"
+}
