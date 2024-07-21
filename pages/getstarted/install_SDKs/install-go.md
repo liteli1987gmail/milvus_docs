@@ -20,9 +20,9 @@ $ go get -u github.com/milvus-io/milvus-sdk-go/v2
 
 安装了 Milvus GO SDK 之后，你可以：
 
-- Learn the basic operations of Milvus:
-  - [管理集合](Manage Collections.md)
-  - [管理分区](Manage Partitions.md)
-  - [插入、更新和删除](Insert, Upsert & Delete.md)
-  - [单向量搜索](Single-Vector Search.md)
-  - [多向量搜索](Multi-Vector Search.md)
+- 学习 Milvus 的基本操作：
+  - [管理集合](/userGuide/manage-collections.md)
+  - [管理分区](/userGuide/manage-partitions.md)
+  - [插入、更新和删除数据](/userGuide/insert-update-delete.md)
+  - [单向量搜索](/userGuide/search-query-get/single-vector-search.md)
+  - [多向量搜索](/userGuide/search-query-get/multi-vector-search.md)
