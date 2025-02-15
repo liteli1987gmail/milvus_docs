@@ -60,12 +60,13 @@ python3 save_image.py --manifest milvus_manifest.yaml
 5. 加载图像。
 
 ```bash
-cd images/for image in $(find . -type f -name "*.tar.gz") ; do gunzip -c $image | docker load; done
+cd images/
+for image in $(find . -type f -name "*.tar.gz") ; do gunzip -c $image | docker load; done
 ```
 
 ## 离线安装 Milvus
 
-在将图像传输到目标主机后，运行以下命令以离线安装 Milvus。
+在将镜像传输到目标主机后，运行以下命令以离线安装 Milvus。
 
 ```bash
 kubectl apply -f milvus_manifest.yaml
